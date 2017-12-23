@@ -8,12 +8,17 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es5",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
+    "baseUrl": ".",
+    "module": "commonjs",
+    "paths": {
+      "*": [
+        "node_modules/*",
+        "src/types/*"
+      ]
+    },
     "lib": [
       "es2017",
       "dom"
-    ]
+    ]  
   }
 }
