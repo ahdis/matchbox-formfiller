@@ -14,7 +14,6 @@ interface IResource {
 
 interface Auth { bearer?: string; user?: string; pass?: string }
 interface Config { baseUrl: string; auth?: Auth; credentials: string; headers?: Map<string, any> }
-// method could be refined to (GET|POST|PUT|DELETE)
 interface Minimal { debug?: boolean }
 interface RequestObj extends Minimal { method: "DELETE" | "GET" | "HEAD" | "JSONP" | "OPTIONS"; url: string, headers?: any, data?: any }
 interface ResponseObj { status: number; headers?: Map<string, string[]>; config: any; data: IResource }
@@ -36,12 +35,8 @@ interface Entry extends Minimal { resource: IResource; category?: Tag[] }
 
 declare function http(requestObj: RequestObj): Promise<ResponseObj>;
 
-// to declard headerFn function to get header, i.e. headerFn('Content')
-declare function succes(data: any, status: any, headerFn: any, config: Config): void;
-declare function error(data: any, status: any, headerFn: any, config: Config): void;
 
 /** Interface defintion to fhir.js */
-
 interface IFhir {
 
     /** Get a capability statement for the system */

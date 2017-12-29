@@ -1,4 +1,4 @@
-/// <reference path="../types/fhir.js/src/fhir/index.d.ts" />
+/// <reference path="../types/fhir.js/index.d.ts" />
 import { Component, Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpHeaders, HttpResponse } from '@angular/common/http';
 const fhirjs = require('fhir.js/src/fhir');
@@ -130,7 +130,7 @@ export class AppComponent {
         this.fhirOutput += response.status + '\n';
         this.fhirOutput += response.headers.get('location') + '\n';
         this.fhirOutput += 'id:' + response.data.id + '\n';
-        this.fhirOutput += 'versionId:'  + response.data.meta.versionId + '\n';
+        this.fhirOutput += 'versionId:' + response.data.meta.versionId + '\n';
         if (response.data.id !== undefined) {
           patientId = response.data.id;
           patientVersionId = response.data.meta.versionId;
@@ -146,12 +146,26 @@ export class AppComponent {
       this.fhirOutput += ' error ' + JSON.stringify(error);
     }
 
+  }
 
-
+  async testSearch() {
+    try {
+      const response = await this.client.search(
+        { type: 'Patient', query: { name: { $and: [{ $exact: 'Muster' }, { $exact: 'Felix' }] } } });
+      if (response.headers !== undefined) {
+        console.log(response.status);
+        this.fhirOutput += 'total entries: ' + response.data.total;
+        console.log();
+      }
+    } catch (error) {
+      console.log('error');
+      console.log(JSON.stringify(error));
+      this.fhirOutput += ' error ' + JSON.stringify(error);
+    }
   }
 
   onClickMe() {
-    this.testCreate();
+    this.testSearch();
     this.clickMessage = 'testCreate called';
   }
 
