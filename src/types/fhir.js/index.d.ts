@@ -1,7 +1,5 @@
 // Type definitions fhir.js 
 // Project: https://github.com/FHIR/fhir.js
-// Definitions by: oliver egger, https://github.com/oliveregger
-
 
 /** resource interface */
 interface IResource {
@@ -13,10 +11,10 @@ interface IResource {
 }
 
 interface Auth { bearer?: string; user?: string; pass?: string }
-interface Config { baseUrl: string; auth?: Auth; credentials: string; headers?: Map<string, any> }
+interface FhirConfig { baseUrl: string; auth?: Auth; credentials: string; headers?: Map<string, any> }
 interface Minimal { debug?: boolean }
 interface RequestObj extends Minimal { method: "DELETE" | "GET" | "HEAD" | "JSONP" | "OPTIONS"; url: string, headers?: any, data?: any }
-interface ResponseObj { status: number; headers?: Map<string, string[]>; config: any; data: IResource }
+interface ResponseObj { status: number; headers?: any; config: any; data: IResource }
 
 /** set the debug property property to true to get console logging activated */
 
@@ -82,17 +80,17 @@ interface IFhir {
     /** These functions below are not yet typescripted because the exact funticionality is not clear */
 
     /** Validate a resource, but see see issue here first: https://github.com/FHIR/fhir.js/issues/93 */
-    validate(query: any): any;
+    /* validate(query: any): any; */
 
     /** POST on /Document ? */
-    document(query: any): any;
+    /* document(query: any): any; */
 
     /** GET on /Profile/:type ? */
-    profile(query: any): any;
+    /* profile(query: any): any; */
 
     /** resolves a referenced resources, don't now how ho pass in the defer() function */
-    resolve(ref: ReferenceObj): Promise<ResponseObj>;
+    /* resolve(ref: ReferenceObj): Promise<ResponseObj>; */
 
 }
 
-declare function fhir(x: Config, a: Adapter) : IFhir;
+declare function fhir(x: FhirConfig, a: Adapter) : IFhir;
