@@ -54,11 +54,15 @@ export class FhirJsHttpService {
         return new Promise(function (resolve, reject) {
           ngHttpClient.request<IResource>(args.method, url, { body: body, headers: headers, observe: 'response' }).toPromise().then(
             response => {
-              console.log(response);
+              if (args.debug !== undefined) {
+                console.log(response);
+              }
               resolve(getResponse(response, args));
             },
             response => {
-              console.log(response);
+              if (args.debug !== undefined) {
+                console.log(response);
+              }
               reject(getResponse(response, args));
             });
         });
