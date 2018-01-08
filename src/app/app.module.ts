@@ -3,12 +3,8 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { FhirJsHttpService, FHIR_HTTP_CONFIG} from './fhir-js-http.service';
+import { NgFhirjsModule } from './modules/ng-fhirjs/ng-fhirjs.module';
 
-export const FHIR_JS_CONFIG: FhirConfig = {
-  baseUrl: 'http://localhost:8080/baseDstu3',
-  credentials: 'same-origin'
-};
 
 @NgModule({
   declarations: [
@@ -16,9 +12,10 @@ export const FHIR_JS_CONFIG: FhirConfig = {
   ],
   imports: [
     BrowserModule,
-    HttpClientModule
+    HttpClientModule,
+    NgFhirjsModule
   ],
-  providers: [FhirJsHttpService, { provide: FHIR_HTTP_CONFIG, useValue: FHIR_JS_CONFIG}],
+//  providers: [FhirJsHttpService, { provide: FHIR_HTTP_CONFIG, useValue: FHIR_JS_CONFIG}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,6 +1,6 @@
 # NgFhirSample
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.1. The goal is to demonstrate the usage of the using the [![npm version](https://badge.fury.io/js/fhir.js.svg)](https://badge.fury.io/js/fhir.js) library from the Command Line with Angular and Typescript.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.1. The goal is to demonstrate the usage of the using the fhir.js [![npm version](https://badge.fury.io/js/fhir.js.svg)](https://badge.fury.io/js/fhir.js) library from the Command Line with Angular and Typescript.
 
 ## Development server
 

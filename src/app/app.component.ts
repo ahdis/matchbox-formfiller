@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FhirJsHttpService} from './fhir-js-http.service';
+import { FhirJsHttpService } from './modules/ng-fhirjs/fhir-js-http.service';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +13,7 @@ export class AppComponent {
   fhirOutput: string;
 
   constructor(private fhirHttpService: FhirJsHttpService) {
-    this.clickMessage = '';
+  this.clickMessage = '';
     this.fhirOutput = '';
   }
 
