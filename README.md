@@ -1,23 +1,54 @@
 # NgFhirSample
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.1. The goal is to demonstrate the usage of the using the fhir.js [![npm version](https://badge.fury.io/js/fhir.js.svg)](https://badge.fury.io/js/fhir.js) library from the Command Line with Angular and Typescript.
+# ng-fhirjs
 
-## Development server
+ng-fhirjs is an angular module for [fhir.js](https://badge.fury.io/js/fhir.js). It uses HttpClient from @angular/common/http as a http adapter and provides a typescript interface to the fhir.js interface. The fhir-js-http service can be dynamically injected into your components. A testsuite has been added to verify the interface, however the interface covers not yet the complete functionality of the fhir.js implementation. Pull requests appreciated!
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## usage
+see app how to use the service
 
-## Build
+## running unit tests
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+## packag the library for using it independently
+The service is packaged into library with the help [ng-packagr](https://github.com/dherges/ng-packagr), see the following [article(https://medium.com/@nikolasleblanc/building-an-angular-4-component-library-with-the-angular-cli-and-ng-packagr-53b2ade0701e) for help.
 
-## Running unit tests
+```
+npm run packagr
+cd dist
+npm pack
+```
+new project:
+```
+npm install ../ng-fhir-sample/dist/ng-fhir-sample-0.0.0.tgz
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io) or `npm run-script test`.
+instead of using `import { FhirJsHttpService, FHIR_HTTP_CONFIG }  './modules/ng-fhirjs/fhir-js-http.service'` 
+use now `import { FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhir-sample';`
 
-## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+## development
 
-## Further help
+### linking to local npm modules
+if a fork of fhir.js is used you can link to the fork version in the folling way.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```
+cd /somepath/fhir.js
+npm link
+    /usr/local/lib/node_modules/fhir.js -> /somepath/fhir.js
+cd /someotherpath/ng-fhirjs
+npm link fhir.js
+   /someotherpath/node_modules/fhir.js -> /usr/local/lib/node_modules/fhir.js -> /somepaht/fhir.js
+```
+
+## building
+
+first time: 
+npm install
+
+
+```
+npm run-script build
+npm run packagr
+```
+

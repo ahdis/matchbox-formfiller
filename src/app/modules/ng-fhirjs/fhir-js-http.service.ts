@@ -1,4 +1,4 @@
-/// <reference path="../types/fhir.js/index.d.ts" />
+/// <reference path="./fhir-js.d.ts" />
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Inject, InjectionToken } from '@angular/core';
