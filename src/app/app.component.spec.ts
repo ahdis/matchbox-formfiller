@@ -2,10 +2,11 @@ import { TestBed, getTestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { FhirJsHttpService, FHIR_HTTP_CONFIG } from './modules/ng-fhirjs/fhir-js-http.service';
+import { FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhirjs';
 
 export const FHIR_JS_CONFIG: FhirConfig = {
-  baseUrl: 'http://localhost:8080/baseDstu3',
+//  baseUrl: 'http://localhost:8080/baseDstu3',
+  baseUrl: 'http://test.fhir.org/r3',
   credentials: 'same-origin'
 };
 

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FhirJsHttpService } from './modules/ng-fhirjs/fhir-js-http.service';
+import { FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhirjs';
 
 @Component({
   selector: 'app-root',
