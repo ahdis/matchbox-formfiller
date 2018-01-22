@@ -1,0 +1,14 @@
+<mat-table #table [dataSource]="dataSource">
+  <ng-container matColumnDef="familyNameCol">
+    <mat-header-cell *matHeaderCellDef>Family</mat-header-cell>
+    <mat-cell *matCellDef="let entry">{{ getPatientFamilyName(entry) }}</mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="givenNamesCol">
+    <mat-header-cell *matHeaderCellDef>Given</mat-header-cell>
+    <mat-cell *matCellDef="let entry">{{ getPatientGivenNames(entry) }}</mat-cell>
+  </ng-container>
+  <mat-header-row *matHeaderRowDef="['familyNameCol', 'givenNamesCol']"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: ['familyNameCol', 'givenNamesCol']"></mat-row>
+</mat-table>
+
+<mat-paginator [length]="length" [pageSize]="size" [pageSizeOptions]="pageSizeOptions" (page)="goToPage($event)"></mat-paginator>

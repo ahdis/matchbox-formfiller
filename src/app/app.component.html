@@ -6,8 +6,14 @@
   <button (click)="onClickMe()">Click me!</button>
 </div>  
 <div>
+  <a href ="/#/patients">Patients</a>
+  </div>
+<div>
   Click Message {{ clickMessage }}!
 </div>
 <div>
     FHIR output: {{ fhirOutput }}!
+</div>
+<div>
+  <router-outlet> </router-outlet>
 </div>
