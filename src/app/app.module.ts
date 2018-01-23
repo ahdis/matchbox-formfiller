@@ -4,8 +4,11 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { Routes, RouterModule } from '@angular/router';
 
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 
 import { AppComponent } from './app.component';
@@ -34,8 +37,11 @@ const routes: Routes = [
     BrowserAnimationsModule,
     HttpClientModule,
     NgFhirjsModule,
-    MatTableModule,
+    MatIconModule,
+    MatMenuModule,
     MatPaginatorModule,
+    MatTableModule,
+    MatToolbarModule,
     RouterModule.forRoot(routes, { useHash: true })
   ],
   providers: [{ provide: FHIR_HTTP_CONFIG, useValue: FHIR_JS_CONFIG }],

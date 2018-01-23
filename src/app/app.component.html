@@ -1,19 +1,45 @@
- <h1>
-    Welcome to {{ title }}!
-</h1>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<mat-toolbar color="primary" role="header">
+  <span>{{ title }}</span>
+  <!-- This fills the remaining space of the current row -->
+  <span class="example-fill-remaining-space"> </span>
+  <span>
+    <button mat-icon-button [matMenuTriggerFor]="menu" >
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>info</mat-icon>
+        <span>Capability Statement server</span>
+      </button>
+      <button mat-menu-item routerLink="/patients">
+        <mat-icon>people</mat-icon>
+        <span>Search Patients ...</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>settings</mat-icon>
+        <span>Settings</span>
+      </button>
+    </mat-menu>
+  </span>
+</mat-toolbar>
+
+<!--
 <h2>checking fhir test server</h2>
 <div>
   <button (click)="onClickMe()">Click me!</button>
-</div>  
+</div>
 <div>
-  <a href ="/#/patients">Patients</a>
-  </div>
+  <a href="/#/patients">Patients</a>
+</div>
 <div>
   Click Message {{ clickMessage }}!
 </div>
 <div>
-    FHIR output: {{ fhirOutput }}!
+  FHIR output: {{ fhirOutput }}!
 </div>
+-->
 <div>
   <router-outlet> </router-outlet>
 </div>

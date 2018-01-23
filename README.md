@@ -1,7 +1,12 @@
 # NgFhirSample
 
-simple demonstration app how to use the ng-fhirjs module.
+simple demonstration app how to use fhir with angular.
 
+* using [ng-fhirjs](https://github.com/ahdis/ng-fhirjs) as a wrapper for accessing a fhir server
+* integrating fhir type definitions from [DefinitelyTyped]/(https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/fhir) (ST3)
+* using [angular material](https://material.angular.io/) for UI components 
+
+# setup
 you have to install ng-fhirjs to use the sample, checkout [ng-fhirjs](https://github.com/ahdis/ng-fhirjs) first
 
 ```

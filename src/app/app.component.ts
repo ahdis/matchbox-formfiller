@@ -8,7 +8,7 @@ import { FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhirjs';
 })
 export class AppComponent {
 
-  title = 'ng-fhir-sample';
+  title = 'angular on fhir';
   clickMessage: string;
   fhirOutput: string;
 
