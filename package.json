@@ -26,7 +26,7 @@
     "@types/fhir": "0.0.30",
     "core-js": "^2.4.1",
     "fhir.js": "0.0.20",
-    "ng-fhirjs": "file:../ng-fhirjs/dist/ng-fhirjs-0.1.0.tgz",
+    "ng-fhirjs": "file:../ng-fhirjs/dist/ng-fhirjs-0.1.1.tgz",
     "rxjs": "^5.5.2",
     "zone.js": "^0.8.14"
   },

@@ -1,7 +1,7 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
 <mat-toolbar color="primary" role="header">
-  <span>{{ title }}</span>
+  <span>{{ getTitle() }}</span>
   <!-- This fills the remaining space of the current row -->
   <span class="example-fill-remaining-space"> </span>
   <span>
@@ -9,37 +9,25 @@
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button mat-menu-item>
+        <button mat-menu-item routerLink="/">
+          <mat-icon>home</mat-icon>
+          <span>Home</span>
+        </button>
+        <button mat-menu-item routerLink="/CapabilityStatement">
         <mat-icon>info</mat-icon>
-        <span>Capability Statement server</span>
+        <span>CapabilityStatement</span>
       </button>
       <button mat-menu-item routerLink="/patients">
         <mat-icon>people</mat-icon>
         <span>Search Patients ...</span>
       </button>
-      <button mat-menu-item>
+      <button mat-menu-item routerLink="/settings">
         <mat-icon>settings</mat-icon>
         <span>Settings</span>
       </button>
     </mat-menu>
   </span>
 </mat-toolbar>
-
-<!--
-<h2>checking fhir test server</h2>
-<div>
-  <button (click)="onClickMe()">Click me!</button>
-</div>
-<div>
-  <a href="/#/patients">Patients</a>
-</div>
-<div>
-  Click Message {{ clickMessage }}!
-</div>
-<div>
-  FHIR output: {{ fhirOutput }}!
-</div>
--->
-<div>
+<div class="mat-typography">
   <router-outlet> </router-outlet>
 </div>

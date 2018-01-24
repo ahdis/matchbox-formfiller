@@ -10,7 +10,7 @@ simple demonstration app how to use fhir with angular.
 you have to install ng-fhirjs to use the sample, checkout [ng-fhirjs](https://github.com/ahdis/ng-fhirjs) first
 
 ```
-npm install ../ng-fhir-sample/dist/ng-fhir-sample-0.1.0.tgz
+npm install ../ng-fhir-sample/dist/ng-fhir-sample-0.1.1.tgz
 ```
 
 ## usage

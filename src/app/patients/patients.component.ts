@@ -31,11 +31,43 @@ export class PatientsComponent implements OnInit {
   }
 
   getPatientFamilyName(entry: fhir.BundleEntry): string {
-    return (<fhir.Patient>entry.resource).name[0].family;
+    const patient = (<fhir.Patient>entry.resource);
+    if (patient.name && patient.name.length > 0 && patient.name[0].family) {
+     return patient.name[0].family;
+    }
+    return '';
   }
 
   getPatientGivenNames(entry: fhir.BundleEntry): string {
-    return (<fhir.Patient>entry.resource).name[0].given.join(' ');
+    const patient = (<fhir.Patient>entry.resource);
+    if (patient.name && patient.name.length > 0 && patient.name[0].given) {
+      return (<fhir.Patient>entry.resource).name[0].given.join(' ');
+    }
+    return '';
+  }
+
+  getPatientBirthDate(entry: fhir.BundleEntry): string {
+    const patient = (<fhir.Patient>entry.resource);
+    if (patient.birthDate) {
+     return patient.birthDate;
+    }
+    return '';
+  }
+
+  getPatientAddressLines(entry: fhir.BundleEntry): string {
+    const patient = (<fhir.Patient>entry.resource);
+    if (patient.address && patient.address.length > 0 && patient.address[0].line) {
+     return patient.address[0].line.join(', ');
+    }
+    return '';
+  }
+
+  getPatientAddressCity(entry: fhir.BundleEntry): string {
+    const patient = (<fhir.Patient>entry.resource);
+    if (patient.address && patient.address.length > 0 && patient.address[0].city) {
+     return patient.address[0].city;
+    }
+    return '';
   }
 
   goToPage(event: PageEvent) {
