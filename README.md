@@ -7,10 +7,11 @@ simple demonstration app how to use fhir with angular.
 * using [angular material](https://material.angular.io/) for UI components 
 
 # setup
-you have to install ng-fhirjs to use the sample, checkout [ng-fhirjs](https://github.com/ahdis/ng-fhirjs) first
+
+you need to have angular cli installed:
 
 ```
-npm install ../ng-fhirjs/dist/ng-fhirjs-0.1.1.tgz 
+npm install -g @angular/cli
 ```
 
 ## usage
