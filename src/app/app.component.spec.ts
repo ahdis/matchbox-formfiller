@@ -1,6 +1,11 @@
 import { TestBed, getTestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { Routes, RouterModule } from '@angular/router';
+
 
 import { FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhirjs';
 
@@ -10,13 +15,17 @@ export const FHIR_JS_CONFIG: FhirConfig = {
   credentials: 'same-origin'
 };
 
+const routes: Routes = [
+];
+
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent
       ],
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule,  MatIconModule, MatMenuModule,
+        MatToolbarModule,  RouterModule.forRoot(routes, { useHash: true })],
       providers: [FhirJsHttpService, { provide: FHIR_HTTP_CONFIG, useValue: FHIR_JS_CONFIG}]
     }).compileComponents();
   }));
@@ -25,15 +34,9 @@ describe('AppComponent', () => {
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
   }));
-  it(`should have as title 'ng-fhir-sample'`, async(() => {
+  it(`should have as title 'angular on fhir'`, async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('ng-fhir-sample');
-  }));
-  it('should render title in a h1 tag', async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to ng-fhir-sample!');
+    expect(app.title).toEqual('angular on fhir');
   }));
 });

@@ -23,7 +23,6 @@ import { HomeComponent } from './home/home.component';
 import { PatientsComponent } from './patients/patients.component';
 import { CapabilityStatementComponent } from './capability-statement/capability-statement.component';
 import { FHIR_JS_CONFIG, SettingsComponent } from './settings/settings.component';
-import { MatFormField } from '@angular/material';
 
 
 const routes: Routes = [
