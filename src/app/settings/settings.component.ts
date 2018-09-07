@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhirjs';
 
 export const FHIR_JS_CONFIG: FhirConfig = {
-  baseUrl: 'http://localhost:8080/baseDstu3',
+  baseUrl: 'http://fhirtest.uhn.ca/baseDstu3',
   credentials: 'same-origin'
 };
 
@@ -12,7 +12,7 @@ export const FHIR_JS_CONFIG: FhirConfig = {
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
-  fhirServers = ['http://test.fhir.org/r3',
+  fhirServers = ['http://test.fhir.org/r4',
     'http://localhost:8080/baseDstu3',
     'http://vonk.furore.com',
     'http://fhirtest.uhn.ca/baseDstu3'

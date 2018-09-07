@@ -1,3 +1,12 @@
+<mat-card class="Search">
+  <mat-card-content>
+      <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput [formControl]="searchName" />
+      </mat-form-field>
+      &nbsp;
+    </mat-card-content>
+</mat-card>
 <mat-card class="Patients">
   <mat-card-content>
     <mat-table #table [dataSource]="dataSource">
@@ -14,16 +23,17 @@
         <mat-cell *matCellDef="let entry">{{ getPatientBirthDate(entry) }}</mat-cell>
       </ng-container>
       <ng-container matColumnDef="addressLinesCol">
-          <mat-header-cell *matHeaderCellDef>Street</mat-header-cell>
-          <mat-cell *matCellDef="let entry">{{ getPatientAddressLines(entry) }}</mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="addressCityCol">
-            <mat-header-cell *matHeaderCellDef>City</mat-header-cell>
-            <mat-cell *matCellDef="let entry">{{ getPatientAddressCity(entry) }}</mat-cell>
-          </ng-container>
-            <mat-header-row *matHeaderRowDef="['familyNameCol', 'givenNamesCol', 'birthDateCol','addressLinesCol','addressCityCol']"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: ['familyNameCol', 'givenNamesCol', 'birthDateCol','addressLinesCol','addressCityCol']"></mat-row>
+        <mat-header-cell *matHeaderCellDef>Street</mat-header-cell>
+        <mat-cell *matCellDef="let entry">{{ getPatientAddressLines(entry) }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="addressCityCol">
+        <mat-header-cell *matHeaderCellDef>City</mat-header-cell>
+        <mat-cell *matCellDef="let entry">{{ getPatientAddressCity(entry) }}</mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="['familyNameCol', 'givenNamesCol', 'birthDateCol','addressLinesCol','addressCityCol']"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: ['familyNameCol', 'givenNamesCol', 'birthDateCol','addressLinesCol','addressCityCol']" (click)="selectRow(row)"></mat-row>
     </mat-table>
-    <mat-paginator [length]="length" [pageSize]="size" [pageSizeOptions]="pageSizeOptions" (page)="goToPage($event)"></mat-paginator>
+    <mat-paginator [pageIndex]="pageIndex" [length]="length" [pageSize]="size" [pageSizeOptions]="pageSizeOptions" (page)="goToPage($event)"></mat-paginator>
   </mat-card-content>
 </mat-card>
+<app-patient-detail [patient]="selectedPatient" ></app-patient-detail>
