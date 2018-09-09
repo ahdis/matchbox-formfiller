@@ -24,6 +24,8 @@ import { PatientsComponent } from './patients/patients.component';
 import { CapabilityStatementComponent } from './capability-statement/capability-statement.component';
 import { FHIR_JS_CONFIG, SettingsComponent } from './settings/settings.component';
 import { PatientDetailComponent } from './patient-detail/patient-detail.component';
+import { QuestionnairesComponent } from './questionnaires/questionnaires.component';
+import { QuestionnaireDetailComponent } from './questionnaire-detail/questionnaire-detail.component';
 
 
 const routes: Routes = [
@@ -32,6 +34,9 @@ const routes: Routes = [
   },
   {
     path: 'patients', component: PatientsComponent
+  },
+  {
+    path: 'questionnaires', component: QuestionnairesComponent
   },
   {
     path: 'CapabilityStatement', component: CapabilityStatementComponent
@@ -48,7 +53,9 @@ const routes: Routes = [
     CapabilityStatementComponent,
     SettingsComponent,
     HomeComponent,
-    PatientDetailComponent
+    PatientDetailComponent,
+    QuestionnairesComponent,
+    QuestionnaireDetailComponent
   ],
   imports: [
     BrowserModule,

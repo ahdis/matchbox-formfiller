@@ -1,0 +1,54 @@
+<mat-card class="Search">
+  <mat-card-content>
+      <mat-form-field>
+        <mat-label>Title</mat-label>
+        <input matInput [formControl]="searchTitle" />
+      </mat-form-field>
+      &nbsp;
+      <mat-form-field>
+        <mat-label>Publisher</mat-label>
+        <input matInput [formControl]="searchPublisher" />
+      </mat-form-field>
+      &nbsp;
+      <mat-form-field>
+        <mat-label>Version</mat-label>
+        <input matInput [formControl]="searchVersion" />
+      </mat-form-field>
+      &nbsp;
+      &nbsp;
+      <mat-form-field>
+        <mat-label>Id</mat-label>
+        <input matInput [formControl]="searchId" />
+      </mat-form-field>
+    </mat-card-content>
+</mat-card>
+<mat-card class="Questionnaires">
+  <mat-card-content>
+    <mat-table #table [dataSource]="dataSource">
+      <ng-container matColumnDef="titleCol">
+        <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
+        <mat-cell *matCellDef="let entry">{{ getTitle(entry) }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="publisherCol">
+        <mat-header-cell *matHeaderCellDef>Publisher</mat-header-cell>
+        <mat-cell *matCellDef="let entry">{{ getPublisher(entry) }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="versionCol">
+        <mat-header-cell *matHeaderCellDef>Version</mat-header-cell>
+        <mat-cell *matCellDef="let entry">{{ getVersion(entry) }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="statusCol">
+        <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+        <mat-cell *matCellDef="let entry">{{ getStatus(entry) }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="dateCol">
+        <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
+        <mat-cell *matCellDef="let entry">{{ getDate(entry) }}</mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="['titleCol', 'publisherCol', 'versionCol','statusCol','dateCol']"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: ['titleCol', 'publisherCol', 'versionCol','statusCol','dateCol']" (click)="selectRow(row)"></mat-row>
+    </mat-table>
+    <mat-paginator [pageIndex]="pageIndex" [length]="length" [pageSize]="size" [pageSizeOptions]="pageSizeOptions" (page)="goToPage($event)"></mat-paginator>
+  </mat-card-content>
+</mat-card>
+<app-questionnaire-detail [questionnaire]="selected" ></app-questionnaire-detail>

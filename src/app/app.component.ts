@@ -18,9 +18,11 @@ export class AppComponent {
     switch (this.router.url) {
       case '/patients':
         return this.title + ' - ' + 'Search patients';
-        case '/CapabilityStatement':
+      case '/questionnaires':
+        return this.title + ' - ' + 'Search questionnaires';
+      case '/CapabilityStatement':
         return this.title + ' - ' + 'CapabilityStatement';
-        case '/settings':
+      case '/settings':
         return this.title + ' - ' + 'Settings';
     }
     return this.title;
