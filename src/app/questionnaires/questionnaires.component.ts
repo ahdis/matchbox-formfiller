@@ -206,7 +206,6 @@ export class QuestionnairesComponent implements OnInit {
     this.selected = undefined;
   }
 
-
   ngOnInit() {
   }
 

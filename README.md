@@ -17,6 +17,10 @@ npm install -g @angular/cli
 ## usage
 Run `ng serve` to start the app, app will be at [http://localhost:4200](http://localhost:4200/)
 
+if you use localhost and have cross site blocking from chrome
+
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-features=CrossSiteDocumentBlockingAlways,CrossSiteDocumentBlockingIfIsolating
+
 ## running unit tests
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 

@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { QuestionnaireDemo } from './questionnaire-demo';
+import { Router } from '@angular/router';
+import { QuestionnaireFillerService } from '../questionnaire-filler.service';
 
 @Component({
   selector: 'app-home',
@@ -7,9 +10,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router, private questionaireFillerServer: QuestionnaireFillerService) { }
 
   ngOnInit() {
   }
+
+  fillForm() {
+    this.questionaireFillerServer.setQuestionnare(QuestionnaireDemo.questionnaireEbida);
+    this.router.navigate(['/questionnaire-form-filler']);
+  }
+
 
 }

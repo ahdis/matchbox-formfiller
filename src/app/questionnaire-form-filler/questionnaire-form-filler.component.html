@@ -1,0 +1,10 @@
+<mat-card class="Questionnaire" *ngIf="getQuestionnaire()">
+  <mat-card-content>
+    <div>{{getQuestionnaireTitle()}}</div>
+    <div *ngFor="let item of getQuestionnaire().item">
+         {{item.text}}
+         <app-questionnaire-item [item]="item"></app-questionnaire-item>
+    </div>     
+    <pre>{{getQuestionnaire() | json}}</pre>
+  </mat-card-content>
+</mat-card>

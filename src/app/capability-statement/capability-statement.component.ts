@@ -12,7 +12,7 @@ export class CapabilityStatementComponent implements OnInit {
 
   constructor(private fhirHttpService: FhirJsHttpService) {
 
-    fhirHttpService.conformance({}).then(response => {
+    fhirHttpService.conformance({debug: true}).then(response => {
       this.bundle = response.data;
       console.log('called ');
     });

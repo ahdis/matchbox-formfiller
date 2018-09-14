@@ -1,6 +1,7 @@
-/// <reference path="../../../node_modules/@types/fhir/index.d.ts" />
-
 import { Component, OnInit, Input } from '@angular/core';
+import { Router } from '@angular/router';
+import { QuestionnaireFillerService } from '../questionnaire-filler.service';
+
 
 @Component({
   selector: 'app-questionnaire-detail',
@@ -9,12 +10,16 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class QuestionnaireDetailComponent implements OnInit {
 
-
   @Input() questionnaire: fhir.Questionnaire;
 
-  constructor() { }
+  constructor(private router: Router, private questionaireFillerServer: QuestionnaireFillerService) { }
 
   ngOnInit() {
+  }
+
+  fillForm() {
+    this.questionaireFillerServer.setQuestionnare(this.questionnaire);
+    this.router.navigate(['/questionnaire-form-filler']);
   }
 
 }

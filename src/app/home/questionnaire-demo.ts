@@ -1,0 +1,330 @@
+export class QuestionnaireDemo {
+
+    static questionnaireEbida: fhir.Questionnaire = {
+        'resourceType': 'Questionnaire',
+        'id': '3016312',
+        'meta': {
+          'versionId': '1',
+          'lastUpdated': '2018-04-28T13:14:56.678+00:00'
+        },
+        'url': 'http://ahdis.ch/fhir/Questionnaire/ebida-order-1',
+        'title': 'Ebida Order Example',
+        'status': 'draft',
+        'experimental': true,
+        'date': '2018-03-31',
+        'publisher': 'ahdis',
+        'subjectType': [
+          'Patient'
+        ],
+        'item': [
+          {
+            'linkId': 'order',
+            'text': 'Auftrag',
+            'type': 'group',
+            'item': [
+              {
+                'linkId': 'order.number',
+                'text': 'Auftrags-Nummer',
+                'type': 'string'
+              },
+              {
+                'linkId': 'order.date',
+                'text': 'Auftrags-Datum',
+                'type': 'date'
+              },
+              {
+                'linkId': 'order.state',
+                'text': 'Auftrags-Status',
+                'type': 'string'
+              }
+            ]
+          },
+          {
+            'linkId': 'orderer',
+            'text': 'Auftraggeber',
+            'type': 'group',
+            'item': [
+              {
+                'linkId': 'orderer.dataenterer',
+                'text': 'Erfasser',
+                'type': 'group',
+                'item': [
+                  {
+                    'linkId': 'orderer.dataenterer.visum',
+                    'text': 'Visum',
+                    'type': 'string'
+                  },
+                  {
+                    'linkId': 'orderer.dataenterer.bereich',
+                    'text': 'Bereich',
+                    'type': 'string'
+                  },
+                  {
+                    'linkId': 'orderer.dataenterer.abt',
+                    'text': 'Bereich',
+                    'type': 'string'
+                  },
+                  {
+                    'linkId': 'orderer.dataenterer.lastname',
+                    'text': 'Name',
+                    'type': 'string'
+                  },
+                  {
+                    'linkId': 'orderer.dataenterer.firstname',
+                    'text': 'Vorname',
+                    'type': 'string'
+                  },
+                  {
+                    'linkId': 'orderer.dataenterer.tel',
+                    'text': 'Telefon',
+                    'type': 'string'
+                  },
+                  {
+                    'linkId': 'orderer.dataenterer.e-mail',
+                    'text': 'E-Mail',
+                    'type': 'string'
+                  },
+                  {
+                    'linkId': 'orderer.dataenterer.street',
+                    'text': 'Strasse',
+                    'type': 'string'
+                  },
+                  {
+                    'linkId': 'orderer.dataenterer.postfach',
+                    'text': 'Postfach',
+                    'type': 'string'
+                  },
+                  {
+                    'linkId': 'orderer.dataenterer.zip',
+                    'text': 'PLZ',
+                    'type': 'string'
+                  },
+                  {
+                    'linkId': 'orderer.dataenterer.city',
+                    'text': 'city',
+                    'type': 'string'
+                  }
+                ]
+              },
+              {
+                'linkId': 'orderer.responsible',
+                'text': 'Verantwortlicher',
+                'type': 'group',
+                'item': [
+                  {
+                    'linkId': 'orderer.resp.visum',
+                    'text': 'Visum',
+                    'type': 'string'
+                  },
+                  {
+                    'linkId': 'orderer.resp.bereich',
+                    'text': 'Bereich',
+                    'type': 'string'
+                  },
+                  {
+                    'linkId': 'orderer.resp.abt',
+                    'text': 'Bereich',
+                    'type': 'string'
+                  },
+                  {
+                    'linkId': 'orderer.resp.lastname',
+                    'text': 'Name',
+                    'type': 'string'
+                  },
+                  {
+                    'linkId': 'orderer.resp.firstname',
+                    'text': 'Vorname',
+                    'type': 'string'
+                  },
+                  {
+                    'linkId': 'orderer.resp.tel',
+                    'text': 'Telefon',
+                    'type': 'string'
+                  },
+                  {
+                    'linkId': 'orderer.resp.e-mail',
+                    'text': 'E-Mail',
+                    'type': 'string'
+                  },
+                  {
+                    'linkId': 'orderer.resp.street',
+                    'text': 'Strasse',
+                    'type': 'string'
+                  },
+                  {
+                    'linkId': 'orderer.resp.postfach',
+                    'text': 'Postfach',
+                    'type': 'string'
+                  },
+                  {
+                    'linkId': 'orderer.resp.zip',
+                    'text': 'PLZ',
+                    'type': 'string'
+                  },
+                  {
+                    'linkId': 'orderer.resp.city',
+                    'text': 'city',
+                    'type': 'string'
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            'linkId': 'informationrecipient',
+            'text': 'Zu informieren',
+            'type': 'group',
+            'item': [
+              {
+                'linkId': 'informationrecipient.visum',
+                'text': 'Visum',
+                'type': 'string'
+              },
+              {
+                'linkId': 'informationrecipient.bereich',
+                'text': 'Bereich',
+                'type': 'string'
+              },
+              {
+                'linkId': 'informationrecipient.abt',
+                'text': 'Bereich',
+                'type': 'string'
+              },
+              {
+                'linkId': 'informationrecipient.lastname',
+                'text': 'Name',
+                'type': 'string'
+              },
+              {
+                'linkId': 'informationrecipient.firstname',
+                'text': 'Vorname',
+                'type': 'string'
+              },
+              {
+                'linkId': 'informationrecipient.tel',
+                'text': 'Telefon',
+                'type': 'string'
+              },
+              {
+                'linkId': 'informationrecipient.e-mail',
+                'text': 'E-Mail',
+                'type': 'string'
+              }
+            ]
+          },
+          {
+            'linkId': 'patient',
+            'text': 'Patient',
+            'type': 'group',
+            'item': [
+              {
+                'linkId': 'patient.lastname',
+                'text': 'Name',
+                'type': 'string'
+              },
+              {
+                'linkId': 'patient.firstname',
+                'text': 'Vorname',
+                'type': 'string'
+              },
+              {
+                'linkId': 'patient.pid',
+                'text': 'Personen ID (CRM-PID)',
+                'type': 'string'
+              },
+              {
+                'linkId': 'patient.birthdate',
+                'text': 'Geburtsdatum',
+                'type': 'date'
+              },
+              {
+                'linkId': 'patient.sex',
+                'text': 'Geschlecht',
+                'type': 'choice',
+                'option': [
+                  {
+                    'valueString': 'M'
+                  },
+                  {
+                    'valueString': 'F'
+                  }
+                ]
+              },
+              {
+                'linkId': 'patient.casenumber',
+                'text': 'Schadennummer',
+                'type': 'string'
+              },
+              {
+                'linkId': 'patient.amborstat',
+                'text': 'Amb/Stat',
+                'type': 'choice',
+                'option': [
+                  {
+                    'valueString': 'Amb'
+                  },
+                  {
+                    'valueString': 'Stat'
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            'linkId': 'command',
+            'text': 'EBIDA-Bestellung',
+            'type': 'group',
+            'item': [
+              {
+                'linkId': 'command.partner',
+                'text': 'EBIDA-Partner',
+                'type': 'choice',
+                'option': [
+                  {
+                    'valueString': 'Inselspital Bern'
+                  },
+                  {
+                    'valueString': 'Spital Limmatplatz'
+                  }
+                ]
+              },
+              {
+                'linkId': 'command.partner.info',
+                'text': 'Angaben zum Partner',
+                'type': 'text',
+                'initialString': 'Bilder und Befunde können per Ebida bestellt werden ...'
+              },
+              {
+                'linkId': 'command.examiniation',
+                'text': 'Gewünschte Untersuchung/Befund/Mitteilung',
+                'type': 'group',
+                'item': [
+                  {
+                    'linkId': 'command.examiniation.images',
+                    'text': 'Bilder',
+                    'type': 'boolean'
+                  },
+                  {
+                    'linkId': 'command.examiniation.reports',
+                    'text': 'Befundberichte',
+                    'type': 'boolean'
+                  },
+                  {
+                    'linkId': 'command.examiniation.duedate',
+                    'text': 'Frist zur Erledigung',
+                    'type': 'date'
+                  },
+                  {
+                    'linkId': 'command.examiniation.text',
+                    'text': 'Text',
+                    'type': 'text'
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      };
+
+}
+

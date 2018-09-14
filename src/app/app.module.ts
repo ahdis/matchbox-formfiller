@@ -15,6 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 
 import { AppComponent } from './app.component';
 import { NgFhirjsModule } from 'ng-fhirjs';
@@ -26,6 +27,8 @@ import { FHIR_JS_CONFIG, SettingsComponent } from './settings/settings.component
 import { PatientDetailComponent } from './patient-detail/patient-detail.component';
 import { QuestionnairesComponent } from './questionnaires/questionnaires.component';
 import { QuestionnaireDetailComponent } from './questionnaire-detail/questionnaire-detail.component';
+import { QuestionnaireFormFillerComponent } from './questionnaire-form-filler/questionnaire-form-filler.component';
+import { QuestionnaireItemComponent } from './questionnaire-item/questionnaire-item.component';
 
 
 const routes: Routes = [
@@ -37,6 +40,9 @@ const routes: Routes = [
   },
   {
     path: 'questionnaires', component: QuestionnairesComponent
+  },
+  {
+    path: 'questionnaire-form-filler', component: QuestionnaireFormFillerComponent
   },
   {
     path: 'CapabilityStatement', component: CapabilityStatementComponent
@@ -55,7 +61,9 @@ const routes: Routes = [
     HomeComponent,
     PatientDetailComponent,
     QuestionnairesComponent,
-    QuestionnaireDetailComponent
+    QuestionnaireDetailComponent,
+    QuestionnaireFormFillerComponent,
+    QuestionnaireItemComponent
   ],
   imports: [
     BrowserModule,
@@ -63,6 +71,7 @@ const routes: Routes = [
     FormsModule,
     HttpClientModule,
     NgFhirjsModule,
+    MatButtonModule,
     MatCardModule,
     MatFormFieldModule,
     MatIconModule,
