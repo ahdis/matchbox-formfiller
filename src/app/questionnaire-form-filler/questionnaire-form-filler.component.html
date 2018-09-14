@@ -2,8 +2,7 @@
   <mat-card-content>
     <div>{{getQuestionnaireTitle()}}</div>
     <div *ngFor="let item of getQuestionnaire().item">
-         {{item.text}}
-         <app-questionnaire-item [item]="item"></app-questionnaire-item>
+         <app-questionnaire-item [item]="item" level="0"></app-questionnaire-item>
     </div>     
     <pre>{{getQuestionnaire() | json}}</pre>
   </mat-card-content>

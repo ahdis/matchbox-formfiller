@@ -10,10 +10,15 @@ import { Component, OnInit, Input } from '@angular/core';
 export class QuestionnaireItemComponent implements OnInit {
 
   @Input() item: fhir.QuestionnaireItem;
+  @Input() level: number;
 
   constructor() { }
 
   ngOnInit() {
+  }
+
+  getItemTypeIsGroup(): boolean {
+    return ('group' === this.item.type);
   }
 
 }

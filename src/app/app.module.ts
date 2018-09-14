@@ -16,6 +16,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatRadioModule, MatNativeDateModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { NgFhirjsModule } from 'ng-fhirjs';
@@ -81,6 +84,10 @@ const routes: Routes = [
     MatSelectModule,
     MatTableModule,
     MatToolbarModule,
+    MatTabsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatRadioModule,
     ReactiveFormsModule,
     RouterModule.forRoot(routes, { useHash: true })
   ],
