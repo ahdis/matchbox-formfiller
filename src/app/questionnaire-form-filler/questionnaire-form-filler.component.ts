@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { QuestionnaireFillerService } from '../questionnaire-filler.service';
+import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-questionnaire-form-filler',
@@ -8,7 +9,12 @@ import { QuestionnaireFillerService } from '../questionnaire-filler.service';
 })
 export class QuestionnaireFormFillerComponent implements OnInit {
 
-  constructor(private questionaireFillerServer: QuestionnaireFillerService) {}
+  formGroup: FormGroup;
+  questionnaireResponse: any;
+
+  constructor(private questionaireFillerServer: QuestionnaireFillerService) {
+    this.formGroup = new FormGroup({});
+  }
 
   ngOnInit() {
   }
@@ -19,6 +25,10 @@ export class QuestionnaireFormFillerComponent implements OnInit {
 
   getQuestionnaireTitle(): string {
     return this.getQuestionnaire().title;
+  }
+
+  onSubmit(): void {
+    this.questionnaireResponse = this.formGroup.value;
   }
 
 

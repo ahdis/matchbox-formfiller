@@ -6,7 +6,7 @@
         </mat-card-header>
         <mat-card-content>
             <ng-container *ngFor="let nestedItem of item.item">
-                <app-questionnaire-item [item]="nestedItem" level="{{level+1}}"></app-questionnaire-item>
+                <app-questionnaire-item [item]="nestedItem" level="{{level+1}}" [formGroup]="formGroup"></app-questionnaire-item>
                 &nbsp;
             </ng-container>
         </mat-card-content>
@@ -19,7 +19,7 @@
     <!--   1	  boolean	Boolean	Question with a yes/no answer (valueBoolean). -->
     <span *ngSwitchCase="'boolean'">
         <label>{{item.text}}:&nbsp;</label>
-        <mat-radio-group>
+        <mat-radio-group [formControl]="formControl">
             <mat-radio-button [value]="'yes'">yes&nbsp;</mat-radio-button>
             <mat-radio-button [value]="'no'">no&nbsp;</mat-radio-button>
         </mat-radio-group>&nbsp;
@@ -28,20 +28,20 @@
     <ng-container *ngSwitchCase="'string'">
         <mat-form-field>
             <mat-label>{{item.text}}</mat-label>
-            <input matInput />
+            <input matInput [formControl]="formControl"/>
         </mat-form-field>
     </ng-container>
     <!--    1	  date	Date	Question with a date answer (valueDate). -->
     <ng-container *ngSwitchCase="'date'">
         <mat-form-field>
-            <input matInput [matDatepicker]="picker" placeholder="Choose a date">
+            <input matInput [matDatepicker]="picker" placeholder="Choose a date" [formControl]="formControl">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
     </ng-container>
     <!--    1	  choice	Choice	Question with a Coding drawn from a list of possible answers (specified in either the answerOption property, or via the valueset referenced in the answerValueSet property) as an answer (valueCoding). -->
     <mat-form-field *ngSwitchCase="'choice'">
-        <mat-select placeholder="{{item.text}}">
+        <mat-select placeholder="{{item.text}}" [formControl]="formControl">
             <mat-option *ngFor="let option of item.option" [value]="option.valueString">
                 {{option.valueString}}
                 <!-- viewValue -->
@@ -53,7 +53,7 @@
         <div>
             <mat-form-field>
                 <mat-label>{{item.text}}</mat-label>
-                <textarea matInput></textarea>
+                <textarea matInput [formControl]="formControl"></textarea>
             </mat-form-field>
         </div>
     </ng-container>
