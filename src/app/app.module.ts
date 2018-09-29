@@ -5,7 +5,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { Routes, RouterModule } from '@angular/router';
 
-
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,7 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatRadioModule, MatNativeDateModule } from '@angular/material';
+import { MatRadioModule, MatNativeDateModule, MatDividerModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { NgFhirjsModule } from 'ng-fhirjs';
@@ -74,8 +74,10 @@ const routes: Routes = [
     FormsModule,
     HttpClientModule,
     NgFhirjsModule,
+    MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
+    MatDividerModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,

@@ -1,4 +1,4 @@
-/// <reference path="../../../node_modules/@types/fhir/index.d.ts" />
+/// <reference path=".,/../../../fhir.r4/index.d.ts" />
 
 import { Component, OnInit } from '@angular/core';
 import { FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhirjs';
@@ -14,8 +14,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 export class PatientsComponent implements OnInit {
 
   searched = false;
-  bundle: fhir.Bundle;
-  dataSource = new MatTableDataSource<fhir.BundleEntry>();
+  bundle: fhir.r4.Bundle;
+  dataSource = new MatTableDataSource<fhir.r4.BundleEntry>();
 
   length = 100;
   pageSize = 10;
@@ -25,7 +25,7 @@ export class PatientsComponent implements OnInit {
   public searchName: FormControl;
   public searchNameValue = '';
 
-  selectedPatient: fhir.Patient;
+  selectedPatient: fhir.r4.Patient;
 
   constructor(private fhirHttpService: FhirJsHttpService) {
 
@@ -52,55 +52,55 @@ export class PatientsComponent implements OnInit {
         }
         fhirHttpService.search(queryName).then(response => {
           this.pageIndex = 0;
-          this.setBundle(<fhir.Bundle>response.data);
+          this.setBundle(<fhir.r4.Bundle>response.data);
         });
       });
     fhirHttpService.search(query).then(response => {
-      this.setBundle(<fhir.Bundle>response.data);
+      this.setBundle(<fhir.r4.Bundle>response.data);
     });
   }
 
-  getPatientFamilyName(entry: fhir.BundleEntry): string {
-    const patient = (<fhir.Patient>entry.resource);
+  getPatientFamilyName(entry: fhir.r4.BundleEntry): string {
+    const patient = (<fhir.r4.Patient>entry.resource);
     if (patient.name && patient.name.length > 0 && patient.name[0].family) {
       return patient.name[0].family;
     }
     return '';
   }
 
-  getPatientGivenNames(entry: fhir.BundleEntry): string {
-    const patient = (<fhir.Patient>entry.resource);
+  getPatientGivenNames(entry: fhir.r4.BundleEntry): string {
+    const patient = (<fhir.r4.Patient>entry.resource);
     if (patient.name && patient.name.length > 0 && patient.name[0].given) {
-      return (<fhir.Patient>entry.resource).name[0].given.join(' ');
+      return (<fhir.r4.Patient>entry.resource).name[0].given.join(' ');
     }
     return '';
   }
 
-  getPatientBirthDate(entry: fhir.BundleEntry): string {
-    const patient = (<fhir.Patient>entry.resource);
+  getPatientBirthDate(entry: fhir.r4.BundleEntry): string {
+    const patient = (<fhir.r4.Patient>entry.resource);
     if (patient.birthDate) {
       return patient.birthDate;
     }
     return '';
   }
 
-  getPatientAddressLines(entry: fhir.BundleEntry): string {
-    const patient = (<fhir.Patient>entry.resource);
+  getPatientAddressLines(entry: fhir.r4.BundleEntry): string {
+    const patient = (<fhir.r4.Patient>entry.resource);
     if (patient.address && patient.address.length > 0 && patient.address[0].line) {
       return patient.address[0].line.join(', ');
     }
     return '';
   }
 
-  getPatientAddressCity(entry: fhir.BundleEntry): string {
-    const patient = (<fhir.Patient>entry.resource);
+  getPatientAddressCity(entry: fhir.r4.BundleEntry): string {
+    const patient = (<fhir.r4.Patient>entry.resource);
     if (patient.address && patient.address.length > 0 && patient.address[0].city) {
       return patient.address[0].city;
     }
     return '';
   }
 
-  selectRow(row: fhir.BundleEntry) {
+  selectRow(row: fhir.r4.BundleEntry) {
     const selection = row.resource;
     const readObj = { type: 'Patient', id: selection.id };
     this.fhirHttpService.read(readObj).then(response => {
@@ -112,20 +112,20 @@ export class PatientsComponent implements OnInit {
     if (event.pageIndex > this.pageIndex) {
       this.fhirHttpService.nextPage({ bundle: this.bundle }).then(response => {
         this.pageIndex = event.pageIndex;
-        this.setBundle(<fhir.Bundle>response.data);
+        this.setBundle(<fhir.r4.Bundle>response.data);
         console.log('next page called ');
       });
     } else {
       this.fhirHttpService.prevPage({ bundle: this.bundle }).then(response => {
         this.pageIndex = event.pageIndex;
-        this.setBundle(<fhir.Bundle>response.data);
+        this.setBundle(<fhir.r4.Bundle>response.data);
         console.log('previous page called ');
       });
     }
   }
 
-  setBundle(bundle: fhir.Bundle) {
-    this.bundle = <fhir.Bundle>bundle;
+  setBundle(bundle: fhir.r4.Bundle) {
+    this.bundle = <fhir.r4.Bundle>bundle;
     this.length = this.bundle.total;
     this.dataSource.data = this.bundle.entry;
     this.selectedPatient = undefined;

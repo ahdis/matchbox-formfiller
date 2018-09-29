@@ -23,7 +23,6 @@
     "@angular/platform-browser": "^6.1.4",
     "@angular/platform-browser-dynamic": "^6.1.4",
     "@angular/router": "^6.1.4",
-    "@types/fhir": "0.0.30",
     "core-js": "^2.4.1",
     "ng-fhirjs": "file:../ng-fhirjs/dist/ng-fhirjs-0.2.0.tgz",
     "rxjs": "^6.2.2",

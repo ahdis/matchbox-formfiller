@@ -1,4 +1,4 @@
-/// <reference path="../../../node_modules/@types/fhir/index.d.ts" />
+/// <reference path=".,/../../../fhir.r4/index.d.ts" />
 
 import { TestBed, getTestBed } from '@angular/core/testing';
 

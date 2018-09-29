@@ -19,7 +19,7 @@ export class QuestionnaireFormFillerComponent implements OnInit {
   ngOnInit() {
   }
 
-  getQuestionnaire(): fhir.Questionnaire {
+  getQuestionnaire(): fhir.r4.Questionnaire {
     return this.questionaireFillerServer.getQuestionniare();
   }
 

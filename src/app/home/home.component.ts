@@ -16,9 +16,23 @@ export class HomeComponent implements OnInit {
   }
 
   fillForm() {
-    this.questionaireFillerServer.setQuestionnare(QuestionnaireDemo.questionnaireEbida);
+    this.questionaireFillerServer.setQuestionnare(QuestionnaireDemo.getQuestionnaireEbida());
     this.router.navigate(['/questionnaire-form-filler']);
   }
 
+  fillFormSdcCap() {
+    this.questionaireFillerServer.setQuestionnare(QuestionnaireDemo.getQuestionnaireSdcCap());
+    this.router.navigate(['/questionnaire-form-filler']);
+  }
+
+  fillFormSdcLoinc() {
+    this.questionaireFillerServer.setQuestionnare(QuestionnaireDemo.getQuestionnaireSdcLoinc());
+    this.router.navigate(['/questionnaire-form-filler']);
+  }
+
+  fillFormSdcRender() {
+    this.questionaireFillerServer.setQuestionnare(QuestionnaireDemo.getQuestionnaireSdcRender());
+    this.router.navigate(['/questionnaire-form-filler']);
+  }
 
 }

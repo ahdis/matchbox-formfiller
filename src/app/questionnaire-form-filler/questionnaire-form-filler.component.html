@@ -13,6 +13,9 @@
         <button mat-raised-button color="primary" type="submit" [disabled]="!formGroup">Save</button>
       </mat-card-actions>
       <mat-card-footer>
+          <h2>Form Status</h2>
+          <div>{{ formGroup.status }}</div>
+          <br />
           <ng-container *ngIf="questionnaireResponse">
               <h2>QuestionnaireResponse</h2>
              <pre>{{questionnaireResponse | json}}</pre>

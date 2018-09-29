@@ -1,4 +1,4 @@
-/// <reference path="../../../node_modules/@types/fhir/index.d.ts" />
+/// <reference path=".,/../../../fhir.r4/index.d.ts" />
 
 import { Component, OnInit, Input } from '@angular/core';
 
@@ -9,7 +9,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class PatientDetailComponent implements OnInit {
 
-  @Input() patient: fhir.Patient;
+  @Input() patient: fhir.r4.Patient;
 
   constructor() { }
 

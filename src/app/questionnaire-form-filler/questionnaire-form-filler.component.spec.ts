@@ -17,7 +17,7 @@ describe('QuestionnaireFormFillerComponent', () => {
   let fixture: ComponentFixture<QuestionnaireFormFillerComponent>;
 
   const questionnaireFillerServer: Partial<QuestionnaireFillerService> = new QuestionnaireFillerService();
-  questionnaireFillerServer.setQuestionnare(QuestionnaireDemo.questionnaireEbida);
+  questionnaireFillerServer.setQuestionnare(QuestionnaireDemo.getQuestionnaireEbida());
 
 
   beforeEach(async(() => {

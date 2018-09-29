@@ -10,7 +10,7 @@ import { QuestionnaireFillerService } from '../questionnaire-filler.service';
 })
 export class QuestionnaireDetailComponent implements OnInit {
 
-  @Input() questionnaire: fhir.Questionnaire;
+  @Input() questionnaire: fhir.r4.Questionnaire;
 
   constructor(private router: Router, private questionaireFillerServer: QuestionnaireFillerService) { }
 
