@@ -4,7 +4,9 @@
         <ng-container *ngSwitchCase="'group'">
             <mat-card *ngIf="level==0">
                 <mat-card-header>
-                    <mat-card-title>{{item.text}}</mat-card-title>
+                    <mat-card-title>
+                        <app-item-label [item]="item"></app-item-label>
+                    </mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
                     <ng-container *ngFor="let nestedItem of item.item">
@@ -13,7 +15,9 @@
                 </mat-card-content>
             </mat-card>
             <ng-container *ngIf="level>0">
-                <h2>{{item.text}}</h2>
+                <h2>
+                    <app-item-label [item]="item"></app-item-label>
+                </h2>
                 <ng-container *ngFor="let nestedItem of item.item">
                     <app-questionnaire-item [item]="nestedItem" level="{{level+1}}" [formGroup]="formGroup"></app-questionnaire-item>
                 </ng-container>
@@ -21,12 +25,14 @@
         </ng-container>
         <!--    0	display	Display	Text for display that will not capture an answer or have child items. -->
         <ng-container *ngSwitchCase="'display'">
-            {{item.text}}
+            <app-item-label [item]="item"></app-item-label>
         </ng-container>
         <!--   0	question	Question	An item that defines a specific answer to be captured, and which may have child items. (the answer provided in the QuestionnaireResponse should be of the defined datatype). -->
         <!--   1	  boolean	Boolean	Question with a yes/no answer (valueBoolean). -->
         <ng-container *ngSwitchCase="'boolean'">
-            <label>{{item.text}}:&nbsp;</label>
+            <label>
+                <app-item-label [item]="item"></app-item-label>
+            </label>
             <mat-radio-group [formControl]="formControl">
                 <mat-radio-button [value]="'yes'">yes&nbsp;</mat-radio-button>
                 <mat-radio-button [value]="'no'">no&nbsp;</mat-radio-button>
@@ -35,7 +41,9 @@
         <!--    1	  string	String	Question with a short (few words to short sentence) free-text entry answer (valueString). -->
         <ng-container *ngSwitchCase="'string'">
             <mat-form-field>
-                <mat-label>{{item.text}}</mat-label>
+                <mat-label>
+                    <app-item-label [item]="item"></app-item-label>
+                </mat-label>
                 <input matInput [formControl]="formControl" />
             </mat-form-field>
             <ng-container *ngIf="formControl.invalid && (formControl.dirty || formControl.touched)" class="alert alert-danger">
@@ -55,6 +63,9 @@
         <!--    1	  date	Date	Question with a date answer (valueDate). -->
         <ng-container *ngSwitchCase="'date'">
             <mat-form-field>
+                <mat-label>
+                    <app-item-label [item]="item"></app-item-label>
+                </mat-label>
                 <input matInput [matDatepicker]="picker" placeholder="Choose a date" [formControl]="formControl">
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
@@ -79,7 +90,9 @@
         <!-- 1	  text	Text	Question with a long (potentially multi-paragraph) free-text entry answer (valueString). -->
         <ng-container *ngSwitchCase="'text'">
             <mat-form-field>
-                <mat-label>{{item.text}}</mat-label>
+                <mat-label>
+                    <app-item-label [item]="item"></app-item-label>
+                </mat-label>
                 <textarea matInput [formControl]="formControl"></textarea>
             </mat-form-field>
         </ng-container>
@@ -87,7 +100,9 @@
         <!-- 1	  decimal	Decimal	Question with is a real number answer (valueDecimal). -->
         <ng-container *ngSwitchCase="'decimal'">
             <mat-form-field>
-                <mat-label>{{item.text}}</mat-label>
+                <mat-label>
+                    <app-item-label [item]="item"></app-item-label>
+                </mat-label>
                 <input type="number" matInput [formControl]="formControl" />
             </mat-form-field>
         </ng-container>
@@ -123,7 +138,7 @@
 -->
         <div *ngSwitchDefault>{{item.type}} not implemented!!!</div>
     </ng-container>
-    {{item.linkId}}
+    [LinkId {{item.linkId}}]
     <ng-container *ngIf="item.item && !getItemTypeIsGroup()">
         <ng-container *ngFor="let nestedItem of item.item">
             <app-questionnaire-item [item]="nestedItem" level="{{level+1}}" [formGroup]="formGroup"></app-questionnaire-item>

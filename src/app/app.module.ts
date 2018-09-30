@@ -33,6 +33,7 @@ import { QuestionnaireDetailComponent } from './questionnaire-detail/questionnai
 import { QuestionnaireFormFillerComponent } from './questionnaire-form-filler/questionnaire-form-filler.component';
 import { QuestionnaireItemComponent } from './questionnaire-item/questionnaire-item.component';
 
+import { QuestionnaireModule } from './questionnaire/questionnaire.module';
 
 const routes: Routes = [
   {
@@ -91,6 +92,7 @@ const routes: Routes = [
     MatNativeDateModule,
     MatRadioModule,
     ReactiveFormsModule,
+    QuestionnaireModule,
     RouterModule.forRoot(routes, { useHash: true })
   ],
   providers: [{ provide: FHIR_HTTP_CONFIG, useValue: FHIR_JS_CONFIG }],

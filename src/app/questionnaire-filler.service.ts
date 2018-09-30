@@ -59,6 +59,30 @@ export class QuestionnaireFillerService {
     return valueSet.compose.include[0].concept;
   }
 
+  public getExtension(extensions: fhir.r4.Extension[], url: string): fhir.r4.Extension {
+    for (const extension of extensions) {
+      if (extension.url === url) {
+        return extension;
+      }
+    }
+    return undefined;
+  }
+
+  /**
+  * NgStyle needs JSON object, style doesn't work because angular security blocks it, exampel for styleExtension: "color:green;"
+  * @param styleExtension
+  */
+  public  getCss(styleExtension: fhir.r4.Extension): Object {
+    const css = {};
+    if (styleExtension) {
+      for (const cssproperty of styleExtension.valueString.split(';')) {
+        const properties = cssproperty.split(':');
+        css[properties[0]] = properties[1];
+      }
+    }
+    return css;
+  }
+
 
 
 

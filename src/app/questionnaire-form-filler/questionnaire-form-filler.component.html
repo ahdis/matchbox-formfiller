@@ -2,7 +2,7 @@
   <mat-card class="Questionnaire" *ngIf="getQuestionnaire()">
     <mat-card-content>
       <div>
-        <h1>{{getQuestionnaireTitle()}}</h1>
+        <h1 [innerHtml]="getQuestionnaireTitle()" [ngStyle]="getQuestionnaireTitleStyles()"></h1>
       </div>
       <div *ngFor="let item of getQuestionnaire().item">
         <app-questionnaire-item [item]="item" level="0" [formGroup]="formGroup"></app-questionnaire-item>

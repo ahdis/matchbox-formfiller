@@ -1,5 +1,6 @@
 /// <reference path=".,/../../../fhir.r4/index.d.ts" />
 
+import { DomSanitizer } from '@angular/platform-browser';
 import { Component, OnInit, Input } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -18,7 +19,7 @@ export class QuestionnaireItemComponent implements OnInit {
   formControl: FormControl;
 
 
-  constructor(private questionaireFillerServer: QuestionnaireFillerService) { }
+  constructor(private questionaireFillerServer: QuestionnaireFillerService, private sanitizer: DomSanitizer) { }
 
   ngOnInit() {
     console.log('setting form for: ' + this.item.linkId);
