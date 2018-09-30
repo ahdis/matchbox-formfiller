@@ -60,9 +60,11 @@ export class QuestionnaireFillerService {
   }
 
   public getExtension(extensions: fhir.r4.Extension[], url: string): fhir.r4.Extension {
-    for (const extension of extensions) {
-      if (extension.url === url) {
-        return extension;
+    if (extensions) {
+      for (const extension of extensions) {
+        if (extension.url === url) {
+          return extension;
+        }
       }
     }
     return undefined;

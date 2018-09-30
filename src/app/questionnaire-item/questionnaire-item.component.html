@@ -1,27 +1,15 @@
-<div *ngIf="isEnabled()">
+<div *ngIf="isEnabled()" [hidden]="isHidden()" class="item">
     <ng-container [ngSwitch]="item.type">
         <!--        0	group	Group	An item with no direct answer but should have at least one child item. -->
         <ng-container *ngSwitchCase="'group'">
-            <mat-card *ngIf="level==0">
-                <mat-card-header>
-                    <mat-card-title>
-                        <app-item-label [item]="item"></app-item-label>
-                    </mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <ng-container *ngFor="let nestedItem of item.item">
-                        <app-questionnaire-item [item]="nestedItem" level="{{level+1}}" [formGroup]="formGroup"></app-questionnaire-item>
-                    </ng-container>
-                </mat-card-content>
-            </mat-card>
-            <ng-container *ngIf="level>0">
+            <div class="group">
                 <h2>
                     <app-item-label [item]="item"></app-item-label>
                 </h2>
                 <ng-container *ngFor="let nestedItem of item.item">
                     <app-questionnaire-item [item]="nestedItem" level="{{level+1}}" [formGroup]="formGroup"></app-questionnaire-item>
                 </ng-container>
-            </ng-container>
+            </div>
         </ng-container>
         <!--    0	display	Display	Text for display that will not capture an answer or have child items. -->
         <ng-container *ngSwitchCase="'display'">
@@ -46,6 +34,13 @@
                 </mat-label>
                 <input matInput [formControl]="formControl" />
             </mat-form-field>
+            <!--
+            <mat-form-field *ngIf="isHidden()">
+                Hidden Input Field Start
+                <input type="hidden" [formControl]="formControl" />
+                Hidden Input Stop
+            </mat-form-field>
+            -->
             <ng-container *ngIf="formControl.invalid && (formControl.dirty || formControl.touched)" class="alert alert-danger">
                 <div *ngIf="formControl.errors.required">
                     Name is required.
@@ -126,6 +121,21 @@
             </mat-form-field>
         </ng-container>
 
+        <ng-container *ngSwitchCase="'integer'">
+            <mat-form-field *ngIf="!showAsSlider()">
+                <mat-label>
+                    <app-item-label [item]="item"></app-item-label>
+                </mat-label>
+                <input type="number" matInput [formControl]="formControl" />
+            </mat-form-field>
+            <div *ngIf="showAsSlider()">
+                <mat-label>
+                    <app-item-label [item]="item"></app-item-label>
+                </mat-label>
+                <mat-slider  [min]="getMinValue()" [max]="getMaxValue()" [step]="getSliderStepValue()" [formControl]="formControl" tickInterval="auto"></mat-slider>
+            </div>
+        </ng-container>
+
         <!-- Lvl	Code	Display	Definition
 1	  decimal	Decimal	Question with is a real number answer (valueDecimal).
 1	  integer	Integer	Question with an integer answer (valueInteger).
@@ -138,7 +148,7 @@
 -->
         <div *ngSwitchDefault>{{item.type}} not implemented!!!</div>
     </ng-container>
-    [LinkId {{item.linkId}}]
+    <!--    [LinkId {{item.linkId}}] -->
     <ng-container *ngIf="item.item && !getItemTypeIsGroup()">
         <ng-container *ngFor="let nestedItem of item.item">
             <app-questionnaire-item [item]="nestedItem" level="{{level+1}}" [formGroup]="formGroup"></app-questionnaire-item>

@@ -87,6 +87,46 @@ export class QuestionnaireItemComponent implements OnInit {
     return true;
   }
 
+  isHidden(): boolean {
+    const xhtmlExtension = this.questionaireFillerServer.getExtension(this.item.extension,
+      'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden');
+    return xhtmlExtension && xhtmlExtension.valueBoolean;
+  }
+
+  showAsSlider(): boolean {
+    const sliderExtension = this.questionaireFillerServer.getExtension(this.item.extension,
+      'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl');
+    return sliderExtension && sliderExtension.valueCodeableConcept.coding[0].system === 'http://hl7.org/fhir/questionnaire-item-control' &&
+              sliderExtension.valueCodeableConcept.coding[0].code === 'slider';
+  }
+
+  getSliderStepValue(): number {
+    const sliderExtension = this.questionaireFillerServer.
+      getExtension(this.item.extension, 'http://hl7.org/fhir/StructureDefinition/questionnaire-sliderStepValue');
+    if (sliderExtension ) {
+      return sliderExtension.valueInteger;
+    }
+    return undefined;
+  }
+
+  getMinValue(): number {
+    const minExtension = this.questionaireFillerServer.
+      getExtension(this.item.extension, 'http://hl7.org/fhir/StructureDefinition/minValue');
+    if (minExtension ) {
+      return minExtension.valueInteger;
+    }
+    return undefined;
+  }
+
+  getMaxValue(): number {
+    const maxExtension = this.questionaireFillerServer.
+      getExtension(this.item.extension, 'http://hl7.org/fhir/StructureDefinition/maxValue');
+    if (maxExtension ) {
+      return maxExtension.valueInteger;
+    }
+    return undefined;
+  }
+
   getItemTypeIsGroup(): boolean {
     return ('group' === this.item.type);
   }
@@ -120,6 +160,7 @@ export class QuestionnaireItemComponent implements OnInit {
   getAnswerValueSet(): fhir.r4.ValueSetComposeInclude[] {
    return  this.questionaireFillerServer.getAnswerValueSetComposeIncludeConcepts(this.item.answerValueSet);
   }
+
 
 
 }

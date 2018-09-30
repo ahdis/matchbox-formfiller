@@ -18,7 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatRadioModule, MatNativeDateModule, MatDividerModule } from '@angular/material';
+import { MatRadioModule, MatNativeDateModule, MatDividerModule,  MatSliderModule, MatSlideToggleModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { NgFhirjsModule } from 'ng-fhirjs';
@@ -85,6 +85,8 @@ const routes: Routes = [
     MatMenuModule,
     MatPaginatorModule,
     MatSelectModule,
+    MatSliderModule,
+    MatSlideToggleModule,
     MatTableModule,
     MatToolbarModule,
     MatTabsModule,

@@ -1,2 +1,3 @@
-<span *ngIf="getPrefix()" [ngStyle]="getPrefixStyles()" [innerHtml]="getPrefix()" >&nbsp;</span>
-<span *ngIf="getText()" [ngStyle]="getTextStyles()" [innerHtml]="getText()" >&nbsp;</span>
+<span *ngIf="getPrefix()" [ngStyle]="getPrefixStyles()" [innerHtml]="getPrefix()" ></span>
+<ng-container *ngIf="getPrefix()">&nbsp;</ng-container>
+<span *ngIf="getText()" [ngStyle]="getTextStyles()" [innerHtml]="getText()" ></span>

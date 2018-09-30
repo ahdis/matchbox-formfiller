@@ -125,7 +125,12 @@
           ],
           "linkId": "1.2",
           "text": "Hidden Name",
-          "type": "string"
+          "type": "string",
+          "initial": [
+            {
+              "valueString": "Hidden Value"
+            }
+          ]
         },
         {
           "extension": [
