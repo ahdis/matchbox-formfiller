@@ -33,6 +33,7 @@
                     <app-item-label [item]="item"></app-item-label>
                 </mat-label>
                 <input matInput [formControl]="formControl" />
+                <span matSuffix *ngIf="getUnit()">{{getUnit()}}</span>
             </mat-form-field>
             <!--
             <mat-form-field *ngIf="isHidden()">
@@ -99,6 +100,7 @@
                     <app-item-label [item]="item"></app-item-label>
                 </mat-label>
                 <input type="number" matInput [formControl]="formControl" />
+                <span matSuffix *ngIf="getUnit()">{{getUnit()}}</span>
             </mat-form-field>
         </ng-container>
 

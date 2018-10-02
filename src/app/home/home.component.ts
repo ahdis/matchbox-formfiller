@@ -1,3 +1,5 @@
+/// <reference path="../../typing.d.ts" />
+
 import { Component, OnInit } from '@angular/core';
 import { QuestionnaireDemo } from './questionnaire-demo';
 import { Router } from '@angular/router';
@@ -9,6 +11,8 @@ import { QuestionnaireFillerService } from '../questionnaire-filler.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+
+  fhirPath = '';
 
   constructor(private router: Router, private questionaireFillerServer: QuestionnaireFillerService) { }
 
@@ -33,6 +37,21 @@ export class HomeComponent implements OnInit {
   fillFormSdcRender() {
     this.questionaireFillerServer.setQuestionnare(QuestionnaireDemo.getQuestionnaireSdcRender());
     this.router.navigate(['/questionnaire-form-filler']);
+  }
+
+  fillFormLhncbcHeightWeight() {
+    this.questionaireFillerServer.setQuestionnare(QuestionnaireDemo.getQuestionnaireLhncbHeightWeight());
+    this.router.navigate(['/questionnaire-form-filler']);
+  }
+
+  fillFormString() {
+    this.questionaireFillerServer.setQuestionnare(QuestionnaireDemo.getQuestionnaireString());
+    this.router.navigate(['/questionnaire-form-filler']);
+  }
+
+  testFhirPath() {
+    const fhirpath = require('fhirpath');
+    this.fhirPath = fhirpath.evaluate(QuestionnaireDemo.getQuestionnaireEbida(), 'Questionnaire.item');
   }
 
 }

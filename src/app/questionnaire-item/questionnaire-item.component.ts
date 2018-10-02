@@ -49,7 +49,7 @@ export class QuestionnaireItemComponent implements OnInit {
       )
       .subscribe(term => {
         console.log('setting ' + this.item.linkId + ' to ' + term);
-        this.questionaireFillerServer.setQuestionnaireResponseItem(this.item.linkId, term);
+        this.questionaireFillerServer.setQuestionnaireResponseItem(this.item, term);
       });
     this.formGroup.addControl(this.item.linkId, this.formControl);
   }
@@ -57,13 +57,13 @@ export class QuestionnaireItemComponent implements OnInit {
   isEnabled(): boolean {
     if (this.item.enableWhen) {
       for (const itemEnabledWhen of this.item.enableWhen) {
-        const answer = this.questionaireFillerServer.getQuestionnaireResponseItem(itemEnabledWhen.question);
+        const answer = this.questionaireFillerServer.getQuestionnaireResponseItem(itemEnabledWhen);
         if (!answer) {
           return false;
         }
         if (itemEnabledWhen.operator === '=' ) {
           if (itemEnabledWhen.answerCoding) {
-            if (itemEnabledWhen.answerCoding.code !== answer) {
+            if (itemEnabledWhen.answerCoding.code !== answer.valueCoding.code) {
               return false;
             }
           }
@@ -125,6 +125,14 @@ export class QuestionnaireItemComponent implements OnInit {
       return maxExtension.valueInteger;
     }
     return undefined;
+  }
+
+  getUnit(): string {
+    const unitExtension = this.questionaireFillerServer.
+      getExtension(this.item.extension, 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit');
+    if (unitExtension) {
+      return unitExtension.valueCoding.code;
+    }
   }
 
   getItemTypeIsGroup(): boolean {

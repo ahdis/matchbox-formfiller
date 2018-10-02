@@ -2,6 +2,8 @@ import * as questionnaireEbida from '../../examples/ebida-order-1.json';
 import * as questionnaireSdcCap from '../../examples/Questionnaire-questionnaire-sdc-profile-example-cap.json';
 import * as questionnaireSdcLoinc from '../../examples/Questionnaire-questionnaire-sdc-profile-example-loinc.json';
 import * as questionnaireSdcRender from '../../examples/Questionnaire-questionnaire-sdc-profile-example-render.json';
+import * as questionnaireLhncbHeightWeight from '../../examples/weight-height-questionnaire.json';
+import * as questionnaireString from '../../examples/string.json';
 
 export class QuestionnaireDemo {
 
@@ -20,6 +22,15 @@ export class QuestionnaireDemo {
   static getQuestionnaireSdcRender(): fhir.r4.Questionnaire {
     return <fhir.r4.Questionnaire> (<any> questionnaireSdcRender);
   }
+
+  static getQuestionnaireLhncbHeightWeight(): fhir.r4.Questionnaire {
+    return <fhir.r4.Questionnaire> (<any> questionnaireLhncbHeightWeight);
+  }
+
+  static getQuestionnaireString(): fhir.r4.Questionnaire {
+    return <fhir.r4.Questionnaire> (<any> questionnaireString);
+  }
+
 
 }
 

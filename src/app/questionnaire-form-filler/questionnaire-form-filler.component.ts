@@ -11,10 +11,11 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class QuestionnaireFormFillerComponent implements OnInit {
 
   formGroup: FormGroup;
-  questionnaireResponse: any;
+  questionnaireResponse: fhir.r4.QuestionnaireResponse;
 
   constructor(private questionaireFillerServer: QuestionnaireFillerService, private sanitizer: DomSanitizer) {
     this.formGroup = new FormGroup({});
+    this.questionnaireResponse = this.questionaireFillerServer.getQuestionniareResponse();
   }
 
   ngOnInit() {
@@ -47,7 +48,7 @@ export class QuestionnaireFormFillerComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.questionnaireResponse = this.formGroup.value;
+    this.questionnaireResponse = this.questionaireFillerServer.getQuestionniareResponse();
   }
 
 
