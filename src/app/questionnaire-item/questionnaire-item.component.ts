@@ -16,6 +16,7 @@ export class QuestionnaireItemComponent implements OnInit {
   @Input() item: fhir.r4.QuestionnaireItem;
   @Input() level: number;
   @Input() formGroup: FormGroup;
+  @Input() formParent: FormGroup;
   formControl: FormControl;
 
 
@@ -41,7 +42,11 @@ export class QuestionnaireItemComponent implements OnInit {
       }
     }
 
-    this.formControl = new FormControl(initValue, (isRequired ? Validators.required : undefined));
+    if (this.hasFhirPathExpression()) {
+      this.formControl = new FormControl( {initValue, disabled : false });
+    } else {
+      this.formControl = new FormControl(initValue, (isRequired ? Validators.required : undefined));
+    }
     this.formControl.valueChanges
       .pipe(
         debounceTime(200),
@@ -52,6 +57,20 @@ export class QuestionnaireItemComponent implements OnInit {
         this.questionaireFillerServer.setQuestionnaireResponseItem(this.item, term);
       });
     this.formGroup.addControl(this.item.linkId, this.formControl);
+
+    if (this.hasFhirPathExpression()) {
+      this.formParent.valueChanges
+      .pipe(
+        debounceTime(300)
+      )
+      .subscribe(term => {
+        console.log('calculating' + this.item.linkId);
+        const calculatedValue = this.questionaireFillerServer.evaluateFhirPath(this.getFhirPathExpression());
+        if (calculatedValue) {
+          this.formControl.reset({ value: calculatedValue, disabled: true });
+        }
+      });
+    }
   }
 
   isEnabled(): boolean {
@@ -135,6 +154,24 @@ export class QuestionnaireItemComponent implements OnInit {
     }
   }
 
+  getFhirPathExpressionExtension(): fhir.r4.Extension {
+    const fhirPathExpression = this.questionaireFillerServer.
+      getExtension(this.item.extension, 'http://hl7.org/fhir/StructureDefinition/questionnaire-calculatedExpression');
+      if (fhirPathExpression && fhirPathExpression.valueExpression && fhirPathExpression.valueExpression.language &&
+        fhirPathExpression.valueExpression.language === 'text/fhirpath') {
+          return fhirPathExpression;
+    }
+    return undefined;
+  }
+
+  hasFhirPathExpression(): boolean {
+    return this.getFhirPathExpressionExtension() !== undefined;
+  }
+
+  getFhirPathExpression(): string {
+    return this.getFhirPathExpressionExtension().valueExpression.expression;
+  }
+
   getItemTypeIsGroup(): boolean {
     return ('group' === this.item.type);
   }
@@ -168,7 +205,5 @@ export class QuestionnaireItemComponent implements OnInit {
   getAnswerValueSet(): fhir.r4.ValueSetComposeInclude[] {
    return  this.questionaireFillerServer.getAnswerValueSetComposeIncludeConcepts(this.item.answerValueSet);
   }
-
-
 
 }

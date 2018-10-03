@@ -1,5 +1,8 @@
 // Type definitions for FHIR Release 4 (STU)
-// Based on FHIR Typing Relase 3, should be adapted
+// Based on FHIR Typing Relase 3
+// NOT COMPLETE, just incremental adaptions where the wall is hit,
+// needs to bre generated !!!! TODO
+
 // ----------------------------------
 // Project: http://hl7.org/fhir/index.html
 // Definitions by: Artifact Health <https://www.artifacthealth.com>
@@ -32,9 +35,9 @@ declare module fhir.r4 {
      */
     type dateTime = string;
     /**
-     * A rational number with implicit precision
+     * A rational number with implicit precision, to no
      */
-    type decimal = number;
+    type decimal = number | string;
     /**
      * An instant in time - known at least to the second
      */
@@ -486,6 +489,33 @@ declare module fhir.r4 {
          */
         period?: Period;
     }
+
+
+    /** TODO: NEEDS TO BE GENERATED
+    . Expression	ΣITU		Element	An expression that can be used to generate a value
++ Rule: An expression or a reference must be provided
+Elements defined in Ancestors: id, extension
+... description	Σ	0..1	string	Natural language description of the condition
+... name	Σ	0..1	id	Short name assigned to expression for reuse
+... language	Σ	1..1	code	text/cql | text/fhirpath | application/x-fhir-query | etc.
+ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp13.txt )
+... expression	Σ	0..1	string	Expression in specified language
+... reference	Σ	0..1	uri	Where the expression is found
+
+    */
+   interface Expression extends Element {
+        description?: string;
+        _description?: Element;
+        name?: string;
+        _name: Element;
+        language: code;
+        _language: Element;
+        expression?: string;
+        _expression?: Element;
+        reference?: uri;
+        _reference?: Extension;
+   }
+
     /**
      * A measured or measurable amount
      */
@@ -1086,6 +1116,10 @@ declare module fhir.r4 {
          * Value of extension
          */
         valueMeta?: Meta;
+
+        // TODO:
+        valueExpression?: Expression;
+
     }
     /**
      * Base for all elements

@@ -7,7 +7,7 @@
                     <app-item-label [item]="item"></app-item-label>
                 </h2>
                 <ng-container *ngFor="let nestedItem of item.item">
-                    <app-questionnaire-item [item]="nestedItem" level="{{level+1}}" [formGroup]="formGroup"></app-questionnaire-item>
+                    <app-questionnaire-item [item]="nestedItem" level="{{level+1}}" [formGroup]="formGroup" [formParent]="formParent"></app-questionnaire-item>
                 </ng-container>
             </div>
         </ng-container>
@@ -153,7 +153,7 @@
     <!--    [LinkId {{item.linkId}}] -->
     <ng-container *ngIf="item.item && !getItemTypeIsGroup()">
         <ng-container *ngFor="let nestedItem of item.item">
-            <app-questionnaire-item [item]="nestedItem" level="{{level+1}}" [formGroup]="formGroup"></app-questionnaire-item>
+            <app-questionnaire-item [item]="nestedItem" level="{{level+1}}" [formGroup]="formGroup" [formParent]="formParent"></app-questionnaire-item>
         </ng-container>
     </ng-container>
 </div>
