@@ -48,7 +48,7 @@
       <mat-header-row *matHeaderRowDef="['titleCol', 'publisherCol', 'versionCol','statusCol','dateCol']"></mat-header-row>
       <mat-row *matRowDef="let row; columns: ['titleCol', 'publisherCol', 'versionCol','statusCol','dateCol']" (click)="selectRow(row)"></mat-row>
     </mat-table>
-    <mat-paginator [pageIndex]="pageIndex" [length]="length" [pageSize]="size" [pageSizeOptions]="pageSizeOptions" (page)="goToPage($event)"></mat-paginator>
+    <mat-paginator [pageIndex]="pageIndex" [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="goToPage($event)"></mat-paginator>
   </mat-card-content>
 </mat-card>
 <app-questionnaire-detail [questionnaire]="selected" ></app-questionnaire-detail>

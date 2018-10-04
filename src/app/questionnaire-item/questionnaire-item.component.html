@@ -33,28 +33,10 @@
                     <app-item-label [item]="item"></app-item-label>
                 </mat-label>
                 <input matInput [formControl]="formControl" />
+                <mat-error *ngIf="formControl.invalid">{{getErrorMessage()}}</mat-error>
                 <span matSuffix *ngIf="getUnit()">{{getUnit()}}</span>
             </mat-form-field>
-            <!--
-            <mat-form-field *ngIf="isHidden()">
-                Hidden Input Field Start
-                <input type="hidden" [formControl]="formControl" />
-                Hidden Input Stop
-            </mat-form-field>
-            -->
-            <ng-container *ngIf="formControl.invalid && (formControl.dirty || formControl.touched)" class="alert alert-danger">
-                <div *ngIf="formControl.errors.required">
-                    Name is required.
-                </div>
-                <!--                
-                <div *ngIf="name.errors.minlength">
-                    Name must be at least 4 characters long.
-                </div>
-                <div *ngIf="name.errors.forbiddenName">
-                    Name cannot be Bob.
-                </div>
--->
-            </ng-container>
+  
         </ng-container>
         <!--    1	  date	Date	Question with a date answer (valueDate). -->
         <ng-container *ngSwitchCase="'date'">
@@ -65,6 +47,7 @@
                 <input matInput [matDatepicker]="picker" placeholder="Choose a date" [formControl]="formControl">
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
+                <mat-error *ngIf="formControl.invalid">{{getErrorMessage()}}</mat-error>
             </mat-form-field>
         </ng-container>
         <!--    1	  choice	Choice	Question with a Coding drawn from a list of possible answers (specified in either the answerOption property, or via the valueset referenced in the answerValueSet property) as an answer (valueCoding). -->
@@ -82,6 +65,7 @@
                     </mat-option>
                 </ng-container>
             </mat-select>
+            <mat-error *ngIf="formControl.invalid">{{getErrorMessage()}}</mat-error>
         </mat-form-field>
         <!-- 1	  text	Text	Question with a long (potentially multi-paragraph) free-text entry answer (valueString). -->
         <ng-container *ngSwitchCase="'text'">
@@ -91,6 +75,7 @@
                 </mat-label>
                 <textarea matInput [formControl]="formControl"></textarea>
             </mat-form-field>
+            <mat-error *ngIf="formControl.invalid">{{getErrorMessage()}}</mat-error>
         </ng-container>
 
         <!-- 1	  decimal	Decimal	Question with is a real number answer (valueDecimal). -->
@@ -101,6 +86,7 @@
                 </mat-label>
                 <input type="number" matInput [formControl]="formControl" />
                 <span matSuffix *ngIf="getUnit()">{{getUnit()}}</span>
+                <mat-error *ngIf="formControl.invalid">{{getErrorMessage()}}</mat-error>
             </mat-form-field>
         </ng-container>
 
@@ -120,6 +106,7 @@
                         </mat-option>
                     </ng-container>
                 </mat-autocomplete>
+                <mat-error *ngIf="formControl.invalid">{{getErrorMessage()}}</mat-error>
             </mat-form-field>
         </ng-container>
 
@@ -129,6 +116,7 @@
                     <app-item-label [item]="item"></app-item-label>
                 </mat-label>
                 <input type="number" matInput [formControl]="formControl" />
+                <mat-error *ngIf="formControl.invalid">{{getErrorMessage()}}</mat-error>
             </mat-form-field>
             <div *ngIf="showAsSlider()">
                 <mat-label>

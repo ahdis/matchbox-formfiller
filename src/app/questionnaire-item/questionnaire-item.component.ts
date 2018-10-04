@@ -206,4 +206,8 @@ export class QuestionnaireItemComponent implements OnInit {
    return  this.questionaireFillerServer.getAnswerValueSetComposeIncludeConcepts(this.item.answerValueSet);
   }
 
+  getErrorMessage(): string {
+    return 'Is required (or or other error';
+  }
+
 }

@@ -33,7 +33,7 @@
       <mat-header-row *matHeaderRowDef="['familyNameCol', 'givenNamesCol', 'birthDateCol','addressLinesCol','addressCityCol']"></mat-header-row>
       <mat-row *matRowDef="let row; columns: ['familyNameCol', 'givenNamesCol', 'birthDateCol','addressLinesCol','addressCityCol']" (click)="selectRow(row)"></mat-row>
     </mat-table>
-    <mat-paginator [pageIndex]="pageIndex" [length]="length" [pageSize]="size" [pageSizeOptions]="pageSizeOptions" (page)="goToPage($event)"></mat-paginator>
+    <mat-paginator [pageIndex]="pageIndex" [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="goToPage($event)"></mat-paginator>
   </mat-card-content>
 </mat-card>
 <app-patient-detail [patient]="selectedPatient" ></app-patient-detail>
