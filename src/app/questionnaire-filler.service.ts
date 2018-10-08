@@ -1,5 +1,5 @@
-/// <reference path="../typing.d.ts" />
 import { Injectable } from '@angular/core';
+import { FhirPathService } from 'ng-fhirjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ export class QuestionnaireFillerService {
   private questionnaireResponse: fhir.r4.QuestionnaireResponse;
   private mapResponseItems = new Map<string, fhir.r4.QuestionnaireResponseItem>();
 
-  constructor() { }
+  constructor(private fhirPathService: FhirPathService) { }
 
   setQuestionnare(quest: fhir.r4.Questionnaire) {
     this.questionnaire = quest;
@@ -55,8 +55,7 @@ export class QuestionnaireFillerService {
   }
 
   evaluateFhirPath(fhirPathExpression: string): string {
-    const fhirpath = require('fhirpath');
-    const fhirPathResult = fhirpath.evaluate(this.questionnaireResponse, fhirPathExpression);
+    const fhirPathResult = this.fhirPathService.evaluate(this.questionnaireResponse, fhirPathExpression);
     if (fhirPathResult) {
       return fhirPathResult[0];
     }
@@ -149,7 +148,7 @@ export class QuestionnaireFillerService {
         // TODO
         break;
       case 'reference':
-        // reference	Reference	Question with a reference to another resource (practitioner, 
+        // reference	Reference	Question with a reference to another resource (practitioner,
         // organization, etc.) as an answer (valueReference).
         // TODO
         break;

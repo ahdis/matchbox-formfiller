@@ -22,7 +22,7 @@ import { MatRadioModule, MatNativeDateModule, MatDividerModule,  MatSliderModule
 
 import { AppComponent } from './app.component';
 import { NgFhirjsModule } from 'ng-fhirjs';
-import { FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhirjs';
+import { FHIR_HTTP_CONFIG } from 'ng-fhirjs';
 import { HomeComponent } from './home/home.component';
 import { PatientsComponent } from './patients/patients.component';
 import { CapabilityStatementComponent } from './capability-statement/capability-statement.component';

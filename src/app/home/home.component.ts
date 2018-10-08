@@ -1,9 +1,8 @@
-/// <reference path="../../typing.d.ts" />
-
 import { Component, OnInit } from '@angular/core';
 import { QuestionnaireDemo } from './questionnaire-demo';
 import { Router } from '@angular/router';
 import { QuestionnaireFillerService } from '../questionnaire-filler.service';
+import { FhirPathService } from 'ng-fhirjs';
 
 @Component({
   selector: 'app-home',
@@ -14,7 +13,8 @@ export class HomeComponent implements OnInit {
 
   fhirPath = '';
 
-  constructor(private router: Router, private questionaireFillerServer: QuestionnaireFillerService) { }
+  constructor(private router: Router, private questionaireFillerServer: QuestionnaireFillerService, 
+    private fhirPathService: FhirPathService) { }
 
   ngOnInit() {
   }
@@ -50,8 +50,7 @@ export class HomeComponent implements OnInit {
   }
 
   testFhirPath() {
-    const fhirpath = require('fhirpath');
-    this.fhirPath = fhirpath.evaluate(QuestionnaireDemo.getQuestionnaireEbida(), 'Questionnaire.item');
+    this.fhirPath = this.fhirPathService.evaluate(QuestionnaireDemo.getQuestionnaireEbida(), 'Questionnaire.item');
   }
 
 }
