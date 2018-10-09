@@ -34,11 +34,16 @@ import { QuestionnaireFormFillerComponent } from './questionnaire-form-filler/qu
 import { QuestionnaireItemComponent } from './questionnaire-item/questionnaire-item.component';
 
 import { QuestionnaireModule } from './questionnaire/questionnaire.module';
+import { FhirPathComponent } from './fhir-path/fhir-path.component';
 
 const routes: Routes = [
   {
     path: '', component: HomeComponent
   },
+  {
+    path: 'fhirpath', component: FhirPathComponent
+  },
+
   {
     path: 'patients', component: PatientsComponent
   },
@@ -67,7 +72,8 @@ const routes: Routes = [
     QuestionnairesComponent,
     QuestionnaireDetailComponent,
     QuestionnaireFormFillerComponent,
-    QuestionnaireItemComponent
+    QuestionnaireItemComponent,
+    FhirPathComponent
   ],
   imports: [
     BrowserModule,

@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { QuestionnaireDemo } from './questionnaire-demo';
 import { Router } from '@angular/router';
 import { QuestionnaireFillerService } from '../questionnaire-filler.service';
-import { FhirPathService } from 'ng-fhirjs';
 
 @Component({
   selector: 'app-home',
@@ -13,8 +12,7 @@ export class HomeComponent implements OnInit {
 
   fhirPath = '';
 
-  constructor(private router: Router, private questionaireFillerServer: QuestionnaireFillerService, 
-    private fhirPathService: FhirPathService) { }
+  constructor(private router: Router, private questionaireFillerServer: QuestionnaireFillerService) { }
 
   ngOnInit() {
   }
@@ -47,10 +45,6 @@ export class HomeComponent implements OnInit {
   fillFormString() {
     this.questionaireFillerServer.setQuestionnare(QuestionnaireDemo.getQuestionnaireString());
     this.router.navigate(['/questionnaire-form-filler']);
-  }
-
-  testFhirPath() {
-    this.fhirPath = this.fhirPathService.evaluate(QuestionnaireDemo.getQuestionnaireEbida(), 'Questionnaire.item');
   }
 
 }

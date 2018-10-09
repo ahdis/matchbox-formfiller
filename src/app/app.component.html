@@ -5,17 +5,21 @@
   <!-- This fills the remaining space of the current row -->
   <span class="example-fill-remaining-space"> </span>
   <span>
-    <button mat-icon-button [matMenuTriggerFor]="menu" >
+    <button mat-icon-button [matMenuTriggerFor]="menu">
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-        <button mat-menu-item routerLink="/">
-          <mat-icon>home</mat-icon>
-          <span>Home</span>
-        </button>
-        <button mat-menu-item routerLink="/CapabilityStatement">
+      <button mat-menu-item routerLink="/">
+        <mat-icon>home</mat-icon>
+        <span>Home</span>
+      </button>
+      <button mat-menu-item routerLink="/CapabilityStatement">
         <mat-icon>info</mat-icon>
         <span>CapabilityStatement</span>
+      </button>
+      <button mat-menu-item routerLink="/fhirpath">
+        <mat-icon>search</mat-icon>
+        <span>FHIRPath ...</span>
       </button>
       <button mat-menu-item routerLink="/patients">
         <mat-icon>people</mat-icon>
