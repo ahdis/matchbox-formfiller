@@ -1,27 +1,21 @@
-// Type definitions for FHIR Release 4 (STU)
-// Based on FHIR Typing Relase 3
-// NOT COMPLETE, just incremental adaptions where the wall is hit,
-// needs to bre generated !!!! TODO
-
-// ----------------------------------
+// Type definitions for FHIR Release 4 (3.5.0 ballot)
 // Project: http://hl7.org/fhir/index.html
-// Definitions by: Artifact Health <https://www.artifacthealth.com>
+// Definitions by FHIR STU Release 3: Artifact Health <https://www.artifacthealth.com>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
+// Definitions adapted for R4 by Oliver/Ahdis
 declare module fhir.r4 {
     /**
      * Any combination of letters, numerals, "-" and ".", with a length limit of 64 characters.  (This might be an integer, an unprefixed OID, UUID or any other identifier pattern that meets these constraints.)  Ids are case-insensitive.
      */
     type id = string;
     /**
-     * String of characters used to identify a name or a resource
-     */
-    type uri = string;
-    type url = string; // added for R4
-    type canonical = string; // added for R4
-    /**
      * A stream of bytes
      */
     type base64Binary = string;
+    /**
+     * A URI that is a reference to a canonical URI on a FHIR resource
+     */
+    type canonical = string;
     /**
      * A string which has at least one character and no leading or trailing whitespace and where there is no whitespace other than single spaces in the contents
      */
@@ -35,7 +29,7 @@ declare module fhir.r4 {
      */
     type dateTime = string;
     /**
-     * A rational number with implicit precision, to no
+     * A rational number with implicit precision
      */
     type decimal = number | string;
     /**
@@ -47,7 +41,7 @@ declare module fhir.r4 {
      */
     type integer = number;
     /**
-     * A string that may contain markdown syntax for optional processing by a mark down presentation engine
+     * A string that may contain Github Flavored Markdown syntax for optional processing by a mark down presentation engine
      */
     type markdown = string;
     /**
@@ -66,6 +60,18 @@ declare module fhir.r4 {
      * An integer with a value that is not negative (e.g. >= 0)
      */
     type unsignedInt = number;
+    /**
+     * String of characters used to identify a name or a resource
+     */
+    type uri = string;
+    /**
+     * A URI that is a literal reference
+     */
+    type url = string;
+    /**
+     * A UUID, represented as a URI
+     */
+    type uuid = string;
     /**
      * Time range defined by start and end date/time
      */
@@ -92,7 +98,7 @@ declare module fhir.r4 {
      */
     interface Address extends Element {
         /**
-         * home | work | temp | old - purpose of this address
+         * home | work | temp | old | billing - purpose of this address
          */
         use?: code;
         /**
@@ -285,7 +291,7 @@ declare module fhir.r4 {
      */
     interface Identifier extends Element {
         /**
-         * usual | official | temp | secondary (If known)
+         * usual | official | temp | secondary | old (If known)
          */
         use?: code;
         /**
@@ -334,6 +340,14 @@ declare module fhir.r4 {
          */
         _reference?: Element;
         /**
+         * Type the reference refers to (e.g. "Patient")
+         */
+        type?: uri;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+        /**
          * Logical reference, when literal reference is not known
          */
         identifier?: Identifier;
@@ -371,9 +385,9 @@ declare module fhir.r4 {
          */
         _time?: Element;
         /**
-         * The annotation  - text content
+         * The annotation  - text content (as markdown)
          */
-        text: string;
+        text: markdown;
         /**
          * Contains extended information for property 'text'.
          */
@@ -410,7 +424,7 @@ declare module fhir.r4 {
         /**
          * Uri where the data can be found
          */
-        url?: uri;
+        url?: url;
         /**
          * Contains extended information for property 'url'.
          */
@@ -489,33 +503,6 @@ declare module fhir.r4 {
          */
         period?: Period;
     }
-
-
-    /** TODO: NEEDS TO BE GENERATED
-    . Expression	ΣITU		Element	An expression that can be used to generate a value
-+ Rule: An expression or a reference must be provided
-Elements defined in Ancestors: id, extension
-... description	Σ	0..1	string	Natural language description of the condition
-... name	Σ	0..1	id	Short name assigned to expression for reuse
-... language	Σ	1..1	code	text/cql | text/fhirpath | application/x-fhir-query | etc.
-ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp13.txt )
-... expression	Σ	0..1	string	Expression in specified language
-... reference	Σ	0..1	uri	Where the expression is found
-
-    */
-   interface Expression extends Element {
-        description?: string;
-        _description?: Element;
-        name?: string;
-        _name: Element;
-        language: code;
-        _language: Element;
-        expression?: string;
-        _expression?: Element;
-        reference?: uri;
-        _reference?: Extension;
-   }
-
     /**
      * A measured or measurable amount
      */
@@ -591,7 +578,23 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
     /**
      * An amount of economic utility in some recognized currency
      */
-    interface Money extends Quantity {
+    interface Money extends Element {
+        /**
+         * Numerical value (with implicit precision)
+         */
+        value?: decimal;
+        /**
+         * Contains extended information for property 'value'.
+         */
+        _value?: Element;
+        /**
+         * ISO 4217 Currency Code
+         */
+        currency?: code;
+        /**
+         * Contains extended information for property 'currency'.
+         */
+        _currency?: Element;
     }
     /**
      * A fixed quantity (no comparator)
@@ -675,14 +678,14 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
         /**
          * Decimal values with spaces, or "E" | "U" | "L"
          */
-        data: string;
+        data?: string;
         /**
          * Contains extended information for property 'data'.
          */
         _data?: Element;
     }
     /**
-     * A digital Signature - XML DigSig, JWT, Graphical image of signature, etc.
+     * A Signature - XML DigSig, JWS, Graphical image of signature, etc.
      */
     interface Signature extends Element {
         /**
@@ -700,43 +703,44 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
         /**
          * Who signed
          */
-        whoUri?: uri;
-        /**
-         * Contains extended information for property 'whoUri'.
-         */
-        _whoUri?: Element;
-        /**
-         * Who signed
-         */
-        whoReference?: Reference;
+        who: Reference;
         /**
          * The party represented
          */
-        onBehalfOfUri?: uri;
+        onBehalfOf?: Reference;
         /**
-         * Contains extended information for property 'onBehalfOfUri'.
+         * The technical format of the signed resources
          */
-        _onBehalfOfUri?: Element;
+        targetFormat?: code;
         /**
-         * The party represented
+         * Contains extended information for property 'targetFormat'.
          */
-        onBehalfOfReference?: Reference;
+        _targetFormat?: Element;
         /**
          * The technical format of the signature
          */
-        contentType?: code;
+        sigFormat?: code;
         /**
-         * Contains extended information for property 'contentType'.
+         * Contains extended information for property 'sigFormat'.
          */
-        _contentType?: Element;
+        _sigFormat?: Element;
         /**
-         * The actual signature content (XML DigSig. JWT, picture, etc.)
+         * The actual signature content (XML DigSig. JWS, picture, etc.)
          */
-        blob?: base64Binary;
+        data?: base64Binary;
         /**
-         * Contains extended information for property 'blob'.
+         * Contains extended information for property 'data'.
          */
-        _blob?: Element;
+        _data?: Element;
+    }
+    /**
+     * Base for elements defined inside a resource
+     */
+    interface BackboneElement extends Element {
+        /**
+         * Extensions that cannot be ignored if unrecognized
+         */
+        modifierExtension?: Extension[];
     }
     /**
      * When the event is to occur
@@ -757,7 +761,7 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
         /**
          * Number of times to repeat
          */
-        count?: integer;
+        count?: positiveInt;
         /**
          * Contains extended information for property 'count'.
          */
@@ -765,7 +769,7 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
         /**
          * Maximum number of times to repeat
          */
-        countMax?: integer;
+        countMax?: positiveInt;
         /**
          * Contains extended information for property 'countMax'.
          */
@@ -797,7 +801,7 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
         /**
          * Event occurs frequency times per period
          */
-        frequency?: integer;
+        frequency?: positiveInt;
         /**
          * Contains extended information for property 'frequency'.
          */
@@ -805,7 +809,7 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
         /**
          * Event occurs up to frequencyMax times per period
          */
-        frequencyMax?: integer;
+        frequencyMax?: positiveInt;
         /**
          * Contains extended information for property 'frequencyMax'.
          */
@@ -851,7 +855,7 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
          */
         _timeOfDay?: Element[];
         /**
-         * Regular life events the event is tied to
+         * Code for time period of occurrence
          */
         when?: code[];
         /**
@@ -870,7 +874,7 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
     /**
      * A timing schedule that specifies an event that may occur multiple times
      */
-    interface Timing extends Element {
+    interface Timing extends BackboneElement {
         /**
          * When the event occurs
          */
@@ -884,9 +888,534 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
          */
         repeat?: TimingRepeat;
         /**
-         * BID | TID | QID | AM | PM | QD | QOD | Q4H | Q6H +
+         * BID | TID | QID | AM | PM | QD | QOD | +
          */
         code?: CodeableConcept;
+    }
+    /**
+     * Definition of a parameter to a module
+     */
+    interface ParameterDefinition extends Element {
+        /**
+         * Name used to access the parameter value
+         */
+        name?: code;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * in | out
+         */
+        use: code;
+        /**
+         * Contains extended information for property 'use'.
+         */
+        _use?: Element;
+        /**
+         * Minimum cardinality
+         */
+        min?: integer;
+        /**
+         * Contains extended information for property 'min'.
+         */
+        _min?: Element;
+        /**
+         * Maximum cardinality (a number of *)
+         */
+        max?: string;
+        /**
+         * Contains extended information for property 'max'.
+         */
+        _max?: Element;
+        /**
+         * A brief description of the parameter
+         */
+        documentation?: string;
+        /**
+         * Contains extended information for property 'documentation'.
+         */
+        _documentation?: Element;
+        /**
+         * What type of value
+         */
+        type: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+        /**
+         * What profile the value is expected to be
+         */
+        profile?: canonical;
+        /**
+         * Contains extended information for property 'profile'.
+         */
+        _profile?: Element;
+    }
+    /**
+     * What codes are expected
+     */
+    interface DataRequirementCodeFilter extends Element {
+        /**
+         * A code-valued attribute to filter on
+         */
+        path?: string;
+        /**
+         * Contains extended information for property 'path'.
+         */
+        _path?: Element;
+        /**
+         * A coded (token) parameter to search on
+         */
+        searchParam?: string;
+        /**
+         * Contains extended information for property 'searchParam'.
+         */
+        _searchParam?: Element;
+        /**
+         * Valueset for the filter
+         */
+        valueSet?: canonical;
+        /**
+         * Contains extended information for property 'valueSet'.
+         */
+        _valueSet?: Element;
+        /**
+         * What code is expected
+         */
+        code?: Coding[];
+    }
+    /**
+     * What dates/date ranges are expected
+     */
+    interface DataRequirementDateFilter extends Element {
+        /**
+         * A date-valued attribute to filter on
+         */
+        path?: string;
+        /**
+         * Contains extended information for property 'path'.
+         */
+        _path?: Element;
+        /**
+         * A date valued parameter to search on
+         */
+        searchParam?: string;
+        /**
+         * Contains extended information for property 'searchParam'.
+         */
+        _searchParam?: Element;
+        /**
+         * The value of the filter, as a Period, DateTime, or Duration value
+         */
+        valueDateTime?: dateTime;
+        /**
+         * Contains extended information for property 'valueDateTime'.
+         */
+        _valueDateTime?: Element;
+        /**
+         * The value of the filter, as a Period, DateTime, or Duration value
+         */
+        valuePeriod?: Period;
+        /**
+         * The value of the filter, as a Period, DateTime, or Duration value
+         */
+        valueDuration?: Duration;
+    }
+    /**
+     * Order of the results
+     */
+    interface DataRequirementSort extends Element {
+        /**
+         * The name of the attribute to perform the sort
+         */
+        path: string;
+        /**
+         * Contains extended information for property 'path'.
+         */
+        _path?: Element;
+        /**
+         * ascending | descending
+         */
+        direction: code;
+        /**
+         * Contains extended information for property 'direction'.
+         */
+        _direction?: Element;
+    }
+    /**
+     * Describes a required data item
+     */
+    interface DataRequirement extends Element {
+        /**
+         * The type of the required data
+         */
+        type: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+        /**
+         * The profile of the required data
+         */
+        profile?: canonical[];
+        /**
+         * Contains extended information for property 'profile'.
+         */
+        _profile?: Element[];
+        /**
+         * E.g. Patient, Practitioner, RelatedPerson, Organization, Location, Device
+         */
+        subjectCodeableConcept?: CodeableConcept;
+        /**
+         * E.g. Patient, Practitioner, RelatedPerson, Organization, Location, Device
+         */
+        subjectReference?: Reference;
+        /**
+         * Indicates specific structure elements that are referenced by the knowledge module
+         */
+        mustSupport?: string[];
+        /**
+         * Contains extended information for property 'mustSupport'.
+         */
+        _mustSupport?: Element[];
+        /**
+         * What codes are expected
+         */
+        codeFilter?: DataRequirementCodeFilter[];
+        /**
+         * What dates/date ranges are expected
+         */
+        dateFilter?: DataRequirementDateFilter[];
+        /**
+         * Number of results
+         */
+        limit?: positiveInt;
+        /**
+         * Contains extended information for property 'limit'.
+         */
+        _limit?: Element;
+        /**
+         * Order of the results
+         */
+        sort?: DataRequirementSort[];
+    }
+    /**
+     * Related artifacts for a knowledge resource
+     */
+    interface RelatedArtifact extends Element {
+        /**
+         * documentation | justification | citation | predecessor | successor | derived-from | depends-on | composed-of
+         */
+        type: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+        /**
+         * Brief description of the related artifact
+         */
+        display?: string;
+        /**
+         * Contains extended information for property 'display'.
+         */
+        _display?: Element;
+        /**
+         * Bibliographic citation for the artifact
+         */
+        citation?: string;
+        /**
+         * Contains extended information for property 'citation'.
+         */
+        _citation?: Element;
+        /**
+         * Where the artifact can be accessed
+         */
+        url?: url;
+        /**
+         * Contains extended information for property 'url'.
+         */
+        _url?: Element;
+        /**
+         * What document is being referenced
+         */
+        document?: Attachment;
+        /**
+         * What resource is being referenced
+         */
+        resource?: canonical;
+        /**
+         * Contains extended information for property 'resource'.
+         */
+        _resource?: Element;
+    }
+    /**
+     * Contact information
+     */
+    interface ContactDetail extends Element {
+        /**
+         * Name of an individual to contact
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Contact details for individual or organization
+         */
+        telecom?: ContactPoint[];
+    }
+    /**
+     * Contributor information
+     */
+    interface Contributor extends Element {
+        /**
+         * author | editor | reviewer | endorser
+         */
+        type: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+        /**
+         * Who contributed the content
+         */
+        name: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Contact details of the contributor
+         */
+        contact?: ContactDetail[];
+    }
+    /**
+     * An expression that can be used to generate a value
+     */
+    interface Expression extends Element {
+        /**
+         * Natural language description of the condition
+         */
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Short name assigned to expression for reuse
+         */
+        name?: id;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * text/cql | text/fhirpath | application/x-fhir-query | etc.
+         */
+        language: code;
+        /**
+         * Contains extended information for property 'language'.
+         */
+        _language?: Element;
+        /**
+         * Expression in specified language
+         */
+        expression?: string;
+        /**
+         * Contains extended information for property 'expression'.
+         */
+        _expression?: Element;
+        /**
+         * Where the expression is found
+         */
+        reference?: uri;
+        /**
+         * Contains extended information for property 'reference'.
+         */
+        _reference?: Element;
+    }
+    /**
+     * Defines an expected trigger for a module
+     */
+    interface TriggerDefinition extends Element {
+        /**
+         * named-event | periodic | data-changed | data-added | data-modified | data-removed | data-accessed | data-access-ended
+         */
+        type: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+        /**
+         * Name or URI that identifies the event
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Timing of the event
+         */
+        timingTiming?: Timing;
+        /**
+         * Timing of the event
+         */
+        timingReference?: Reference;
+        /**
+         * Timing of the event
+         */
+        timingDate?: date;
+        /**
+         * Contains extended information for property 'timingDate'.
+         */
+        _timingDate?: Element;
+        /**
+         * Timing of the event
+         */
+        timingDateTime?: dateTime;
+        /**
+         * Contains extended information for property 'timingDateTime'.
+         */
+        _timingDateTime?: Element;
+        /**
+         * Triggering data of the event
+         */
+        data?: DataRequirement;
+        /**
+         * Whether the event triggers (boolean expression)
+         */
+        condition?: Expression;
+    }
+    /**
+     * Describes the context of use for a conformance or knowledge resource
+     */
+    interface UsageContext extends Element {
+        /**
+         * Type of context being specified
+         */
+        code: Coding;
+        /**
+         * Value that defines the context
+         */
+        valueCodeableConcept?: CodeableConcept;
+        /**
+         * Value that defines the context
+         */
+        valueQuantity?: Quantity;
+        /**
+         * Value that defines the context
+         */
+        valueRange?: Range;
+    }
+    /**
+     * Amount of medication administered
+     */
+    interface DosageDoseAndRate extends Element {
+        /**
+         * The kind of dose or rate specified
+         */
+        type: CodeableConcept;
+        /**
+         * Amount of medication per dose
+         */
+        doseRange?: Range;
+        /**
+         * Amount of medication per dose
+         */
+        doseQuantity?: Quantity;
+        /**
+         * Amount of medication per unit of time
+         */
+        rateRatio?: Ratio;
+        /**
+         * Amount of medication per unit of time
+         */
+        rateRange?: Range;
+        /**
+         * Amount of medication per unit of time
+         */
+        rateQuantity?: Quantity;
+    }
+    /**
+     * How the medication is/was taken or should be taken
+     */
+    interface Dosage extends BackboneElement {
+        /**
+         * The order of the dosage instructions
+         */
+        sequence?: integer;
+        /**
+         * Contains extended information for property 'sequence'.
+         */
+        _sequence?: Element;
+        /**
+         * Free text dosage instructions e.g. SIG
+         */
+        text?: string;
+        /**
+         * Contains extended information for property 'text'.
+         */
+        _text?: Element;
+        /**
+         * Supplemental instruction or warnings to the patient - e.g. "with meals", "may cause drowsiness"
+         */
+        additionalInstruction?: CodeableConcept[];
+        /**
+         * Patient or consumer oriented instructions
+         */
+        patientInstruction?: string;
+        /**
+         * Contains extended information for property 'patientInstruction'.
+         */
+        _patientInstruction?: Element;
+        /**
+         * When medication should be administered
+         */
+        timing?: Timing;
+        /**
+         * Take "as needed" (for x)
+         */
+        asNeededBoolean?: boolean;
+        /**
+         * Contains extended information for property 'asNeededBoolean'.
+         */
+        _asNeededBoolean?: Element;
+        /**
+         * Take "as needed" (for x)
+         */
+        asNeededCodeableConcept?: CodeableConcept;
+        /**
+         * Body site to administer to
+         */
+        site?: CodeableConcept;
+        /**
+         * How drug should enter body
+         */
+        route?: CodeableConcept;
+        /**
+         * Technique for administering medication
+         */
+        method?: CodeableConcept;
+        /**
+         * Amount of medication administered
+         */
+        doseAndRate?: DosageDoseAndRate[];
+        /**
+         * Upper limit on medication per unit of time
+         */
+        maxDosePerPeriod?: Ratio;
+        /**
+         * Upper limit on medication per administration
+         */
+        maxDosePerAdministration?: Quantity;
+        /**
+         * Upper limit on medication per lifetime of the patient
+         */
+        maxDosePerLifetime?: Quantity;
     }
     /**
      * Optional Extensions Element
@@ -895,7 +1424,7 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
         /**
          * identifies the meaning of the extension
          */
-        url: uri;
+        url: url;
         /**
          * Contains extended information for property 'url'.
          */
@@ -916,6 +1445,14 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
          * Contains extended information for property 'valueBoolean'.
          */
         _valueBoolean?: Element;
+        /**
+         * Value of extension
+         */
+        valueCanonical?: canonical;
+        /**
+         * Contains extended information for property 'valueCanonical'.
+         */
+        _valueCanonical?: Element;
         /**
          * Value of extension
          */
@@ -1031,6 +1568,22 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
         /**
          * Value of extension
          */
+        valueUrl?: url;
+        /**
+         * Contains extended information for property 'valueUrl'.
+         */
+        _valueUrl?: Element;
+        /**
+         * Value of extension
+         */
+        valueUuid?: uuid;
+        /**
+         * Contains extended information for property 'valueUuid'.
+         */
+        _valueUuid?: Element;
+        /**
+         * Value of extension
+         */
         valueAddress?: Address;
         /**
          * Value of extension
@@ -1115,11 +1668,39 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
         /**
          * Value of extension
          */
-        valueMeta?: Meta;
-
-        // TODO:
+        valueParameterDefinition?: ParameterDefinition;
+        /**
+         * Value of extension
+         */
+        valueDataRequirement?: DataRequirement;
+        /**
+         * Value of extension
+         */
+        valueRelatedArtifact?: RelatedArtifact;
+        /**
+         * Value of extension
+         */
+        valueContactDetail?: ContactDetail;
+        /**
+         * Value of extension
+         */
+        valueContributor?: Contributor;
+        /**
+         * Value of extension
+         */
+        valueTriggerDefinition?: TriggerDefinition;
+        /**
+         * Value of extension
+         */
         valueExpression?: Expression;
-
+        /**
+         * Value of extension
+         */
+        valueUsageContext?: UsageContext;
+        /**
+         * Value of extension
+         */
+        valueDosage?: Dosage;
     }
     /**
      * Base for all elements
@@ -1142,7 +1723,7 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
          */
         _id?: Element;
         /**
-         * Additional Content defined by implementations
+         * Additional content defined by implementations
          */
         extension?: Extension[];
     }
@@ -1167,9 +1748,17 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
          */
         _lastUpdated?: Element;
         /**
+         * Identifies where the resource comes from
+         */
+        source?: uri;
+        /**
+         * Contains extended information for property 'source'.
+         */
+        _source?: Element;
+        /**
          * Profiles this resource claims to conform to
          */
-        profile?: uri[];
+        profile?: canonical[];
         /**
          * Contains extended information for property 'profile'.
          */
@@ -1267,20 +1856,11 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
         modifierExtension?: Extension[];
     }
     /**
-     * Base for elements defined inside a resource
-     */
-    interface BackboneElement extends Element {
-        /**
-         * Extensions that cannot be ignored
-         */
-        modifierExtension?: Extension[];
-    }
-    /**
      * The party(s) that are responsible for covering the payment of this account, and what order should they be applied to the account
      */
     interface AccountCoverage extends BackboneElement {
         /**
-         * The party(s) that are responsible for covering the payment of this account
+         * The party(s), such as insurances, that may contribute to the payment of this account
          */
         coverage: Reference;
         /**
@@ -1309,7 +1889,7 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
          */
         _onHold?: Element;
         /**
-         * Guarrantee account during
+         * Guarantee account during
          */
         period?: Period;
     }
@@ -1322,9 +1902,9 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
          */
         identifier?: Identifier[];
         /**
-         * active | inactive | entered-in-error
+         * active | inactive | entered-in-error | on-hold | unknown
          */
-        status?: code;
+        status: code;
         /**
          * Contains extended information for property 'status'.
          */
@@ -1344,19 +1924,11 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
         /**
          * What is account tied to?
          */
-        subject?: Reference;
+        subject?: Reference[];
         /**
          * Transaction window
          */
-        period?: Period;
-        /**
-         * Time window that transactions may be posted to this account
-         */
-        active?: Period;
-        /**
-         * How much is in account?
-         */
-        balance?: Money;
+        servicePeriod?: Period;
         /**
          * The party(s) that are responsible for covering the payment of this account, and what order should they be applied to the account
          */
@@ -1377,121 +1949,17 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
          * Responsible for the account
          */
         guarantor?: AccountGuarantor[];
-    }
-    /**
-     * Describes the context of use for a conformance or knowledge resource
-     */
-    interface UsageContext extends Element {
         /**
-         * Type of context being specified
+         * Reference to a parent Account
          */
-        code: Coding;
-        /**
-         * Value that defines the context
-         */
-        valueCodeableConcept?: CodeableConcept;
-        /**
-         * Value that defines the context
-         */
-        valueQuantity?: Quantity;
-        /**
-         * Value that defines the context
-         */
-        valueRange?: Range;
-    }
-    /**
-     * Contact information
-     */
-    interface ContactDetail extends Element {
-        /**
-         * Name of an individual to contact
-         */
-        name?: string;
-        /**
-         * Contains extended information for property 'name'.
-         */
-        _name?: Element;
-        /**
-         * Contact details for individual or organization
-         */
-        telecom?: ContactPoint[];
-    }
-    /**
-     * Contributor information
-     */
-    interface Contributor extends Element {
-        /**
-         * author | editor | reviewer | endorser
-         */
-        type: code;
-        /**
-         * Contains extended information for property 'type'.
-         */
-        _type?: Element;
-        /**
-         * Who contributed the content
-         */
-        name: string;
-        /**
-         * Contains extended information for property 'name'.
-         */
-        _name?: Element;
-        /**
-         * Contact details of the contributor
-         */
-        contact?: ContactDetail[];
-    }
-    /**
-     * Related artifacts for a knowledge resource
-     */
-    interface RelatedArtifact extends Element {
-        /**
-         * documentation | justification | citation | predecessor | successor | derived-from | depends-on | composed-of
-         */
-        type: code;
-        /**
-         * Contains extended information for property 'type'.
-         */
-        _type?: Element;
-        /**
-         * Brief description of the related artifact
-         */
-        display?: string;
-        /**
-         * Contains extended information for property 'display'.
-         */
-        _display?: Element;
-        /**
-         * Bibliographic citation for the artifact
-         */
-        citation?: string;
-        /**
-         * Contains extended information for property 'citation'.
-         */
-        _citation?: Element;
-        /**
-         * Where the artifact can be accessed
-         */
-        url?: uri;
-        /**
-         * Contains extended information for property 'url'.
-         */
-        _url?: Element;
-        /**
-         * What document is being referenced
-         */
-        document?: Attachment;
-        /**
-         * What resource is being referenced
-         */
-        resource?: Reference;
+        partOf?: Reference;
     }
     /**
      * Who should participate in the action
      */
     interface ActivityDefinitionParticipant extends BackboneElement {
         /**
-         * patient | practitioner | related-person
+         * patient | practitioner | related-person | device
          */
         type: code;
         /**
@@ -1499,146 +1967,33 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
          */
         _type?: Element;
         /**
-         * E.g. Nurse, Surgeon, Parent, etc
+         * E.g. Nurse, Surgeon, Parent, etc.
          */
         role?: CodeableConcept;
-    }
-    /**
-     * How the medication is/was taken or should be taken
-     */
-    interface Dosage extends Element {
-        /**
-         * The order of the dosage instructions
-         */
-        sequence?: integer;
-        /**
-         * Contains extended information for property 'sequence'.
-         */
-        _sequence?: Element;
-        /**
-         * Free text dosage instructions e.g. SIG
-         */
-        text?: string;
-        /**
-         * Contains extended information for property 'text'.
-         */
-        _text?: Element;
-        /**
-         * Supplemental instruction - e.g. "with meals"
-         */
-        additionalInstruction?: CodeableConcept[];
-        /**
-         * Patient or consumer oriented instructions
-         */
-        patientInstruction?: string;
-        /**
-         * Contains extended information for property 'patientInstruction'.
-         */
-        _patientInstruction?: Element;
-        /**
-         * When medication should be administered
-         */
-        timing?: Timing;
-        /**
-         * Take "as needed" (for x)
-         */
-        asNeededBoolean?: boolean;
-        /**
-         * Contains extended information for property 'asNeededBoolean'.
-         */
-        _asNeededBoolean?: Element;
-        /**
-         * Take "as needed" (for x)
-         */
-        asNeededCodeableConcept?: CodeableConcept;
-        /**
-         * Body site to administer to
-         */
-        site?: CodeableConcept;
-        /**
-         * How drug should enter body
-         */
-        route?: CodeableConcept;
-        /**
-         * Technique for administering medication
-         */
-        method?: CodeableConcept;
-        /**
-         * Amount of medication per dose
-         */
-        doseRange?: Range;
-        /**
-         * Amount of medication per dose
-         */
-        doseQuantity?: Quantity;
-        /**
-         * Upper limit on medication per unit of time
-         */
-        maxDosePerPeriod?: Ratio;
-        /**
-         * Upper limit on medication per administration
-         */
-        maxDosePerAdministration?: Quantity;
-        /**
-         * Upper limit on medication per lifetime of the patient
-         */
-        maxDosePerLifetime?: Quantity;
-        /**
-         * Amount of medication per unit of time
-         */
-        rateRatio?: Ratio;
-        /**
-         * Amount of medication per unit of time
-         */
-        rateRange?: Range;
-        /**
-         * Amount of medication per unit of time
-         */
-        rateQuantity?: Quantity;
     }
     /**
      * Dynamic aspects of the definition
      */
     interface ActivityDefinitionDynamicValue extends BackboneElement {
         /**
-         * Natural language description of the dynamic value
-         */
-        description?: string;
-        /**
-         * Contains extended information for property 'description'.
-         */
-        _description?: Element;
-        /**
          * The path to the element to be set dynamically
          */
-        path?: string;
+        path: string;
         /**
          * Contains extended information for property 'path'.
          */
         _path?: Element;
         /**
-         * Language of the expression
-         */
-        language?: string;
-        /**
-         * Contains extended information for property 'language'.
-         */
-        _language?: Element;
-        /**
          * An expression that provides the dynamic value for the customization
          */
-        expression?: string;
-        /**
-         * Contains extended information for property 'expression'.
-         */
-        _expression?: Element;
+        expression: Expression;
     }
     /**
      * The definition of a specific activity to be taken, independent of any particular patient or context
      */
     interface ActivityDefinition extends DomainResource {
         /**
-         * Logical URI to reference this activity definition (globally unique)
+         * Canonical identifier for this activity definition, represented as a URI (globally unique)
          */
         url?: uri;
         /**
@@ -1674,6 +2029,14 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
          */
         _title?: Element;
         /**
+         * Subordinate title of the activity definition
+         */
+        subtitle?: string;
+        /**
+         * Contains extended information for property 'subtitle'.
+         */
+        _subtitle?: Element;
+        /**
          * draft | active | retired | unknown
          */
         status: code;
@@ -1690,7 +2053,15 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
          */
         _experimental?: Element;
         /**
-         * Date this was last changed
+         * Type of individual the activity definition is intended for
+         */
+        subjectCodeableConcept?: CodeableConcept;
+        /**
+         * Type of individual the activity definition is intended for
+         */
+        subjectReference?: Reference;
+        /**
+         * Date last changed
          */
         date?: dateTime;
         /**
@@ -1706,6 +2077,10 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
          */
         _publisher?: Element;
         /**
+         * Contact details for the publisher
+         */
+        contact?: ContactDetail[];
+        /**
          * Natural language description of the activity definition
          */
         description?: markdown;
@@ -1713,6 +2088,14 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
          * Contains extended information for property 'description'.
          */
         _description?: Element;
+        /**
+         * The context that the content is intended to support
+         */
+        useContext?: UsageContext[];
+        /**
+         * Intended jurisdiction for activity definition (if applicable)
+         */
+        jurisdiction?: CodeableConcept[];
         /**
          * Why this activity definition is defined
          */
@@ -1722,13 +2105,21 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
          */
         _purpose?: Element;
         /**
-         * Describes the clinical usage of the asset
+         * Describes the clinical usage of the activity definition
          */
         usage?: string;
         /**
          * Contains extended information for property 'usage'.
          */
         _usage?: Element;
+        /**
+         * Use and/or publishing restrictions
+         */
+        copyright?: markdown;
+        /**
+         * Contains extended information for property 'copyright'.
+         */
+        _copyright?: Element;
         /**
          * When the activity definition was approved by publisher
          */
@@ -1750,41 +2141,37 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
          */
         effectivePeriod?: Period;
         /**
-         * Context the content is intended to support
-         */
-        useContext?: UsageContext[];
-        /**
-         * Intended jurisdiction for activity definition (if applicable)
-         */
-        jurisdiction?: CodeableConcept[];
-        /**
-         * E.g. Education, Treatment, Assessment, etc
+         * E.g. Education, Treatment, Assessment, etc.
          */
         topic?: CodeableConcept[];
         /**
-         * A content contributor
+         * Who authored the content
          */
-        contributor?: Contributor[];
+        author?: ContactDetail[];
         /**
-         * Contact details for the publisher
+         * Who edited the content
          */
-        contact?: ContactDetail[];
+        editor?: ContactDetail[];
         /**
-         * Use and/or publishing restrictions
+         * Who reviewed the content
          */
-        copyright?: markdown;
+        reviewer?: ContactDetail[];
         /**
-         * Contains extended information for property 'copyright'.
+         * Who endorsed the content
          */
-        _copyright?: Element;
+        endorser?: ContactDetail[];
         /**
-         * Additional documentation, citations, etc
+         * Additional documentation, citations, etc.
          */
         relatedArtifact?: RelatedArtifact[];
         /**
-         * Logic used by the asset
+         * Logic used by the activity definition
          */
-        library?: Reference[];
+        library?: canonical[];
+        /**
+         * Contains extended information for property 'library'.
+         */
+        _library?: Element[];
         /**
          * Kind of resource
          */
@@ -1794,9 +2181,41 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
          */
         _kind?: Element;
         /**
+         * What profile the resource needs to conform to
+         */
+        profile?: canonical;
+        /**
+         * Contains extended information for property 'profile'.
+         */
+        _profile?: Element;
+        /**
          * Detail type of activity
          */
         code?: CodeableConcept;
+        /**
+         * proposal | plan | order
+         */
+        intent?: code;
+        /**
+         * Contains extended information for property 'intent'.
+         */
+        _intent?: Element;
+        /**
+         * routine | urgent | asap | stat
+         */
+        priority?: code;
+        /**
+         * Contains extended information for property 'priority'.
+         */
+        _priority?: Element;
+        /**
+         * True if the activity should not be performed
+         */
+        doNotPerform?: boolean;
+        /**
+         * Contains extended information for property 'doNotPerform'.
+         */
+        _doNotPerform?: Element;
         /**
          * When activity is to occur
          */
@@ -1812,11 +2231,19 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
         /**
          * When activity is to occur
          */
+        timingAge?: Age;
+        /**
+         * When activity is to occur
+         */
         timingPeriod?: Period;
         /**
          * When activity is to occur
          */
         timingRange?: Range;
+        /**
+         * When activity is to occur
+         */
+        timingDuration?: Duration;
         /**
          * Where it should happen
          */
@@ -1846,9 +2273,25 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
          */
         bodySite?: CodeableConcept[];
         /**
+         * What specimens are required to perform this action
+         */
+        specimenRequirement?: Reference[];
+        /**
+         * What observations are required to perform this action
+         */
+        observationRequirement?: Reference[];
+        /**
+         * What observations must be produced by this action
+         */
+        observationResultRequirement?: Reference[];
+        /**
          * Transform to apply the template
          */
-        transform?: Reference;
+        transform?: canonical;
+        /**
+         * Contains extended information for property 'transform'.
+         */
+        _transform?: Element;
         /**
          * Dynamic aspects of the definition
          */
@@ -1863,37 +2306,34 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
          */
         instance: Reference;
         /**
-         * causality1 | causality2
+         * Information on the possible cause of the event
          */
-        causality?: code;
+        causality?: AdverseEventSuspectEntityCausality[];
+    }
+    /**
+     * Information on the possible cause of the event
+     */
+    interface AdverseEventSuspectEntityCausality extends BackboneElement {
         /**
-         * Contains extended information for property 'causality'.
+         * Assessment of if the entity caused the event
          */
-        _causality?: Element;
-        /**
-         * assess1 | assess2
-         */
-        causalityAssessment?: CodeableConcept;
+        assessment?: CodeableConcept;
         /**
          * AdverseEvent.suspectEntity.causalityProductRelatedness
          */
-        causalityProductRelatedness?: string;
+        productRelatedness?: string;
         /**
-         * Contains extended information for property 'causalityProductRelatedness'.
+         * Contains extended information for property 'productRelatedness'.
          */
-        _causalityProductRelatedness?: Element;
-        /**
-         * method1 | method2
-         */
-        causalityMethod?: CodeableConcept;
+        _productRelatedness?: Element;
         /**
          * AdverseEvent.suspectEntity.causalityAuthor
          */
-        causalityAuthor?: Reference;
+        author?: Reference;
         /**
-         * result1 | result2
+         * ProbabilityScale | Bayesian | Checklist
          */
-        causalityResult?: CodeableConcept;
+        method?: CodeableConcept;
     }
     /**
      * Medical care, research study or other healthcare event causing physical injury
@@ -1904,22 +2344,29 @@ ExpressionLanguage (Extensible but limited to http://www.rfc-editor.org/bcp/bcp1
          */
         identifier?: Identifier;
         /**
-         * AE | PAE 
-An adverse event is an event that caused harm to a patient,  an adverse reaction is a something that is a subject-specific event that is a result of an exposure to a medication, food, device or environmental substance, a potential adverse event is something that occurred and that could have caused harm to a patient but did not
-         */
-        category?: code;
-        /**
-         * Contains extended information for property 'category'.
-         */
-        _category?: Element;
-        /**
          * actual | potential
          */
-        type?: CodeableConcept;
+        actuality: code;
         /**
-         * Subject or group impacted by event
+         * Contains extended information for property 'actuality'.
          */
-        subject?: Reference;
+        _actuality?: Element;
+        /**
+         * product-problem | product-quality | product-use-error | wrong-dose | incorrect-prescribing-information | wrong-technique | wrong-route-of-administration | wrong-rate | wrong-duration | wrong-time | expired-drug | medical-device-use-error | problem-different-manufacturer | unsafe-physical-environment
+         */
+        category?: CodeableConcept[];
+        /**
+         * Type of the event itself in relation to the subject
+         */
+        event?: CodeableConcept;
+        /**
+         * Subject impacted by event
+         */
+        subject: Reference;
+        /**
+         * Encounter or episode of care that establishes the context for this AdverseEvent
+         */
+        context?: Reference;
         /**
          * When the event occurred
          */
@@ -1929,17 +2376,37 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _date?: Element;
         /**
-         * Adverse Reaction Events linked to exposure to substance
+         * When the event was detected
          */
-        reaction?: Reference[];
+        detected?: dateTime;
+        /**
+         * Contains extended information for property 'detected'.
+         */
+        _detected?: Element;
+        /**
+         * When the event was recorded
+         */
+        recordedDate?: dateTime;
+        /**
+         * Contains extended information for property 'recordedDate'.
+         */
+        _recordedDate?: Element;
+        /**
+         * Effect on the subject due to this event
+         */
+        resultingCondition?: Reference[];
         /**
          * Location where adverse event occurred
          */
         location?: Reference;
         /**
-         * Mild | Moderate | Severe
+         * Seriousness of the event
          */
         seriousness?: CodeableConcept;
+        /**
+         * mild | moderate | severe
+         */
+        severity?: CodeableConcept;
         /**
          * resolved | recovering | ongoing | resolvedWithSequelae | fatal | unknown
          */
@@ -1951,15 +2418,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Who  was involved in the adverse event or the potential adverse event
          */
-        eventParticipant?: Reference;
-        /**
-         * Description of the adverse event
-         */
-        description?: string;
-        /**
-         * Contains extended information for property 'description'.
-         */
-        _description?: Element;
+        contributor?: Reference[];
         /**
          * The suspected agent causing the adverse event
          */
@@ -2041,7 +2500,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * unconfirmed | confirmed | refuted | entered-in-error
          */
-        verificationStatus: code;
+        verificationStatus?: code;
         /**
          * Contains extended information for property 'verificationStatus'.
          */
@@ -2079,6 +2538,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         patient: Reference;
         /**
+         * Encounter when the allergy or intolerance was asserted
+         */
+        encounter?: Reference;
+        /**
          * When allergy or intolerance was identified
          */
         onsetDateTime?: dateTime;
@@ -2107,13 +2570,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _onsetString?: Element;
         /**
-         * Date record was believed accurate
+         * Date record was first recorded
          */
-        assertedDate?: dateTime;
+        recordedDate?: dateTime;
         /**
-         * Contains extended information for property 'assertedDate'.
+         * Contains extended information for property 'recordedDate'.
          */
-        _assertedDate?: Element;
+        _recordedDate?: Element;
         /**
          * Who recorded the sensitivity
          */
@@ -2167,6 +2630,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'status'.
          */
         _status?: Element;
+        /**
+         * Participation period of the actor
+         */
+        period?: Period;
     }
     /**
      * A booking of a healthcare event among patient(s), practitioner(s), related person(s) and/or device(s) for a specific date/time. This may result in one or more Encounter(s)
@@ -2177,7 +2644,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         identifier?: Identifier[];
         /**
-         * proposed | pending | booked | arrived | fulfilled | cancelled | noshow | entered-in-error
+         * proposed | pending | booked | arrived | fulfilled | cancelled | noshow | entered-in-error | checked-in
          */
         status: code;
         /**
@@ -2185,9 +2652,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _status?: Element;
         /**
-         * A broad categorisation of the service that is to be performed during this appointment
+         * A broad categorization of the service that is to be performed during this appointment
          */
-        serviceCategory?: CodeableConcept;
+        serviceCategory?: CodeableConcept[];
         /**
          * The specific service that is to be performed during this appointment
          */
@@ -2273,9 +2740,17 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _comment?: Element;
         /**
-         * The ReferralRequest provided as information to allocate to the Encounter
+         * Detailed information and instructions for the patient
          */
-        incomingReferral?: Reference[];
+        patientInstruction?: string;
+        /**
+         * Contains extended information for property 'patientInstruction'.
+         */
+        _patientInstruction?: Element;
+        /**
+         * The service request this appointment is allocated to assess
+         */
+        basedOn?: Reference[];
         /**
          * Participants involved in appointment
          */
@@ -2318,7 +2793,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         participantType?: CodeableConcept[];
         /**
-         * Person, Location/HealthcareService or Device
+         * Person, Location, HealthcareService, or Device
          */
         actor?: Reference;
         /**
@@ -2343,19 +2818,19 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface AuditEventAgent extends BackboneElement {
         /**
+         * How agent participated
+         */
+        type?: CodeableConcept;
+        /**
          * Agent role in the event
          */
         role?: CodeableConcept[];
         /**
-         * Direct reference to resource
+         * Identifier of who
          */
-        reference?: Reference;
+        who?: Reference;
         /**
-         * Unique identifier for the user
-         */
-        userId?: Identifier;
-        /**
-         * Alternative User id e.g. authentication
+         * Alternative User identity
          */
         altId?: string;
         /**
@@ -2363,7 +2838,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _altId?: Element;
         /**
-         * Human-meaningful name for the agent
+         * Human friendly name for the agent
          */
         name?: string;
         /**
@@ -2439,7 +2914,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * The identity of source detecting the event
          */
-        identifier: Identifier;
+        observer: Reference;
         /**
          * The type of source where event originated
          */
@@ -2450,13 +2925,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface AuditEventEntity extends BackboneElement {
         /**
-         * Specific instance of object
-         */
-        identifier?: Identifier;
-        /**
          * Specific instance of resource
          */
-        reference?: Reference;
+        what?: Reference;
         /**
          * Type of entity involved
          */
@@ -2517,11 +2988,19 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Property value
          */
-        value: base64Binary;
+        valueString?: string;
         /**
-         * Contains extended information for property 'value'.
+         * Contains extended information for property 'valueString'.
          */
-        _value?: Element;
+        _valueString?: Element;
+        /**
+         * Property value
+         */
+        valueBase64Binary?: base64Binary;
+        /**
+         * Contains extended information for property 'valueBase64Binary'.
+         */
+        _valueBase64Binary?: Element;
     }
     /**
      * Event record kept for security purposes
@@ -2544,7 +3023,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _action?: Element;
         /**
-         * Time when the event occurred on source
+         * When the activity occurred
+         */
+        period?: Period;
+        /**
+         * Time when the event was recorded
          */
         recorded: instant;
         /**
@@ -2626,28 +3109,205 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _contentType?: Element;
         /**
-         * Access Control Management
+         * Identifies another resource to use as proxy when enforcing access control
          */
         securityContext?: Reference;
         /**
          * The actual content
          */
-        content: base64Binary;
+        data?: base64Binary;
         /**
-         * Contains extended information for property 'content'.
+         * Contains extended information for property 'data'.
          */
-        _content?: Element;
+        _data?: Element;
     }
     /**
-     * Specific and identified anatomical location
+     * How this product was collected
      */
-    interface BodySite extends DomainResource {
+    interface BiologicallyDerivedProductCollection extends BackboneElement {
         /**
-         * Bodysite identifier
+         * HealthCare Professional performing collection
+         */
+        collector?: Reference;
+        /**
+         * Person or entity providing product
+         */
+        source?: Reference;
+        /**
+         * Time of product collection
+         */
+        collectedDateTime?: dateTime;
+        /**
+         * Contains extended information for property 'collectedDateTime'.
+         */
+        _collectedDateTime?: Element;
+        /**
+         * Time of product collection
+         */
+        collectedPeriod?: Period;
+    }
+    /**
+     * Any processing of the product during collection
+     */
+    interface BiologicallyDerivedProductProcessing extends BackboneElement {
+        /**
+         * Description of of processing
+         */
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Procesing code
+         */
+        procedure?: CodeableConcept;
+        /**
+         * Substance added during processing
+         */
+        additive?: Reference;
+        /**
+         * Time of processing
+         */
+        timeDateTime?: dateTime;
+        /**
+         * Contains extended information for property 'timeDateTime'.
+         */
+        _timeDateTime?: Element;
+        /**
+         * Time of processing
+         */
+        timePeriod?: Period;
+    }
+    /**
+     * Any manipulation of product post-collection
+     */
+    interface BiologicallyDerivedProductManipulation extends BackboneElement {
+        /**
+         * Description of manipulation
+         */
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Time of manipulation
+         */
+        timeDateTime?: dateTime;
+        /**
+         * Contains extended information for property 'timeDateTime'.
+         */
+        _timeDateTime?: Element;
+        /**
+         * Time of manipulation
+         */
+        timePeriod?: Period;
+    }
+    /**
+     * Product storage
+     */
+    interface BiologicallyDerivedProductStorage extends BackboneElement {
+        /**
+         * Description of storage
+         */
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Storage temperature
+         */
+        temperature?: decimal;
+        /**
+         * Contains extended information for property 'temperature'.
+         */
+        _temperature?: Element;
+        /**
+         * farenheit | celsius | kelvin
+         */
+        scale?: code;
+        /**
+         * Contains extended information for property 'scale'.
+         */
+        _scale?: Element;
+        /**
+         * Storage timeperiod
+         */
+        duration?: Period;
+    }
+    /**
+     * A material substance originating from a biological entity
+     */
+    interface BiologicallyDerivedProduct extends DomainResource {
+        /**
+         * External ids for this item
          */
         identifier?: Identifier[];
         /**
-         * Whether this body site record is in active use
+         * organ | tissue | fluid | cells | biologicalAgent
+         */
+        productCategory?: code;
+        /**
+         * Contains extended information for property 'productCategory'.
+         */
+        _productCategory?: Element;
+        /**
+         * What this biologically derived product is
+         */
+        productCode?: CodeableConcept;
+        /**
+         * available | unavailable
+         */
+        status?: code;
+        /**
+         * Contains extended information for property 'status'.
+         */
+        _status?: Element;
+        /**
+         * Procedure request
+         */
+        request?: Reference[];
+        /**
+         * The amount of this biologically derived product
+         */
+        quantity?: integer;
+        /**
+         * Contains extended information for property 'quantity'.
+         */
+        _quantity?: Element;
+        /**
+         * BiologicallyDerivedProduct parent
+         */
+        parent?: Reference;
+        /**
+         * How this product was collected
+         */
+        collection?: BiologicallyDerivedProductCollection;
+        /**
+         * Any processing of the product during collection
+         */
+        processing?: BiologicallyDerivedProductProcessing[];
+        /**
+         * Any manipulation of product post-collection
+         */
+        manipulation?: BiologicallyDerivedProductManipulation;
+        /**
+         * Product storage
+         */
+        storage?: BiologicallyDerivedProductStorage[];
+    }
+    /**
+     * Specific and identified anatomical structure
+     */
+    interface BodyStructure extends DomainResource {
+        /**
+         * Bodystructure identifier
+         */
+        identifier?: Identifier[];
+        /**
+         * Whether this record is in active use
          */
         active?: boolean;
         /**
@@ -2655,15 +3315,19 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _active?: Element;
         /**
-         * Named anatomical location
+         * Kind of Structure
          */
-        code?: CodeableConcept;
+        morphology?: CodeableConcept;
         /**
-         * Modification to location code
+         * Body site
          */
-        qualifier?: CodeableConcept[];
+        location?: CodeableConcept;
         /**
-         * Anatomical location description
+         * Body site modifier
+         */
+        locationQualifier?: CodeableConcept[];
+        /**
+         * Text description
          */
         description?: string;
         /**
@@ -2701,7 +3365,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         _url?: Element;
     }
     /**
-     * Entry in the bundle - will have a resource, or information
+     * Entry in the bundle - will have a resource or information
      */
     interface BundleEntry extends BackboneElement {
         /**
@@ -2709,7 +3373,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         link?: BundleLink[];
         /**
-         * Absolute URL for resource (server address, or UUID/OID)
+         * URI for resource (Absolute URL server address or URI for UUID/OID)
          */
         fullUrl?: uri;
         /**
@@ -2725,11 +3389,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         search?: BundleEntrySearch;
         /**
-         * Transaction Related Information
+         * Additional execution information (transaction/batch/history)
          */
         request?: BundleEntryRequest;
         /**
-         * Transaction Related Information
+         * Results of execution (transaction/batch/history)
          */
         response?: BundleEntryResponse;
     }
@@ -2755,11 +3419,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         _score?: Element;
     }
     /**
-     * Transaction Related Information
+     * Additional execution information (transaction/batch/history)
      */
     interface BundleEntryRequest extends BackboneElement {
         /**
-         * GET | POST | PUT | DELETE
+         * GET | HEAD | POST | PUT | DELETE | PATCH
          */
         method: code;
         /**
@@ -2783,7 +3447,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _ifNoneMatch?: Element;
         /**
-         * For managing update contention
+         * For managing cache currency
          */
         ifModifiedSince?: instant;
         /**
@@ -2808,7 +3472,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         _ifNoneExist?: Element;
     }
     /**
-     * Transaction Related Information
+     * Results of execution (transaction/batch/history)
      */
     interface BundleEntryResponse extends BackboneElement {
         /**
@@ -2820,7 +3484,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _status?: Element;
         /**
-         * The location, if the operation returns a location
+         * The location (if the operation returns a location)
          */
         location?: uri;
         /**
@@ -2828,7 +3492,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _location?: Element;
         /**
-         * The etag for the resource (if relevant)
+         * The Etag for the resource (if relevant)
          */
         etag?: string;
         /**
@@ -2865,6 +3529,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _type?: Element;
         /**
+         * When the bundle was assembled
+         */
+        timestamp?: instant;
+        /**
+         * Contains extended information for property 'timestamp'.
+         */
+        _timestamp?: Element;
+        /**
          * If search, the total number of matches
          */
         total?: unsignedInt;
@@ -2877,7 +3549,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         link?: BundleLink[];
         /**
-         * Entry in the bundle - will have a resource, or information
+         * Entry in the bundle - will have a resource or information
          */
         entry?: BundleEntry[];
         /**
@@ -2906,7 +3578,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _version?: Element;
         /**
-         * Date this version released
+         * Date this version was released
          */
         releaseDate?: dateTime;
         /**
@@ -2929,11 +3601,15 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Base URL for the installation
          */
-        url?: uri;
+        url?: url;
         /**
          * Contains extended information for property 'url'.
          */
         _url?: Element;
+        /**
+         * Organization that manages the data
+         */
+        custodian?: Reference;
     }
     /**
      * If the endpoint is a RESTful one
@@ -2950,7 +3626,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * General description of implementation
          */
-        documentation?: string;
+        documentation?: markdown;
         /**
          * Contains extended information for property 'documentation'.
          */
@@ -2972,13 +3648,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         searchParam?: CapabilityStatementRestResourceSearchParam[];
         /**
-         * Definition of an operation or a custom query
+         * Definition of a system level operation
          */
-        operation?: CapabilityStatementRestOperation[];
+        operation?: CapabilityStatementRestResourceOperation[];
         /**
          * Compartments served/used by system
          */
-        compartment?: uri[];
+        compartment?: canonical[];
         /**
          * Contains extended information for property 'compartment'.
          */
@@ -3003,36 +3679,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * General description of how security works
          */
-        description?: string;
+        description?: markdown;
         /**
          * Contains extended information for property 'description'.
          */
         _description?: Element;
-        /**
-         * Certificates associated with security profiles
-         */
-        certificate?: CapabilityStatementRestSecurityCertificate[];
-    }
-    /**
-     * Certificates associated with security profiles
-     */
-    interface CapabilityStatementRestSecurityCertificate extends BackboneElement {
-        /**
-         * Mime type for certificates
-         */
-        type?: code;
-        /**
-         * Contains extended information for property 'type'.
-         */
-        _type?: Element;
-        /**
-         * Actual certificate
-         */
-        blob?: base64Binary;
-        /**
-         * Contains extended information for property 'blob'.
-         */
-        _blob?: Element;
     }
     /**
      * Resource served on the REST interface
@@ -3049,7 +3700,19 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Base System profile for all uses of resource
          */
-        profile?: Reference;
+        profile?: canonical;
+        /**
+         * Contains extended information for property 'profile'.
+         */
+        _profile?: Element;
+        /**
+         * Profiles for use cases supported
+         */
+        supportedProfile?: canonical[];
+        /**
+         * Contains extended information for property 'supportedProfile'.
+         */
+        _supportedProfile?: Element[];
         /**
          * Additional information about the use of the resource type
          */
@@ -3061,7 +3724,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * What operations are supported?
          */
-        interaction: CapabilityStatementRestResourceInteraction[];
+        interaction?: CapabilityStatementRestResourceInteraction[];
         /**
          * no-version | versioned | versioned-update
          */
@@ -3146,6 +3809,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Search parameters supported by implementation
          */
         searchParam?: CapabilityStatementRestResourceSearchParam[];
+        /**
+         * Definition of a resource operation
+         */
+        operation?: CapabilityStatementRestResourceOperation[];
     }
     /**
      * What operations are supported?
@@ -3162,7 +3829,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Anything special about operation behavior
          */
-        documentation?: string;
+        documentation?: markdown;
         /**
          * Contains extended information for property 'documentation'.
          */
@@ -3183,13 +3850,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Source of definition for parameter
          */
-        definition?: uri;
+        definition?: canonical;
         /**
          * Contains extended information for property 'definition'.
          */
         _definition?: Element;
         /**
-         * number | date | string | token | reference | composite | quantity | uri
+         * number | date | string | token | reference | composite | quantity | uri | special
          */
         type: code;
         /**
@@ -3199,7 +3866,36 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Server-specific usage
          */
-        documentation?: string;
+        documentation?: markdown;
+        /**
+         * Contains extended information for property 'documentation'.
+         */
+        _documentation?: Element;
+    }
+    /**
+     * Definition of a resource operation
+     */
+    interface CapabilityStatementRestResourceOperation extends BackboneElement {
+        /**
+         * Name by which the operation/query is invoked
+         */
+        name: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * The defined operation/query
+         */
+        definition: canonical;
+        /**
+         * Contains extended information for property 'definition'.
+         */
+        _definition?: Element;
+        /**
+         * Specific details about operation behavior
+         */
+        documentation?: markdown;
         /**
          * Contains extended information for property 'documentation'.
          */
@@ -3220,28 +3916,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Anything special about operation behavior
          */
-        documentation?: string;
+        documentation?: markdown;
         /**
          * Contains extended information for property 'documentation'.
          */
         _documentation?: Element;
-    }
-    /**
-     * Definition of an operation or a custom query
-     */
-    interface CapabilityStatementRestOperation extends BackboneElement {
-        /**
-         * Name by which the operation/query is invoked
-         */
-        name: string;
-        /**
-         * Contains extended information for property 'name'.
-         */
-        _name?: Element;
-        /**
-         * The defined operation/query
-         */
-        definition: Reference;
     }
     /**
      * If messaging is supported
@@ -3262,7 +3941,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Messaging interface behavior details
          */
-        documentation?: string;
+        documentation?: markdown;
         /**
          * Contains extended information for property 'documentation'.
          */
@@ -3271,10 +3950,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Messages supported by this system
          */
         supportedMessage?: CapabilityStatementMessagingSupportedMessage[];
-        /**
-         * Declare support for this event
-         */
-        event?: CapabilityStatementMessagingEvent[];
     }
     /**
      * Where messages should be sent
@@ -3287,7 +3962,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Network address or identifier of the end-point
          */
-        address: uri;
+        address: url;
         /**
          * Contains extended information for property 'address'.
          */
@@ -3308,56 +3983,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Message supported by this system
          */
-        definition: Reference;
-    }
-    /**
-     * Declare support for this event
-     */
-    interface CapabilityStatementMessagingEvent extends BackboneElement {
+        definition: canonical;
         /**
-         * Event type
+         * Contains extended information for property 'definition'.
          */
-        code: Coding;
-        /**
-         * Consequence | Currency | Notification
-         */
-        category?: code;
-        /**
-         * Contains extended information for property 'category'.
-         */
-        _category?: Element;
-        /**
-         * sender | receiver
-         */
-        mode: code;
-        /**
-         * Contains extended information for property 'mode'.
-         */
-        _mode?: Element;
-        /**
-         * Resource that's focus of message
-         */
-        focus: code;
-        /**
-         * Contains extended information for property 'focus'.
-         */
-        _focus?: Element;
-        /**
-         * Profile that describes the request
-         */
-        request: Reference;
-        /**
-         * Profile that describes the response
-         */
-        response: Reference;
-        /**
-         * Endpoint-specific event documentation
-         */
-        documentation?: string;
-        /**
-         * Contains extended information for property 'documentation'.
-         */
-        _documentation?: Element;
+        _definition?: Element;
     }
     /**
      * Document definition
@@ -3374,22 +4004,26 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Description of document support
          */
-        documentation?: string;
+        documentation?: markdown;
         /**
          * Contains extended information for property 'documentation'.
          */
         _documentation?: Element;
         /**
-         * Constraint on a resource used in the document
+         * Constraint on the resources used in the document
          */
-        profile: Reference;
+        profile: canonical;
+        /**
+         * Contains extended information for property 'profile'.
+         */
+        _profile?: Element;
     }
     /**
      * A statement of system capabilities
      */
     interface CapabilityStatement extends DomainResource {
         /**
-         * Logical URI to reference this capability statement (globally unique)
+         * Canonical identifier for this capability statement, represented as a URI (globally unique)
          */
         url?: uri;
         /**
@@ -3437,7 +4071,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _experimental?: Element;
         /**
-         * Date this was last changed
+         * Date last changed
          */
         date: dateTime;
         /**
@@ -3465,7 +4099,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * Context the content is intended to support
+         * The context that the content is intended to support
          */
         useContext?: UsageContext[];
         /**
@@ -3499,11 +4133,19 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Canonical URL of another capability statement this implements
          */
-        instantiates?: uri[];
+        instantiates?: canonical[];
         /**
          * Contains extended information for property 'instantiates'.
          */
         _instantiates?: Element[];
+        /**
+         * Canonical URL of another capability statement this adds to
+         */
+        imports?: canonical[];
+        /**
+         * Contains extended information for property 'imports'.
+         */
+        _imports?: Element[];
         /**
          * Software that is covered by this capability statement
          */
@@ -3520,14 +4162,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'fhirVersion'.
          */
         _fhirVersion?: Element;
-        /**
-         * no | extensions | elements | both
-         */
-        acceptUnknown: code;
-        /**
-         * Contains extended information for property 'acceptUnknown'.
-         */
-        _acceptUnknown?: Element;
         /**
          * formats supported (xml | json | ttl | mime type)
          */
@@ -3547,15 +4181,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Implementation guides supported
          */
-        implementationGuide?: uri[];
+        implementationGuide?: canonical[];
         /**
          * Contains extended information for property 'implementationGuide'.
          */
         _implementationGuide?: Element[];
-        /**
-         * Profiles for use cases supported
-         */
-        profile?: Reference[];
         /**
          * If the endpoint is a RESTful one
          */
@@ -3599,13 +4229,29 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface CarePlanActivityDetail extends BackboneElement {
         /**
-         * diet | drug | encounter | observation | procedure | supply | other
+         * Kind of resource
          */
-        category?: CodeableConcept;
+        kind?: code;
         /**
-         * Protocol or definition
+         * Contains extended information for property 'kind'.
          */
-        definition?: Reference;
+        _kind?: Element;
+        /**
+         * Instantiates FHIR protocol or definition
+         */
+        instantiatesCanonical?: canonical[];
+        /**
+         * Contains extended information for property 'instantiatesCanonical'.
+         */
+        _instantiatesCanonical?: Element[];
+        /**
+         * Instantiates external protocol or definition
+         */
+        instantiatesUri?: uri[];
+        /**
+         * Contains extended information for property 'instantiatesUri'.
+         */
+        _instantiatesUri?: Element[];
         /**
          * Detail type of activity
          */
@@ -3615,7 +4261,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         reasonCode?: CodeableConcept[];
         /**
-         * Condition triggering need for activity
+         * Why activity is needed
          */
         reasonReference?: Reference[];
         /**
@@ -3623,7 +4269,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         goal?: Reference[];
         /**
-         * not-started | scheduled | in-progress | on-hold | completed | cancelled | unknown
+         * not-started | scheduled | in-progress | on-hold | completed | cancelled | stopped | unknown | entered-in-error
          */
         status: code;
         /**
@@ -3633,19 +4279,15 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Reason for current status
          */
-        statusReason?: string;
+        statusReason?: CodeableConcept;
         /**
-         * Contains extended information for property 'statusReason'.
+         * If true, activity is prohibiting action
          */
-        _statusReason?: Element;
+        doNotPerform?: boolean;
         /**
-         * Do NOT do
+         * Contains extended information for property 'doNotPerform'.
          */
-        prohibited?: boolean;
-        /**
-         * Contains extended information for property 'prohibited'.
-         */
-        _prohibited?: Element;
+        _doNotPerform?: Element;
         /**
          * When activity is to occur
          */
@@ -3704,11 +4346,23 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         identifier?: Identifier[];
         /**
-         * Protocol or definition
+         * Instantiates FHIR protocol or definition
          */
-        definition?: Reference[];
+        instantiatesCanonical?: canonical[];
         /**
-         * Fulfills care plan
+         * Contains extended information for property 'instantiatesCanonical'.
+         */
+        _instantiatesCanonical?: Element[];
+        /**
+         * Instantiates external protocol or definition
+         */
+        instantiatesUri?: uri[];
+        /**
+         * Contains extended information for property 'instantiatesUri'.
+         */
+        _instantiatesUri?: Element[];
+        /**
+         * Fulfills CarePlan
          */
         basedOn?: Reference[];
         /**
@@ -3740,7 +4394,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         category?: CodeableConcept[];
         /**
-         * Human-friendly name for the CarePlan
+         * Human-friendly name for the care plan
          */
         title?: string;
         /**
@@ -3756,7 +4410,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * Who care plan is for
+         * Who the care plan is for
          */
         subject: Reference;
         /**
@@ -3768,9 +4422,21 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         period?: Period;
         /**
-         * Who is responsible for contents of the plan
+         * Date record was first recorded
          */
-        author?: Reference[];
+        created?: dateTime;
+        /**
+         * Contains extended information for property 'created'.
+         */
+        _created?: Element;
+        /**
+         * Who is the designated responsible party
+         */
+        author?: Reference;
+        /**
+         * Who provided the content of the care plan
+         */
+        contributor?: Reference[];
         /**
          * Who's involved in plan?
          */
@@ -3803,7 +4469,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Type of involvement
          */
-        role?: CodeableConcept;
+        role?: CodeableConcept[];
         /**
          * Who is involved
          */
@@ -3874,6 +4540,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         managingOrganization?: Reference[];
         /**
+         * A contact detail for the care team (that applies to all members)
+         */
+        telecom?: ContactPoint[];
+        /**
          * Comments made about the CareTeam
          */
         note?: Annotation[];
@@ -3881,11 +4551,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
     /**
      * Who performed charged service
      */
-    interface ChargeItemParticipant extends BackboneElement {
+    interface ChargeItemPerformer extends BackboneElement {
         /**
          * What type of performance was done
          */
-        role?: CodeableConcept;
+        function?: CodeableConcept;
         /**
          * Individual who was performing
          */
@@ -3898,7 +4568,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Business Identifier for item
          */
-        identifier?: Identifier;
+        identifier?: Identifier[];
         /**
          * Defining information about the code of this charge item
          */
@@ -3950,7 +4620,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Who performed charged service
          */
-        participant?: ChargeItemParticipant[];
+        performer?: ChargeItemPerformer[];
         /**
          * Organization providing the charged sevice
          */
@@ -3959,6 +4629,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Organization requesting the charged service
          */
         requestingOrganization?: Reference;
+        /**
+         * Organization that has ownership of the (potential, future) revenue
+         */
+        costCenter?: Reference;
         /**
          * Quantity of which the charge item has been serviced
          */
@@ -4008,6 +4682,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         service?: Reference[];
         /**
+         * Product charged
+         */
+        productReference?: Reference;
+        /**
+         * Product charged
+         */
+        productCodeableConcept?: CodeableConcept;
+        /**
          * Account to place this charge
          */
         account?: Reference[];
@@ -4016,12 +4698,236 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         note?: Annotation[];
         /**
-         * Further information supporting the this charge
+         * Further information supporting this charge
          */
         supportingInformation?: Reference[];
     }
     /**
-     * Related Claims which may be revelant to processing this claimn
+     * Whether or not the billing code is applicable
+     */
+    interface ChargeItemDefinitionApplicability extends BackboneElement {
+        /**
+         * Natural language description of the condition
+         */
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Language of the expression
+         */
+        language?: string;
+        /**
+         * Contains extended information for property 'language'.
+         */
+        _language?: Element;
+        /**
+         * Boolean-valued expression
+         */
+        expression?: string;
+        /**
+         * Contains extended information for property 'expression'.
+         */
+        _expression?: Element;
+    }
+    /**
+     * Group of properties which are applicable under the same conditions
+     */
+    interface ChargeItemDefinitionPropertyGroup extends BackboneElement {
+        /**
+         * Conditions under which the priceComponent is applicable
+         */
+        applicability?: ChargeItemDefinitionApplicability[];
+        /**
+         * Components of total line item price
+         */
+        priceComponent?: ChargeItemDefinitionPropertyGroupPriceComponent[];
+    }
+    /**
+     * Components of total line item price
+     */
+    interface ChargeItemDefinitionPropertyGroupPriceComponent extends BackboneElement {
+        /**
+         * base | surcharge | deduction | discount | tax | informational
+         */
+        type: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+        /**
+         * Code identifying the specific component
+         */
+        code?: CodeableConcept;
+        /**
+         * Factor used for calculating this component
+         */
+        factor?: decimal;
+        /**
+         * Contains extended information for property 'factor'.
+         */
+        _factor?: Element;
+        /**
+         * Monetary amount associated with this component
+         */
+        amount?: Money;
+    }
+    /**
+     * Definition of properties and rules about how the price and the applicability of a ChargeItem can be determined
+     */
+    interface ChargeItemDefinition extends DomainResource {
+        /**
+         * Canonical identifier for this charge item definition, represented as a URI (globally unique)
+         */
+        url: uri;
+        /**
+         * Contains extended information for property 'url'.
+         */
+        _url?: Element;
+        /**
+         * Additional identifier for the charge item definition
+         */
+        identifier?: Identifier[];
+        /**
+         * Business version of the charge item definition
+         */
+        version?: string;
+        /**
+         * Contains extended information for property 'version'.
+         */
+        _version?: Element;
+        /**
+         * Name for this charge item definition (human friendly)
+         */
+        title?: string;
+        /**
+         * Contains extended information for property 'title'.
+         */
+        _title?: Element;
+        /**
+         * Underlying externally-defined charge item definition
+         */
+        derivedFromUri?: uri[];
+        /**
+         * Contains extended information for property 'derivedFromUri'.
+         */
+        _derivedFromUri?: Element[];
+        /**
+         * A larger definition of which this particular definition is a component or step
+         */
+        partOf?: canonical[];
+        /**
+         * Contains extended information for property 'partOf'.
+         */
+        _partOf?: Element[];
+        /**
+         * Completed or terminated request(s) whose function is taken by this new request
+         */
+        replaces?: canonical[];
+        /**
+         * Contains extended information for property 'replaces'.
+         */
+        _replaces?: Element[];
+        /**
+         * draft | active | retired | unknown
+         */
+        status: code;
+        /**
+         * Contains extended information for property 'status'.
+         */
+        _status?: Element;
+        /**
+         * For testing purposes, not real usage
+         */
+        experimental?: boolean;
+        /**
+         * Contains extended information for property 'experimental'.
+         */
+        _experimental?: Element;
+        /**
+         * Date last changed
+         */
+        date?: dateTime;
+        /**
+         * Contains extended information for property 'date'.
+         */
+        _date?: Element;
+        /**
+         * Name of the publisher (organization or individual)
+         */
+        publisher?: string;
+        /**
+         * Contains extended information for property 'publisher'.
+         */
+        _publisher?: Element;
+        /**
+         * Contact details for the publisher
+         */
+        contact?: ContactDetail[];
+        /**
+         * Natural language description of the charge item definition
+         */
+        description?: markdown;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * The context that the content is intended to support
+         */
+        useContext?: UsageContext[];
+        /**
+         * Intended jurisdiction for charge item definition (if applicable)
+         */
+        jurisdiction?: CodeableConcept[];
+        /**
+         * Use and/or publishing restrictions
+         */
+        copyright?: markdown;
+        /**
+         * Contains extended information for property 'copyright'.
+         */
+        _copyright?: Element;
+        /**
+         * When the charge item definition was approved by publisher
+         */
+        approvalDate?: date;
+        /**
+         * Contains extended information for property 'approvalDate'.
+         */
+        _approvalDate?: Element;
+        /**
+         * When the charge item definition was last reviewed
+         */
+        lastReviewDate?: date;
+        /**
+         * Contains extended information for property 'lastReviewDate'.
+         */
+        _lastReviewDate?: Element;
+        /**
+         * When the charge item definition is expected to be used
+         */
+        effectivePeriod?: Period;
+        /**
+         * Billing codes or product types this definition applies to
+         */
+        code?: CodeableConcept;
+        /**
+         * Instances this definition applies to
+         */
+        instance?: Reference[];
+        /**
+         * Whether or not the billing code is applicable
+         */
+        applicability?: ChargeItemDefinitionApplicability[];
+        /**
+         * Group of properties which are applicable under the same conditions
+         */
+        propertyGroup?: ChargeItemDefinitionPropertyGroup[];
+    }
+    /**
+     * Related Claims which may be relevant to processing this claim
      */
     interface ClaimRelated extends BackboneElement {
         /**
@@ -4048,7 +4954,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * organization | patient | practitioner | relatedperson
          */
-        resourceType?: Coding;
+        resource?: Coding;
         /**
          * Party to receive the payable
          */
@@ -4059,7 +4965,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface ClaimCareTeam extends BackboneElement {
         /**
-         * Number to covey order of careTeam
+         * Number to convey order of careTeam
          */
         sequence: positiveInt;
         /**
@@ -4122,6 +5028,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Additional Data or supporting information
          */
+        valueBoolean?: boolean;
+        /**
+         * Contains extended information for property 'valueBoolean'.
+         */
+        _valueBoolean?: Element;
+        /**
+         * Additional Data or supporting information
+         */
         valueString?: string;
         /**
          * Contains extended information for property 'valueString'.
@@ -4149,7 +5063,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface ClaimDiagnosis extends BackboneElement {
         /**
-         * Number to covey order of diagnosis
+         * Number to convey order of diagnosis
          */
         sequence: positiveInt;
         /**
@@ -4168,6 +5082,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Timing or nature of the diagnosis
          */
         type?: CodeableConcept[];
+        /**
+         * Present on admission
+         */
+        onAdmission?: CodeableConcept;
         /**
          * Package billing code
          */
@@ -4222,6 +5140,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'focal'.
          */
         _focal?: Element;
+        /**
+         * Claim number
+         */
+        identifier?: Identifier;
         /**
          * Insurance information
          */
@@ -4289,35 +5211,35 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Applicable careTeam members
          */
-        careTeamLinkId?: positiveInt[];
+        careTeamSequence?: positiveInt[];
         /**
-         * Contains extended information for property 'careTeamLinkId'.
+         * Contains extended information for property 'careTeamSequence'.
          */
-        _careTeamLinkId?: Element[];
+        _careTeamSequence?: Element[];
         /**
          * Applicable diagnoses
          */
-        diagnosisLinkId?: positiveInt[];
+        diagnosisSequence?: positiveInt[];
         /**
-         * Contains extended information for property 'diagnosisLinkId'.
+         * Contains extended information for property 'diagnosisSequence'.
          */
-        _diagnosisLinkId?: Element[];
+        _diagnosisSequence?: Element[];
         /**
          * Applicable procedures
          */
-        procedureLinkId?: positiveInt[];
+        procedureSequence?: positiveInt[];
         /**
-         * Contains extended information for property 'procedureLinkId'.
+         * Contains extended information for property 'procedureSequence'.
          */
-        _procedureLinkId?: Element[];
+        _procedureSequence?: Element[];
         /**
          * Applicable exception and supporting information
          */
-        informationLinkId?: positiveInt[];
+        informationSequence?: positiveInt[];
         /**
-         * Contains extended information for property 'informationLinkId'.
+         * Contains extended information for property 'informationSequence'.
          */
-        _informationLinkId?: Element[];
+        _informationSequence?: Element[];
         /**
          * Revenue or cost center code
          */
@@ -4329,7 +5251,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Billing Code
          */
-        service?: CodeableConcept;
+        billcode?: CodeableConcept;
         /**
          * Service/Product billing modifiers
          */
@@ -4426,7 +5348,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Billing Code
          */
-        service?: CodeableConcept;
+        billcode?: CodeableConcept;
         /**
          * Service/Product billing modifiers
          */
@@ -4487,7 +5409,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Billing Code
          */
-        service?: CodeableConcept;
+        billcode?: CodeableConcept;
         /**
          * Service/Product billing modifiers
          */
@@ -4544,9 +5466,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Finer grained claim type information
          */
-        subType?: CodeableConcept[];
+        subType?: CodeableConcept;
         /**
-         * complete | proposed | exploratory | other
+         * claim | preauthorization | predetermination
          */
         use?: code;
         /**
@@ -4582,10 +5504,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         provider?: Reference;
         /**
-         * Responsible organization
-         */
-        organization?: Reference;
-        /**
          * Desired processing priority
          */
         priority?: CodeableConcept;
@@ -4594,7 +5512,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         fundsReserve?: CodeableConcept;
         /**
-         * Related Claims which may be revelant to processing this claimn
+         * Related Claims which may be relevant to processing this claim
          */
         related?: ClaimRelated[];
         /**
@@ -4602,7 +5520,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         prescription?: Reference;
         /**
-         * Original prescription if superceded by fulfiller
+         * Original prescription if superseded by fulfiller
          */
         originalPrescription?: Reference;
         /**
@@ -4642,14 +5560,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         accident?: ClaimAccident;
         /**
-         * Period unable to work
-         */
-        employmentImpacted?: Period;
-        /**
-         * Period in hospital
-         */
-        hospitalization?: Period;
-        /**
          * Goods and Services
          */
         item?: ClaimItem[];
@@ -4665,11 +5575,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Service instance
          */
-        sequenceLinkId: positiveInt;
+        itemSequence: positiveInt;
         /**
-         * Contains extended information for property 'sequenceLinkId'.
+         * Contains extended information for property 'itemSequence'.
          */
-        _sequenceLinkId?: Element;
+        _itemSequence?: Element;
         /**
          * List of note numbers which apply
          */
@@ -4719,11 +5629,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Service instance
          */
-        sequenceLinkId: positiveInt;
+        detailSequence: positiveInt;
         /**
-         * Contains extended information for property 'sequenceLinkId'.
+         * Contains extended information for property 'detailSequence'.
          */
-        _sequenceLinkId?: Element;
+        _detailSequence?: Element;
         /**
          * List of note numbers which apply
          */
@@ -4748,11 +5658,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Service instance
          */
-        sequenceLinkId: positiveInt;
+        subDetailSequence: positiveInt;
         /**
-         * Contains extended information for property 'sequenceLinkId'.
+         * Contains extended information for property 'subDetailSequence'.
          */
-        _sequenceLinkId?: Element;
+        _subDetailSequence?: Element;
         /**
          * List of note numbers which apply
          */
@@ -4773,31 +5683,95 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Service instances
          */
-        sequenceLinkId?: positiveInt[];
+        itemSequence?: positiveInt[];
         /**
-         * Contains extended information for property 'sequenceLinkId'.
+         * Contains extended information for property 'itemSequence'.
          */
-        _sequenceLinkId?: Element[];
+        _itemSequence?: Element[];
         /**
-         * Revenue or cost center code
+         * Detail sequence number
          */
-        revenue?: CodeableConcept;
+        detailSequence?: positiveInt[];
         /**
-         * Type of service or product
+         * Contains extended information for property 'detailSequence'.
          */
-        category?: CodeableConcept;
+        _detailSequence?: Element[];
+        /**
+         * Subdetail sequence number
+         */
+        subdetailSequence?: positiveInt[];
+        /**
+         * Contains extended information for property 'subdetailSequence'.
+         */
+        _subdetailSequence?: Element[];
+        /**
+         * Authorized providers
+         */
+        provider?: Reference[];
         /**
          * Group, Service or Product
          */
-        service?: CodeableConcept;
+        billcode?: CodeableConcept;
         /**
          * Service/Product billing modifiers
          */
         modifier?: CodeableConcept[];
         /**
-         * Professional fee or Product charge
+         * Program specific reason for item inclusion
          */
-        fee?: Money;
+        programCode?: CodeableConcept[];
+        /**
+         * Date or dates of Service
+         */
+        servicedDate?: date;
+        /**
+         * Contains extended information for property 'servicedDate'.
+         */
+        _servicedDate?: Element;
+        /**
+         * Date or dates of Service
+         */
+        servicedPeriod?: Period;
+        /**
+         * Place of service
+         */
+        locationCodeableConcept?: CodeableConcept;
+        /**
+         * Place of service
+         */
+        locationAddress?: Address;
+        /**
+         * Place of service
+         */
+        locationReference?: Reference;
+        /**
+         * Count of Products or Services
+         */
+        quantity?: Quantity;
+        /**
+         * Fee, charge or cost per point
+         */
+        unitPrice?: Money;
+        /**
+         * Price scaling factor
+         */
+        factor?: decimal;
+        /**
+         * Contains extended information for property 'factor'.
+         */
+        _factor?: Element;
+        /**
+         * Total item cost
+         */
+        net?: Money;
+        /**
+         * Service Location
+         */
+        bodySite?: CodeableConcept;
+        /**
+         * Service Sub-location
+         */
+        subSite?: CodeableConcept[];
         /**
          * List of note numbers which apply
          */
@@ -4811,34 +5785,91 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         adjudication?: ClaimResponseItemAdjudication[];
         /**
-         * Added items details
+         * Insurer added line items
          */
         detail?: ClaimResponseAddItemDetail[];
     }
     /**
-     * Added items details
+     * Insurer added line items
      */
     interface ClaimResponseAddItemDetail extends BackboneElement {
         /**
-         * Revenue or cost center code
+         * Group, Service or Product
          */
-        revenue?: CodeableConcept;
-        /**
-         * Type of service or product
-         */
-        category?: CodeableConcept;
-        /**
-         * Service or Product
-         */
-        service?: CodeableConcept;
+        billcode?: CodeableConcept;
         /**
          * Service/Product billing modifiers
          */
         modifier?: CodeableConcept[];
         /**
-         * Professional fee or Product charge
+         * Count of Products or Services
          */
-        fee?: Money;
+        quantity?: Quantity;
+        /**
+         * Fee, charge or cost per point
+         */
+        unitPrice?: Money;
+        /**
+         * Price scaling factor
+         */
+        factor?: decimal;
+        /**
+         * Contains extended information for property 'factor'.
+         */
+        _factor?: Element;
+        /**
+         * Total item cost
+         */
+        net?: Money;
+        /**
+         * List of note numbers which apply
+         */
+        noteNumber?: positiveInt[];
+        /**
+         * Contains extended information for property 'noteNumber'.
+         */
+        _noteNumber?: Element[];
+        /**
+         * Added items detail adjudication
+         */
+        adjudication?: ClaimResponseItemAdjudication[];
+        /**
+         * Insurer added line items
+         */
+        subDetail?: ClaimResponseAddItemDetailSubDetail[];
+    }
+    /**
+     * Insurer added line items
+     */
+    interface ClaimResponseAddItemDetailSubDetail extends BackboneElement {
+        /**
+         * Group, Service or Product
+         */
+        billcode?: CodeableConcept;
+        /**
+         * Service/Product billing modifiers
+         */
+        modifier?: CodeableConcept[];
+        /**
+         * Count of Products or Services
+         */
+        quantity?: Quantity;
+        /**
+         * Fee, charge or cost per point
+         */
+        unitPrice?: Money;
+        /**
+         * Price scaling factor
+         */
+        factor?: decimal;
+        /**
+         * Contains extended information for property 'factor'.
+         */
+        _factor?: Element;
+        /**
+         * Total item cost
+         */
+        net?: Money;
         /**
          * List of note numbers which apply
          */
@@ -4859,34 +5890,47 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Item sequence number
          */
-        sequenceLinkId?: positiveInt;
+        itemSequence?: positiveInt;
         /**
-         * Contains extended information for property 'sequenceLinkId'.
+         * Contains extended information for property 'itemSequence'.
          */
-        _sequenceLinkId?: Element;
+        _itemSequence?: Element;
         /**
          * Detail sequence number
          */
-        detailSequenceLinkId?: positiveInt;
+        detailSequence?: positiveInt;
         /**
-         * Contains extended information for property 'detailSequenceLinkId'.
+         * Contains extended information for property 'detailSequence'.
          */
-        _detailSequenceLinkId?: Element;
+        _detailSequence?: Element;
         /**
          * Subdetail sequence number
          */
-        subdetailSequenceLinkId?: positiveInt;
+        subDetailSequence?: positiveInt;
         /**
-         * Contains extended information for property 'subdetailSequenceLinkId'.
+         * Contains extended information for property 'subDetailSequence'.
          */
-        _subdetailSequenceLinkId?: Element;
+        _subDetailSequence?: Element;
         /**
          * Error code detailing processing issues
          */
         code: CodeableConcept;
     }
     /**
-     * Payment details, if paid
+     * Adjudication totals
+     */
+    interface ClaimResponseTotal extends BackboneElement {
+        /**
+         * Adjudication category such as submitted, co-pay, eligible, benefit, etc.
+         */
+        category: CodeableConcept;
+        /**
+         * Monetary amount
+         */
+        amount: Money;
+    }
+    /**
+     * Payment Details
      */
     interface ClaimResponsePayment extends BackboneElement {
         /**
@@ -4933,7 +5977,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * display | print | printoper
          */
-        type?: CodeableConcept;
+        type?: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
         /**
          * Note explanatory text
          */
@@ -4980,20 +6028,12 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _businessArrangement?: Element;
         /**
-         * Pre-Authorization/Determination Reference
-         */
-        preAuthRef?: string[];
-        /**
-         * Contains extended information for property 'preAuthRef'.
-         */
-        _preAuthRef?: Element[];
-        /**
          * Adjudication results
          */
         claimResponse?: Reference;
     }
     /**
-     * Remittance resource
+     * ClaimResponse resource
      */
     interface ClaimResponse extends DomainResource {
         /**
@@ -5008,6 +6048,22 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'status'.
          */
         _status?: Element;
+        /**
+         * Type or discipline
+         */
+        type?: CodeableConcept;
+        /**
+         * Finer grained claim type information
+         */
+        subType?: CodeableConcept;
+        /**
+         * claim | preauthorization | predetermination
+         */
+        use?: code;
+        /**
+         * Contains extended information for property 'use'.
+         */
+        _use?: Element;
         /**
          * The subject of the Products and Services
          */
@@ -5029,17 +6085,17 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         requestProvider?: Reference;
         /**
-         * Responsible organization
-         */
-        requestOrganization?: Reference;
-        /**
          * Id of resource triggering adjudication
          */
         request?: Reference;
         /**
-         * complete | error | partial
+         * queued | complete | error | partial
          */
-        outcome?: CodeableConcept;
+        outcome?: code;
+        /**
+         * Contains extended information for property 'outcome'.
+         */
+        _outcome?: Element;
         /**
          * Disposition Message
          */
@@ -5048,6 +6104,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'disposition'.
          */
         _disposition?: Element;
+        /**
+         * Pre-Authorization/Determination Reference
+         */
+        preAuthRef?: string;
+        /**
+         * Contains extended information for property 'preAuthRef'.
+         */
+        _preAuthRef?: Element;
         /**
          * Party to be paid any benefits payable
          */
@@ -5065,19 +6129,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         error?: ClaimResponseError[];
         /**
-         * Total Cost of service from the Claim
+         * Adjudication totals
          */
-        totalCost?: Money;
+        total?: ClaimResponseTotal[];
         /**
-         * Unallocated deductible
-         */
-        unallocDeductable?: Money;
-        /**
-         * Total benefit payable for the Claim
-         */
-        totalBenefit?: Money;
-        /**
-         * Payment details, if paid
+         * Payment Details
          */
         payment?: ClaimResponsePayment;
         /**
@@ -5102,7 +6158,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         insurance?: ClaimResponseInsurance[];
     }
     /**
-     * One or more sets of investigations (signs, symptions, etc.)
+     * One or more sets of investigations (signs, symptoms, etc.)
      */
     interface ClinicalImpressionInvestigation extends BackboneElement {
         /**
@@ -5151,6 +6207,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'status'.
          */
         _status?: Element;
+        /**
+         * Reason for current status
+         */
+        statusReason?: CodeableConcept;
         /**
          * Kind of assessment performed
          */
@@ -5204,7 +6264,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         problem?: Reference[];
         /**
-         * One or more sets of investigations (signs, symptions, etc.)
+         * One or more sets of investigations (signs, symptoms, etc.)
          */
         investigation?: ClinicalImpressionInvestigation[];
         /**
@@ -5236,9 +6296,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         prognosisReference?: Reference[];
         /**
-         * Action taken as part of assessment procedure
+         * Information supporting the clinical impression
          */
-        action?: Reference[];
+        supportingInfo?: Reference[];
         /**
          * Comments made about the ClinicalImpression
          */
@@ -5310,7 +6370,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * code | Coding | string | integer | boolean | dateTime
+         * code | Coding | string | integer | boolean | dateTime | decimal
          */
         type: code;
         /**
@@ -5440,13 +6500,21 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'valueDateTime'.
          */
         _valueDateTime?: Element;
+        /**
+         * Value of the property for this concept
+         */
+        valueDecimal?: decimal;
+        /**
+         * Contains extended information for property 'valueDecimal'.
+         */
+        _valueDecimal?: Element;
     }
     /**
-     * A set of codes drawn from one or more code systems
+     * Declares the existence of and describes a code system or code system supplement
      */
     interface CodeSystem extends DomainResource {
         /**
-         * Logical URI to reference this code system (globally unique) (Coding.system)
+         * Canonical identifier for this code system, represented as a URI (globally unique) (Coding.system)
          */
         url?: uri;
         /**
@@ -5456,7 +6524,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Additional identifier for the code system
          */
-        identifier?: Identifier;
+        identifier?: Identifier[];
         /**
          * Business version of the code system (Coding.version)
          */
@@ -5498,7 +6566,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _experimental?: Element;
         /**
-         * Date this was last changed
+         * Date last changed
          */
         date?: dateTime;
         /**
@@ -5526,7 +6594,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * Context the content is intended to support
+         * The context that the content is intended to support
          */
         useContext?: UsageContext[];
         /**
@@ -5560,7 +6628,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Canonical URL for value set with entire code system
          */
-        valueSet?: uri;
+        valueSet?: canonical;
         /**
          * Contains extended information for property 'valueSet'.
          */
@@ -5574,7 +6642,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _hierarchyMeaning?: Element;
         /**
-         * If code system defines a post-composition grammar
+         * If code system defines a compositional grammar
          */
         compositional?: boolean;
         /**
@@ -5590,13 +6658,21 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _versionNeeded?: Element;
         /**
-         * not-present | example | fragment | complete
+         * not-present | example | fragment | complete | supplement
          */
         content: code;
         /**
          * Contains extended information for property 'content'.
          */
         _content?: Element;
+        /**
+         * Code System this adds designations and properties to
+         */
+        supplements?: canonical;
+        /**
+         * Contains extended information for property 'supplements'.
+         */
+        _supplements?: Element;
         /**
          * Total concepts in the code system
          */
@@ -5648,9 +6724,21 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         identifier?: Identifier[];
         /**
-         * Instantiates protocol or definition
+         * Instantiates FHIR protocol or definition
          */
-        definition?: Reference[];
+        instantiatesCanonical?: canonical[];
+        /**
+         * Contains extended information for property 'instantiatesCanonical'.
+         */
+        _instantiatesCanonical?: Element[];
+        /**
+         * Instantiates external protocol or definition
+         */
+        instantiatesUri?: uri[];
+        /**
+         * Contains extended information for property 'instantiatesUri'.
+         */
+        _instantiatesUri?: Element[];
         /**
          * Request fulfilled by this communication
          */
@@ -5660,7 +6748,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         partOf?: Reference[];
         /**
-         * preparation | in-progress | suspended | aborted | completed | entered-in-error
+         * Reply to
+         */
+        inResponseTo?: Reference[];
+        /**
+         * preparation | in-progress | not-done | suspended | aborted | completed | entered-in-error
          */
         status: code;
         /**
@@ -5668,21 +6760,21 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _status?: Element;
         /**
-         * Communication did not occur
+         * Reason for current status
          */
-        notDone?: boolean;
-        /**
-         * Contains extended information for property 'notDone'.
-         */
-        _notDone?: Element;
-        /**
-         * Why communication did not occur
-         */
-        notDoneReason?: CodeableConcept;
+        statusReason?: CodeableConcept;
         /**
          * Message category
          */
         category?: CodeableConcept[];
+        /**
+         * Message urgency
+         */
+        priority?: code;
+        /**
+         * Contains extended information for property 'priority'.
+         */
+        _priority?: Element;
         /**
          * A channel of communication
          */
@@ -5692,13 +6784,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         subject?: Reference;
         /**
-         * Message recipient
+         * Description of the purpose/content
          */
-        recipient?: Reference[];
+        topic?: CodeableConcept;
         /**
-         * Focal resources
+         * Resources that pertain to this communication
          */
-        topic?: Reference[];
+        about?: Reference[];
         /**
          * Encounter or episode leading to message
          */
@@ -5719,6 +6811,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'received'.
          */
         _received?: Element;
+        /**
+         * Message recipient
+         */
+        recipient?: Reference[];
         /**
          * Message sender
          */
@@ -5762,19 +6858,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         contentReference?: Reference;
     }
     /**
-     * Who/what is requesting service
-     */
-    interface CommunicationRequestRequester extends BackboneElement {
-        /**
-         * Individual making the request
-         */
-        agent: Reference;
-        /**
-         * Organization agent is acting for
-         */
-        onBehalfOf?: Reference;
-    }
-    /**
      * A request for information to be sent to a receiver
      */
     interface CommunicationRequest extends DomainResource {
@@ -5803,6 +6886,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _status?: Element;
         /**
+         * Reason for current status
+         */
+        statusReason?: CodeableConcept;
+        /**
          * Message category
          */
         category?: CodeableConcept[];
@@ -5815,6 +6902,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _priority?: Element;
         /**
+         * True if request is prohibiting action
+         */
+        doNotPerform?: boolean;
+        /**
+         * Contains extended information for property 'doNotPerform'.
+         */
+        _doNotPerform?: Element;
+        /**
          * A channel of communication
          */
         medium?: CodeableConcept[];
@@ -5823,13 +6918,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         subject?: Reference;
         /**
-         * Message recipient
+         * Resources that pertain to this communication request
          */
-        recipient?: Reference[];
-        /**
-         * Focal resources
-         */
-        topic?: Reference[];
+        about?: Reference[];
         /**
          * Encounter or episode leading to message
          */
@@ -5859,13 +6950,17 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _authoredOn?: Element;
         /**
+         * Who/what is requesting service
+         */
+        requester?: Reference;
+        /**
+         * Message recipient
+         */
+        recipient?: Reference[];
+        /**
          * Message sender
          */
         sender?: Reference;
-        /**
-         * Who/what is requesting service
-         */
-        requester?: CommunicationRequestRequester;
         /**
          * Why is communication needed?
          */
@@ -5913,13 +7008,21 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface CompartmentDefinition extends DomainResource {
         /**
-         * Logical URI to reference this compartment definition (globally unique)
+         * Canonical identifier for this compartment definition, represented as a URI (globally unique)
          */
         url: uri;
         /**
          * Contains extended information for property 'url'.
          */
         _url?: Element;
+        /**
+         * Business version of the compartment definition
+         */
+        version?: string;
+        /**
+         * Contains extended information for property 'version'.
+         */
+        _version?: Element;
         /**
          * Name for this compartment definition (computer friendly)
          */
@@ -5928,14 +7031,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'name'.
          */
         _name?: Element;
-        /**
-         * Name for this compartment definition (human friendly)
-         */
-        title?: string;
-        /**
-         * Contains extended information for property 'title'.
-         */
-        _title?: Element;
         /**
          * draft | active | retired | unknown
          */
@@ -5953,7 +7048,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _experimental?: Element;
         /**
-         * Date this was last changed
+         * Date last changed
          */
         date?: dateTime;
         /**
@@ -5981,6 +7076,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
+         * The context that the content is intended to support
+         */
+        useContext?: UsageContext[];
+        /**
          * Why this compartment definition is defined
          */
         purpose?: markdown;
@@ -5988,14 +7087,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'purpose'.
          */
         _purpose?: Element;
-        /**
-         * Context the content is intended to support
-         */
-        useContext?: UsageContext[];
-        /**
-         * Intended jurisdiction for compartment definition (if applicable)
-         */
-        jurisdiction?: CodeableConcept[];
         /**
          * Patient | Encounter | RelatedPerson | Practitioner | Device
          */
@@ -6024,11 +7115,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * personal | professional | legal | official
          */
-        mode: code[];
+        mode: code;
         /**
          * Contains extended information for property 'mode'.
          */
-        _mode?: Element[];
+        _mode?: Element;
         /**
          * When the composition was attested
          */
@@ -6097,6 +7188,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         code?: CodeableConcept;
         /**
+         * Who and/or what authored the section
+         */
+        author?: Reference[];
+        /**
          * Text summary of the section, for human interpretation
          */
         text?: Narrative;
@@ -6130,7 +7225,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface Composition extends DomainResource {
         /**
-         * Logical identifier of composition (version-independent)
+         * Version-independent identifier for the Composition
          */
         identifier?: Identifier;
         /**
@@ -6148,11 +7243,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Categorization of Composition
          */
-        class?: CodeableConcept;
+        category?: CodeableConcept[];
         /**
          * Who and/or what the composition is about
          */
-        subject: Reference;
+        subject?: Reference;
         /**
          * Context of the Composition
          */
@@ -6211,7 +7306,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface ConceptMapGroup extends BackboneElement {
         /**
-         * Code System (if value set crosses code systems)
+         * Source system where concepts to be mapped are defined
          */
         source?: uri;
         /**
@@ -6227,7 +7322,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _sourceVersion?: Element;
         /**
-         * System of the target (if necessary)
+         * Target system that the concepts are to be mapped to
          */
         target?: uri;
         /**
@@ -6247,7 +7342,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         element: ConceptMapGroupElement[];
         /**
-         * When no match in the mappings
+         * What to do when there is no mapping for the source concept
          */
         unmapped?: ConceptMapGroupUnmapped;
     }
@@ -6299,7 +7394,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * relatedto | equivalent | equal | wider | subsumes | narrower | specializes | inexact | unmatched | disjoint
          */
-        equivalence?: code;
+        equivalence: code;
         /**
          * Contains extended information for property 'equivalence'.
          */
@@ -6336,7 +7431,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Code System (if necessary)
          */
-        system?: uri;
+        system?: canonical;
         /**
          * Contains extended information for property 'system'.
          */
@@ -6344,13 +7439,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Value of the referenced element
          */
-        code: string;
+        value: string;
         /**
-         * Contains extended information for property 'code'.
+         * Contains extended information for property 'value'.
          */
-        _code?: Element;
+        _value?: Element;
         /**
-         * Display for the code
+         * Display for the code (if value is a code)
          */
         display?: string;
         /**
@@ -6359,7 +7454,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         _display?: Element;
     }
     /**
-     * When no match in the mappings
+     * What to do when there is no mapping for the source concept
      */
     interface ConceptMapGroupUnmapped extends BackboneElement {
         /**
@@ -6387,9 +7482,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _display?: Element;
         /**
-         * Canonical URL for other concept map
+         * Canonical URI for an additional ConceptMap to use for mapping if the source concept is unmapped
          */
-        url?: uri;
+        url?: canonical;
         /**
          * Contains extended information for property 'url'.
          */
@@ -6400,7 +7495,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface ConceptMap extends DomainResource {
         /**
-         * Logical URI to reference this concept map (globally unique)
+         * Canonical identifier for this concept map, represented as a URI (globally unique)
          */
         url?: uri;
         /**
@@ -6452,7 +7547,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _experimental?: Element;
         /**
-         * Date this was last changed
+         * Date last changed
          */
         date?: dateTime;
         /**
@@ -6480,7 +7575,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * Context the content is intended to support
+         * The context that the content is intended to support
          */
         useContext?: UsageContext[];
         /**
@@ -6504,7 +7599,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _copyright?: Element;
         /**
-         * Identifies the source of the concepts which are being mapped
+         * The source value set that contains the concepts that are being mapped
          */
         sourceUri?: uri;
         /**
@@ -6512,11 +7607,15 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _sourceUri?: Element;
         /**
-         * Identifies the source of the concepts which are being mapped
+         * The source value set that contains the concepts that are being mapped
          */
-        sourceReference?: Reference;
+        sourceCanonical?: canonical;
         /**
-         * Provides context to the mappings
+         * Contains extended information for property 'sourceCanonical'.
+         */
+        _sourceCanonical?: Element;
+        /**
+         * The target value set which provides context for the mappings
          */
         targetUri?: uri;
         /**
@@ -6524,9 +7623,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _targetUri?: Element;
         /**
-         * Provides context to the mappings
+         * The target value set which provides context for the mappings
          */
-        targetReference?: Reference;
+        targetCanonical?: canonical;
+        /**
+         * Contains extended information for property 'targetCanonical'.
+         */
+        _targetCanonical?: Element;
         /**
          * Same source and target systems
          */
@@ -6544,6 +7647,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Formal record of assessment
          */
         assessment?: Reference[];
+        /**
+         * Kind of staging
+         */
+        type?: CodeableConcept;
     }
     /**
      * Supporting evidence
@@ -6567,21 +7674,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         identifier?: Identifier[];
         /**
-         * active | recurrence | inactive | remission | resolved
+         * active | recurrence | relapse | well-controlled | poorly-controlled | inactive | remission | resolved
          */
-        clinicalStatus?: code;
+        clinicalStatus?: CodeableConcept;
         /**
-         * Contains extended information for property 'clinicalStatus'.
+         * unconfirmed | provisional | differential | confirmed | refuted | entered-in-error
          */
-        _clinicalStatus?: Element;
-        /**
-         * provisional | differential | confirmed | refuted | entered-in-error | unknown
-         */
-        verificationStatus?: code;
-        /**
-         * Contains extended information for property 'verificationStatus'.
-         */
-        _verificationStatus?: Element;
+        verificationStatus?: CodeableConcept;
         /**
          * problem-list-item | encounter-diagnosis
          */
@@ -6635,7 +7734,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _onsetString?: Element;
         /**
-         * If/when in resolution/remission
+         * When in resolution/remission
          */
         abatementDateTime?: dateTime;
         /**
@@ -6643,27 +7742,19 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _abatementDateTime?: Element;
         /**
-         * If/when in resolution/remission
+         * When in resolution/remission
          */
         abatementAge?: Age;
         /**
-         * If/when in resolution/remission
-         */
-        abatementBoolean?: boolean;
-        /**
-         * Contains extended information for property 'abatementBoolean'.
-         */
-        _abatementBoolean?: Element;
-        /**
-         * If/when in resolution/remission
+         * When in resolution/remission
          */
         abatementPeriod?: Period;
         /**
-         * If/when in resolution/remission
+         * When in resolution/remission
          */
         abatementRange?: Range;
         /**
-         * If/when in resolution/remission
+         * When in resolution/remission
          */
         abatementString?: string;
         /**
@@ -6671,13 +7762,17 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _abatementString?: Element;
         /**
-         * Date record was believed accurate
+         * Date record was first recorded
          */
-        assertedDate?: dateTime;
+        recordedDate?: dateTime;
         /**
-         * Contains extended information for property 'assertedDate'.
+         * Contains extended information for property 'recordedDate'.
          */
-        _assertedDate?: Element;
+        _recordedDate?: Element;
+        /**
+         * Who recorded the condition
+         */
+        recorder?: Reference;
         /**
          * Person who asserts this condition
          */
@@ -6685,7 +7780,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Stage/grade, usually assessed formally
          */
-        stage?: ConditionStage;
+        stage?: ConditionStage[];
         /**
          * Supporting evidence
          */
@@ -6694,19 +7789,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Additional information about the Condition
          */
         note?: Annotation[];
-    }
-    /**
-     * Who|what controlled by this consent (or group, by role)
-     */
-    interface ConsentActor extends BackboneElement {
-        /**
-         * How the actor is involved
-         */
-        role: CodeableConcept;
-        /**
-         * Resource for the actor (or group, by role)
-         */
-        reference: Reference;
     }
     /**
      * Policies covered by this consent
@@ -6730,44 +7812,52 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         _uri?: Element;
     }
     /**
-     * Data controlled by this consent
+     * Consent Verified by patient or family
      */
-    interface ConsentData extends BackboneElement {
+    interface ConsentVerification extends BackboneElement {
         /**
-         * instance | related | dependents | authoredby
+         * Has been verified
          */
-        meaning: code;
+        verified: boolean;
         /**
-         * Contains extended information for property 'meaning'.
+         * Contains extended information for property 'verified'.
          */
-        _meaning?: Element;
+        _verified?: Element;
         /**
-         * The actual data reference
+         * Person who verified
          */
-        reference: Reference;
+        verifiedWith?: Reference;
+        /**
+         * When consent verified
+         */
+        verificationDate?: dateTime;
+        /**
+         * Contains extended information for property 'verificationDate'.
+         */
+        _verificationDate?: Element;
     }
     /**
-     * Additional rule -  addition or removal of permissions
+     * Constraints to the base Consent.policyRule
      */
-    interface ConsentExcept extends BackboneElement {
+    interface ConsentProvision extends BackboneElement {
         /**
          * deny | permit
          */
-        type: code;
+        type?: code;
         /**
          * Contains extended information for property 'type'.
          */
         _type?: Element;
         /**
-         * Timeframe for this exception
+         * Timeframe for this rule
          */
         period?: Period;
         /**
-         * Who|what controlled by this exception (or group, by role)
+         * Who|what controlled by this rule (or group, by role)
          */
-        actor?: ConsentExceptActor[];
+        actor?: ConsentProvisionActor[];
         /**
-         * Actions controlled by this exception
+         * Actions controlled by this rule
          */
         action?: CodeableConcept[];
         /**
@@ -6775,30 +7865,34 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         securityLabel?: Coding[];
         /**
-         * Context of activities covered by this exception
+         * Context of activities covered by this rule
          */
         purpose?: Coding[];
         /**
-         * e.g. Resource Type, Profile, or CDA etc
+         * e.g. Resource Type, Profile, CDA, etc.
          */
         class?: Coding[];
         /**
-         * e.g. LOINC or SNOMED CT code, etc in the content
+         * e.g. LOINC or SNOMED CT code, etc. in the content
          */
-        code?: Coding[];
+        code?: CodeableConcept[];
         /**
-         * Timeframe for data controlled by this exception
+         * Timeframe for data controlled by this rule
          */
         dataPeriod?: Period;
         /**
-         * Data controlled by this exception
+         * Data controlled by this rule
          */
-        data?: ConsentExceptData[];
+        data?: ConsentProvisionData[];
+        /**
+         * Nested Exception Rules
+         */
+        provision?: ConsentProvision[];
     }
     /**
-     * Who|what controlled by this exception (or group, by role)
+     * Who|what controlled by this rule (or group, by role)
      */
-    interface ConsentExceptActor extends BackboneElement {
+    interface ConsentProvisionActor extends BackboneElement {
         /**
          * How the actor is involved
          */
@@ -6809,9 +7903,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         reference: Reference;
     }
     /**
-     * Data controlled by this exception
+     * Data controlled by this rule
      */
-    interface ConsentExceptData extends BackboneElement {
+    interface ConsentProvisionData extends BackboneElement {
         /**
          * instance | related | dependents | authoredby
          */
@@ -6826,13 +7920,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         reference: Reference;
     }
     /**
-     * A healthcare consumer's policy choices to permits or denies recipients or roles to perform actions for specific purposes and periods of time
+     * A healthcare consumer's  choices to permit or deny recipients or roles to perform actions for specific purposes and periods of time
      */
     interface Consent extends DomainResource {
         /**
          * Identifier for this record (external references)
          */
-        identifier?: Identifier;
+        identifier?: Identifier[];
         /**
          * draft | proposed | active | rejected | inactive | entered-in-error
          */
@@ -6842,17 +7936,17 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _status?: Element;
         /**
+         * Which of the four areas this resource covers (extensible)
+         */
+        scope: CodeableConcept;
+        /**
          * Classification of the consent statement - for indexing/retrieval
          */
-        category?: CodeableConcept[];
+        category: CodeableConcept[];
         /**
          * Who the consent applies to
          */
-        patient: Reference;
-        /**
-         * Period that this consent applies
-         */
-        period?: Period;
+        patient?: Reference;
         /**
          * When this Consent was created or indexed
          */
@@ -6862,17 +7956,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _dateTime?: Element;
         /**
-         * Who is agreeing to the policy and exceptions
+         * Who is agreeing to the policy and rules
          */
-        consentingParty?: Reference[];
-        /**
-         * Who|what controlled by this consent (or group, by role)
-         */
-        actor?: ConsentActor[];
-        /**
-         * Actions controlled by this consent
-         */
-        action?: CodeableConcept[];
+        performer?: Reference[];
         /**
          * Custodian of the consent
          */
@@ -6894,68 +7980,410 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         policy?: ConsentPolicy[];
         /**
-         * Policy that this consents to
+         * Regulation that this consents to
          */
-        policyRule?: uri;
+        policyRule?: CodeableConcept;
         /**
-         * Contains extended information for property 'policyRule'.
+         * Consent Verified by patient or family
          */
-        _policyRule?: Element;
+        verification?: ConsentVerification[];
         /**
-         * Security Labels that define affected resources
+         * Constraints to the base Consent.policyRule
          */
-        securityLabel?: Coding[];
-        /**
-         * Context of activities for which the agreement is made
-         */
-        purpose?: Coding[];
-        /**
-         * Timeframe for data controlled by this consent
-         */
-        dataPeriod?: Period;
-        /**
-         * Data controlled by this consent
-         */
-        data?: ConsentData[];
-        /**
-         * Additional rule -  addition or removal of permissions
-         */
-        except?: ConsentExcept[];
+        provision?: ConsentProvision;
     }
     /**
-     * Entity being ascribed responsibility
+     * Contract precursor content
      */
-    interface ContractAgent extends BackboneElement {
+    interface ContractContentDefinition extends BackboneElement {
         /**
-         * Contract Agent Type
+         * Content structure and use
          */
-        actor: Reference;
+        type: CodeableConcept;
         /**
-         * Role type of the agent
+         * Detailed Content Type Definition
          */
-        role?: CodeableConcept[];
+        subType?: CodeableConcept;
+        /**
+         * Publisher Entity
+         */
+        publisher?: Reference;
+        /**
+         * When published
+         */
+        publicationDate?: dateTime;
+        /**
+         * Contains extended information for property 'publicationDate'.
+         */
+        _publicationDate?: Element;
+        /**
+         * draft | active | retired | unknown
+         */
+        publicationStatus: code;
+        /**
+         * Contains extended information for property 'publicationStatus'.
+         */
+        _publicationStatus?: Element;
+        /**
+         * Publication Ownership
+         */
+        copyright?: markdown;
+        /**
+         * Contains extended information for property 'copyright'.
+         */
+        _copyright?: Element;
     }
     /**
-     * Contract Signatory
+     * Contract Term List
      */
-    interface ContractSigner extends BackboneElement {
+    interface ContractTerm extends BackboneElement {
         /**
-         * Contract Signatory Role
+         * Contract Term Number
          */
-        type: Coding;
+        identifier?: Identifier;
         /**
-         * Contract Signatory Party
+         * Contract Term Issue Date Time
          */
-        party: Reference;
+        issued?: dateTime;
         /**
-         * Contract Documentation Signature
+         * Contains extended information for property 'issued'.
          */
-        signature: Signature[];
+        _issued?: Element;
+        /**
+         * Contract Term Effective Time
+         */
+        applies?: Period;
+        /**
+         * Term Concern
+         */
+        topicCodeableConcept?: CodeableConcept;
+        /**
+         * Term Concern
+         */
+        topicReference?: Reference;
+        /**
+         * Contract Term Type or Form
+         */
+        type?: CodeableConcept;
+        /**
+         * Contract Term Type specific classification
+         */
+        subType?: CodeableConcept;
+        /**
+         * Term Statement
+         */
+        text?: string;
+        /**
+         * Contains extended information for property 'text'.
+         */
+        _text?: Element;
+        /**
+         * Protection for the Term
+         */
+        securityLabel?: ContractTermSecurityLabel[];
+        /**
+         * Context of the Contract term
+         */
+        offer: ContractTermOffer;
+        /**
+         * Contract Term Asset List
+         */
+        asset?: ContractTermAsset[];
+        /**
+         * Entity being ascribed responsibility
+         */
+        action?: ContractTermAction[];
+        /**
+         * Nested Contract Term Group
+         */
+        group?: ContractTerm[];
+    }
+    /**
+     * Protection for the Term
+     */
+    interface ContractTermSecurityLabel extends BackboneElement {
+        /**
+         * Link to Security Labels
+         */
+        number?: unsignedInt[];
+        /**
+         * Contains extended information for property 'number'.
+         */
+        _number?: Element[];
+        /**
+         * Confidentiality Protection
+         */
+        classification: Coding;
+        /**
+         * Applicable Policy
+         */
+        category?: Coding[];
+        /**
+         * Handling Instructions
+         */
+        control?: Coding[];
+    }
+    /**
+     * Context of the Contract term
+     */
+    interface ContractTermOffer extends BackboneElement {
+        /**
+         * Offer business ID
+         */
+        identifier?: Identifier[];
+        /**
+         * Offer Recipient
+         */
+        party?: ContractTermOfferParty[];
+        /**
+         * Negotiable offer asset
+         */
+        topic?: Reference;
+        /**
+         * Contract Offer Type or Form
+         */
+        type?: CodeableConcept;
+        /**
+         * Accepting party choice
+         */
+        decision?: CodeableConcept;
+        /**
+         * How decision is conveyed
+         */
+        decisionMode?: CodeableConcept[];
+        /**
+         * Response to offer text
+         */
+        answer?: ContractTermOfferAnswer[];
+        /**
+         * Human readable offer text
+         */
+        text?: string;
+        /**
+         * Contains extended information for property 'text'.
+         */
+        _text?: Element;
+        /**
+         * Pointer to text
+         */
+        linkId?: string[];
+        /**
+         * Contains extended information for property 'linkId'.
+         */
+        _linkId?: Element[];
+        /**
+         * Offer restriction numbers
+         */
+        securityLabelNumber?: unsignedInt[];
+        /**
+         * Contains extended information for property 'securityLabelNumber'.
+         */
+        _securityLabelNumber?: Element[];
+    }
+    /**
+     * Offer Recipient
+     */
+    interface ContractTermOfferParty extends BackboneElement {
+        /**
+         * Referenced entity
+         */
+        reference: Reference[];
+        /**
+         * Participant engagement type
+         */
+        role: CodeableConcept;
+    }
+    /**
+     * Response to offer text
+     */
+    interface ContractTermOfferAnswer extends BackboneElement {
+        /**
+         * The actual answer response
+         */
+        valueBoolean?: boolean;
+        /**
+         * Contains extended information for property 'valueBoolean'.
+         */
+        _valueBoolean?: Element;
+        /**
+         * The actual answer response
+         */
+        valueDecimal?: decimal;
+        /**
+         * Contains extended information for property 'valueDecimal'.
+         */
+        _valueDecimal?: Element;
+        /**
+         * The actual answer response
+         */
+        valueInteger?: integer;
+        /**
+         * Contains extended information for property 'valueInteger'.
+         */
+        _valueInteger?: Element;
+        /**
+         * The actual answer response
+         */
+        valueDate?: date;
+        /**
+         * Contains extended information for property 'valueDate'.
+         */
+        _valueDate?: Element;
+        /**
+         * The actual answer response
+         */
+        valueDateTime?: dateTime;
+        /**
+         * Contains extended information for property 'valueDateTime'.
+         */
+        _valueDateTime?: Element;
+        /**
+         * The actual answer response
+         */
+        valueTime?: time;
+        /**
+         * Contains extended information for property 'valueTime'.
+         */
+        _valueTime?: Element;
+        /**
+         * The actual answer response
+         */
+        valueString?: string;
+        /**
+         * Contains extended information for property 'valueString'.
+         */
+        _valueString?: Element;
+        /**
+         * The actual answer response
+         */
+        valueUri?: uri;
+        /**
+         * Contains extended information for property 'valueUri'.
+         */
+        _valueUri?: Element;
+        /**
+         * The actual answer response
+         */
+        valueAttachment?: Attachment;
+        /**
+         * The actual answer response
+         */
+        valueCoding?: Coding;
+        /**
+         * The actual answer response
+         */
+        valueQuantity?: Quantity;
+        /**
+         * The actual answer response
+         */
+        valueReference?: Reference;
+    }
+    /**
+     * Contract Term Asset List
+     */
+    interface ContractTermAsset extends BackboneElement {
+        /**
+         * Range of asset
+         */
+        scope?: CodeableConcept;
+        /**
+         * Asset category
+         */
+        type?: CodeableConcept[];
+        /**
+         * Associated entities
+         */
+        typeReference?: Reference[];
+        /**
+         * Asset sub-category
+         */
+        subtype?: CodeableConcept[];
+        /**
+         * Kinship of the asset
+         */
+        relationship?: Coding;
+        /**
+         * Circumstance of the asset
+         */
+        context?: ContractTermAssetContext[];
+        /**
+         * Quality desctiption of asset
+         */
+        condition?: string;
+        /**
+         * Contains extended information for property 'condition'.
+         */
+        _condition?: Element;
+        /**
+         * Asset availability types
+         */
+        periodType?: CodeableConcept[];
+        /**
+         * Time period of the asset
+         */
+        period?: Period[];
+        /**
+         * Time period
+         */
+        usePeriod?: Period[];
+        /**
+         * Asset clause or question text
+         */
+        text?: string;
+        /**
+         * Contains extended information for property 'text'.
+         */
+        _text?: Element;
+        /**
+         * Pointer to asset text
+         */
+        linkId?: string[];
+        /**
+         * Contains extended information for property 'linkId'.
+         */
+        _linkId?: Element[];
+        /**
+         * Response to assets
+         */
+        answer?: ContractTermOfferAnswer[];
+        /**
+         * Asset restriction numbers
+         */
+        securityLabelNumber?: unsignedInt[];
+        /**
+         * Contains extended information for property 'securityLabelNumber'.
+         */
+        _securityLabelNumber?: Element[];
+        /**
+         * Contract Valued Item List
+         */
+        valuedItem?: ContractTermAssetValuedItem[];
+    }
+    /**
+     * Circumstance of the asset
+     */
+    interface ContractTermAssetContext extends BackboneElement {
+        /**
+         * Creator,custodian or owner
+         */
+        reference?: Reference;
+        /**
+         * Codeable asset context
+         */
+        code?: CodeableConcept[];
+        /**
+         * Context description
+         */
+        text?: string;
+        /**
+         * Contains extended information for property 'text'.
+         */
+        _text?: Element;
     }
     /**
      * Contract Valued Item List
      */
-    interface ContractValuedItem extends BackboneElement {
+    interface ContractTermAssetValuedItem extends BackboneElement {
         /**
          * Contract Valued Item Type
          */
@@ -7004,137 +8432,209 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Total Contract Valued Item Value
          */
         net?: Money;
-    }
-    /**
-     * Contract Term List
-     */
-    interface ContractTerm extends BackboneElement {
         /**
-         * Contract Term Number
+         * Terms of valuation
          */
-        identifier?: Identifier;
+        payment?: string;
         /**
-         * Contract Term Issue Date Time
+         * Contains extended information for property 'payment'.
          */
-        issued?: dateTime;
+        _payment?: Element;
         /**
-         * Contains extended information for property 'issued'.
+         * When payment is due
          */
-        _issued?: Element;
+        paymentDate?: dateTime;
         /**
-         * Contract Term Effective Time
+         * Contains extended information for property 'paymentDate'.
          */
-        applies?: Period;
+        _paymentDate?: Element;
         /**
-         * Contract Term Type or Form
+         * Who will make payment
          */
-        type?: CodeableConcept;
+        responsible?: Reference;
         /**
-         * Contract Term Type specific classification
+         * Who will receive payment
          */
-        subType?: CodeableConcept;
+        recipient?: Reference;
         /**
-         * Context of the Contract term
+         * Pointer to specific item
          */
-        topic?: Reference[];
+        linkId?: string[];
         /**
-         * Contract Term Activity
+         * Contains extended information for property 'linkId'.
          */
-        action?: CodeableConcept[];
-        /**
-         * Purpose for the Contract Term Action
-         */
-        actionReason?: CodeableConcept[];
+        _linkId?: Element[];
         /**
          * Security Labels that define affected terms
          */
-        securityLabel?: Coding[];
+        securityLabelNumber?: unsignedInt[];
         /**
-         * Contract Term Agent List
+         * Contains extended information for property 'securityLabelNumber'.
          */
-        agent?: ContractTermAgent[];
-        /**
-         * Human readable Contract term text
-         */
-        text?: string;
-        /**
-         * Contains extended information for property 'text'.
-         */
-        _text?: Element;
-        /**
-         * Contract Term Valued Item List
-         */
-        valuedItem?: ContractTermValuedItem[];
-        /**
-         * Nested Contract Term Group
-         */
-        group?: ContractTerm[];
+        _securityLabelNumber?: Element[];
     }
     /**
-     * Contract Term Agent List
+     * Entity being ascribed responsibility
      */
-    interface ContractTermAgent extends BackboneElement {
+    interface ContractTermAction extends BackboneElement {
         /**
-         * Contract Term Agent Subject
+         * True if the term prohibits the  action
          */
-        actor: Reference;
+        doNotPerform?: boolean;
         /**
-         * Type of the Contract Term Agent
+         * Contains extended information for property 'doNotPerform'.
          */
-        role?: CodeableConcept[];
+        _doNotPerform?: Element;
+        /**
+         * Type or form of the action
+         */
+        type: CodeableConcept;
+        /**
+         * Entity of the action
+         */
+        subject?: ContractTermActionSubject[];
+        /**
+         * Purpose for the Contract Term Action
+         */
+        intent: CodeableConcept;
+        /**
+         * Pointer to specific item
+         */
+        linkId?: string[];
+        /**
+         * Contains extended information for property 'linkId'.
+         */
+        _linkId?: Element[];
+        /**
+         * State of the action
+         */
+        status: CodeableConcept;
+        /**
+         * Episode associated with action
+         */
+        context?: Reference;
+        /**
+         * Pointer to specific item
+         */
+        contextLinkId?: string[];
+        /**
+         * Contains extended information for property 'contextLinkId'.
+         */
+        _contextLinkId?: Element[];
+        /**
+         * When action happens
+         */
+        occurrenceDateTime?: dateTime;
+        /**
+         * Contains extended information for property 'occurrenceDateTime'.
+         */
+        _occurrenceDateTime?: Element;
+        /**
+         * When action happens
+         */
+        occurrencePeriod?: Period;
+        /**
+         * When action happens
+         */
+        occurrenceTiming?: Timing;
+        /**
+         * Who asked for action
+         */
+        requester?: Reference[];
+        /**
+         * Pointer to specific item
+         */
+        requesterLinkId?: string[];
+        /**
+         * Contains extended information for property 'requesterLinkId'.
+         */
+        _requesterLinkId?: Element[];
+        /**
+         * Kind of service performer
+         */
+        performerType?: CodeableConcept[];
+        /**
+         * Competency of the performer
+         */
+        performerRole?: CodeableConcept;
+        /**
+         * Actor that wil execute (or not) the action
+         */
+        performer?: Reference;
+        /**
+         * Pointer to specific item
+         */
+        performerLinkId?: string[];
+        /**
+         * Contains extended information for property 'performerLinkId'.
+         */
+        _performerLinkId?: Element[];
+        /**
+         * Why is action (not) needed?
+         */
+        reasonCode?: CodeableConcept[];
+        /**
+         * Why is action (not) needed?
+         */
+        reasonReference?: Reference[];
+        /**
+         * Why action is to be performed
+         */
+        reason?: string[];
+        /**
+         * Contains extended information for property 'reason'.
+         */
+        _reason?: Element[];
+        /**
+         * Pointer to specific item
+         */
+        reasonLinkId?: string[];
+        /**
+         * Contains extended information for property 'reasonLinkId'.
+         */
+        _reasonLinkId?: Element[];
+        /**
+         * Comments about the action
+         */
+        note?: Annotation[];
+        /**
+         * Action restriction numbers
+         */
+        securityLabelNumber?: unsignedInt[];
+        /**
+         * Contains extended information for property 'securityLabelNumber'.
+         */
+        _securityLabelNumber?: Element[];
     }
     /**
-     * Contract Term Valued Item List
+     * Entity of the action
      */
-    interface ContractTermValuedItem extends BackboneElement {
+    interface ContractTermActionSubject extends BackboneElement {
         /**
-         * Contract Term Valued Item Type
+         * Entity of the action
          */
-        entityCodeableConcept?: CodeableConcept;
+        reference: Reference[];
         /**
-         * Contract Term Valued Item Type
+         * Role type of the agent
          */
-        entityReference?: Reference;
+        role?: CodeableConcept;
+    }
+    /**
+     * Contract Signatory
+     */
+    interface ContractSigner extends BackboneElement {
         /**
-         * Contract Term Valued Item Number
+         * Contract Signatory Role
          */
-        identifier?: Identifier;
+        type: Coding;
         /**
-         * Contract Term Valued Item Effective Tiem
+         * Contract Signatory Party
          */
-        effectiveTime?: dateTime;
+        party: Reference;
         /**
-         * Contains extended information for property 'effectiveTime'.
+         * Contract Documentation Signature
          */
-        _effectiveTime?: Element;
-        /**
-         * Contract Term Valued Item Count
-         */
-        quantity?: Quantity;
-        /**
-         * Contract Term Valued Item fee, charge, or cost
-         */
-        unitPrice?: Money;
-        /**
-         * Contract Term Valued Item Price Scaling Factor
-         */
-        factor?: decimal;
-        /**
-         * Contains extended information for property 'factor'.
-         */
-        _factor?: Element;
-        /**
-         * Contract Term Valued Item Difficulty Scaling Factor
-         */
-        points?: decimal;
-        /**
-         * Contains extended information for property 'points'.
-         */
-        _points?: Element;
-        /**
-         * Total Contract Term Valued Item Value
-         */
-        net?: Money;
+        signature: Signature[];
     }
     /**
      * Contract Friendly Language
@@ -7182,15 +8682,51 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Contract number
          */
-        identifier?: Identifier;
+        identifier?: Identifier[];
         /**
-         * amended | appended | cancelled | disputed | entered-in-error | executable | executed | negotiable | offered | policy | rejected | renewed | revoked | resolved | terminated
+         * Basal definition
+         */
+        url?: uri;
+        /**
+         * Contains extended information for property 'url'.
+         */
+        _url?: Element;
+        /**
+         * Business edition
+         */
+        version?: string;
+        /**
+         * Contains extended information for property 'version'.
+         */
+        _version?: Element;
+        /**
+         * draft | active | suspended | cancelled | completed | entered-in-error | unknown
          */
         status?: code;
         /**
          * Contains extended information for property 'status'.
          */
         _status?: Element;
+        /**
+         * Negotiation status
+         */
+        legalState?: CodeableConcept;
+        /**
+         * Source Contract Definition
+         */
+        instantiatesCanonical?: Reference;
+        /**
+         * External Contract Definition
+         */
+        instantiatesUri?: uri;
+        /**
+         * Contains extended information for property 'instantiatesUri'.
+         */
+        _instantiatesUri?: Element;
+        /**
+         * Content derived from the basal information
+         */
+        contentDerivative?: CodeableConcept;
         /**
          * When this Contract was issued
          */
@@ -7204,23 +8740,75 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         applies?: Period;
         /**
+         * Contract cessation cause
+         */
+        expirationType?: CodeableConcept;
+        /**
          * Contract Target Entity
          */
         subject?: Reference[];
-        /**
-         * Context of the Contract
-         */
-        topic?: Reference[];
         /**
          * Authority under which this Contract has standing
          */
         authority?: Reference[];
         /**
-         * Domain in which this Contract applies
+         * A sphere of control governed by an authoritative jurisdiction, organization, or person
          */
         domain?: Reference[];
         /**
-         * Type or form
+         * Specific Location
+         */
+        site?: Reference[];
+        /**
+         * Computer friendly designation
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Human Friendly name
+         */
+        title?: string;
+        /**
+         * Contains extended information for property 'title'.
+         */
+        _title?: Element;
+        /**
+         * Subordinate Friendly name
+         */
+        subtitle?: string;
+        /**
+         * Contains extended information for property 'subtitle'.
+         */
+        _subtitle?: Element;
+        /**
+         * Acronym or short name
+         */
+        alias?: string[];
+        /**
+         * Contains extended information for property 'alias'.
+         */
+        _alias?: Element[];
+        /**
+         * Source of Contract
+         */
+        author?: Reference;
+        /**
+         * Range of Legal Concerns
+         */
+        scope?: CodeableConcept;
+        /**
+         * Focus of contract interest
+         */
+        topicCodeableConcept?: CodeableConcept;
+        /**
+         * Focus of contract interest
+         */
+        topicReference?: Reference;
+        /**
+         * Legal instrument category
          */
         type?: CodeableConcept;
         /**
@@ -7228,49 +8816,25 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         subType?: CodeableConcept[];
         /**
-         * Action stipulated by this Contract
+         * Contract precursor content
          */
-        action?: CodeableConcept[];
-        /**
-         * Rationale for the stiplulated action
-         */
-        actionReason?: CodeableConcept[];
-        /**
-         * Decision by Grantor
-         */
-        decisionType?: CodeableConcept;
-        /**
-         * Content derived from the basal information
-         */
-        contentDerivative?: CodeableConcept;
-        /**
-         * Security Labels that define affected resources
-         */
-        securityLabel?: Coding[];
-        /**
-         * Entity being ascribed responsibility
-         */
-        agent?: ContractAgent[];
-        /**
-         * Contract Signatory
-         */
-        signer?: ContractSigner[];
-        /**
-         * Contract Valued Item List
-         */
-        valuedItem?: ContractValuedItem[];
+        contentDefinition?: ContractContentDefinition;
         /**
          * Contract Term List
          */
         term?: ContractTerm[];
         /**
-         * Binding Contract
+         * Extra Information
          */
-        bindingAttachment?: Attachment;
+        supportingInfo?: Reference[];
         /**
-         * Binding Contract
+         * Key event in Contract History
          */
-        bindingReference?: Reference;
+        relevantHistory?: Reference[];
+        /**
+         * Contract Signatory
+         */
+        signer?: ContractSigner[];
         /**
          * Contract Friendly Language
          */
@@ -7283,107 +8847,52 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Computable Contract Language
          */
         rule?: ContractRule[];
+        /**
+         * Binding Contract
+         */
+        legallyBindingAttachment?: Attachment;
+        /**
+         * Binding Contract
+         */
+        legallyBindingReference?: Reference;
     }
     /**
      * Additional coverage classifications
      */
-    interface CoverageGrouping extends BackboneElement {
+    interface CoverageClass extends BackboneElement {
         /**
-         * An identifier for the group
+         * Type of class such as 'group' or 'plan'
          */
-        group?: string;
+        type: Coding;
         /**
-         * Contains extended information for property 'group'.
+         * The tag or value under the classification
          */
-        _group?: Element;
+        value: string;
+        /**
+         * Contains extended information for property 'value'.
+         */
+        _value?: Element;
         /**
          * Display text for an identifier for the group
          */
-        groupDisplay?: string;
+        name?: string;
         /**
-         * Contains extended information for property 'groupDisplay'.
+         * Contains extended information for property 'name'.
          */
-        _groupDisplay?: Element;
+        _name?: Element;
+    }
+    /**
+     * Patient payments for services/products
+     */
+    interface CoverageCopay extends BackboneElement {
         /**
-         * An identifier for the subsection of the group
+         * The type of service or product
          */
-        subGroup?: string;
+        type?: Coding;
         /**
-         * Contains extended information for property 'subGroup'.
+         * The amount or percentage of the copayment
          */
-        _subGroup?: Element;
-        /**
-         * Display text for the subsection of the group
-         */
-        subGroupDisplay?: string;
-        /**
-         * Contains extended information for property 'subGroupDisplay'.
-         */
-        _subGroupDisplay?: Element;
-        /**
-         * An identifier for the plan
-         */
-        plan?: string;
-        /**
-         * Contains extended information for property 'plan'.
-         */
-        _plan?: Element;
-        /**
-         * Display text for the plan
-         */
-        planDisplay?: string;
-        /**
-         * Contains extended information for property 'planDisplay'.
-         */
-        _planDisplay?: Element;
-        /**
-         * An identifier for the subsection of the plan
-         */
-        subPlan?: string;
-        /**
-         * Contains extended information for property 'subPlan'.
-         */
-        _subPlan?: Element;
-        /**
-         * Display text for the subsection of the plan
-         */
-        subPlanDisplay?: string;
-        /**
-         * Contains extended information for property 'subPlanDisplay'.
-         */
-        _subPlanDisplay?: Element;
-        /**
-         * An identifier for the class
-         */
-        class?: string;
-        /**
-         * Contains extended information for property 'class'.
-         */
-        _class?: Element;
-        /**
-         * Display text for the class
-         */
-        classDisplay?: string;
-        /**
-         * Contains extended information for property 'classDisplay'.
-         */
-        _classDisplay?: Element;
-        /**
-         * An identifier for the subsection of the class
-         */
-        subClass?: string;
-        /**
-         * Contains extended information for property 'subClass'.
-         */
-        _subClass?: Element;
-        /**
-         * Display text for the subsection of the subclass
-         */
-        subClassDisplay?: string;
-        /**
-         * Contains extended information for property 'subClassDisplay'.
-         */
-        _subClassDisplay?: Element;
+        value: Quantity;
     }
     /**
      * Insurance or medical plan or a payment agreement
@@ -7426,6 +8935,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         beneficiary?: Reference;
         /**
+         * Dependent number
+         */
+        dependent?: string;
+        /**
+         * Contains extended information for property 'dependent'.
+         */
+        _dependent?: Element;
+        /**
          * Beneficiary relationship to the Subscriber
          */
         relationship?: CodeableConcept;
@@ -7440,23 +8957,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Additional coverage classifications
          */
-        grouping?: CoverageGrouping;
-        /**
-         * Dependent number
-         */
-        dependent?: string;
-        /**
-         * Contains extended information for property 'dependent'.
-         */
-        _dependent?: Element;
-        /**
-         * The plan instance or sequence counter
-         */
-        sequence?: string;
-        /**
-         * Contains extended information for property 'sequence'.
-         */
-        _sequence?: Element;
+        class?: CoverageClass[];
         /**
          * Relative order of the coverage
          */
@@ -7474,1566 +8975,262 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _network?: Element;
         /**
+         * Patient payments for services/products
+         */
+        copay?: CoverageCopay[];
+        /**
          * Contract details
          */
         contract?: Reference[];
     }
     /**
-     * External specification mapped to
+     * Exceptions, special considerations, the condition, situation, prior or concurrent issues
      */
-    interface DataElementMapping extends BackboneElement {
+    interface CoverageEligibilityRequestSupportingInformation extends BackboneElement {
         /**
-         * Internal id when this mapping is used
+         * Information instance identifier
          */
-        identity: id;
+        sequence: positiveInt;
         /**
-         * Contains extended information for property 'identity'.
+         * Contains extended information for property 'sequence'.
          */
-        _identity?: Element;
+        _sequence?: Element;
         /**
-         * Identifies what this mapping refers to
+         * Additional Data or supporting information
          */
-        uri?: uri;
+        information: Reference;
         /**
-         * Contains extended information for property 'uri'.
+         * Applies to all items
          */
-        _uri?: Element;
+        appliesToAll?: boolean;
         /**
-         * Names what this mapping refers to
+         * Contains extended information for property 'appliesToAll'.
          */
-        name?: string;
-        /**
-         * Contains extended information for property 'name'.
-         */
-        _name?: Element;
-        /**
-         * Versions, issues, scope limitations, etc.
-         */
-        comment?: string;
-        /**
-         * Contains extended information for property 'comment'.
-         */
-        _comment?: Element;
+        _appliesToAll?: Element;
     }
     /**
-     * This element is sliced - slices follow
+     * Patient's Insurance or medical plan(s)
      */
-    interface ElementDefinitionSlicing extends Element {
+    interface CoverageEligibilityRequestInsurance extends BackboneElement {
         /**
-         * Element values that are used to distinguish the slices
+         * Is the focal Coverage
          */
-        discriminator?: ElementDefinitionSlicingDiscriminator[];
+        focal?: boolean;
         /**
-         * Text description of how slicing works (or not)
+         * Contains extended information for property 'focal'.
          */
-        description?: string;
+        _focal?: Element;
         /**
-         * Contains extended information for property 'description'.
+         * Insurance or medical plan
          */
-        _description?: Element;
+        coverage: Reference;
         /**
-         * If elements must be in same order as slices
+         * Business agreement
          */
-        ordered?: boolean;
+        businessArrangement?: string;
         /**
-         * Contains extended information for property 'ordered'.
+         * Contains extended information for property 'businessArrangement'.
          */
-        _ordered?: Element;
-        /**
-         * closed | open | openAtEnd
-         */
-        rules: code;
-        /**
-         * Contains extended information for property 'rules'.
-         */
-        _rules?: Element;
+        _businessArrangement?: Element;
     }
     /**
-     * Element values that are used to distinguish the slices
+     * Service types, codes and supporting information
      */
-    interface ElementDefinitionSlicingDiscriminator extends Element {
+    interface CoverageEligibilityRequestItem extends BackboneElement {
         /**
-         * value | exists | pattern | type | profile
+         * Applicable exception and supporting information
          */
-        type: code;
+        supportingInformationSequence?: positiveInt[];
         /**
-         * Contains extended information for property 'type'.
+         * Contains extended information for property 'supportingInformationSequence'.
          */
-        _type?: Element;
+        _supportingInformationSequence?: Element[];
         /**
-         * Path to element value
+         * Type of service
          */
-        path: string;
+        category?: CodeableConcept;
         /**
-         * Contains extended information for property 'path'.
+         * Billing Code
          */
-        _path?: Element;
+        billcode?: CodeableConcept;
+        /**
+         * Service/Product billing modifiers
+         */
+        modifier?: CodeableConcept[];
+        /**
+         * Perfoming practitioner
+         */
+        provider?: Reference;
+        /**
+         * Count of products or services
+         */
+        quantity?: Quantity;
+        /**
+         * Fee, charge or cost per point
+         */
+        unitPrice?: Money;
+        /**
+         * Servicing Facility
+         */
+        facility?: Reference;
+        /**
+         * List of Diagnosis
+         */
+        diagnosis?: CoverageEligibilityRequestItemDiagnosis[];
+        /**
+         * Product or service details
+         */
+        detail?: Reference[];
     }
     /**
-     * Base definition information for tools
+     * List of Diagnosis
      */
-    interface ElementDefinitionBase extends Element {
+    interface CoverageEligibilityRequestItemDiagnosis extends BackboneElement {
         /**
-         * Path that identifies the base element
+         * Patient's diagnosis
          */
-        path: string;
+        diagnosisCodeableConcept?: CodeableConcept;
         /**
-         * Contains extended information for property 'path'.
+         * Patient's diagnosis
          */
-        _path?: Element;
-        /**
-         * Min cardinality of the base element
-         */
-        min: unsignedInt;
-        /**
-         * Contains extended information for property 'min'.
-         */
-        _min?: Element;
-        /**
-         * Max cardinality of the base element
-         */
-        max: string;
-        /**
-         * Contains extended information for property 'max'.
-         */
-        _max?: Element;
+        diagnosisReference?: Reference;
     }
     /**
-     * Data type and Profile for this element
+     * CoverageEligibilityRequest resource
      */
-    interface ElementDefinitionType extends Element {
+    interface CoverageEligibilityRequest extends DomainResource {
         /**
-         * Data type or Resource (reference to definition)
-         */
-        code: uri;
-        /**
-         * Contains extended information for property 'code'.
-         */
-        _code?: Element;
-        /**
-         * Profile (StructureDefinition) to apply (or IG)
-         */
-        profile?: uri;
-        /**
-         * Contains extended information for property 'profile'.
-         */
-        _profile?: Element;
-        /**
-         * Profile (StructureDefinition) to apply to reference target (or IG)
-         */
-        targetProfile?: uri;
-        /**
-         * Contains extended information for property 'targetProfile'.
-         */
-        _targetProfile?: Element;
-        /**
-         * contained | referenced | bundled - how aggregated
-         */
-        aggregation?: code[];
-        /**
-         * Contains extended information for property 'aggregation'.
-         */
-        _aggregation?: Element[];
-        /**
-         * either | independent | specific
-         */
-        versioning?: code;
-        /**
-         * Contains extended information for property 'versioning'.
-         */
-        _versioning?: Element;
-    }
-    /**
-     * Example value (as defined for type)
-     */
-    interface ElementDefinitionExample extends Element {
-        /**
-         * Describes the purpose of this example
-         */
-        label: string;
-        /**
-         * Contains extended information for property 'label'.
-         */
-        _label?: Element;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueBase64Binary?: base64Binary;
-        /**
-         * Contains extended information for property 'valueBase64Binary'.
-         */
-        _valueBase64Binary?: Element;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueBoolean?: boolean;
-        /**
-         * Contains extended information for property 'valueBoolean'.
-         */
-        _valueBoolean?: Element;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueCode?: code;
-        /**
-         * Contains extended information for property 'valueCode'.
-         */
-        _valueCode?: Element;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueDate?: date;
-        /**
-         * Contains extended information for property 'valueDate'.
-         */
-        _valueDate?: Element;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueDateTime?: dateTime;
-        /**
-         * Contains extended information for property 'valueDateTime'.
-         */
-        _valueDateTime?: Element;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueDecimal?: decimal;
-        /**
-         * Contains extended information for property 'valueDecimal'.
-         */
-        _valueDecimal?: Element;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueId?: id;
-        /**
-         * Contains extended information for property 'valueId'.
-         */
-        _valueId?: Element;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueInstant?: instant;
-        /**
-         * Contains extended information for property 'valueInstant'.
-         */
-        _valueInstant?: Element;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueInteger?: integer;
-        /**
-         * Contains extended information for property 'valueInteger'.
-         */
-        _valueInteger?: Element;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueMarkdown?: markdown;
-        /**
-         * Contains extended information for property 'valueMarkdown'.
-         */
-        _valueMarkdown?: Element;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueOid?: oid;
-        /**
-         * Contains extended information for property 'valueOid'.
-         */
-        _valueOid?: Element;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valuePositiveInt?: positiveInt;
-        /**
-         * Contains extended information for property 'valuePositiveInt'.
-         */
-        _valuePositiveInt?: Element;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueString?: string;
-        /**
-         * Contains extended information for property 'valueString'.
-         */
-        _valueString?: Element;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueTime?: time;
-        /**
-         * Contains extended information for property 'valueTime'.
-         */
-        _valueTime?: Element;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueUnsignedInt?: unsignedInt;
-        /**
-         * Contains extended information for property 'valueUnsignedInt'.
-         */
-        _valueUnsignedInt?: Element;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueUri?: uri;
-        /**
-         * Contains extended information for property 'valueUri'.
-         */
-        _valueUri?: Element;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueAddress?: Address;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueAge?: Age;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueAnnotation?: Annotation;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueAttachment?: Attachment;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueCodeableConcept?: CodeableConcept;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueCoding?: Coding;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueContactPoint?: ContactPoint;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueCount?: Count;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueDistance?: Distance;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueDuration?: Duration;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueHumanName?: HumanName;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueIdentifier?: Identifier;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueMoney?: Money;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valuePeriod?: Period;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueQuantity?: Quantity;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueRange?: Range;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueRatio?: Ratio;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueReference?: Reference;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueSampledData?: SampledData;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueSignature?: Signature;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueTiming?: Timing;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueMeta?: Meta;
-    }
-    /**
-     * Condition that must evaluate to true
-     */
-    interface ElementDefinitionConstraint extends Element {
-        /**
-         * Target of 'condition' reference above
-         */
-        key: id;
-        /**
-         * Contains extended information for property 'key'.
-         */
-        _key?: Element;
-        /**
-         * Why this constraint is necessary or appropriate
-         */
-        requirements?: string;
-        /**
-         * Contains extended information for property 'requirements'.
-         */
-        _requirements?: Element;
-        /**
-         * error | warning
-         */
-        severity: code;
-        /**
-         * Contains extended information for property 'severity'.
-         */
-        _severity?: Element;
-        /**
-         * Human description of constraint
-         */
-        human: string;
-        /**
-         * Contains extended information for property 'human'.
-         */
-        _human?: Element;
-        /**
-         * FHIRPath expression of constraint
-         */
-        expression: string;
-        /**
-         * Contains extended information for property 'expression'.
-         */
-        _expression?: Element;
-        /**
-         * XPath expression of constraint
-         */
-        xpath?: string;
-        /**
-         * Contains extended information for property 'xpath'.
-         */
-        _xpath?: Element;
-        /**
-         * Reference to original source of constraint
-         */
-        source?: uri;
-        /**
-         * Contains extended information for property 'source'.
-         */
-        _source?: Element;
-    }
-    /**
-     * ValueSet details if this is coded
-     */
-    interface ElementDefinitionBinding extends Element {
-        /**
-         * required | extensible | preferred | example
-         */
-        strength: code;
-        /**
-         * Contains extended information for property 'strength'.
-         */
-        _strength?: Element;
-        /**
-         * Human explanation of the value set
-         */
-        description?: string;
-        /**
-         * Contains extended information for property 'description'.
-         */
-        _description?: Element;
-        /**
-         * Source of value set
-         */
-        valueSetUri?: uri;
-        /**
-         * Contains extended information for property 'valueSetUri'.
-         */
-        _valueSetUri?: Element;
-        /**
-         * Source of value set
-         */
-        valueSetReference?: Reference;
-    }
-    /**
-     * Map element to another set of definitions
-     */
-    interface ElementDefinitionMapping extends Element {
-        /**
-         * Reference to mapping declaration
-         */
-        identity: id;
-        /**
-         * Contains extended information for property 'identity'.
-         */
-        _identity?: Element;
-        /**
-         * Computable language of mapping
-         */
-        language?: code;
-        /**
-         * Contains extended information for property 'language'.
-         */
-        _language?: Element;
-        /**
-         * Details of the mapping
-         */
-        map: string;
-        /**
-         * Contains extended information for property 'map'.
-         */
-        _map?: Element;
-        /**
-         * Comments about the mapping or its use
-         */
-        comment?: string;
-        /**
-         * Contains extended information for property 'comment'.
-         */
-        _comment?: Element;
-    }
-    /**
-     * Definition of an element in a resource or extension
-     */
-    interface ElementDefinition extends Element {
-        /**
-         * Path of the element in the hierarchy of elements
-         */
-        path: string;
-        /**
-         * Contains extended information for property 'path'.
-         */
-        _path?: Element;
-        /**
-         * xmlAttr | xmlText | typeAttr | cdaText | xhtml
-         */
-        representation?: code[];
-        /**
-         * Contains extended information for property 'representation'.
-         */
-        _representation?: Element[];
-        /**
-         * Name for this particular element (in a set of slices)
-         */
-        sliceName?: string;
-        /**
-         * Contains extended information for property 'sliceName'.
-         */
-        _sliceName?: Element;
-        /**
-         * Name for element to display with or prompt for element
-         */
-        label?: string;
-        /**
-         * Contains extended information for property 'label'.
-         */
-        _label?: Element;
-        /**
-         * Corresponding codes in terminologies
-         */
-        code?: Coding[];
-        /**
-         * This element is sliced - slices follow
-         */
-        slicing?: ElementDefinitionSlicing;
-        /**
-         * Concise definition for space-constrained presentation
-         */
-        short?: string;
-        /**
-         * Contains extended information for property 'short'.
-         */
-        _short?: Element;
-        /**
-         * Full formal definition as narrative text
-         */
-        definition?: markdown;
-        /**
-         * Contains extended information for property 'definition'.
-         */
-        _definition?: Element;
-        /**
-         * Comments about the use of this element
-         */
-        comment?: markdown;
-        /**
-         * Contains extended information for property 'comment'.
-         */
-        _comment?: Element;
-        /**
-         * Why this resource has been created
-         */
-        requirements?: markdown;
-        /**
-         * Contains extended information for property 'requirements'.
-         */
-        _requirements?: Element;
-        /**
-         * Other names
-         */
-        alias?: string[];
-        /**
-         * Contains extended information for property 'alias'.
-         */
-        _alias?: Element[];
-        /**
-         * Minimum Cardinality
-         */
-        min?: unsignedInt;
-        /**
-         * Contains extended information for property 'min'.
-         */
-        _min?: Element;
-        /**
-         * Maximum Cardinality (a number or *)
-         */
-        max?: string;
-        /**
-         * Contains extended information for property 'max'.
-         */
-        _max?: Element;
-        /**
-         * Base definition information for tools
-         */
-        base?: ElementDefinitionBase;
-        /**
-         * Reference to definition of content for the element
-         */
-        contentReference?: uri;
-        /**
-         * Contains extended information for property 'contentReference'.
-         */
-        _contentReference?: Element;
-        /**
-         * Data type and Profile for this element
-         */
-        type?: ElementDefinitionType[];
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueBase64Binary?: base64Binary;
-        /**
-         * Contains extended information for property 'defaultValueBase64Binary'.
-         */
-        _defaultValueBase64Binary?: Element;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueBoolean?: boolean;
-        /**
-         * Contains extended information for property 'defaultValueBoolean'.
-         */
-        _defaultValueBoolean?: Element;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueCode?: code;
-        /**
-         * Contains extended information for property 'defaultValueCode'.
-         */
-        _defaultValueCode?: Element;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueDate?: date;
-        /**
-         * Contains extended information for property 'defaultValueDate'.
-         */
-        _defaultValueDate?: Element;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueDateTime?: dateTime;
-        /**
-         * Contains extended information for property 'defaultValueDateTime'.
-         */
-        _defaultValueDateTime?: Element;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueDecimal?: decimal;
-        /**
-         * Contains extended information for property 'defaultValueDecimal'.
-         */
-        _defaultValueDecimal?: Element;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueId?: id;
-        /**
-         * Contains extended information for property 'defaultValueId'.
-         */
-        _defaultValueId?: Element;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueInstant?: instant;
-        /**
-         * Contains extended information for property 'defaultValueInstant'.
-         */
-        _defaultValueInstant?: Element;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueInteger?: integer;
-        /**
-         * Contains extended information for property 'defaultValueInteger'.
-         */
-        _defaultValueInteger?: Element;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueMarkdown?: markdown;
-        /**
-         * Contains extended information for property 'defaultValueMarkdown'.
-         */
-        _defaultValueMarkdown?: Element;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueOid?: oid;
-        /**
-         * Contains extended information for property 'defaultValueOid'.
-         */
-        _defaultValueOid?: Element;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValuePositiveInt?: positiveInt;
-        /**
-         * Contains extended information for property 'defaultValuePositiveInt'.
-         */
-        _defaultValuePositiveInt?: Element;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueString?: string;
-        /**
-         * Contains extended information for property 'defaultValueString'.
-         */
-        _defaultValueString?: Element;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueTime?: time;
-        /**
-         * Contains extended information for property 'defaultValueTime'.
-         */
-        _defaultValueTime?: Element;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueUnsignedInt?: unsignedInt;
-        /**
-         * Contains extended information for property 'defaultValueUnsignedInt'.
-         */
-        _defaultValueUnsignedInt?: Element;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueUri?: uri;
-        /**
-         * Contains extended information for property 'defaultValueUri'.
-         */
-        _defaultValueUri?: Element;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueAddress?: Address;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueAge?: Age;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueAnnotation?: Annotation;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueAttachment?: Attachment;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueCodeableConcept?: CodeableConcept;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueCoding?: Coding;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueContactPoint?: ContactPoint;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueCount?: Count;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueDistance?: Distance;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueDuration?: Duration;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueHumanName?: HumanName;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueIdentifier?: Identifier;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueMoney?: Money;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValuePeriod?: Period;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueQuantity?: Quantity;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueRange?: Range;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueRatio?: Ratio;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueReference?: Reference;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueSampledData?: SampledData;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueSignature?: Signature;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueTiming?: Timing;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueMeta?: Meta;
-        /**
-         * Implicit meaning when this element is missing
-         */
-        meaningWhenMissing?: markdown;
-        /**
-         * Contains extended information for property 'meaningWhenMissing'.
-         */
-        _meaningWhenMissing?: Element;
-        /**
-         * What the order of the elements means
-         */
-        orderMeaning?: string;
-        /**
-         * Contains extended information for property 'orderMeaning'.
-         */
-        _orderMeaning?: Element;
-        /**
-         * Value must be exactly this
-         */
-        fixedBase64Binary?: base64Binary;
-        /**
-         * Contains extended information for property 'fixedBase64Binary'.
-         */
-        _fixedBase64Binary?: Element;
-        /**
-         * Value must be exactly this
-         */
-        fixedBoolean?: boolean;
-        /**
-         * Contains extended information for property 'fixedBoolean'.
-         */
-        _fixedBoolean?: Element;
-        /**
-         * Value must be exactly this
-         */
-        fixedCode?: code;
-        /**
-         * Contains extended information for property 'fixedCode'.
-         */
-        _fixedCode?: Element;
-        /**
-         * Value must be exactly this
-         */
-        fixedDate?: date;
-        /**
-         * Contains extended information for property 'fixedDate'.
-         */
-        _fixedDate?: Element;
-        /**
-         * Value must be exactly this
-         */
-        fixedDateTime?: dateTime;
-        /**
-         * Contains extended information for property 'fixedDateTime'.
-         */
-        _fixedDateTime?: Element;
-        /**
-         * Value must be exactly this
-         */
-        fixedDecimal?: decimal;
-        /**
-         * Contains extended information for property 'fixedDecimal'.
-         */
-        _fixedDecimal?: Element;
-        /**
-         * Value must be exactly this
-         */
-        fixedId?: id;
-        /**
-         * Contains extended information for property 'fixedId'.
-         */
-        _fixedId?: Element;
-        /**
-         * Value must be exactly this
-         */
-        fixedInstant?: instant;
-        /**
-         * Contains extended information for property 'fixedInstant'.
-         */
-        _fixedInstant?: Element;
-        /**
-         * Value must be exactly this
-         */
-        fixedInteger?: integer;
-        /**
-         * Contains extended information for property 'fixedInteger'.
-         */
-        _fixedInteger?: Element;
-        /**
-         * Value must be exactly this
-         */
-        fixedMarkdown?: markdown;
-        /**
-         * Contains extended information for property 'fixedMarkdown'.
-         */
-        _fixedMarkdown?: Element;
-        /**
-         * Value must be exactly this
-         */
-        fixedOid?: oid;
-        /**
-         * Contains extended information for property 'fixedOid'.
-         */
-        _fixedOid?: Element;
-        /**
-         * Value must be exactly this
-         */
-        fixedPositiveInt?: positiveInt;
-        /**
-         * Contains extended information for property 'fixedPositiveInt'.
-         */
-        _fixedPositiveInt?: Element;
-        /**
-         * Value must be exactly this
-         */
-        fixedString?: string;
-        /**
-         * Contains extended information for property 'fixedString'.
-         */
-        _fixedString?: Element;
-        /**
-         * Value must be exactly this
-         */
-        fixedTime?: time;
-        /**
-         * Contains extended information for property 'fixedTime'.
-         */
-        _fixedTime?: Element;
-        /**
-         * Value must be exactly this
-         */
-        fixedUnsignedInt?: unsignedInt;
-        /**
-         * Contains extended information for property 'fixedUnsignedInt'.
-         */
-        _fixedUnsignedInt?: Element;
-        /**
-         * Value must be exactly this
-         */
-        fixedUri?: uri;
-        /**
-         * Contains extended information for property 'fixedUri'.
-         */
-        _fixedUri?: Element;
-        /**
-         * Value must be exactly this
-         */
-        fixedAddress?: Address;
-        /**
-         * Value must be exactly this
-         */
-        fixedAge?: Age;
-        /**
-         * Value must be exactly this
-         */
-        fixedAnnotation?: Annotation;
-        /**
-         * Value must be exactly this
-         */
-        fixedAttachment?: Attachment;
-        /**
-         * Value must be exactly this
-         */
-        fixedCodeableConcept?: CodeableConcept;
-        /**
-         * Value must be exactly this
-         */
-        fixedCoding?: Coding;
-        /**
-         * Value must be exactly this
-         */
-        fixedContactPoint?: ContactPoint;
-        /**
-         * Value must be exactly this
-         */
-        fixedCount?: Count;
-        /**
-         * Value must be exactly this
-         */
-        fixedDistance?: Distance;
-        /**
-         * Value must be exactly this
-         */
-        fixedDuration?: Duration;
-        /**
-         * Value must be exactly this
-         */
-        fixedHumanName?: HumanName;
-        /**
-         * Value must be exactly this
-         */
-        fixedIdentifier?: Identifier;
-        /**
-         * Value must be exactly this
-         */
-        fixedMoney?: Money;
-        /**
-         * Value must be exactly this
-         */
-        fixedPeriod?: Period;
-        /**
-         * Value must be exactly this
-         */
-        fixedQuantity?: Quantity;
-        /**
-         * Value must be exactly this
-         */
-        fixedRange?: Range;
-        /**
-         * Value must be exactly this
-         */
-        fixedRatio?: Ratio;
-        /**
-         * Value must be exactly this
-         */
-        fixedReference?: Reference;
-        /**
-         * Value must be exactly this
-         */
-        fixedSampledData?: SampledData;
-        /**
-         * Value must be exactly this
-         */
-        fixedSignature?: Signature;
-        /**
-         * Value must be exactly this
-         */
-        fixedTiming?: Timing;
-        /**
-         * Value must be exactly this
-         */
-        fixedMeta?: Meta;
-        /**
-         * Value must have at least these property values
-         */
-        patternBase64Binary?: base64Binary;
-        /**
-         * Contains extended information for property 'patternBase64Binary'.
-         */
-        _patternBase64Binary?: Element;
-        /**
-         * Value must have at least these property values
-         */
-        patternBoolean?: boolean;
-        /**
-         * Contains extended information for property 'patternBoolean'.
-         */
-        _patternBoolean?: Element;
-        /**
-         * Value must have at least these property values
-         */
-        patternCode?: code;
-        /**
-         * Contains extended information for property 'patternCode'.
-         */
-        _patternCode?: Element;
-        /**
-         * Value must have at least these property values
-         */
-        patternDate?: date;
-        /**
-         * Contains extended information for property 'patternDate'.
-         */
-        _patternDate?: Element;
-        /**
-         * Value must have at least these property values
-         */
-        patternDateTime?: dateTime;
-        /**
-         * Contains extended information for property 'patternDateTime'.
-         */
-        _patternDateTime?: Element;
-        /**
-         * Value must have at least these property values
-         */
-        patternDecimal?: decimal;
-        /**
-         * Contains extended information for property 'patternDecimal'.
-         */
-        _patternDecimal?: Element;
-        /**
-         * Value must have at least these property values
-         */
-        patternId?: id;
-        /**
-         * Contains extended information for property 'patternId'.
-         */
-        _patternId?: Element;
-        /**
-         * Value must have at least these property values
-         */
-        patternInstant?: instant;
-        /**
-         * Contains extended information for property 'patternInstant'.
-         */
-        _patternInstant?: Element;
-        /**
-         * Value must have at least these property values
-         */
-        patternInteger?: integer;
-        /**
-         * Contains extended information for property 'patternInteger'.
-         */
-        _patternInteger?: Element;
-        /**
-         * Value must have at least these property values
-         */
-        patternMarkdown?: markdown;
-        /**
-         * Contains extended information for property 'patternMarkdown'.
-         */
-        _patternMarkdown?: Element;
-        /**
-         * Value must have at least these property values
-         */
-        patternOid?: oid;
-        /**
-         * Contains extended information for property 'patternOid'.
-         */
-        _patternOid?: Element;
-        /**
-         * Value must have at least these property values
-         */
-        patternPositiveInt?: positiveInt;
-        /**
-         * Contains extended information for property 'patternPositiveInt'.
-         */
-        _patternPositiveInt?: Element;
-        /**
-         * Value must have at least these property values
-         */
-        patternString?: string;
-        /**
-         * Contains extended information for property 'patternString'.
-         */
-        _patternString?: Element;
-        /**
-         * Value must have at least these property values
-         */
-        patternTime?: time;
-        /**
-         * Contains extended information for property 'patternTime'.
-         */
-        _patternTime?: Element;
-        /**
-         * Value must have at least these property values
-         */
-        patternUnsignedInt?: unsignedInt;
-        /**
-         * Contains extended information for property 'patternUnsignedInt'.
-         */
-        _patternUnsignedInt?: Element;
-        /**
-         * Value must have at least these property values
-         */
-        patternUri?: uri;
-        /**
-         * Contains extended information for property 'patternUri'.
-         */
-        _patternUri?: Element;
-        /**
-         * Value must have at least these property values
-         */
-        patternAddress?: Address;
-        /**
-         * Value must have at least these property values
-         */
-        patternAge?: Age;
-        /**
-         * Value must have at least these property values
-         */
-        patternAnnotation?: Annotation;
-        /**
-         * Value must have at least these property values
-         */
-        patternAttachment?: Attachment;
-        /**
-         * Value must have at least these property values
-         */
-        patternCodeableConcept?: CodeableConcept;
-        /**
-         * Value must have at least these property values
-         */
-        patternCoding?: Coding;
-        /**
-         * Value must have at least these property values
-         */
-        patternContactPoint?: ContactPoint;
-        /**
-         * Value must have at least these property values
-         */
-        patternCount?: Count;
-        /**
-         * Value must have at least these property values
-         */
-        patternDistance?: Distance;
-        /**
-         * Value must have at least these property values
-         */
-        patternDuration?: Duration;
-        /**
-         * Value must have at least these property values
-         */
-        patternHumanName?: HumanName;
-        /**
-         * Value must have at least these property values
-         */
-        patternIdentifier?: Identifier;
-        /**
-         * Value must have at least these property values
-         */
-        patternMoney?: Money;
-        /**
-         * Value must have at least these property values
-         */
-        patternPeriod?: Period;
-        /**
-         * Value must have at least these property values
-         */
-        patternQuantity?: Quantity;
-        /**
-         * Value must have at least these property values
-         */
-        patternRange?: Range;
-        /**
-         * Value must have at least these property values
-         */
-        patternRatio?: Ratio;
-        /**
-         * Value must have at least these property values
-         */
-        patternReference?: Reference;
-        /**
-         * Value must have at least these property values
-         */
-        patternSampledData?: SampledData;
-        /**
-         * Value must have at least these property values
-         */
-        patternSignature?: Signature;
-        /**
-         * Value must have at least these property values
-         */
-        patternTiming?: Timing;
-        /**
-         * Value must have at least these property values
-         */
-        patternMeta?: Meta;
-        /**
-         * Example value (as defined for type)
-         */
-        example?: ElementDefinitionExample[];
-        /**
-         * Minimum Allowed Value (for some types)
-         */
-        minValueDate?: date;
-        /**
-         * Contains extended information for property 'minValueDate'.
-         */
-        _minValueDate?: Element;
-        /**
-         * Minimum Allowed Value (for some types)
-         */
-        minValueDateTime?: dateTime;
-        /**
-         * Contains extended information for property 'minValueDateTime'.
-         */
-        _minValueDateTime?: Element;
-        /**
-         * Minimum Allowed Value (for some types)
-         */
-        minValueInstant?: instant;
-        /**
-         * Contains extended information for property 'minValueInstant'.
-         */
-        _minValueInstant?: Element;
-        /**
-         * Minimum Allowed Value (for some types)
-         */
-        minValueTime?: time;
-        /**
-         * Contains extended information for property 'minValueTime'.
-         */
-        _minValueTime?: Element;
-        /**
-         * Minimum Allowed Value (for some types)
-         */
-        minValueDecimal?: decimal;
-        /**
-         * Contains extended information for property 'minValueDecimal'.
-         */
-        _minValueDecimal?: Element;
-        /**
-         * Minimum Allowed Value (for some types)
-         */
-        minValueInteger?: integer;
-        /**
-         * Contains extended information for property 'minValueInteger'.
-         */
-        _minValueInteger?: Element;
-        /**
-         * Minimum Allowed Value (for some types)
-         */
-        minValuePositiveInt?: positiveInt;
-        /**
-         * Contains extended information for property 'minValuePositiveInt'.
-         */
-        _minValuePositiveInt?: Element;
-        /**
-         * Minimum Allowed Value (for some types)
-         */
-        minValueUnsignedInt?: unsignedInt;
-        /**
-         * Contains extended information for property 'minValueUnsignedInt'.
-         */
-        _minValueUnsignedInt?: Element;
-        /**
-         * Minimum Allowed Value (for some types)
-         */
-        minValueQuantity?: Quantity;
-        /**
-         * Maximum Allowed Value (for some types)
-         */
-        maxValueDate?: date;
-        /**
-         * Contains extended information for property 'maxValueDate'.
-         */
-        _maxValueDate?: Element;
-        /**
-         * Maximum Allowed Value (for some types)
-         */
-        maxValueDateTime?: dateTime;
-        /**
-         * Contains extended information for property 'maxValueDateTime'.
-         */
-        _maxValueDateTime?: Element;
-        /**
-         * Maximum Allowed Value (for some types)
-         */
-        maxValueInstant?: instant;
-        /**
-         * Contains extended information for property 'maxValueInstant'.
-         */
-        _maxValueInstant?: Element;
-        /**
-         * Maximum Allowed Value (for some types)
-         */
-        maxValueTime?: time;
-        /**
-         * Contains extended information for property 'maxValueTime'.
-         */
-        _maxValueTime?: Element;
-        /**
-         * Maximum Allowed Value (for some types)
-         */
-        maxValueDecimal?: decimal;
-        /**
-         * Contains extended information for property 'maxValueDecimal'.
-         */
-        _maxValueDecimal?: Element;
-        /**
-         * Maximum Allowed Value (for some types)
-         */
-        maxValueInteger?: integer;
-        /**
-         * Contains extended information for property 'maxValueInteger'.
-         */
-        _maxValueInteger?: Element;
-        /**
-         * Maximum Allowed Value (for some types)
-         */
-        maxValuePositiveInt?: positiveInt;
-        /**
-         * Contains extended information for property 'maxValuePositiveInt'.
-         */
-        _maxValuePositiveInt?: Element;
-        /**
-         * Maximum Allowed Value (for some types)
-         */
-        maxValueUnsignedInt?: unsignedInt;
-        /**
-         * Contains extended information for property 'maxValueUnsignedInt'.
-         */
-        _maxValueUnsignedInt?: Element;
-        /**
-         * Maximum Allowed Value (for some types)
-         */
-        maxValueQuantity?: Quantity;
-        /**
-         * Max length for strings
-         */
-        maxLength?: integer;
-        /**
-         * Contains extended information for property 'maxLength'.
-         */
-        _maxLength?: Element;
-        /**
-         * Reference to invariant about presence
-         */
-        condition?: id[];
-        /**
-         * Contains extended information for property 'condition'.
-         */
-        _condition?: Element[];
-        /**
-         * Condition that must evaluate to true
-         */
-        constraint?: ElementDefinitionConstraint[];
-        /**
-         * If the element must supported
-         */
-        mustSupport?: boolean;
-        /**
-         * Contains extended information for property 'mustSupport'.
-         */
-        _mustSupport?: Element;
-        /**
-         * If this modifies the meaning of other elements
-         */
-        isModifier?: boolean;
-        /**
-         * Contains extended information for property 'isModifier'.
-         */
-        _isModifier?: Element;
-        /**
-         * Include when _summary = true?
-         */
-        isSummary?: boolean;
-        /**
-         * Contains extended information for property 'isSummary'.
-         */
-        _isSummary?: Element;
-        /**
-         * ValueSet details if this is coded
-         */
-        binding?: ElementDefinitionBinding;
-        /**
-         * Map element to another set of definitions
-         */
-        mapping?: ElementDefinitionMapping[];
-    }
-    /**
-     * Resource data element
-     */
-    interface DataElement extends DomainResource {
-        /**
-         * Logical URI to reference this data element (globally unique)
-         */
-        url?: uri;
-        /**
-         * Contains extended information for property 'url'.
-         */
-        _url?: Element;
-        /**
-         * Additional identifier for the data element
+         * Business Identifier
          */
         identifier?: Identifier[];
         /**
-         * Business version of the data element
+         * active | cancelled | draft | entered-in-error
          */
-        version?: string;
-        /**
-         * Contains extended information for property 'version'.
-         */
-        _version?: Element;
-        /**
-         * draft | active | retired | unknown
-         */
-        status: code;
+        status?: code;
         /**
          * Contains extended information for property 'status'.
          */
         _status?: Element;
         /**
-         * For testing purposes, not real usage
+         * Desired processing priority
          */
-        experimental?: boolean;
+        priority?: CodeableConcept;
         /**
-         * Contains extended information for property 'experimental'.
+         * auth-requirements | benefits | discovery | validation
          */
-        _experimental?: Element;
+        purpose: code[];
         /**
-         * Date this was last changed
+         * Contains extended information for property 'purpose'.
          */
-        date?: dateTime;
+        _purpose?: Element[];
         /**
-         * Contains extended information for property 'date'.
+         * The subject of the Products and Services
          */
-        _date?: Element;
+        patient?: Reference;
         /**
-         * Name of the publisher (organization or individual)
+         * Estimated date or dates of Service
          */
-        publisher?: string;
+        servicedDate?: date;
         /**
-         * Contains extended information for property 'publisher'.
+         * Contains extended information for property 'servicedDate'.
          */
-        _publisher?: Element;
+        _servicedDate?: Element;
         /**
-         * Name for this data element (computer friendly)
+         * Estimated date or dates of Service
+         */
+        servicedPeriod?: Period;
+        /**
+         * Creation date
+         */
+        created?: dateTime;
+        /**
+         * Contains extended information for property 'created'.
+         */
+        _created?: Element;
+        /**
+         * Author
+         */
+        enterer?: Reference;
+        /**
+         * Responsible provider
+         */
+        provider?: Reference;
+        /**
+         * Target
+         */
+        insurer?: Reference;
+        /**
+         * Servicing Facility
+         */
+        facility?: Reference;
+        /**
+         * Exceptions, special considerations, the condition, situation, prior or concurrent issues
+         */
+        supportingInformation?: CoverageEligibilityRequestSupportingInformation[];
+        /**
+         * Patient's Insurance or medical plan(s)
+         */
+        insurance?: CoverageEligibilityRequestInsurance[];
+        /**
+         * Service types, codes and supporting information
+         */
+        item?: CoverageEligibilityRequestItem[];
+    }
+    /**
+     * Details by insurance coverage
+     */
+    interface CoverageEligibilityResponseInsurance extends BackboneElement {
+        /**
+         * Updated Coverage details
+         */
+        coverage?: Reference;
+        /**
+         * Contract details
+         */
+        contract?: Reference;
+        /**
+         * Coverage inforce indicator
+         */
+        inforce?: boolean;
+        /**
+         * Contains extended information for property 'inforce'.
+         */
+        _inforce?: Element;
+        /**
+         * Benefits and Authorization requirements by Category or Service
+         */
+        item?: CoverageEligibilityResponseInsuranceItem[];
+    }
+    /**
+     * Benefits and Authorization requirements by Category or Service
+     */
+    interface CoverageEligibilityResponseInsuranceItem extends BackboneElement {
+        /**
+         * Type of service
+         */
+        category?: CodeableConcept;
+        /**
+         * Billing Code
+         */
+        billcode?: CodeableConcept;
+        /**
+         * Service/Product billing modifiers
+         */
+        modifier?: CodeableConcept[];
+        /**
+         * Performing practitioner
+         */
+        provider?: Reference;
+        /**
+         * Excluded from the plan
+         */
+        excluded?: boolean;
+        /**
+         * Contains extended information for property 'excluded'.
+         */
+        _excluded?: Element;
+        /**
+         * Short name for the benefit
          */
         name?: string;
         /**
@@ -9041,49 +9238,196 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _name?: Element;
         /**
-         * Name for this data element (human friendly)
+         * Description of the benefit or services covered
          */
-        title?: string;
+        description?: string;
         /**
-         * Contains extended information for property 'title'.
+         * Contains extended information for property 'description'.
          */
-        _title?: Element;
+        _description?: Element;
         /**
-         * Contact details for the publisher
+         * In or out of network
          */
-        contact?: ContactDetail[];
+        network?: CodeableConcept;
         /**
-         * Context the content is intended to support
+         * Individual or family
          */
-        useContext?: UsageContext[];
+        unit?: CodeableConcept;
         /**
-         * Intended jurisdiction for data element (if applicable)
+         * Annual or lifetime
          */
-        jurisdiction?: CodeableConcept[];
+        term?: CodeableConcept;
         /**
-         * Use and/or publishing restrictions
+         * Benefit Summary
          */
-        copyright?: markdown;
+        benefit?: CoverageEligibilityResponseInsuranceItemBenefit[];
         /**
-         * Contains extended information for property 'copyright'.
+         * Authorization required flag
          */
-        _copyright?: Element;
+        authorizationRequired?: boolean;
         /**
-         * comparable | fully-specified | equivalent | convertable | scaleable | flexible
+         * Contains extended information for property 'authorizationRequired'.
          */
-        stringency?: code;
+        _authorizationRequired?: Element;
         /**
-         * Contains extended information for property 'stringency'.
+         * Codes or text of materials to be submitted
          */
-        _stringency?: Element;
+        authorizationSupporting?: CodeableConcept[];
         /**
-         * External specification mapped to
+         * Pre-authorization requirements
          */
-        mapping?: DataElementMapping[];
+        authorizationUrl?: uri;
         /**
-         * Definition of element
+         * Contains extended information for property 'authorizationUrl'.
          */
-        element: ElementDefinition[];
+        _authorizationUrl?: Element;
+    }
+    /**
+     * Benefit Summary
+     */
+    interface CoverageEligibilityResponseInsuranceItemBenefit extends BackboneElement {
+        /**
+         * Deductible, visits, benefit amount
+         */
+        type: CodeableConcept;
+        /**
+         * Benefits allowed
+         */
+        allowedUnsignedInt?: unsignedInt;
+        /**
+         * Contains extended information for property 'allowedUnsignedInt'.
+         */
+        _allowedUnsignedInt?: Element;
+        /**
+         * Benefits allowed
+         */
+        allowedString?: string;
+        /**
+         * Contains extended information for property 'allowedString'.
+         */
+        _allowedString?: Element;
+        /**
+         * Benefits allowed
+         */
+        allowedMoney?: Money;
+        /**
+         * Benefits used
+         */
+        usedUnsignedInt?: unsignedInt;
+        /**
+         * Contains extended information for property 'usedUnsignedInt'.
+         */
+        _usedUnsignedInt?: Element;
+        /**
+         * Benefits used
+         */
+        usedMoney?: Money;
+    }
+    /**
+     * Processing errors
+     */
+    interface CoverageEligibilityResponseError extends BackboneElement {
+        /**
+         * Error code detailing processing issues
+         */
+        code: CodeableConcept;
+    }
+    /**
+     * CoverageEligibilityResponse resource
+     */
+    interface CoverageEligibilityResponse extends DomainResource {
+        /**
+         * Business Identifier
+         */
+        identifier?: Identifier[];
+        /**
+         * active | cancelled | draft | entered-in-error
+         */
+        status?: code;
+        /**
+         * Contains extended information for property 'status'.
+         */
+        _status?: Element;
+        /**
+         * auth-requirements | benefits | discovery | validation
+         */
+        purpose: code[];
+        /**
+         * Contains extended information for property 'purpose'.
+         */
+        _purpose?: Element[];
+        /**
+         * The subject of the Products and Services
+         */
+        patient?: Reference;
+        /**
+         * Estimated date or dates for inquiry
+         */
+        servicedDate?: date;
+        /**
+         * Contains extended information for property 'servicedDate'.
+         */
+        _servicedDate?: Element;
+        /**
+         * Estimated date or dates for inquiry
+         */
+        servicedPeriod?: Period;
+        /**
+         * Creation date
+         */
+        created?: dateTime;
+        /**
+         * Contains extended information for property 'created'.
+         */
+        _created?: Element;
+        /**
+         * Responsible provider
+         */
+        requestProvider?: Reference;
+        /**
+         * Eligibility reference
+         */
+        request?: Reference;
+        /**
+         * queued | complete | error | partial
+         */
+        outcome?: code;
+        /**
+         * Contains extended information for property 'outcome'.
+         */
+        _outcome?: Element;
+        /**
+         * Disposition Message
+         */
+        disposition?: string;
+        /**
+         * Contains extended information for property 'disposition'.
+         */
+        _disposition?: Element;
+        /**
+         * Insurer issuing the coverage
+         */
+        insurer?: Reference;
+        /**
+         * Details by insurance coverage
+         */
+        insurance?: CoverageEligibilityResponseInsurance[];
+        /**
+         * Pre-Authorization/Determination Reference
+         */
+        preAuthRef?: string;
+        /**
+         * Contains extended information for property 'preAuthRef'.
+         */
+        _preAuthRef?: Element;
+        /**
+         * Printed Form Identifier
+         */
+        form?: CodeableConcept;
+        /**
+         * Processing errors
+         */
+        error?: CoverageEligibilityResponseError[];
     }
     /**
      * Step taken to address
@@ -9113,7 +9457,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Unique id for the detected issue
          */
-        identifier?: Identifier;
+        identifier?: Identifier[];
         /**
          * registered | preliminary | final | amended +
          */
@@ -9178,7 +9522,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
     /**
      * Unique Device Identifier (UDI) Barcode string
      */
-    interface DeviceUdi extends BackboneElement {
+    interface DeviceUdiCarrier extends BackboneElement {
         /**
          * Mandatory fixed portion of UDI
          */
@@ -9188,13 +9532,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _deviceIdentifier?: Element;
         /**
-         * Device Name as appears on UDI label
+         * UDI Issuing Organization
          */
-        name?: string;
+        issuer?: uri;
         /**
-         * Contains extended information for property 'name'.
+         * Contains extended information for property 'issuer'.
          */
-        _name?: Element;
+        _issuer?: Element;
         /**
          * Regional UDI authority
          */
@@ -9204,14 +9548,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _jurisdiction?: Element;
         /**
-         * UDI Human Readable Barcode String
-         */
-        carrierHRF?: string;
-        /**
-         * Contains extended information for property 'carrierHRF'.
-         */
-        _carrierHRF?: Element;
-        /**
          * UDI Machine Readable Barcode String
          */
         carrierAIDC?: base64Binary;
@@ -9220,13 +9556,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _carrierAIDC?: Element;
         /**
-         * UDI Issuing Organization
+         * UDI Human Readable Barcode String
          */
-        issuer?: uri;
+        carrierHRF?: string;
         /**
-         * Contains extended information for property 'issuer'.
+         * Contains extended information for property 'carrierHRF'.
          */
-        _issuer?: Element;
+        _carrierHRF?: Element;
         /**
          * barcode | rfid | manual +
          */
@@ -9237,6 +9573,82 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         _entryType?: Element;
     }
     /**
+     * The name of the device as given by the manufacturer
+     */
+    interface DeviceDeviceName extends BackboneElement {
+        /**
+         * The name of the device
+         */
+        name: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * udi-label-name | user-friendly-name | patient-reported-name | manufacturer-name | model-name | other
+         */
+        type: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+    }
+    /**
+     * The capabilities supported on a  device, the standards to which the device conforms for a particular purpose, and used for the communication
+     */
+    interface DeviceSpecialization extends BackboneElement {
+        /**
+         * The standard that is used to operate and communicate
+         */
+        systemType: CodeableConcept;
+        /**
+         * The version of the standard that is used to operate and communicate
+         */
+        version?: string;
+        /**
+         * Contains extended information for property 'version'.
+         */
+        _version?: Element;
+    }
+    /**
+     * The actual design of the device or software version running on the device
+     */
+    interface DeviceVersion extends BackboneElement {
+        /**
+         * The type of the device version
+         */
+        type?: CodeableConcept;
+        /**
+         * A single component of the device version
+         */
+        component?: Identifier;
+        /**
+         * The version text
+         */
+        value: string;
+        /**
+         * Contains extended information for property 'value'.
+         */
+        _value?: Element;
+    }
+    /**
+     * The actual configuration settings of a device as it actually operates, e.g., regulation status, time properties
+     */
+    interface DeviceProperty extends BackboneElement {
+        /**
+         * Code that specifies the property DeviceDefinitionPropetyCode (Extensible)
+         */
+        type: CodeableConcept;
+        /**
+         * Property value as a quantity
+         */
+        valueQuanity?: Quantity[];
+        /**
+         * Property value as a code, e.g., NTP4 (synced to NTP)
+         */
+        valueCode?: CodeableConcept[];
+    }
+    /**
      * Item used in healthcare
      */
     interface Device extends DomainResource {
@@ -9245,9 +9657,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         identifier?: Identifier[];
         /**
+         * The reference to the definition for the device
+         */
+        definition?: Reference;
+        /**
          * Unique Device Identifier (UDI) Barcode string
          */
-        udi?: DeviceUdi;
+        udiCarrier?: DeviceUdiCarrier[];
         /**
          * active | inactive | entered-in-error | unknown
          */
@@ -9257,17 +9673,17 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _status?: Element;
         /**
-         * What kind of device this is
+         * online | paused | standby | offline | not-ready | transduc-discon | hw-discon | off
          */
-        type?: CodeableConcept;
+        statusReason?: CodeableConcept[];
         /**
-         * Lot number of manufacture
+         * The distinct identification code for a biological product regulated as a device
          */
-        lotNumber?: string;
+        distinctIdentificationCode?: string;
         /**
-         * Contains extended information for property 'lotNumber'.
+         * Contains extended information for property 'distinctIdentificationCode'.
          */
-        _lotNumber?: Element;
+        _distinctIdentificationCode?: Element;
         /**
          * Name of device manufacturer
          */
@@ -9293,21 +9709,57 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _expirationDate?: Element;
         /**
-         * Model id assigned by the manufacturer
+         * Lot number of manufacture
          */
-        model?: string;
+        lotNumber?: string;
         /**
-         * Contains extended information for property 'model'.
+         * Contains extended information for property 'lotNumber'.
          */
-        _model?: Element;
+        _lotNumber?: Element;
         /**
-         * Version number (i.e. software)
+         * Serial number assigned by the manufacturer
          */
-        version?: string;
+        serialNumber?: string;
         /**
-         * Contains extended information for property 'version'.
+         * Contains extended information for property 'serialNumber'.
          */
-        _version?: Element;
+        _serialNumber?: Element;
+        /**
+         * The name of the device as given by the manufacturer
+         */
+        deviceName?: DeviceDeviceName[];
+        /**
+         * The model number for the device
+         */
+        modelNumber?: string;
+        /**
+         * Contains extended information for property 'modelNumber'.
+         */
+        _modelNumber?: Element;
+        /**
+         * The part number of the device
+         */
+        partNumber?: string;
+        /**
+         * Contains extended information for property 'partNumber'.
+         */
+        _partNumber?: Element;
+        /**
+         * The kind or type of device
+         */
+        type?: CodeableConcept;
+        /**
+         * The capabilities supported on a  device, the standards to which the device conforms for a particular purpose, and used for the communication
+         */
+        specialization?: DeviceSpecialization[];
+        /**
+         * The actual design of the device or software version running on the device
+         */
+        version?: DeviceVersion[];
+        /**
+         * The actual configuration settings of a device as it actually operates, e.g., regulation status, time properties
+         */
+        property?: DeviceProperty[];
         /**
          * Patient to whom Device is affixed
          */
@@ -9321,7 +9773,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         contact?: ContactPoint[];
         /**
-         * Where the resource is found
+         * Where the device is found
          */
         location?: Reference;
         /**
@@ -9340,80 +9792,335 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Safety Characteristics of Device
          */
         safety?: CodeableConcept[];
+        /**
+         * The parent device
+         */
+        parent?: Reference;
     }
     /**
-     * Specification details such as Component Revisions, or Serial Numbers
+     * Unique Device Identifier (UDI) Barcode string
      */
-    interface DeviceComponentProductionSpecification extends BackboneElement {
+    interface DeviceDefinitionUdiDeviceIdentifier extends BackboneElement {
         /**
-         * Type or kind of production specification, for example serial number or software revision
+         * The identifier that is to be associated with every Device that references this DeviceDefintiion for the issuer and jurisdication porvided in the DeviceDefinition.udiDeviceIdentifier
          */
-        specType?: CodeableConcept;
+        deviceIdentifier: string;
         /**
-         * Internal component unique identification
+         * Contains extended information for property 'deviceIdentifier'.
          */
-        componentId?: Identifier;
+        _deviceIdentifier?: Element;
         /**
-         * A printable string defining the component
+         * The organization that assigns the identifier algorithm
          */
-        productionSpec?: string;
+        issuer: uri;
         /**
-         * Contains extended information for property 'productionSpec'.
+         * Contains extended information for property 'issuer'.
          */
-        _productionSpec?: Element;
+        _issuer?: Element;
+        /**
+         * The jurisdiction to which the deviceIdentifier applies
+         */
+        jurisdiction: uri;
+        /**
+         * Contains extended information for property 'jurisdiction'.
+         */
+        _jurisdiction?: Element;
+    }
+    /**
+     * A name given to the device to identify it
+     */
+    interface DeviceDefinitionDeviceName extends BackboneElement {
+        /**
+         * The name of the device
+         */
+        name: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * udi-label-name | user-friendly-name | patient-reported-name | manufacturer-name | model-name | other
+         */
+        type: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+    }
+    /**
+     * The capabilities supported on a  device, the standards to which the device conforms for a particular purpose, and used for the communication
+     */
+    interface DeviceDefinitionSpecialization extends BackboneElement {
+        /**
+         * The standard that is used to operate and communicate
+         */
+        systemType: string;
+        /**
+         * Contains extended information for property 'systemType'.
+         */
+        _systemType?: Element;
+        /**
+         * The version of the standard that is used to operate and communicate
+         */
+        version?: string;
+        /**
+         * Contains extended information for property 'version'.
+         */
+        _version?: Element;
+    }
+    /**
+     * The shelf-life and storage information for a medicinal product item or container can be described using this class
+     */
+    interface ProductShelfLife extends BackboneElement {
+        /**
+         * Unique identifier for the packaged Medicinal Product
+         */
+        identifier?: Identifier;
+        /**
+         * This describes the shelf life, taking into account various scenarios such as shelf life of the packaged Medicinal Product itself, shelf life after transformation where necessary and shelf life after the first opening of a bottle, etc. The shelf life type shall be specified using an appropriate controlled vocabulary The controlled term and the controlled term identifier shall be specified
+         */
+        type: CodeableConcept;
+        /**
+         * The shelf life time period can be specified using a numerical value for the period of time and its unit of time measurement The unit of measurement shall be specified in accordance with ISO 11240 and the resulting terminology The symbol and the symbol identifier shall be used
+         */
+        period: Quantity;
+        /**
+         * Special precautions for storage, if any, can be specified using an appropriate controlled vocabulary The controlled term and the controlled term identifier shall be specified
+         */
+        specialPrecautionsForStorage?: CodeableConcept[];
+    }
+    /**
+     * The marketing status describes the date when a medicinal product is actually put on the market or the date as of which it is no longer available
+     */
+    interface ProdCharacteristic extends BackboneElement {
+        /**
+         * Where applicable, the height can be specified using a numerical value and its unit of measurement The unit of measurement shall be specified in accordance with ISO 11240 and the resulting terminology The symbol and the symbol identifier shall be used
+         */
+        height?: Quantity;
+        /**
+         * Where applicable, the width can be specified using a numerical value and its unit of measurement The unit of measurement shall be specified in accordance with ISO 11240 and the resulting terminology The symbol and the symbol identifier shall be used
+         */
+        width?: Quantity;
+        /**
+         * Where applicable, the depth can be specified using a numerical value and its unit of measurement The unit of measurement shall be specified in accordance with ISO 11240 and the resulting terminology The symbol and the symbol identifier shall be used
+         */
+        depth?: Quantity;
+        /**
+         * Where applicable, the weight can be specified using a numerical value and its unit of measurement The unit of measurement shall be specified in accordance with ISO 11240 and the resulting terminology The symbol and the symbol identifier shall be used
+         */
+        weight?: Quantity;
+        /**
+         * Where applicable, the nominal volume can be specified using a numerical value and its unit of measurement The unit of measurement shall be specified in accordance with ISO 11240 and the resulting terminology The symbol and the symbol identifier shall be used
+         */
+        nominalVolume?: Quantity;
+        /**
+         * Where applicable, the external diameter can be specified using a numerical value and its unit of measurement The unit of measurement shall be specified in accordance with ISO 11240 and the resulting terminology The symbol and the symbol identifier shall be used
+         */
+        externalDiameter?: Quantity;
+        /**
+         * Where applicable, the shape can be specified An appropriate controlled vocabulary shall be used The term and the term identifier shall be used
+         */
+        shape?: string;
+        /**
+         * Contains extended information for property 'shape'.
+         */
+        _shape?: Element;
+        /**
+         * Where applicable, the color can be specified An appropriate controlled vocabulary shall be used The term and the term identifier shall be used
+         */
+        color?: string[];
+        /**
+         * Contains extended information for property 'color'.
+         */
+        _color?: Element[];
+        /**
+         * Where applicable, the imprint can be specified as text
+         */
+        imprint?: string[];
+        /**
+         * Contains extended information for property 'imprint'.
+         */
+        _imprint?: Element[];
+        /**
+         * Where applicable, the image can be provided The format of the image attachment shall be specified by regional implementations
+         */
+        image?: Attachment[];
+        /**
+         * Where applicable, the scoring can be specified An appropriate controlled vocabulary shall be used The term and the term identifier shall be used
+         */
+        scoring?: CodeableConcept;
+    }
+    /**
+     * Device capabilities
+     */
+    interface DeviceDefinitionCapability extends BackboneElement {
+        /**
+         * Type of capability
+         */
+        type: CodeableConcept;
+        /**
+         * Description of capability
+         */
+        description?: CodeableConcept[];
+    }
+    /**
+     * The actual configuration settings of a device as it actually operates, e.g., regulation status, time properties
+     */
+    interface DeviceDefinitionProperty extends BackboneElement {
+        /**
+         * Code that specifies the property DeviceDefinitionPropetyCode (Extensible)
+         */
+        type: CodeableConcept;
+        /**
+         * Property value as a quantity
+         */
+        valueQuanity?: Quantity[];
+        /**
+         * Property value as a code, e.g., NTP4 (synced to NTP)
+         */
+        valueCode?: CodeableConcept[];
+    }
+    /**
+     * A substance used to create the material(s) of which the device is made
+     */
+    interface DeviceDefinitionMaterial extends BackboneElement {
+        /**
+         * The substance
+         */
+        substance: CodeableConcept;
+        /**
+         * Indicates an alternative material of the device
+         */
+        alternate?: boolean;
+        /**
+         * Contains extended information for property 'alternate'.
+         */
+        _alternate?: Element;
+        /**
+         * Whether the substance is a known or suspected allergen
+         */
+        allergenicIndicator?: boolean;
+        /**
+         * Contains extended information for property 'allergenicIndicator'.
+         */
+        _allergenicIndicator?: Element;
     }
     /**
      * An instance of a medical-related component of a medical device
      */
-    interface DeviceComponent extends DomainResource {
+    interface DeviceDefinition extends DomainResource {
         /**
-         * Instance id assigned by the software stack
+         * Instance identifier
          */
-        identifier: Identifier;
+        identifier?: Identifier[];
         /**
-         * What kind of component it is
+         * Unique Device Identifier (UDI) Barcode string
          */
-        type: CodeableConcept;
+        udiDeviceIdentifier?: DeviceDefinitionUdiDeviceIdentifier[];
         /**
-         * Recent system change timestamp
+         * Name of device manufacturer
          */
-        lastSystemChange?: instant;
+        manufacturerString?: string;
         /**
-         * Contains extended information for property 'lastSystemChange'.
+         * Contains extended information for property 'manufacturerString'.
          */
-        _lastSystemChange?: Element;
+        _manufacturerString?: Element;
         /**
-         * Top-level device resource link
+         * Name of device manufacturer
          */
-        source?: Reference;
+        manufacturerReference?: Reference;
         /**
-         * Parent resource link
+         * A name given to the device to identify it
          */
-        parent?: Reference;
+        deviceName?: DeviceDefinitionDeviceName[];
         /**
-         * Current operational status of the component, for example On, Off or Standby
+         * The model number for the device
          */
-        operationalStatus?: CodeableConcept[];
+        modelNumber?: string;
         /**
-         * Current supported parameter group
+         * Contains extended information for property 'modelNumber'.
          */
-        parameterGroup?: CodeableConcept;
+        _modelNumber?: Element;
         /**
-         * other | chemical | electrical | impedance | nuclear | optical | thermal | biological | mechanical | acoustical | manual+
+         * What kind of device or device system this is
          */
-        measurementPrinciple?: code;
+        type?: CodeableConcept;
         /**
-         * Contains extended information for property 'measurementPrinciple'.
+         * The capabilities supported on a  device, the standards to which the device conforms for a particular purpose, and used for the communication
          */
-        _measurementPrinciple?: Element;
+        specialization?: DeviceDefinitionSpecialization[];
         /**
-         * Specification details such as Component Revisions, or Serial Numbers
+         * The actual design of the device or software version running on the device
          */
-        productionSpecification?: DeviceComponentProductionSpecification[];
+        version?: string[];
         /**
-         * Language code for the human-readable text strings produced by the device
+         * Contains extended information for property 'version'.
          */
-        languageCode?: CodeableConcept;
+        _version?: Element[];
+        /**
+         * Safety characteristics of the device
+         */
+        safety?: CodeableConcept[];
+        /**
+         * Shelf Life and storage information
+         */
+        shelfLifeStorage?: ProductShelfLife[];
+        /**
+         * Dimensions, color etc.
+         */
+        physicalCharacteristics?: ProdCharacteristic;
+        /**
+         * Language code for the human-readable text strings produced by the device (all supported)
+         */
+        languageCode?: CodeableConcept[];
+        /**
+         * Device capabilities
+         */
+        capability?: DeviceDefinitionCapability[];
+        /**
+         * The actual configuration settings of a device as it actually operates, e.g., regulation status, time properties
+         */
+        property?: DeviceDefinitionProperty[];
+        /**
+         * Organization responsible for device
+         */
+        owner?: Reference;
+        /**
+         * Details for human/organization for support
+         */
+        contact?: ContactPoint[];
+        /**
+         * Network address to contact device
+         */
+        url?: uri;
+        /**
+         * Contains extended information for property 'url'.
+         */
+        _url?: Element;
+        /**
+         * Access to on-line information
+         */
+        onlineInformation?: uri;
+        /**
+         * Contains extended information for property 'onlineInformation'.
+         */
+        _onlineInformation?: Element;
+        /**
+         * Device notes and comments
+         */
+        note?: Annotation[];
+        /**
+         * The quantity of the device present in the packaging (e.g. the number of devices present in a pack, or the number of devices in the same package of the medicinal product)
+         */
+        quantity?: Quantity;
+        /**
+         * The parent device it can be part of
+         */
+        parentDevice?: Reference;
+        /**
+         * A substance used to create the material(s) of which the device is made
+         */
+        material?: DeviceDefinitionMaterial[];
     }
     /**
      * Describes the calibrations that have been performed or that are required to be performed
@@ -9449,9 +10156,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface DeviceMetric extends DomainResource {
         /**
-         * Unique identifier of this DeviceMetric
+         * Instance identifier
          */
-        identifier: Identifier;
+        identifier?: Identifier[];
         /**
          * Identity of metric, for example Heart Rate or PEEP Setting
          */
@@ -9465,7 +10172,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         source?: Reference;
         /**
-         * Describes the link to the parent DeviceComponent
+         * Describes the link to the parent Device
          */
         parent?: Reference;
         /**
@@ -9502,17 +10209,33 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         calibration?: DeviceMetricCalibration[];
     }
     /**
-     * Who/what is requesting diagnostics
+     * Device details
      */
-    interface DeviceRequestRequester extends BackboneElement {
+    interface DeviceRequestParameter extends BackboneElement {
         /**
-         * Individual making the request
+         * Device detail
          */
-        agent: Reference;
+        code?: CodeableConcept;
         /**
-         * Organization agent is acting for
+         * Value of detail
          */
-        onBehalfOf?: Reference;
+        valueCodeableConcept?: CodeableConcept;
+        /**
+         * Value of detail
+         */
+        valueQuantity?: Quantity;
+        /**
+         * Value of detail
+         */
+        valueRange?: Range;
+        /**
+         * Value of detail
+         */
+        valueBoolean?: boolean;
+        /**
+         * Contains extended information for property 'valueBoolean'.
+         */
+        _valueBoolean?: Element;
     }
     /**
      * Medical device request
@@ -9523,9 +10246,21 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         identifier?: Identifier[];
         /**
-         * Protocol or definition
+         * Instantiates FHIR protocol or definition
          */
-        definition?: Reference[];
+        instantiatesCanonical?: canonical[];
+        /**
+         * Contains extended information for property 'instantiatesCanonical'.
+         */
+        _instantiatesCanonical?: Element[];
+        /**
+         * Instantiates external protocol or definition
+         */
+        instantiatesUri?: uri[];
+        /**
+         * Contains extended information for property 'instantiatesUri'.
+         */
+        _instantiatesUri?: Element[];
         /**
          * What request fulfills
          */
@@ -9549,7 +10284,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * proposal | plan | original-order | encoded | reflex-order
          */
-        intent: CodeableConcept;
+        intent: code;
+        /**
+         * Contains extended information for property 'intent'.
+         */
+        _intent?: Element;
         /**
          * Indicates how quickly the {{title}} should be addressed with respect to other requests
          */
@@ -9566,6 +10305,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Device requested
          */
         codeCodeableConcept?: CodeableConcept;
+        /**
+         * Device details
+         */
+        parameter?: DeviceRequestParameter[];
         /**
          * Focus of request
          */
@@ -9601,9 +10344,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Who/what is requesting diagnostics
          */
-        requester?: DeviceRequestRequester;
+        requester?: Reference;
         /**
-         * Fille role
+         * Filler role
          */
         performerType?: CodeableConcept;
         /**
@@ -9618,6 +10361,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Linked Reason for request
          */
         reasonReference?: Reference[];
+        /**
+         * Associated insurance coverage
+         */
+        insurance?: Reference[];
         /**
          * Additional clinical information
          */
@@ -9640,6 +10387,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         identifier?: Identifier[];
         /**
+         * Fulfills plan, proposal or order
+         */
+        basedOn?: Reference[];
+        /**
          * active | completed | entered-in-error +
          */
         status: code;
@@ -9652,9 +10403,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         subject: Reference;
         /**
-         * Period device was used
+         * Supporting information
          */
-        whenUsed?: Period;
+        derivedFrom?: Reference[];
         /**
          * How often  the device was used
          */
@@ -9690,7 +10441,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Why device was used
          */
-        indication?: CodeableConcept[];
+        reasonCode?: CodeableConcept[];
+        /**
+         * Why was DeviceUseStatement performed?
+         */
+        reasonReference?: Reference[];
         /**
          * Target body site
          */
@@ -9701,22 +10456,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         note?: Annotation[];
     }
     /**
-     * Participants in producing the report
-     */
-    interface DiagnosticReportPerformer extends BackboneElement {
-        /**
-         * Type of performer
-         */
-        role?: CodeableConcept;
-        /**
-         * Practitioner or Organization  participant
-         */
-        actor: Reference;
-    }
-    /**
      * Key images associated with this report
      */
-    interface DiagnosticReportImage extends BackboneElement {
+    interface DiagnosticReportMedia extends BackboneElement {
         /**
          * Comment about the image (e.g. explanation)
          */
@@ -9779,7 +10521,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         effectivePeriod?: Period;
         /**
-         * DateTime this version was released
+         * DateTime this version was made
          */
         issued?: instant;
         /**
@@ -9787,15 +10529,19 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _issued?: Element;
         /**
-         * Participants in producing the report
+         * Responsible Diagnostic Service
          */
-        performer?: DiagnosticReportPerformer[];
+        performer?: Reference[];
+        /**
+         * Primary result interpreter
+         */
+        resultsInterpreter?: Reference[];
         /**
          * Specimens this report is based on
          */
         specimen?: Reference[];
         /**
-         * Observations - simple, or complex nested groups
+         * Observations
          */
         result?: Reference[];
         /**
@@ -9805,9 +10551,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Key images associated with this report
          */
-        image?: DiagnosticReportImage[];
+        media?: DiagnosticReportMedia[];
         /**
-         * Clinical Interpretation of test results
+         * Clinical conclusion (interpretation) of test results
          */
         conclusion?: string;
         /**
@@ -9815,26 +10561,26 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _conclusion?: Element;
         /**
-         * Codes for the conclusion
+         * Codes for the clinical conclusion of test results
          */
-        codedDiagnosis?: CodeableConcept[];
+        conclusionCode?: CodeableConcept[];
         /**
          * Entire report as issued
          */
         presentedForm?: Attachment[];
     }
     /**
-     * The items included
+     * Agent involved
      */
-    interface DocumentManifestContent extends BackboneElement {
+    interface DocumentManifestAgent extends BackboneElement {
         /**
-         * Contents of this set of documents
+         * How agent participated
          */
-        pAttachment?: Attachment;
+        type?: CodeableConcept;
         /**
-         * Contents of this set of documents
+         * Who and/or what had an agent participation
          */
-        pReference?: Reference;
+        who: Reference;
     }
     /**
      * Related things
@@ -9886,9 +10632,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _created?: Element;
         /**
-         * Who and/or what authored the manifest
+         * Agent involved
          */
-        author?: Reference[];
+        agent?: DocumentManifestAgent[];
         /**
          * Intended to get notified about this set of documents
          */
@@ -9910,13 +10656,26 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * The items included
+         * Items in manifest
          */
-        content: DocumentManifestContent[];
+        content: Reference[];
         /**
          * Related things
          */
         related?: DocumentManifestRelated[];
+    }
+    /**
+     * Agent involved
+     */
+    interface DocumentReferenceAgent extends BackboneElement {
+        /**
+         * How agent participated
+         */
+        type?: CodeableConcept;
+        /**
+         * Who and/or what authored the document
+         */
+        who: Reference;
     }
     /**
      * Relationships to other documents
@@ -9955,7 +10714,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Context of the document  content
          */
-        encounter?: Reference;
+        encounter?: Reference[];
         /**
          * Main clinical acts documented
          */
@@ -9979,20 +10738,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Related identifiers or resources
          */
-        related?: DocumentReferenceContextRelated[];
-    }
-    /**
-     * Related identifiers or resources
-     */
-    interface DocumentReferenceContextRelated extends BackboneElement {
-        /**
-         * Identifier of related objects or events
-         */
-        identifier?: Identifier;
-        /**
-         * Related Resource
-         */
-        ref?: Reference;
+        related?: Reference[];
     }
     /**
      * A reference to a document
@@ -10025,35 +10771,27 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Kind of document (LOINC if possible)
          */
-        type: CodeableConcept;
+        type?: CodeableConcept;
         /**
          * Categorization of document
          */
-        class?: CodeableConcept;
+        category?: CodeableConcept[];
         /**
          * Who/what is the subject of the document
          */
         subject?: Reference;
         /**
-         * Document creation time
-         */
-        created?: dateTime;
-        /**
-         * Contains extended information for property 'created'.
-         */
-        _created?: Element;
-        /**
          * When this document reference was created
          */
-        indexed: instant;
+        date?: instant;
         /**
-         * Contains extended information for property 'indexed'.
+         * Contains extended information for property 'date'.
          */
-        _indexed?: Element;
+        _date?: Element;
         /**
-         * Who and/or what authored the document
+         * Agent involved
          */
-        author?: Reference[];
+        agent?: DocumentReferenceAgent[];
         /**
          * Who/what authenticated the document
          */
@@ -10067,7 +10805,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         relatesTo?: DocumentReferenceRelatesTo[];
         /**
-         * Human-readable description (title)
+         * Human-readable description
          */
         description?: string;
         /**
@@ -10086,284 +10824,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Clinical context of document
          */
         context?: DocumentReferenceContext;
-    }
-    /**
-     * Determine insurance validity and scope of coverage
-     */
-    interface EligibilityRequest extends DomainResource {
-        /**
-         * Business Identifier
-         */
-        identifier?: Identifier[];
-        /**
-         * active | cancelled | draft | entered-in-error
-         */
-        status?: code;
-        /**
-         * Contains extended information for property 'status'.
-         */
-        _status?: Element;
-        /**
-         * Desired processing priority
-         */
-        priority?: CodeableConcept;
-        /**
-         * The subject of the Products and Services
-         */
-        patient?: Reference;
-        /**
-         * Estimated date or dates of Service
-         */
-        servicedDate?: date;
-        /**
-         * Contains extended information for property 'servicedDate'.
-         */
-        _servicedDate?: Element;
-        /**
-         * Estimated date or dates of Service
-         */
-        servicedPeriod?: Period;
-        /**
-         * Creation date
-         */
-        created?: dateTime;
-        /**
-         * Contains extended information for property 'created'.
-         */
-        _created?: Element;
-        /**
-         * Author
-         */
-        enterer?: Reference;
-        /**
-         * Responsible practitioner
-         */
-        provider?: Reference;
-        /**
-         * Responsible organization
-         */
-        organization?: Reference;
-        /**
-         * Target
-         */
-        insurer?: Reference;
-        /**
-         * Servicing Facility
-         */
-        facility?: Reference;
-        /**
-         * Insurance or medical plan
-         */
-        coverage?: Reference;
-        /**
-         * Business agreement
-         */
-        businessArrangement?: string;
-        /**
-         * Contains extended information for property 'businessArrangement'.
-         */
-        _businessArrangement?: Element;
-        /**
-         * Type of services covered
-         */
-        benefitCategory?: CodeableConcept;
-        /**
-         * Detailed services covered within the type
-         */
-        benefitSubCategory?: CodeableConcept;
-    }
-    /**
-     * Details by insurance coverage
-     */
-    interface EligibilityResponseInsurance extends BackboneElement {
-        /**
-         * Updated Coverage details
-         */
-        coverage?: Reference;
-        /**
-         * Contract details
-         */
-        contract?: Reference;
-        /**
-         * Benefits by Category
-         */
-        benefitBalance?: EligibilityResponseInsuranceBenefitBalance[];
-    }
-    /**
-     * Benefits by Category
-     */
-    interface EligibilityResponseInsuranceBenefitBalance extends BackboneElement {
-        /**
-         * Type of services covered
-         */
-        category: CodeableConcept;
-        /**
-         * Detailed services covered within the type
-         */
-        subCategory?: CodeableConcept;
-        /**
-         * Excluded from the plan
-         */
-        excluded?: boolean;
-        /**
-         * Contains extended information for property 'excluded'.
-         */
-        _excluded?: Element;
-        /**
-         * Short name for the benefit
-         */
-        name?: string;
-        /**
-         * Contains extended information for property 'name'.
-         */
-        _name?: Element;
-        /**
-         * Description of the benefit or services covered
-         */
-        description?: string;
-        /**
-         * Contains extended information for property 'description'.
-         */
-        _description?: Element;
-        /**
-         * In or out of network
-         */
-        network?: CodeableConcept;
-        /**
-         * Individual or family
-         */
-        unit?: CodeableConcept;
-        /**
-         * Annual or lifetime
-         */
-        term?: CodeableConcept;
-        /**
-         * Benefit Summary
-         */
-        financial?: EligibilityResponseInsuranceBenefitBalanceFinancial[];
-    }
-    /**
-     * Benefit Summary
-     */
-    interface EligibilityResponseInsuranceBenefitBalanceFinancial extends BackboneElement {
-        /**
-         * Deductable, visits, benefit amount
-         */
-        type: CodeableConcept;
-        /**
-         * Benefits allowed
-         */
-        allowedUnsignedInt?: unsignedInt;
-        /**
-         * Contains extended information for property 'allowedUnsignedInt'.
-         */
-        _allowedUnsignedInt?: Element;
-        /**
-         * Benefits allowed
-         */
-        allowedString?: string;
-        /**
-         * Contains extended information for property 'allowedString'.
-         */
-        _allowedString?: Element;
-        /**
-         * Benefits allowed
-         */
-        allowedMoney?: Money;
-        /**
-         * Benefits used
-         */
-        usedUnsignedInt?: unsignedInt;
-        /**
-         * Contains extended information for property 'usedUnsignedInt'.
-         */
-        _usedUnsignedInt?: Element;
-        /**
-         * Benefits used
-         */
-        usedMoney?: Money;
-    }
-    /**
-     * Processing errors
-     */
-    interface EligibilityResponseError extends BackboneElement {
-        /**
-         * Error code detailing processing issues
-         */
-        code: CodeableConcept;
-    }
-    /**
-     * EligibilityResponse resource
-     */
-    interface EligibilityResponse extends DomainResource {
-        /**
-         * Business Identifier
-         */
-        identifier?: Identifier[];
-        /**
-         * active | cancelled | draft | entered-in-error
-         */
-        status?: code;
-        /**
-         * Contains extended information for property 'status'.
-         */
-        _status?: Element;
-        /**
-         * Creation date
-         */
-        created?: dateTime;
-        /**
-         * Contains extended information for property 'created'.
-         */
-        _created?: Element;
-        /**
-         * Responsible practitioner
-         */
-        requestProvider?: Reference;
-        /**
-         * Responsible organization
-         */
-        requestOrganization?: Reference;
-        /**
-         * Eligibility reference
-         */
-        request?: Reference;
-        /**
-         * complete | error | partial
-         */
-        outcome?: CodeableConcept;
-        /**
-         * Disposition Message
-         */
-        disposition?: string;
-        /**
-         * Contains extended information for property 'disposition'.
-         */
-        _disposition?: Element;
-        /**
-         * Insurer issuing the coverage
-         */
-        insurer?: Reference;
-        /**
-         * Coverage inforce indicator
-         */
-        inforce?: boolean;
-        /**
-         * Contains extended information for property 'inforce'.
-         */
-        _inforce?: Element;
-        /**
-         * Details by insurance coverage
-         */
-        insurance?: EligibilityResponseInsurance[];
-        /**
-         * Printed Form Identifier
-         */
-        form?: CodeableConcept;
-        /**
-         * Processing errors
-         */
-        error?: EligibilityResponseError[];
     }
     /**
      * List of past encounter statuses
@@ -10442,7 +10902,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         preAdmissionIdentifier?: Identifier;
         /**
-         * The location from which the patient came before admission
+         * The location/organization from which the patient came before admission
          */
         origin?: Reference;
         /**
@@ -10466,7 +10926,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         specialArrangement?: CodeableConcept[];
         /**
-         * Location to which the patient is discharged
+         * Location/organization to which the patient is discharged
          */
         destination?: Reference;
         /**
@@ -10516,9 +10976,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         statusHistory?: EncounterStatusHistory[];
         /**
-         * inpatient | outpatient | ambulatory | emergency +
+         * Classification of patient encounter
          */
-        class?: Coding;
+        class: Coding;
         /**
          * List of past encounter classes
          */
@@ -10528,11 +10988,15 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         type?: CodeableConcept[];
         /**
+         * Specific type of service
+         */
+        serviceType?: CodeableConcept;
+        /**
          * Indicates the urgency of the encounter
          */
         priority?: CodeableConcept;
         /**
-         * The patient ro group present at the encounter
+         * The patient or group present at the encounter
          */
         subject?: Reference;
         /**
@@ -10540,9 +11004,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         episodeOfCare?: Reference[];
         /**
-         * The ReferralRequest that initiated this encounter
+         * The ServiceRequest that initiated this encounter
          */
-        incomingReferral?: Reference[];
+        basedOn?: Reference[];
         /**
          * List of participants involved in the encounter
          */
@@ -10580,7 +11044,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         location?: EncounterLocation[];
         /**
-         * The custodian organization of this Encounter record
+         * The organization (facility) responsible for this encounter
          */
         serviceProvider?: Reference;
         /**
@@ -10617,7 +11081,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _name?: Element;
         /**
-         * Organization that manages this endpoint (may not be the organization that exposes the endpoint)
+         * Organization that manages this endpoint (might not be the organization that exposes the endpoint)
          */
         managingOrganization?: Reference;
         /**
@@ -10643,7 +11107,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * The technical base address for connecting to this endpoint
          */
-        address: uri;
+        address: url;
         /**
          * Contains extended information for property 'address'.
          */
@@ -10658,7 +11122,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         _header?: Element[];
     }
     /**
-     * Enrollment request
+     * Enrol in coverage
      */
     interface EnrollmentRequest extends DomainResource {
         /**
@@ -10690,13 +11154,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         provider?: Reference;
         /**
-         * Responsible organization
+         * The subject to be enrolled
          */
-        organization?: Reference;
-        /**
-         * The subject of the Products and Services
-         */
-        subject?: Reference;
+        candidate?: Reference;
         /**
          * Insurance information
          */
@@ -10723,9 +11183,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         request?: Reference;
         /**
-         * complete | error | partial
+         * queued | complete | error | partial
          */
-        outcome?: CodeableConcept;
+        outcome?: code;
+        /**
+         * Contains extended information for property 'outcome'.
+         */
+        _outcome?: Element;
         /**
          * Disposition Message
          */
@@ -10750,10 +11214,88 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Responsible practitioner
          */
         requestProvider?: Reference;
+    }
+    /**
+     * An item that this catalog entry is related to
+     */
+    interface EntryDefinitionRelatedEntry extends BackboneElement {
         /**
-         * Responsible organization
+         * has-input | has-output | uses | triggers | is-replaced-by
          */
-        requestOrganization?: Reference;
+        relationtype: code;
+        /**
+         * Contains extended information for property 'relationtype'.
+         */
+        _relationtype?: Element;
+        /**
+         * The reference to the related item
+         */
+        item: Reference;
+    }
+    /**
+     * An entry in a catalog
+     */
+    interface EntryDefinition extends DomainResource {
+        /**
+         * Unique identifier of the catalog item
+         */
+        identifier?: Identifier[];
+        /**
+         * The type of item - medication, device, service, protocol or other
+         */
+        type?: CodeableConcept;
+        /**
+         * Whether the entry represents an orderable item
+         */
+        orderable: boolean;
+        /**
+         * Contains extended information for property 'orderable'.
+         */
+        _orderable?: Element;
+        /**
+         * The item that is being defined
+         */
+        referencedItem: Reference;
+        /**
+         * Any additional identifier(s) for the catalog item, in the same granularity or concept
+         */
+        additionalIdentifier?: Identifier[];
+        /**
+         * Classification (category or class) of the item entry
+         */
+        classification?: CodeableConcept[];
+        /**
+         * draft | active | retired | unknown
+         */
+        status?: code;
+        /**
+         * Contains extended information for property 'status'.
+         */
+        _status?: Element;
+        /**
+         * The time period in which this catalog entry is expected to be active
+         */
+        validityPeriod?: Period;
+        /**
+         * When was this catalog last updated
+         */
+        lastUpdated?: dateTime;
+        /**
+         * Contains extended information for property 'lastUpdated'.
+         */
+        _lastUpdated?: Element;
+        /**
+         * Additional characteristics of the catalog entry
+         */
+        additionalCharacteristic?: CodeableConcept[];
+        /**
+         * Additional classification of the catalog entry
+         */
+        additionalClassification?: CodeableConcept[];
+        /**
+         * An item that this catalog entry is related to
+         */
+        relatedEntry?: EntryDefinitionRelatedEntry[];
     }
     /**
      * Past list of status codes (the current status may be included to cover the start date of the status)
@@ -10838,7 +11380,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         referralRequest?: Reference[];
         /**
-         * Care manager/care co-ordinator for the patient
+         * Care manager/care coordinator for the patient
          */
         careManager?: Reference;
         /**
@@ -10851,126 +11393,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         account?: Reference[];
     }
     /**
-     * Fix use of a code system to a particular version
+     * A description of when an event can occur
      */
-    interface ExpansionProfileFixedVersion extends BackboneElement {
+    interface EventDefinition extends DomainResource {
         /**
-         * System to have its version fixed
-         */
-        system: uri;
-        /**
-         * Contains extended information for property 'system'.
-         */
-        _system?: Element;
-        /**
-         * Specific version of the code system referred to
-         */
-        version: string;
-        /**
-         * Contains extended information for property 'version'.
-         */
-        _version?: Element;
-        /**
-         * default | check | override
-         */
-        mode: code;
-        /**
-         * Contains extended information for property 'mode'.
-         */
-        _mode?: Element;
-    }
-    /**
-     * Systems/Versions to be exclude
-     */
-    interface ExpansionProfileExcludedSystem extends BackboneElement {
-        /**
-         * The specific code system to be excluded
-         */
-        system: uri;
-        /**
-         * Contains extended information for property 'system'.
-         */
-        _system?: Element;
-        /**
-         * Specific version of the code system referred to
-         */
-        version?: string;
-        /**
-         * Contains extended information for property 'version'.
-         */
-        _version?: Element;
-    }
-    /**
-     * When the expansion profile imposes designation contraints
-     */
-    interface ExpansionProfileDesignation extends BackboneElement {
-        /**
-         * Designations to be included
-         */
-        include?: ExpansionProfileDesignationInclude;
-        /**
-         * Designations to be excluded
-         */
-        exclude?: ExpansionProfileDesignationExclude;
-    }
-    /**
-     * Designations to be included
-     */
-    interface ExpansionProfileDesignationInclude extends BackboneElement {
-        /**
-         * The designation to be included
-         */
-        designation?: ExpansionProfileDesignationIncludeDesignation[];
-    }
-    /**
-     * The designation to be included
-     */
-    interface ExpansionProfileDesignationIncludeDesignation extends BackboneElement {
-        /**
-         * Human language of the designation to be included
-         */
-        language?: code;
-        /**
-         * Contains extended information for property 'language'.
-         */
-        _language?: Element;
-        /**
-         * What kind of Designation to include
-         */
-        use?: Coding;
-    }
-    /**
-     * Designations to be excluded
-     */
-    interface ExpansionProfileDesignationExclude extends BackboneElement {
-        /**
-         * The designation to be excluded
-         */
-        designation?: ExpansionProfileDesignationExcludeDesignation[];
-    }
-    /**
-     * The designation to be excluded
-     */
-    interface ExpansionProfileDesignationExcludeDesignation extends BackboneElement {
-        /**
-         * Human language of the designation to be excluded
-         */
-        language?: code;
-        /**
-         * Contains extended information for property 'language'.
-         */
-        _language?: Element;
-        /**
-         * What kind of Designation to exclude
-         */
-        use?: Coding;
-    }
-    /**
-     * Defines behaviour and contraints on the ValueSet Expansion operation
-     */
-    interface ExpansionProfile extends DomainResource {
-        /**
-         * Logical URI to reference this expansion profile (globally unique)
+         * Canonical identifier for this event definition, represented as a URI (globally unique)
          */
         url?: uri;
         /**
@@ -10978,11 +11405,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _url?: Element;
         /**
-         * Additional identifier for the expansion profile
+         * Additional identifier for the event definition
          */
-        identifier?: Identifier;
+        identifier?: Identifier[];
         /**
-         * Business version of the expansion profile
+         * Business version of the event definition
          */
         version?: string;
         /**
@@ -10990,7 +11417,497 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _version?: Element;
         /**
-         * Name for this expansion profile (computer friendly)
+         * Name for this event definition (computer friendly)
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Name for this event definition (human friendly)
+         */
+        title?: string;
+        /**
+         * Contains extended information for property 'title'.
+         */
+        _title?: Element;
+        /**
+         * Subordinate title of the event definition
+         */
+        subtitle?: string;
+        /**
+         * Contains extended information for property 'subtitle'.
+         */
+        _subtitle?: Element;
+        /**
+         * draft | active | retired | unknown
+         */
+        status: code;
+        /**
+         * Contains extended information for property 'status'.
+         */
+        _status?: Element;
+        /**
+         * For testing purposes, not real usage
+         */
+        experimental?: boolean;
+        /**
+         * Contains extended information for property 'experimental'.
+         */
+        _experimental?: Element;
+        /**
+         * Type of individual the event definition is focused on
+         */
+        subjectCodeableConcept?: CodeableConcept;
+        /**
+         * Type of individual the event definition is focused on
+         */
+        subjectReference?: Reference;
+        /**
+         * Date last changed
+         */
+        date?: dateTime;
+        /**
+         * Contains extended information for property 'date'.
+         */
+        _date?: Element;
+        /**
+         * Name of the publisher (organization or individual)
+         */
+        publisher?: string;
+        /**
+         * Contains extended information for property 'publisher'.
+         */
+        _publisher?: Element;
+        /**
+         * Contact details for the publisher
+         */
+        contact?: ContactDetail[];
+        /**
+         * Natural language description of the event definition
+         */
+        description?: markdown;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * The context that the content is intended to support
+         */
+        useContext?: UsageContext[];
+        /**
+         * Intended jurisdiction for event definition (if applicable)
+         */
+        jurisdiction?: CodeableConcept[];
+        /**
+         * Why this event definition is defined
+         */
+        purpose?: markdown;
+        /**
+         * Contains extended information for property 'purpose'.
+         */
+        _purpose?: Element;
+        /**
+         * Describes the clinical usage of the event definition
+         */
+        usage?: string;
+        /**
+         * Contains extended information for property 'usage'.
+         */
+        _usage?: Element;
+        /**
+         * Use and/or publishing restrictions
+         */
+        copyright?: markdown;
+        /**
+         * Contains extended information for property 'copyright'.
+         */
+        _copyright?: Element;
+        /**
+         * When the event definition was approved by publisher
+         */
+        approvalDate?: date;
+        /**
+         * Contains extended information for property 'approvalDate'.
+         */
+        _approvalDate?: Element;
+        /**
+         * When the event definition was last reviewed
+         */
+        lastReviewDate?: date;
+        /**
+         * Contains extended information for property 'lastReviewDate'.
+         */
+        _lastReviewDate?: Element;
+        /**
+         * When the event definition is expected to be used
+         */
+        effectivePeriod?: Period;
+        /**
+         * E.g. Education, Treatment, Assessment, etc.
+         */
+        topic?: CodeableConcept[];
+        /**
+         * Who authored the content
+         */
+        author?: ContactDetail[];
+        /**
+         * Who edited the content
+         */
+        editor?: ContactDetail[];
+        /**
+         * Who reviewed the content
+         */
+        reviewer?: ContactDetail[];
+        /**
+         * Who endorsed the content
+         */
+        endorser?: ContactDetail[];
+        /**
+         * Additional documentation, citations, etc.
+         */
+        relatedArtifact?: RelatedArtifact[];
+        /**
+         * "when" the event occurs
+         */
+        trigger: TriggerDefinition;
+    }
+    /**
+     * Actor participating in the resource
+     */
+    interface ExampleScenarioActor extends BackboneElement {
+        /**
+         * ID or acronym of the actor
+         */
+        actorId: string;
+        /**
+         * Contains extended information for property 'actorId'.
+         */
+        _actorId?: Element;
+        /**
+         * person | entity
+         */
+        type: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+        /**
+         * The name of the actor as shown in the page
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * The description of the actor
+         */
+        description?: markdown;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+    }
+    /**
+     * Each resource and each version that is present in the workflow
+     */
+    interface ExampleScenarioInstance extends BackboneElement {
+        /**
+         * The id of the resource for referencing
+         */
+        resourceId: string;
+        /**
+         * Contains extended information for property 'resourceId'.
+         */
+        _resourceId?: Element;
+        /**
+         * The type of the resource
+         */
+        resourceType: code;
+        /**
+         * Contains extended information for property 'resourceType'.
+         */
+        _resourceType?: Element;
+        /**
+         * A short name for the resource instance
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Human-friendly description of the resource instance
+         */
+        description?: markdown;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * A specific version of the resource
+         */
+        version?: ExampleScenarioInstanceVersion[];
+        /**
+         * Resources contained in the instance
+         */
+        containedInstance?: ExampleScenarioInstanceContainedInstance[];
+    }
+    /**
+     * A specific version of the resource
+     */
+    interface ExampleScenarioInstanceVersion extends BackboneElement {
+        /**
+         * The identifier of a specific version of a resource
+         */
+        versionId: string;
+        /**
+         * Contains extended information for property 'versionId'.
+         */
+        _versionId?: Element;
+        /**
+         * The description of the resource version
+         */
+        description: markdown;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+    }
+    /**
+     * Resources contained in the instance
+     */
+    interface ExampleScenarioInstanceContainedInstance extends BackboneElement {
+        /**
+         * Each resource contained in the instance
+         */
+        resourceId: string;
+        /**
+         * Contains extended information for property 'resourceId'.
+         */
+        _resourceId?: Element;
+        /**
+         * A specific version of a resource contained in the instance
+         */
+        versionId?: string;
+        /**
+         * Contains extended information for property 'versionId'.
+         */
+        _versionId?: Element;
+    }
+    /**
+     * Each major process - a group of operations
+     */
+    interface ExampleScenarioProcess extends BackboneElement {
+        /**
+         * The diagram title of the group of operations
+         */
+        title: string;
+        /**
+         * Contains extended information for property 'title'.
+         */
+        _title?: Element;
+        /**
+         * A longer description of the group of operations
+         */
+        description?: markdown;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Description of initial status before the process starts
+         */
+        preConditions?: markdown;
+        /**
+         * Contains extended information for property 'preConditions'.
+         */
+        _preConditions?: Element;
+        /**
+         * Description of final status after the process ends
+         */
+        postConditions?: markdown;
+        /**
+         * Contains extended information for property 'postConditions'.
+         */
+        _postConditions?: Element;
+        /**
+         * Each step of the process
+         */
+        step?: ExampleScenarioProcessStep[];
+    }
+    /**
+     * Each step of the process
+     */
+    interface ExampleScenarioProcessStep extends BackboneElement {
+        /**
+         * Nested process
+         */
+        process?: ExampleScenarioProcess[];
+        /**
+         * If there is a pause in the flow
+         */
+        pause?: boolean;
+        /**
+         * Contains extended information for property 'pause'.
+         */
+        _pause?: Element;
+        /**
+         * Each interaction or action
+         */
+        operation?: ExampleScenarioProcessStepOperation;
+        /**
+         * Each interaction in the process
+         */
+        alternative?: ExampleScenarioProcessStepAlternative;
+    }
+    /**
+     * Each interaction or action
+     */
+    interface ExampleScenarioProcessStepOperation extends BackboneElement {
+        /**
+         * The sequential number of the interaction
+         */
+        number: string;
+        /**
+         * Contains extended information for property 'number'.
+         */
+        _number?: Element;
+        /**
+         * The type of operation - CRUD
+         */
+        type?: string;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+        /**
+         * The human-friendly name of the interaction
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Who starts the transaction
+         */
+        initiator?: string;
+        /**
+         * Contains extended information for property 'initiator'.
+         */
+        _initiator?: Element;
+        /**
+         * Who receives the transaction
+         */
+        receiver?: string;
+        /**
+         * Contains extended information for property 'receiver'.
+         */
+        _receiver?: Element;
+        /**
+         * A comment to be inserted in the diagram
+         */
+        description?: markdown;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Whether the initiator is deactivated right after the transaction
+         */
+        initiatorActive?: boolean;
+        /**
+         * Contains extended information for property 'initiatorActive'.
+         */
+        _initiatorActive?: Element;
+        /**
+         * Whether the receiver is deactivated right after the transaction
+         */
+        receiverActive?: boolean;
+        /**
+         * Contains extended information for property 'receiverActive'.
+         */
+        _receiverActive?: Element;
+        /**
+         * Each resource instance used by the initiator
+         */
+        request?: ExampleScenarioInstanceContainedInstance;
+        /**
+         * Each resource instance used by the responder
+         */
+        response?: ExampleScenarioInstanceContainedInstance;
+    }
+    /**
+     * Each interaction in the process
+     */
+    interface ExampleScenarioProcessStepAlternative extends BackboneElement {
+        /**
+         * The name of each alternative
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Each of the possible options in an alternative
+         */
+        option: ExampleScenarioProcessStepAlternativeOption[];
+    }
+    /**
+     * Each of the possible options in an alternative
+     */
+    interface ExampleScenarioProcessStepAlternativeOption extends BackboneElement {
+        /**
+         * A human-readable description of each option
+         */
+        description: markdown;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * What happens in each alternative option
+         */
+        step?: ExampleScenarioProcessStep[];
+        /**
+         * If there is a pause in the flow
+         */
+        pause?: boolean[];
+        /**
+         * Contains extended information for property 'pause'.
+         */
+        _pause?: Element[];
+    }
+    /**
+     * Example of workflow instance
+     */
+    interface ExampleScenario extends DomainResource {
+        /**
+         * Canonical identifier for this example scenario, represented as a URI (globally unique)
+         */
+        url?: uri;
+        /**
+         * Contains extended information for property 'url'.
+         */
+        _url?: Element;
+        /**
+         * Additional identifier for the example scenario
+         */
+        identifier?: Identifier[];
+        /**
+         * Business version of the example scenario
+         */
+        version?: string;
+        /**
+         * Contains extended information for property 'version'.
+         */
+        _version?: Element;
+        /**
+         * Name for this example scenario (computer friendly)
          */
         name?: string;
         /**
@@ -11014,7 +11931,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _experimental?: Element;
         /**
-         * Date this was last changed
+         * Date last changed
          */
         date?: dateTime;
         /**
@@ -11034,97 +11951,49 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         contact?: ContactDetail[];
         /**
-         * Natural language description of the expansion profile
-         */
-        description?: markdown;
-        /**
-         * Contains extended information for property 'description'.
-         */
-        _description?: Element;
-        /**
-         * Context the content is intended to support
+         * The context that the content is intended to support
          */
         useContext?: UsageContext[];
         /**
-         * Intended jurisdiction for expansion profile (if applicable)
+         * Intended jurisdiction for example scenario (if applicable)
          */
         jurisdiction?: CodeableConcept[];
         /**
-         * Fix use of a code system to a particular version
+         * Use and/or publishing restrictions
          */
-        fixedVersion?: ExpansionProfileFixedVersion[];
+        copyright?: markdown;
         /**
-         * Systems/Versions to be exclude
+         * Contains extended information for property 'copyright'.
          */
-        excludedSystem?: ExpansionProfileExcludedSystem;
+        _copyright?: Element;
         /**
-         * Whether the expansion should include concept designations
+         * The purpose of the example, e.g. to illustrate a scenario
          */
-        includeDesignations?: boolean;
+        purpose?: markdown;
         /**
-         * Contains extended information for property 'includeDesignations'.
+         * Contains extended information for property 'purpose'.
          */
-        _includeDesignations?: Element;
+        _purpose?: Element;
         /**
-         * When the expansion profile imposes designation contraints
+         * Actor participating in the resource
          */
-        designation?: ExpansionProfileDesignation;
+        actor?: ExampleScenarioActor[];
         /**
-         * Include or exclude the value set definition in the expansion
+         * Each resource and each version that is present in the workflow
          */
-        includeDefinition?: boolean;
+        instance?: ExampleScenarioInstance[];
         /**
-         * Contains extended information for property 'includeDefinition'.
+         * Each major process - a group of operations
          */
-        _includeDefinition?: Element;
+        process?: ExampleScenarioProcess[];
         /**
-         * Include or exclude inactive concepts in the expansion
+         * Another nested workflow
          */
-        activeOnly?: boolean;
+        workflow?: canonical[];
         /**
-         * Contains extended information for property 'activeOnly'.
+         * Contains extended information for property 'workflow'.
          */
-        _activeOnly?: Element;
-        /**
-         * Nested codes in the expansion or not
-         */
-        excludeNested?: boolean;
-        /**
-         * Contains extended information for property 'excludeNested'.
-         */
-        _excludeNested?: Element;
-        /**
-         * Include or exclude codes which cannot be rendered in user interfaces in the value set expansion
-         */
-        excludeNotForUI?: boolean;
-        /**
-         * Contains extended information for property 'excludeNotForUI'.
-         */
-        _excludeNotForUI?: Element;
-        /**
-         * Include or exclude codes which are post coordinated expressions in the value set expansion
-         */
-        excludePostCoordinated?: boolean;
-        /**
-         * Contains extended information for property 'excludePostCoordinated'.
-         */
-        _excludePostCoordinated?: Element;
-        /**
-         * Specify the language for the display element of codes in the value set expansion
-         */
-        displayLanguage?: code;
-        /**
-         * Contains extended information for property 'displayLanguage'.
-         */
-        _displayLanguage?: Element;
-        /**
-         * Controls behaviour of the value set expand operation when value sets are too large to be completely expanded
-         */
-        limitedExpansion?: boolean;
-        /**
-         * Contains extended information for property 'limitedExpansion'.
-         */
-        _limitedExpansion?: Element;
+        _workflow?: Element[];
     }
     /**
      * Related Claims which may be revelant to processing this claim
@@ -11154,7 +12023,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * organization | patient | practitioner | relatedperson
          */
-        resourceType?: CodeableConcept;
+        resource?: Coding;
         /**
          * Party to receive the payable
          */
@@ -11195,6 +12064,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Additional Data or supporting information
          */
+        valueBoolean?: boolean;
+        /**
+         * Contains extended information for property 'valueBoolean'.
+         */
+        _valueBoolean?: Element;
+        /**
+         * Additional Data or supporting information
+         */
         valueString?: string;
         /**
          * Contains extended information for property 'valueString'.
@@ -11222,7 +12099,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface ExplanationOfBenefitCareTeam extends BackboneElement {
         /**
-         * Number to covey order of careteam
+         * Number to convey order of careteam
          */
         sequence: positiveInt;
         /**
@@ -11255,7 +12132,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface ExplanationOfBenefitDiagnosis extends BackboneElement {
         /**
-         * Number to covey order of diagnosis
+         * Number to convey order of diagnosis
          */
         sequence: positiveInt;
         /**
@@ -11274,6 +12151,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Timing or nature of the diagnosis
          */
         type?: CodeableConcept[];
+        /**
+         * Present on admission
+         */
+        onAdmission?: CodeableConcept;
         /**
          * Package billing code
          */
@@ -11313,17 +12194,17 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface ExplanationOfBenefitInsurance extends BackboneElement {
         /**
+         * Is the focal Coverage
+         */
+        focal: boolean;
+        /**
+         * Contains extended information for property 'focal'.
+         */
+        _focal?: Element;
+        /**
          * Insurance information
          */
-        coverage?: Reference;
-        /**
-         * Pre-Authorization/Determination Reference
-         */
-        preAuthRef?: string[];
-        /**
-         * Contains extended information for property 'preAuthRef'.
-         */
-        _preAuthRef?: Element[];
+        coverage: Reference;
     }
     /**
      * Details of an accident
@@ -11365,35 +12246,35 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Applicable careteam members
          */
-        careTeamLinkId?: positiveInt[];
+        careTeamSequence?: positiveInt[];
         /**
-         * Contains extended information for property 'careTeamLinkId'.
+         * Contains extended information for property 'careTeamSequence'.
          */
-        _careTeamLinkId?: Element[];
+        _careTeamSequence?: Element[];
         /**
          * Applicable diagnoses
          */
-        diagnosisLinkId?: positiveInt[];
+        diagnosisSequence?: positiveInt[];
         /**
-         * Contains extended information for property 'diagnosisLinkId'.
+         * Contains extended information for property 'diagnosisSequence'.
          */
-        _diagnosisLinkId?: Element[];
+        _diagnosisSequence?: Element[];
         /**
          * Applicable procedures
          */
-        procedureLinkId?: positiveInt[];
+        procedureSequence?: positiveInt[];
         /**
-         * Contains extended information for property 'procedureLinkId'.
+         * Contains extended information for property 'procedureSequence'.
          */
-        _procedureLinkId?: Element[];
+        _procedureSequence?: Element[];
         /**
          * Applicable exception and supporting information
          */
-        informationLinkId?: positiveInt[];
+        informationSequence?: positiveInt[];
         /**
-         * Contains extended information for property 'informationLinkId'.
+         * Contains extended information for property 'informationSequence'.
          */
-        _informationLinkId?: Element[];
+        _informationSequence?: Element[];
         /**
          * Revenue or cost center code
          */
@@ -11405,7 +12286,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Billing Code
          */
-        service?: CodeableConcept;
+        billcode?: CodeableConcept;
         /**
          * Service/Product billing modifiers
          */
@@ -11529,10 +12410,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _sequence?: Element;
         /**
-         * Group or type of product or service
-         */
-        type: CodeableConcept;
-        /**
          * Revenue or cost center code
          */
         revenue?: CodeableConcept;
@@ -11543,7 +12420,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Billing Code
          */
-        service?: CodeableConcept;
+        billcode?: CodeableConcept;
         /**
          * Service/Product billing modifiers
          */
@@ -11606,10 +12483,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _sequence?: Element;
         /**
-         * Type of product or service
-         */
-        type: CodeableConcept;
-        /**
          * Revenue or cost center code
          */
         revenue?: CodeableConcept;
@@ -11620,7 +12493,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Billing Code
          */
-        service?: CodeableConcept;
+        billcode?: CodeableConcept;
         /**
          * Service/Product billing modifiers
          */
@@ -11673,31 +12546,95 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Service instances
          */
-        sequenceLinkId?: positiveInt[];
+        itemSequence?: positiveInt[];
         /**
-         * Contains extended information for property 'sequenceLinkId'.
+         * Contains extended information for property 'itemSequence'.
          */
-        _sequenceLinkId?: Element[];
+        _itemSequence?: Element[];
         /**
-         * Revenue or cost center code
+         * Detail sequence number
          */
-        revenue?: CodeableConcept;
+        detailSequence?: positiveInt[];
         /**
-         * Type of service or product
+         * Contains extended information for property 'detailSequence'.
          */
-        category?: CodeableConcept;
+        _detailSequence?: Element[];
+        /**
+         * Subdetail sequence number
+         */
+        subDetailSequence?: positiveInt[];
+        /**
+         * Contains extended information for property 'subDetailSequence'.
+         */
+        _subDetailSequence?: Element[];
+        /**
+         * Authorized providers
+         */
+        provider?: Reference[];
         /**
          * Billing Code
          */
-        service?: CodeableConcept;
+        billcode?: CodeableConcept;
         /**
          * Service/Product billing modifiers
          */
         modifier?: CodeableConcept[];
         /**
-         * Professional fee or Product charge
+         * Program specific reason for item inclusion
          */
-        fee?: Money;
+        programCode?: CodeableConcept[];
+        /**
+         * Date or dates of Service
+         */
+        servicedDate?: date;
+        /**
+         * Contains extended information for property 'servicedDate'.
+         */
+        _servicedDate?: Element;
+        /**
+         * Date or dates of Service
+         */
+        servicedPeriod?: Period;
+        /**
+         * Place of service
+         */
+        locationCodeableConcept?: CodeableConcept;
+        /**
+         * Place of service
+         */
+        locationAddress?: Address;
+        /**
+         * Place of service
+         */
+        locationReference?: Reference;
+        /**
+         * Count of Products or Services
+         */
+        quantity?: Quantity;
+        /**
+         * Fee, charge or cost per point
+         */
+        unitPrice?: Money;
+        /**
+         * Price scaling factor
+         */
+        factor?: decimal;
+        /**
+         * Contains extended information for property 'factor'.
+         */
+        _factor?: Element;
+        /**
+         * Total item cost
+         */
+        net?: Money;
+        /**
+         * Service Location
+         */
+        bodySite?: CodeableConcept;
+        /**
+         * Service Sub-location
+         */
+        subSite?: CodeableConcept[];
         /**
          * List of note numbers which apply
          */
@@ -11711,34 +12648,42 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         adjudication?: ExplanationOfBenefitItemAdjudication[];
         /**
-         * Added items details
+         * Insurer added line items
          */
         detail?: ExplanationOfBenefitAddItemDetail[];
     }
     /**
-     * Added items details
+     * Insurer added line items
      */
     interface ExplanationOfBenefitAddItemDetail extends BackboneElement {
         /**
-         * Revenue or cost center code
-         */
-        revenue?: CodeableConcept;
-        /**
-         * Type of service or product
-         */
-        category?: CodeableConcept;
-        /**
          * Billing Code
          */
-        service?: CodeableConcept;
+        billcode?: CodeableConcept;
         /**
          * Service/Product billing modifiers
          */
         modifier?: CodeableConcept[];
         /**
-         * Professional fee or Product charge
+         * Count of Products or Services
          */
-        fee?: Money;
+        quantity?: Quantity;
+        /**
+         * Fee, charge or cost per point
+         */
+        unitPrice?: Money;
+        /**
+         * Price scaling factor
+         */
+        factor?: decimal;
+        /**
+         * Contains extended information for property 'factor'.
+         */
+        _factor?: Element;
+        /**
+         * Total item cost
+         */
+        net?: Money;
         /**
          * List of note numbers which apply
          */
@@ -11748,12 +12693,74 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _noteNumber?: Element[];
         /**
-         * Added items detail adjudication
+         * Added items adjudication
+         */
+        adjudication?: ExplanationOfBenefitItemAdjudication[];
+        /**
+         * Insurer added line items
+         */
+        subDetail?: ExplanationOfBenefitAddItemDetailSubDetail[];
+    }
+    /**
+     * Insurer added line items
+     */
+    interface ExplanationOfBenefitAddItemDetailSubDetail extends BackboneElement {
+        /**
+         * Billing Code
+         */
+        billcode?: CodeableConcept;
+        /**
+         * Service/Product billing modifiers
+         */
+        modifier?: CodeableConcept[];
+        /**
+         * Count of Products or Services
+         */
+        quantity?: Quantity;
+        /**
+         * Fee, charge or cost per point
+         */
+        unitPrice?: Money;
+        /**
+         * Price scaling factor
+         */
+        factor?: decimal;
+        /**
+         * Contains extended information for property 'factor'.
+         */
+        _factor?: Element;
+        /**
+         * Total item cost
+         */
+        net?: Money;
+        /**
+         * List of note numbers which apply
+         */
+        noteNumber?: positiveInt[];
+        /**
+         * Contains extended information for property 'noteNumber'.
+         */
+        _noteNumber?: Element[];
+        /**
+         * Added items adjudication
          */
         adjudication?: ExplanationOfBenefitItemAdjudication[];
     }
     /**
-     * Payment (if paid)
+     * Adjudication totals
+     */
+    interface ExplanationOfBenefitTotal extends BackboneElement {
+        /**
+         * Adjudication category such as submitted, co-pay, eligible, benefit, etc.
+         */
+        category: CodeableConcept;
+        /**
+         * Monetary amount
+         */
+        amount: Money;
+    }
+    /**
+     * Payment Details
      */
     interface ExplanationOfBenefitPayment extends BackboneElement {
         /**
@@ -11800,7 +12807,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * display | print | printoper
          */
-        type?: CodeableConcept;
+        type?: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
         /**
          * Note explanitory text
          */
@@ -11822,10 +12833,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Type of services covered
          */
         category: CodeableConcept;
-        /**
-         * Detailed services covered within the type
-         */
-        subCategory?: CodeableConcept;
         /**
          * Excluded from the plan
          */
@@ -11931,7 +12938,15 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Finer grained claim type information
          */
-        subType?: CodeableConcept[];
+        subType?: CodeableConcept;
+        /**
+         * claim | preauthorization | predetermination
+         */
+        use?: code;
+        /**
+         * Contains extended information for property 'use'.
+         */
+        _use?: Element;
         /**
          * The subject of the Products and Services
          */
@@ -11961,10 +12976,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         provider?: Reference;
         /**
-         * Responsible organization for the claim
-         */
-        organization?: Reference;
-        /**
          * Treatment Referral
          */
         referral?: Reference;
@@ -11981,9 +12992,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         claimResponse?: Reference;
         /**
-         * complete | error | partial
+         * queued | complete | error | partial
          */
-        outcome?: CodeableConcept;
+        outcome?: code;
+        /**
+         * Contains extended information for property 'outcome'.
+         */
+        _outcome?: Element;
         /**
          * Disposition Message
          */
@@ -12035,19 +13050,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Insurance or medical plan
          */
-        insurance?: ExplanationOfBenefitInsurance;
+        insurance?: ExplanationOfBenefitInsurance[];
         /**
          * Details of an accident
          */
         accident?: ExplanationOfBenefitAccident;
-        /**
-         * Period unable to work
-         */
-        employmentImpacted?: Period;
-        /**
-         * Period in hospital
-         */
-        hospitalization?: Period;
         /**
          * Goods and Services
          */
@@ -12057,19 +13064,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         addItem?: ExplanationOfBenefitAddItem[];
         /**
-         * Total Cost of service from the Claim
+         * Adjudication totals
          */
-        totalCost?: Money;
+        total?: ExplanationOfBenefitTotal[];
         /**
-         * Unallocated deductable
-         */
-        unallocDeductable?: Money;
-        /**
-         * Total benefit payable for the Claim
-         */
-        totalBenefit?: Money;
-        /**
-         * Payment (if paid)
+         * Payment Details
          */
         payment?: ExplanationOfBenefitPayment;
         /**
@@ -12131,9 +13130,21 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         identifier?: Identifier[];
         /**
-         * Instantiates protocol or definition
+         * Instantiates FHIR protocol or definition
          */
-        definition?: Reference[];
+        instantiatesCanonical?: canonical[];
+        /**
+         * Contains extended information for property 'instantiatesCanonical'.
+         */
+        _instantiatesCanonical?: Element[];
+        /**
+         * Instantiates external protocol or definition
+         */
+        instantiatesUri?: uri[];
+        /**
+         * Contains extended information for property 'instantiatesUri'.
+         */
+        _instantiatesUri?: Element[];
         /**
          * partial | completed | entered-in-error | health-unknown
          */
@@ -12143,23 +13154,15 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _status?: Element;
         /**
-         * The taking of a family member's history did not occur
-         */
-        notDone?: boolean;
-        /**
-         * Contains extended information for property 'notDone'.
-         */
-        _notDone?: Element;
-        /**
          * subject-unknown | withheld | unable-to-obtain | deferred
          */
-        notDoneReason?: CodeableConcept;
+        dataAbsentReason?: CodeableConcept;
         /**
          * Patient history is about
          */
         patient: Reference;
         /**
-         * When history was captured/updated
+         * When history was recorded or last updated
          */
         date?: dateTime;
         /**
@@ -12179,13 +13182,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         relationship: CodeableConcept;
         /**
-         * male | female | other | unknown
+         * male | female | unknown
          */
-        gender?: code;
-        /**
-         * Contains extended information for property 'gender'.
-         */
-        _gender?: Element;
+        gender?: CodeableConcept;
         /**
          * (approximate) date of birth
          */
@@ -12298,7 +13297,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Clinical, administrative, etc.
          */
-        category?: CodeableConcept;
+        category?: CodeableConcept[];
         /**
          * Coded or textual message to display to user
          */
@@ -12384,7 +13383,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Who this goal is intended for
          */
-        subject?: Reference;
+        subject: Reference;
         /**
          * When goal pursuit begins
          */
@@ -12445,7 +13444,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Path in the resource that contains the link
          */
-        path: string;
+        path?: string;
         /**
          * Contains extended information for property 'path'.
          */
@@ -12485,7 +13484,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Potential target for the link
          */
-        target: GraphDefinitionLinkTarget[];
+        target?: GraphDefinitionLinkTarget[];
     }
     /**
      * Potential target for the link
@@ -12500,9 +13499,17 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _type?: Element;
         /**
+         * Criteria for reverse lookup
+         */
+        params?: string;
+        /**
+         * Contains extended information for property 'params'.
+         */
+        _params?: Element;
+        /**
          * Profile for the target resource
          */
-        profile?: uri;
+        profile?: canonical;
         /**
          * Contains extended information for property 'profile'.
          */
@@ -12520,6 +13527,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      * Compartment Consistency Rules
      */
     interface GraphDefinitionLinkTargetCompartment extends BackboneElement {
+        /**
+         * condition | requirement
+         */
+        use: code;
+        /**
+         * Contains extended information for property 'use'.
+         */
+        _use?: Element;
         /**
          * Identifies the compartment
          */
@@ -12554,11 +13569,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         _description?: Element;
     }
     /**
-     * Definition of an graph of resources
+     * Definition of a graph of resources
      */
     interface GraphDefinition extends DomainResource {
         /**
-         * Logical URI to reference this graph definition (globally unique)
+         * Canonical identifier for this graph definition, represented as a URI (globally unique)
          */
         url?: uri;
         /**
@@ -12598,7 +13613,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _experimental?: Element;
         /**
-         * Date this was last changed
+         * Date last changed
          */
         date?: dateTime;
         /**
@@ -12626,7 +13641,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * Context the content is intended to support
+         * The context that the content is intended to support
          */
         useContext?: UsageContext[];
         /**
@@ -12652,7 +13667,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Profile on base resource
          */
-        profile?: uri;
+        profile?: canonical;
         /**
          * Contains extended information for property 'profile'.
          */
@@ -12663,7 +13678,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         link?: GraphDefinitionLink[];
     }
     /**
-     * Trait of group members
+     * Include / Exclude group members by Trait
      */
     interface GroupCharacteristic extends BackboneElement {
         /**
@@ -12777,7 +13792,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _quantity?: Element;
         /**
-         * Trait of group members
+         * Include / Exclude group members by Trait
          */
         characteristic?: GroupCharacteristic[];
         /**
@@ -12786,132 +13801,37 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         member?: GroupMember[];
     }
     /**
-     * What codes are expected
-     */
-    interface DataRequirementCodeFilter extends Element {
-        /**
-         * The code-valued attribute of the filter
-         */
-        path: string;
-        /**
-         * Contains extended information for property 'path'.
-         */
-        _path?: Element;
-        /**
-         * Valueset for the filter
-         */
-        valueSetString?: string;
-        /**
-         * Contains extended information for property 'valueSetString'.
-         */
-        _valueSetString?: Element;
-        /**
-         * Valueset for the filter
-         */
-        valueSetReference?: Reference;
-        /**
-         * What code is expected
-         */
-        valueCode?: code[];
-        /**
-         * Contains extended information for property 'valueCode'.
-         */
-        _valueCode?: Element[];
-        /**
-         * What Coding is expected
-         */
-        valueCoding?: Coding[];
-        /**
-         * What CodeableConcept is expected
-         */
-        valueCodeableConcept?: CodeableConcept[];
-    }
-    /**
-     * What dates/date ranges are expected
-     */
-    interface DataRequirementDateFilter extends Element {
-        /**
-         * The date-valued attribute of the filter
-         */
-        path: string;
-        /**
-         * Contains extended information for property 'path'.
-         */
-        _path?: Element;
-        /**
-         * The value of the filter, as a Period, DateTime, or Duration value
-         */
-        valueDateTime?: dateTime;
-        /**
-         * Contains extended information for property 'valueDateTime'.
-         */
-        _valueDateTime?: Element;
-        /**
-         * The value of the filter, as a Period, DateTime, or Duration value
-         */
-        valuePeriod?: Period;
-        /**
-         * The value of the filter, as a Period, DateTime, or Duration value
-         */
-        valueDuration?: Duration;
-    }
-    /**
-     * Describes a required data item
-     */
-    interface DataRequirement extends Element {
-        /**
-         * The type of the required data
-         */
-        type: code;
-        /**
-         * Contains extended information for property 'type'.
-         */
-        _type?: Element;
-        /**
-         * The profile of the required data
-         */
-        profile?: uri[];
-        /**
-         * Contains extended information for property 'profile'.
-         */
-        _profile?: Element[];
-        /**
-         * Indicates that specific structure elements are referenced by the knowledge module
-         */
-        mustSupport?: string[];
-        /**
-         * Contains extended information for property 'mustSupport'.
-         */
-        _mustSupport?: Element[];
-        /**
-         * What codes are expected
-         */
-        codeFilter?: DataRequirementCodeFilter[];
-        /**
-         * What dates/date ranges are expected
-         */
-        dateFilter?: DataRequirementDateFilter[];
-    }
-    /**
      * The formal response to a guidance request
      */
     interface GuidanceResponse extends DomainResource {
         /**
-         * The id of the request associated with this response, if any
+         * The identifier of the request associated with this response, if any
          */
-        requestId?: id;
-        /**
-         * Contains extended information for property 'requestId'.
-         */
-        _requestId?: Element;
+        requestIdentifier?: Identifier;
         /**
          * Business identifier
          */
-        identifier?: Identifier;
+        identifier?: Identifier[];
         /**
-         * A reference to a knowledge module
+         * What guidance was requested
          */
-        module: Reference;
+        moduleUri?: uri;
+        /**
+         * Contains extended information for property 'moduleUri'.
+         */
+        _moduleUri?: Element;
+        /**
+         * What guidance was requested
+         */
+        moduleCanonical?: canonical;
+        /**
+         * Contains extended information for property 'moduleCanonical'.
+         */
+        _moduleCanonical?: Element;
+        /**
+         * What guidance was requested
+         */
+        moduleCodeableConcept?: CodeableConcept;
         /**
          * success | data-requested | data-required | in-progress | failure | entered-in-error
          */
@@ -12941,13 +13861,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         performer?: Reference;
         /**
-         * Reason for the response
+         * Why guidance is needed
          */
-        reasonCodeableConcept?: CodeableConcept;
+        reasonCode?: CodeableConcept[];
         /**
-         * Reason for the response
+         * Why guidance is needed
          */
-        reasonReference?: Reference;
+        reasonReference?: Reference[];
         /**
          * Additional notes about the response
          */
@@ -13019,7 +13939,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * Service not availablefrom this date
+         * Service not available from this date
          */
         during?: Period;
     }
@@ -13032,7 +13952,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         identifier?: Identifier[];
         /**
-         * Whether this healthcareservice is in active use
+         * Whether this HealthcareService record is in active use
          */
         active?: boolean;
         /**
@@ -13046,7 +13966,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Broad category of service being performed or delivered
          */
-        category?: CodeableConcept;
+        category?: CodeableConcept[];
         /**
          * Type of service that may be delivered or performed
          */
@@ -13092,7 +14012,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         telecom?: ContactPoint[];
         /**
-         * Location(s) service is inteded for/available to
+         * Location(s) service is intended for/available to
          */
         coverageArea?: Reference[];
         /**
@@ -13157,121 +14077,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         endpoint?: Reference[];
     }
     /**
-     * Study identity of the selected instances
-     */
-    interface ImagingManifestStudy extends BackboneElement {
-        /**
-         * Study instance UID
-         */
-        uid: oid;
-        /**
-         * Contains extended information for property 'uid'.
-         */
-        _uid?: Element;
-        /**
-         * Reference to ImagingStudy
-         */
-        imagingStudy?: Reference;
-        /**
-         * Study access service endpoint
-         */
-        endpoint?: Reference[];
-        /**
-         * Series identity of the selected instances
-         */
-        series: ImagingManifestStudySeries[];
-    }
-    /**
-     * Series identity of the selected instances
-     */
-    interface ImagingManifestStudySeries extends BackboneElement {
-        /**
-         * Series instance UID
-         */
-        uid: oid;
-        /**
-         * Contains extended information for property 'uid'.
-         */
-        _uid?: Element;
-        /**
-         * Series access endpoint
-         */
-        endpoint?: Reference[];
-        /**
-         * The selected instance
-         */
-        instance: ImagingManifestStudySeriesInstance[];
-    }
-    /**
-     * The selected instance
-     */
-    interface ImagingManifestStudySeriesInstance extends BackboneElement {
-        /**
-         * SOP class UID of instance
-         */
-        sopClass: oid;
-        /**
-         * Contains extended information for property 'sopClass'.
-         */
-        _sopClass?: Element;
-        /**
-         * Selected instance UID
-         */
-        uid: oid;
-        /**
-         * Contains extended information for property 'uid'.
-         */
-        _uid?: Element;
-    }
-    /**
-     * Key Object Selection
-     */
-    interface ImagingManifest extends DomainResource {
-        /**
-         * SOP Instance UID
-         */
-        identifier?: Identifier;
-        /**
-         * Patient of the selected objects
-         */
-        patient: Reference;
-        /**
-         * Time when the selection of instances was made
-         */
-        authoringTime?: dateTime;
-        /**
-         * Contains extended information for property 'authoringTime'.
-         */
-        _authoringTime?: Element;
-        /**
-         * Author (human or machine)
-         */
-        author?: Reference;
-        /**
-         * Description text
-         */
-        description?: string;
-        /**
-         * Contains extended information for property 'description'.
-         */
-        _description?: Element;
-        /**
-         * Study identity of the selected instances
-         */
-        study: ImagingManifestStudy[];
-    }
-    /**
      * Each study has one or more series of instances
      */
     interface ImagingStudySeries extends BackboneElement {
         /**
          * Formal DICOM identifier for this series
          */
-        uid: oid;
-        /**
-         * Contains extended information for property 'uid'.
-         */
-        _uid?: Element;
+        identifier: Identifier;
         /**
          * Numeric identifier of this series
          */
@@ -13301,14 +14113,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _numberOfInstances?: Element;
         /**
-         * ONLINE | OFFLINE | NEARLINE | UNAVAILABLE
-         */
-        availability?: code;
-        /**
-         * Contains extended information for property 'availability'.
-         */
-        _availability?: Element;
-        /**
          * Series access endpoint
          */
         endpoint?: Reference[];
@@ -13321,6 +14125,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         laterality?: Coding;
         /**
+         * Specimen imaged
+         */
+        specimen?: Reference[];
+        /**
          * When the series started
          */
         started?: dateTime;
@@ -13331,11 +14139,24 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Who performed the series
          */
-        performer?: Reference[];
+        performer?: ImagingStudySeriesPerformer[];
         /**
          * A single SOP instance from the series
          */
         instance?: ImagingStudySeriesInstance[];
+    }
+    /**
+     * Who performed the series
+     */
+    interface ImagingStudySeriesPerformer extends BackboneElement {
+        /**
+         * Type of performance
+         */
+        function?: CodeableConcept;
+        /**
+         * Who performed the series
+         */
+        actor: Reference;
     }
     /**
      * A single SOP instance from the series
@@ -13344,11 +14165,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Formal DICOM identifier for this instance
          */
-        uid: oid;
-        /**
-         * Contains extended information for property 'uid'.
-         */
-        _uid?: Element;
+        identifier: Identifier;
         /**
          * The number of this instance in the series
          */
@@ -13360,11 +14177,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * DICOM class type
          */
-        sopClass: oid;
-        /**
-         * Contains extended information for property 'sopClass'.
-         */
-        _sopClass?: Element;
+        sopClass: Coding;
         /**
          * Description of instance
          */
@@ -13379,37 +14192,25 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface ImagingStudy extends DomainResource {
         /**
-         * Formal DICOM identifier for the study
-         */
-        uid: oid;
-        /**
-         * Contains extended information for property 'uid'.
-         */
-        _uid?: Element;
-        /**
-         * Related workflow identifier ("Accession Number")
-         */
-        accession?: Identifier;
-        /**
-         * Other identifiers for the study
+         * Identifiers for the whole study
          */
         identifier?: Identifier[];
         /**
-         * ONLINE | OFFLINE | NEARLINE | UNAVAILABLE
+         * registered | available | cancelled | entered-in-error | unknown
          */
-        availability?: code;
+        status: code;
         /**
-         * Contains extended information for property 'availability'.
+         * Contains extended information for property 'status'.
          */
-        _availability?: Element;
+        _status?: Element;
         /**
          * All series modality if actual acquisition modalities
          */
-        modalityList?: Coding[];
+        modality?: Coding[];
         /**
-         * Who the images are of
+         * Who or what is the subject of the study
          */
-        patient: Reference;
+        subject: Reference;
         /**
          * Originating context
          */
@@ -13457,15 +14258,27 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * The performed Procedure reference
          */
-        procedureReference?: Reference[];
+        procedureReference?: Reference;
         /**
          * The performed procedure code
          */
         procedureCode?: CodeableConcept[];
         /**
+         * Where ImagingStudy occurred
+         */
+        location?: Reference;
+        /**
          * Why the study was requested
          */
-        reason?: CodeableConcept;
+        reasonCode?: CodeableConcept[];
+        /**
+         * Why was study performed
+         */
+        reasonReference?: Reference[];
+        /**
+         * User-defined comments
+         */
+        note?: Annotation[];
         /**
          * Institution-generated description
          */
@@ -13482,78 +14295,57 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
     /**
      * Who performed event
      */
-    interface ImmunizationPractitioner extends BackboneElement {
+    interface ImmunizationPerformer extends BackboneElement {
         /**
          * What type of performance was done
          */
-        role?: CodeableConcept;
+        function?: CodeableConcept;
         /**
-         * Individual who was performing
+         * Individual or organization who was performing
          */
         actor: Reference;
     }
     /**
-     * Administration/non-administration reasons
+     * Educational material presented to patient
      */
-    interface ImmunizationExplanation extends BackboneElement {
+    interface ImmunizationEducation extends BackboneElement {
         /**
-         * Why immunization occurred
+         * Educational material document identifier
          */
-        reason?: CodeableConcept[];
+        documentType?: string;
         /**
-         * Why immunization did not occur
+         * Contains extended information for property 'documentType'.
          */
-        reasonNotGiven?: CodeableConcept[];
+        _documentType?: Element;
+        /**
+         * Educational material reference pointer
+         */
+        reference?: uri;
+        /**
+         * Contains extended information for property 'reference'.
+         */
+        _reference?: Element;
+        /**
+         * Educational material publication date
+         */
+        publicationDate?: dateTime;
+        /**
+         * Contains extended information for property 'publicationDate'.
+         */
+        _publicationDate?: Element;
+        /**
+         * Educational material presentation date
+         */
+        presentationDate?: dateTime;
+        /**
+         * Contains extended information for property 'presentationDate'.
+         */
+        _presentationDate?: Element;
     }
     /**
-     * Details of a reaction that follows immunization
+     * Protocol followed by the provider
      */
-    interface ImmunizationReaction extends BackboneElement {
-        /**
-         * When reaction started
-         */
-        date?: dateTime;
-        /**
-         * Contains extended information for property 'date'.
-         */
-        _date?: Element;
-        /**
-         * Additional information on reaction
-         */
-        detail?: Reference;
-        /**
-         * Indicates self-reported reaction
-         */
-        reported?: boolean;
-        /**
-         * Contains extended information for property 'reported'.
-         */
-        _reported?: Element;
-    }
-    /**
-     * What protocol was followed
-     */
-    interface ImmunizationVaccinationProtocol extends BackboneElement {
-        /**
-         * Dose number within series
-         */
-        doseSequence?: positiveInt;
-        /**
-         * Contains extended information for property 'doseSequence'.
-         */
-        _doseSequence?: Element;
-        /**
-         * Details of vaccine protocol
-         */
-        description?: string;
-        /**
-         * Contains extended information for property 'description'.
-         */
-        _description?: Element;
-        /**
-         * Who is responsible for protocol
-         */
-        authority?: Reference;
+    interface ImmunizationProtocolApplied extends BackboneElement {
         /**
          * Name of vaccine series
          */
@@ -13563,25 +14355,29 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _series?: Element;
         /**
-         * Recommended number of doses for immunity
+         * Who is responsible for publishing the recommendations
          */
-        seriesDoses?: positiveInt;
+        authority?: Reference;
         /**
-         * Contains extended information for property 'seriesDoses'.
+         * Vaccine preventatable disease being targetted
          */
-        _seriesDoses?: Element;
+        targetDisease: CodeableConcept;
         /**
-         * Disease immunized against
+         * Dose number within series
          */
-        targetDisease: CodeableConcept[];
+        doseNumberPositiveInt?: positiveInt;
         /**
-         * Indicates if dose counts towards immunity
+         * Contains extended information for property 'doseNumberPositiveInt'.
          */
-        doseStatus: CodeableConcept;
+        _doseNumberPositiveInt?: Element;
         /**
-         * Why dose does (not) count
+         * Dose number within series
          */
-        doseStatusReason?: CodeableConcept;
+        doseNumberString?: string;
+        /**
+         * Contains extended information for property 'doseNumberString'.
+         */
+        _doseNumberString?: Element;
     }
     /**
      * Immunization event information
@@ -13592,7 +14388,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         identifier?: Identifier[];
         /**
-         * completed | entered-in-error
+         * completed | entered-in-error | not-done
          */
         status: code;
         /**
@@ -13600,13 +14396,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _status?: Element;
         /**
-         * Flag for whether immunization was given
+         * Reason not done
          */
-        notGiven: boolean;
-        /**
-         * Contains extended information for property 'notGiven'.
-         */
-        _notGiven?: Element;
+        statusReason?: CodeableConcept;
         /**
          * Vaccine product administered
          */
@@ -13616,21 +14408,37 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         patient: Reference;
         /**
-         * Encounter administered as part of
+         * Encounter immunization was part of
          */
         encounter?: Reference;
         /**
-         * Vaccination administration date
+         * Vaccine administration date
          */
-        date?: dateTime;
+        occurrenceDateTime?: dateTime;
         /**
-         * Contains extended information for property 'date'.
+         * Contains extended information for property 'occurrenceDateTime'.
          */
-        _date?: Element;
+        _occurrenceDateTime?: Element;
+        /**
+         * Vaccine administration date
+         */
+        occurrenceString?: string;
+        /**
+         * Contains extended information for property 'occurrenceString'.
+         */
+        _occurrenceString?: Element;
+        /**
+         * When the immunization was first captured in the subject's record
+         */
+        recorded?: dateTime;
+        /**
+         * Contains extended information for property 'recorded'.
+         */
+        _recorded?: Element;
         /**
          * Indicates context the data was recorded in
          */
-        primarySource: boolean;
+        primarySource?: boolean;
         /**
          * Contains extended information for property 'primarySource'.
          */
@@ -13640,7 +14448,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         reportOrigin?: CodeableConcept;
         /**
-         * Where vaccination occurred
+         * Where immunization occurred
          */
         location?: Reference;
         /**
@@ -13678,64 +14486,221 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Who performed event
          */
-        practitioner?: ImmunizationPractitioner[];
+        performer?: ImmunizationPerformer[];
         /**
-         * Vaccination notes
+         * Additional immunization notes
          */
         note?: Annotation[];
         /**
-         * Administration/non-administration reasons
+         * Why immunization occurred
          */
-        explanation?: ImmunizationExplanation;
+        reasonCode?: CodeableConcept[];
         /**
-         * Details of a reaction that follows immunization
+         * Why immunization occurred
          */
-        reaction?: ImmunizationReaction[];
+        reasonReference?: Reference[];
         /**
-         * What protocol was followed
+         * Dose potency
          */
-        vaccinationProtocol?: ImmunizationVaccinationProtocol[];
+        isSubpotent?: boolean;
+        /**
+         * Contains extended information for property 'isSubpotent'.
+         */
+        _isSubpotent?: Element;
+        /**
+         * Reason for being subpotent
+         */
+        subpotentReason?: CodeableConcept[];
+        /**
+         * Educational material presented to patient
+         */
+        education?: ImmunizationEducation[];
+        /**
+         * Patient eligibility for a vaccination program
+         */
+        programEligibility?: CodeableConcept[];
+        /**
+         * Funding source for the vaccine
+         */
+        fundingSource?: CodeableConcept;
+        /**
+         * Protocol followed by the provider
+         */
+        protocolApplied?: ImmunizationProtocolApplied[];
+    }
+    /**
+     * Immunization evaluation information
+     */
+    interface ImmunizationEvaluation extends DomainResource {
+        /**
+         * Business identifier
+         */
+        identifier?: Identifier[];
+        /**
+         * completed | entered-in-error
+         */
+        status: code;
+        /**
+         * Contains extended information for property 'status'.
+         */
+        _status?: Element;
+        /**
+         * Who this evaluation is for
+         */
+        patient: Reference;
+        /**
+         * Date evaluation was performed
+         */
+        date?: dateTime;
+        /**
+         * Contains extended information for property 'date'.
+         */
+        _date?: Element;
+        /**
+         * Who is responsible for publishing the recommendations
+         */
+        authority?: Reference;
+        /**
+         * Evaluation target disease
+         */
+        targetDisease: CodeableConcept;
+        /**
+         * Immunization being evaluated
+         */
+        immunizationEvent: Reference;
+        /**
+         * Status of the dose relative to published recommendations
+         */
+        doseStatus: CodeableConcept;
+        /**
+         * Reason for the dose status
+         */
+        doseStatusReason?: CodeableConcept[];
+        /**
+         * Evaluation notes
+         */
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Name of vaccine series
+         */
+        series?: string;
+        /**
+         * Contains extended information for property 'series'.
+         */
+        _series?: Element;
+        /**
+         * Dose number within series
+         */
+        doseNumberPositiveInt?: positiveInt;
+        /**
+         * Contains extended information for property 'doseNumberPositiveInt'.
+         */
+        _doseNumberPositiveInt?: Element;
+        /**
+         * Dose number within series
+         */
+        doseNumberString?: string;
+        /**
+         * Contains extended information for property 'doseNumberString'.
+         */
+        _doseNumberString?: Element;
+        /**
+         * Recommended number of doses for immunity
+         */
+        seriesDosesPositiveInt?: positiveInt;
+        /**
+         * Contains extended information for property 'seriesDosesPositiveInt'.
+         */
+        _seriesDosesPositiveInt?: Element;
+        /**
+         * Recommended number of doses for immunity
+         */
+        seriesDosesString?: string;
+        /**
+         * Contains extended information for property 'seriesDosesString'.
+         */
+        _seriesDosesString?: Element;
     }
     /**
      * Vaccine administration recommendations
      */
     interface ImmunizationRecommendationRecommendation extends BackboneElement {
         /**
-         * Date recommendation created
+         * Vaccine  or vaccine group recommendation applies to
          */
-        date: dateTime;
-        /**
-         * Contains extended information for property 'date'.
-         */
-        _date?: Element;
-        /**
-         * Vaccine recommendation applies to
-         */
-        vaccineCode?: CodeableConcept;
+        vaccineCode?: CodeableConcept[];
         /**
          * Disease to be immunized against
          */
         targetDisease?: CodeableConcept;
         /**
-         * Recommended dose number
+         * Vaccine which is contraindicated to fulfill the recommendation
          */
-        doseNumber?: positiveInt;
+        contraindicatedVaccineCode?: CodeableConcept[];
         /**
-         * Contains extended information for property 'doseNumber'.
-         */
-        _doseNumber?: Element;
-        /**
-         * Vaccine administration status
+         * Vaccine recommendation status
          */
         forecastStatus: CodeableConcept;
+        /**
+         * Vaccine administration status reason
+         */
+        forecastReason?: CodeableConcept[];
         /**
          * Dates governing proposed immunization
          */
         dateCriterion?: ImmunizationRecommendationRecommendationDateCriterion[];
         /**
-         * Protocol used by recommendation
+         * Protocol details
          */
-        protocol?: ImmunizationRecommendationRecommendationProtocol;
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Name of vaccination series
+         */
+        series?: string;
+        /**
+         * Contains extended information for property 'series'.
+         */
+        _series?: Element;
+        /**
+         * Recommended dose number within series
+         */
+        doseNumberPositiveInt?: positiveInt;
+        /**
+         * Contains extended information for property 'doseNumberPositiveInt'.
+         */
+        _doseNumberPositiveInt?: Element;
+        /**
+         * Recommended dose number within series
+         */
+        doseNumberString?: string;
+        /**
+         * Contains extended information for property 'doseNumberString'.
+         */
+        _doseNumberString?: Element;
+        /**
+         * Recommended number of doses for immunity
+         */
+        seriesDosesPositiveInt?: positiveInt;
+        /**
+         * Contains extended information for property 'seriesDosesPositiveInt'.
+         */
+        _seriesDosesPositiveInt?: Element;
+        /**
+         * Recommended number of doses for immunity
+         */
+        seriesDosesString?: string;
+        /**
+         * Contains extended information for property 'seriesDosesString'.
+         */
+        _seriesDosesString?: Element;
         /**
          * Past immunizations supporting recommendation
          */
@@ -13763,39 +14728,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         _value?: Element;
     }
     /**
-     * Protocol used by recommendation
-     */
-    interface ImmunizationRecommendationRecommendationProtocol extends BackboneElement {
-        /**
-         * Dose number within sequence
-         */
-        doseSequence?: positiveInt;
-        /**
-         * Contains extended information for property 'doseSequence'.
-         */
-        _doseSequence?: Element;
-        /**
-         * Protocol details
-         */
-        description?: string;
-        /**
-         * Contains extended information for property 'description'.
-         */
-        _description?: Element;
-        /**
-         * Who is responsible for protocol
-         */
-        authority?: Reference;
-        /**
-         * Name of vaccination series
-         */
-        series?: string;
-        /**
-         * Contains extended information for property 'series'.
-         */
-        _series?: Element;
-    }
-    /**
      * Guidance or advice relating to an immunization
      */
     interface ImmunizationRecommendation extends DomainResource {
@@ -13808,6 +14740,18 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         patient: Reference;
         /**
+         * Date recommendation(s) created
+         */
+        date: dateTime;
+        /**
+         * Contains extended information for property 'date'.
+         */
+        _date?: Element;
+        /**
+         * Who is responsible for protocol
+         */
+        authority?: Reference;
+        /**
          * Vaccine administration recommendations
          */
         recommendation: ImmunizationRecommendationRecommendation[];
@@ -13815,9 +14759,38 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
     /**
      * Another Implementation guide this depends on
      */
-    interface ImplementationGuideDependency extends BackboneElement {
+    interface ImplementationGuideDependsOn extends BackboneElement {
         /**
-         * reference | inclusion
+         * Identity of the IG that this depends on
+         */
+        uri: canonical;
+        /**
+         * Contains extended information for property 'uri'.
+         */
+        _uri?: Element;
+        /**
+         * NPM Package name for IG this depends on
+         */
+        packageId?: id;
+        /**
+         * Contains extended information for property 'packageId'.
+         */
+        _packageId?: Element;
+        /**
+         * Version of the IG
+         */
+        version?: string;
+        /**
+         * Contains extended information for property 'version'.
+         */
+        _version?: Element;
+    }
+    /**
+     * Profiles that apply globally
+     */
+    interface ImplementationGuideGlobal extends BackboneElement {
+        /**
+         * Type this profile applies to
          */
         type: code;
         /**
@@ -13825,20 +14798,45 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _type?: Element;
         /**
-         * Where to find dependency
+         * Profile that all resources must conform to
          */
-        uri: uri;
+        profile: canonical;
         /**
-         * Contains extended information for property 'uri'.
+         * Contains extended information for property 'profile'.
          */
-        _uri?: Element;
+        _profile?: Element;
     }
     /**
-     * Group of resources as used in .page.package
+     * Information needed to build the IG
      */
-    interface ImplementationGuidePackage extends BackboneElement {
+    interface ImplementationGuideDefinition extends BackboneElement {
         /**
-         * Name used .page.package
+         * Grouping used to present related resources in the IG
+         */
+        package?: ImplementationGuideDefinitionPackage[];
+        /**
+         * Resource in the implementation guide
+         */
+        resource: ImplementationGuideDefinitionResource[];
+        /**
+         * Page/Section in the Guide
+         */
+        page?: ImplementationGuideDefinitionPage;
+        /**
+         * Defines how IG is built by tools
+         */
+        parameter?: ImplementationGuideDefinitionParameter[];
+        /**
+         * A template for building resources
+         */
+        template?: ImplementationGuideDefinitionTemplate[];
+    }
+    /**
+     * Grouping used to present related resources in the IG
+     */
+    interface ImplementationGuideDefinitionPackage extends BackboneElement {
+        /**
+         * Descriptive name for the package
          */
         name: string;
         /**
@@ -13853,23 +14851,15 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'description'.
          */
         _description?: Element;
-        /**
-         * Resource in the implementation guide
-         */
-        resource: ImplementationGuidePackageResource[];
     }
     /**
      * Resource in the implementation guide
      */
-    interface ImplementationGuidePackageResource extends BackboneElement {
+    interface ImplementationGuideDefinitionResource extends BackboneElement {
         /**
-         * If not an example, has its normal meaning
+         * Location of the resource
          */
-        example: boolean;
-        /**
-         * Contains extended information for property 'example'.
-         */
-        _example?: Element;
+        reference: Reference;
         /**
          * Human Name for the resource
          */
@@ -13887,59 +14877,46 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * Short code to identify the resource
+         * Is an example/What is this an example of?
          */
-        acronym?: string;
+        exampleBoolean?: boolean;
         /**
-         * Contains extended information for property 'acronym'.
+         * Contains extended information for property 'exampleBoolean'.
          */
-        _acronym?: Element;
+        _exampleBoolean?: Element;
         /**
-         * Location of the resource
+         * Is an example/What is this an example of?
          */
-        sourceUri?: uri;
+        exampleCanonical?: canonical;
         /**
-         * Contains extended information for property 'sourceUri'.
+         * Contains extended information for property 'exampleCanonical'.
          */
-        _sourceUri?: Element;
+        _exampleCanonical?: Element;
         /**
-         * Location of the resource
+         * Pack this is part of
          */
-        sourceReference?: Reference;
+        package?: id;
         /**
-         * Resource this is an example of (if applicable)
+         * Contains extended information for property 'package'.
          */
-        exampleFor?: Reference;
-    }
-    /**
-     * Profiles that apply globally
-     */
-    interface ImplementationGuideGlobal extends BackboneElement {
-        /**
-         * Type this profiles applies to
-         */
-        type: code;
-        /**
-         * Contains extended information for property 'type'.
-         */
-        _type?: Element;
-        /**
-         * Profile that all resources must conform to
-         */
-        profile: Reference;
+        _package?: Element;
     }
     /**
      * Page/Section in the Guide
      */
-    interface ImplementationGuidePage extends BackboneElement {
+    interface ImplementationGuideDefinitionPage extends BackboneElement {
         /**
          * Where to find that page
          */
-        source: uri;
+        nameUrl?: url;
         /**
-         * Contains extended information for property 'source'.
+         * Contains extended information for property 'nameUrl'.
          */
-        _source?: Element;
+        _nameUrl?: Element;
+        /**
+         * Where to find that page
+         */
+        nameReference?: Reference;
         /**
          * Short title shown for navigational assistance
          */
@@ -13949,48 +14926,173 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _title?: Element;
         /**
-         * page | example | list | include | directory | dictionary | toc | resource
+         * html | markdown | xml | generated
          */
-        kind: code;
+        generation: code;
         /**
-         * Contains extended information for property 'kind'.
+         * Contains extended information for property 'generation'.
          */
-        _kind?: Element;
-        /**
-         * Kind of resource to include in the list
-         */
-        type?: code[];
-        /**
-         * Contains extended information for property 'type'.
-         */
-        _type?: Element[];
-        /**
-         * Name of package to include
-         */
-        package?: string[];
-        /**
-         * Contains extended information for property 'package'.
-         */
-        _package?: Element[];
-        /**
-         * Format of the page (e.g. html, markdown, etc.)
-         */
-        format?: code;
-        /**
-         * Contains extended information for property 'format'.
-         */
-        _format?: Element;
+        _generation?: Element;
         /**
          * Nested Pages / Sections
          */
-        page?: ImplementationGuidePage[];
+        page?: ImplementationGuideDefinitionPage[];
+    }
+    /**
+     * Defines how IG is built by tools
+     */
+    interface ImplementationGuideDefinitionParameter extends BackboneElement {
+        /**
+         * apply-business-version | apply-jurisdiction | path-resource | path-pages | path-tx-cache | expansion-parameter | rule-broken-links | generate-xml | generate-json | generate-turtle | html-template
+         */
+        code: code;
+        /**
+         * Contains extended information for property 'code'.
+         */
+        _code?: Element;
+        /**
+         * Value for named type
+         */
+        value: string;
+        /**
+         * Contains extended information for property 'value'.
+         */
+        _value?: Element;
+    }
+    /**
+     * A template for building resources
+     */
+    interface ImplementationGuideDefinitionTemplate extends BackboneElement {
+        /**
+         * Type of template specified
+         */
+        code: code;
+        /**
+         * Contains extended information for property 'code'.
+         */
+        _code?: Element;
+        /**
+         * The source location for the template
+         */
+        source: string;
+        /**
+         * Contains extended information for property 'source'.
+         */
+        _source?: Element;
+        /**
+         * The scope in which the template applies
+         */
+        scope?: string;
+        /**
+         * Contains extended information for property 'scope'.
+         */
+        _scope?: Element;
+    }
+    /**
+     * Information about an assembled IG
+     */
+    interface ImplementationGuideManifest extends BackboneElement {
+        /**
+         * Location of rendered implementation guide
+         */
+        rendering?: url;
+        /**
+         * Contains extended information for property 'rendering'.
+         */
+        _rendering?: Element;
+        /**
+         * Resource in the implementation guide
+         */
+        resource: ImplementationGuideManifestResource[];
+        /**
+         * HTML page within the parent IG
+         */
+        page?: ImplementationGuideManifestPage[];
+        /**
+         * Image within the IG
+         */
+        image?: string[];
+        /**
+         * Contains extended information for property 'image'.
+         */
+        _image?: Element[];
+        /**
+         * Additional linkable file in IG
+         */
+        other?: string[];
+        /**
+         * Contains extended information for property 'other'.
+         */
+        _other?: Element[];
+    }
+    /**
+     * Resource in the implementation guide
+     */
+    interface ImplementationGuideManifestResource extends BackboneElement {
+        /**
+         * Location of the resource
+         */
+        reference: Reference;
+        /**
+         * Is an example/What is this an example of?
+         */
+        exampleBoolean?: boolean;
+        /**
+         * Contains extended information for property 'exampleBoolean'.
+         */
+        _exampleBoolean?: Element;
+        /**
+         * Is an example/What is this an example of?
+         */
+        exampleCanonical?: canonical;
+        /**
+         * Contains extended information for property 'exampleCanonical'.
+         */
+        _exampleCanonical?: Element;
+        /**
+         * Relative path for page in IG
+         */
+        relativePath?: url;
+        /**
+         * Contains extended information for property 'relativePath'.
+         */
+        _relativePath?: Element;
+    }
+    /**
+     * HTML page within the parent IG
+     */
+    interface ImplementationGuideManifestPage extends BackboneElement {
+        /**
+         * HTML page name
+         */
+        name: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Title of the page, for references
+         */
+        title?: string;
+        /**
+         * Contains extended information for property 'title'.
+         */
+        _title?: Element;
+        /**
+         * Anchor available on the page
+         */
+        anchor?: string[];
+        /**
+         * Contains extended information for property 'anchor'.
+         */
+        _anchor?: Element[];
     }
     /**
      * A set of rules about how FHIR is used
      */
     interface ImplementationGuide extends DomainResource {
         /**
-         * Logical URI to reference this implementation guide (globally unique)
+         * Canonical identifier for this implementation guide, represented as a URI (globally unique)
          */
         url: uri;
         /**
@@ -14014,6 +15116,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _name?: Element;
         /**
+         * Name for this implementation guide (human friendly)
+         */
+        title?: string;
+        /**
+         * Contains extended information for property 'title'.
+         */
+        _title?: Element;
+        /**
          * draft | active | retired | unknown
          */
         status: code;
@@ -14030,7 +15140,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _experimental?: Element;
         /**
-         * Date this was last changed
+         * Date last changed
          */
         date?: dateTime;
         /**
@@ -14058,7 +15168,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * Context the content is intended to support
+         * The context that the content is intended to support
          */
         useContext?: UsageContext[];
         /**
@@ -14074,6 +15184,22 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _copyright?: Element;
         /**
+         * NPM Package name for IG
+         */
+        packageId?: id;
+        /**
+         * Contains extended information for property 'packageId'.
+         */
+        _packageId?: Element;
+        /**
+         * SPDX license code for this IG (or not-open-source)
+         */
+        license?: code;
+        /**
+         * Contains extended information for property 'license'.
+         */
+        _license?: Element;
+        /**
          * FHIR Version this Implementation Guide targets
          */
         fhirVersion?: id;
@@ -14084,74 +15210,314 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Another Implementation guide this depends on
          */
-        dependency?: ImplementationGuideDependency[];
-        /**
-         * Group of resources as used in .page.package
-         */
-        package?: ImplementationGuidePackage[];
+        dependsOn?: ImplementationGuideDependsOn[];
         /**
          * Profiles that apply globally
          */
         global?: ImplementationGuideGlobal[];
         /**
-         * Image, css, script, etc.
+         * Information needed to build the IG
          */
-        binary?: uri[];
+        definition?: ImplementationGuideDefinition;
         /**
-         * Contains extended information for property 'binary'.
+         * Information about an assembled IG
          */
-        _binary?: Element[];
-        /**
-         * Page/Section in the Guide
-         */
-        page?: ImplementationGuidePage;
+        manifest?: ImplementationGuideManifest;
     }
     /**
-     * Definition of a parameter to a module
+     * Contact for the product
      */
-    interface ParameterDefinition extends Element {
+    interface InsurancePlanContact extends BackboneElement {
         /**
-         * Name used to access the parameter value
+         * The type of contact
          */
-        name?: code;
+        purpose?: CodeableConcept;
+        /**
+         * A name associated with the contact
+         */
+        name?: HumanName;
+        /**
+         * Contact details (telephone, email, etc.)  for a contact
+         */
+        telecom?: ContactPoint[];
+        /**
+         * Visiting or postal addresses for the contact
+         */
+        address?: Address;
+    }
+    /**
+     * Coverage details
+     */
+    interface InsurancePlanCoverage extends BackboneElement {
+        /**
+         * Type of coverage
+         */
+        type: CodeableConcept;
+        /**
+         * What networks provide coverage
+         */
+        network?: Reference[];
+        /**
+         * List of benefits
+         */
+        benefit: InsurancePlanCoverageBenefit[];
+    }
+    /**
+     * List of benefits
+     */
+    interface InsurancePlanCoverageBenefit extends BackboneElement {
+        /**
+         * Type of benefit
+         */
+        type: CodeableConcept;
+        /**
+         * Referral requirements
+         */
+        requirement?: string;
+        /**
+         * Contains extended information for property 'requirement'.
+         */
+        _requirement?: Element;
+        /**
+         * Benefit limits
+         */
+        limit?: InsurancePlanCoverageBenefitLimit[];
+    }
+    /**
+     * Benefit limits
+     */
+    interface InsurancePlanCoverageBenefitLimit extends BackboneElement {
+        /**
+         * Maximum value allowed
+         */
+        value?: Quantity;
+        /**
+         * Benefit limit details
+         */
+        code?: CodeableConcept;
+    }
+    /**
+     * Plan details
+     */
+    interface InsurancePlanPlan extends BackboneElement {
+        /**
+         * Business Identifier for Product
+         */
+        identifier?: Identifier[];
+        /**
+         * Type of plan
+         */
+        type?: CodeableConcept;
+        /**
+         * Where product applies
+         */
+        coverageArea?: Reference[];
+        /**
+         * What networks provide coverage
+         */
+        network?: Reference[];
+        /**
+         * Overall costs
+         */
+        generalCost?: InsurancePlanPlanGeneralCost[];
+        /**
+         * Specific costs
+         */
+        specificCost?: InsurancePlanPlanSpecificCost[];
+    }
+    /**
+     * Overall costs
+     */
+    interface InsurancePlanPlanGeneralCost extends BackboneElement {
+        /**
+         * Type of cost
+         */
+        type?: CodeableConcept;
+        /**
+         * Number of enrollees
+         */
+        groupSize?: positiveInt;
+        /**
+         * Contains extended information for property 'groupSize'.
+         */
+        _groupSize?: Element;
+        /**
+         * Cost value
+         */
+        cost?: Money;
+        /**
+         * Additional cost information
+         */
+        comment?: string;
+        /**
+         * Contains extended information for property 'comment'.
+         */
+        _comment?: Element;
+    }
+    /**
+     * Specific costs
+     */
+    interface InsurancePlanPlanSpecificCost extends BackboneElement {
+        /**
+         * General category of benefit
+         */
+        category: CodeableConcept;
+        /**
+         * Benefits list
+         */
+        benefit?: InsurancePlanPlanSpecificCostBenefit[];
+    }
+    /**
+     * Benefits list
+     */
+    interface InsurancePlanPlanSpecificCostBenefit extends BackboneElement {
+        /**
+         * Type of specific benefit
+         */
+        type: CodeableConcept;
+        /**
+         * List of the costs
+         */
+        cost?: InsurancePlanPlanSpecificCostBenefitCost[];
+    }
+    /**
+     * List of the costs
+     */
+    interface InsurancePlanPlanSpecificCostBenefitCost extends BackboneElement {
+        /**
+         * Type of cost
+         */
+        type: CodeableConcept;
+        /**
+         * in-network | out-of-network | other
+         */
+        applicability?: CodeableConcept;
+        /**
+         * Additional information about the cost
+         */
+        qualifiers?: CodeableConcept[];
+        /**
+         * The actual cost value
+         */
+        value?: Quantity;
+    }
+    /**
+     * Details of a Health Insurance product/plan provided by an organization
+     */
+    interface InsurancePlan extends DomainResource {
+        /**
+         * Business Identifier for Product
+         */
+        identifier?: Identifier[];
+        /**
+         * draft | active | retired | unknown
+         */
+        status?: code;
+        /**
+         * Contains extended information for property 'status'.
+         */
+        _status?: Element;
+        /**
+         * Kind of product
+         */
+        type?: CodeableConcept[];
+        /**
+         * Official name
+         */
+        name?: string;
         /**
          * Contains extended information for property 'name'.
          */
         _name?: Element;
         /**
-         * in | out
+         * Alternate names
          */
-        use: code;
+        alias?: string[];
         /**
-         * Contains extended information for property 'use'.
+         * Contains extended information for property 'alias'.
          */
-        _use?: Element;
+        _alias?: Element[];
         /**
-         * Minimum cardinality
+         * When the product is available
          */
-        min?: integer;
+        period?: Period;
         /**
-         * Contains extended information for property 'min'.
+         * Plan issuer
          */
-        _min?: Element;
+        ownedBy?: Reference;
         /**
-         * Maximum cardinality (a number of *)
+         * Product administrator
          */
-        max?: string;
+        administeredBy?: Reference;
         /**
-         * Contains extended information for property 'max'.
+         * Where product applies
          */
-        _max?: Element;
+        coverageArea?: Reference[];
         /**
-         * A brief description of the parameter
+         * Contact for the product
          */
-        documentation?: string;
+        contact?: InsurancePlanContact[];
         /**
-         * Contains extended information for property 'documentation'.
+         * Technical endpoint
          */
-        _documentation?: Element;
+        endpoint?: Reference[];
         /**
-         * What type of value
+         * What networks are Included
+         */
+        network?: Reference[];
+        /**
+         * Coverage details
+         */
+        coverage?: InsurancePlanCoverage[];
+        /**
+         * Plan details
+         */
+        plan?: InsurancePlanPlan[];
+    }
+    /**
+     * Participant in creation of this Invoice
+     */
+    interface InvoiceParticipant extends BackboneElement {
+        /**
+         * Type of involevent in creation of this Invoice
+         */
+        role?: CodeableConcept;
+        /**
+         * Individual who was involved
+         */
+        actor: Reference;
+    }
+    /**
+     * Line items of this Invoice
+     */
+    interface InvoiceLineItem extends BackboneElement {
+        /**
+         * Sequence number of line item
+         */
+        sequence?: positiveInt;
+        /**
+         * Contains extended information for property 'sequence'.
+         */
+        _sequence?: Element;
+        /**
+         * Reference to ChargeItem containing details of this line item or an inline billing code
+         */
+        chargeItemReference?: Reference;
+        /**
+         * Reference to ChargeItem containing details of this line item or an inline billing code
+         */
+        chargeItemCodeableConcept?: CodeableConcept;
+        /**
+         * Components of total line item price
+         */
+        priceComponent?: InvoiceLineItemPriceComponent[];
+    }
+    /**
+     * Components of total line item price
+     */
+    interface InvoiceLineItemPriceComponent extends BackboneElement {
+        /**
+         * base | surcharge | deduction | discount | tax | informational
          */
         type: code;
         /**
@@ -14159,16 +15525,190 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _type?: Element;
         /**
-         * What profile the value is expected to be
+         * Code identifying the specific component
          */
-        profile?: Reference;
+        code?: CodeableConcept;
+        /**
+         * Factor used for calculating this component
+         */
+        factor?: decimal;
+        /**
+         * Contains extended information for property 'factor'.
+         */
+        _factor?: Element;
+        /**
+         * Monetary amount associated with this component
+         */
+        amount?: Money;
+    }
+    /**
+     * Invoice containing ChargeItems from an Account
+     */
+    interface Invoice extends DomainResource {
+        /**
+         * Business Identifier for item
+         */
+        identifier?: Identifier[];
+        /**
+         * draft | issued | balanced | cancelled | entered-in-error
+         */
+        status: code;
+        /**
+         * Contains extended information for property 'status'.
+         */
+        _status?: Element;
+        /**
+         * Reason for cancellation of this Invoice
+         */
+        cancelledReason?: string;
+        /**
+         * Contains extended information for property 'cancelledReason'.
+         */
+        _cancelledReason?: Element;
+        /**
+         * Type of Invoice
+         */
+        type?: CodeableConcept;
+        /**
+         * Recipient(s) of goods and services
+         */
+        subject?: Reference;
+        /**
+         * Recipient of this invoice
+         */
+        recipient?: Reference;
+        /**
+         * Invoice date / posting date
+         */
+        date?: dateTime;
+        /**
+         * Contains extended information for property 'date'.
+         */
+        _date?: Element;
+        /**
+         * Participant in creation of this Invoice
+         */
+        participant?: InvoiceParticipant[];
+        /**
+         * Issuing Organization of Invoice
+         */
+        issuer?: Reference;
+        /**
+         * Account that is being balanced
+         */
+        account?: Reference;
+        /**
+         * Line items of this Invoice
+         */
+        lineItem?: InvoiceLineItem[];
+        /**
+         * Components of Invoice total
+         */
+        totalPriceComponent?: InvoiceLineItemPriceComponent[];
+        /**
+         * Net total of this Invoice
+         */
+        totalNet?: Money;
+        /**
+         * Gross total of this Invoice
+         */
+        totalGross?: Money;
+        /**
+         * Payment details
+         */
+        paymentTerms?: markdown;
+        /**
+         * Contains extended information for property 'paymentTerms'.
+         */
+        _paymentTerms?: Element;
+        /**
+         * Comments made about the invoice
+         */
+        note?: Annotation[];
+    }
+    /**
+     * A physical instance of an item
+     */
+    interface ItemInstance extends DomainResource {
+        /**
+         * The count of items
+         */
+        count: integer;
+        /**
+         * Contains extended information for property 'count'.
+         */
+        _count?: Element;
+        /**
+         * The physical location of the item
+         */
+        location?: Reference;
+        /**
+         * The patient that the item is affixed to
+         */
+        subject?: Reference;
+        /**
+         * The manufacture or preparation date and time
+         */
+        manufactureDate?: dateTime;
+        /**
+         * Contains extended information for property 'manufactureDate'.
+         */
+        _manufactureDate?: Element;
+        /**
+         * The expiry or preparation date and time
+         */
+        expiryDate?: dateTime;
+        /**
+         * Contains extended information for property 'expiryDate'.
+         */
+        _expiryDate?: Element;
+        /**
+         * The Software version associated with the device
+         */
+        currentSWVersion?: string;
+        /**
+         * Contains extended information for property 'currentSWVersion'.
+         */
+        _currentSWVersion?: Element;
+        /**
+         * The lot or batch number
+         */
+        lotNumber?: string;
+        /**
+         * Contains extended information for property 'lotNumber'.
+         */
+        _lotNumber?: Element;
+        /**
+         * The serial number if available
+         */
+        serialNumber?: string;
+        /**
+         * Contains extended information for property 'serialNumber'.
+         */
+        _serialNumber?: Element;
+        /**
+         * The machine-readable AIDC string in base64 encoding
+         */
+        carrierAIDC?: string;
+        /**
+         * Contains extended information for property 'carrierAIDC'.
+         */
+        _carrierAIDC?: Element;
+        /**
+         * The human-readable barcode string
+         */
+        carrierHRF?: string;
+        /**
+         * Contains extended information for property 'carrierHRF'.
+         */
+        _carrierHRF?: Element;
     }
     /**
      * Represents a library of quality improvement components
      */
     interface Library extends DomainResource {
         /**
-         * Logical URI to reference this library (globally unique)
+         * Canonical identifier for this library, represented as a URI (globally unique)
          */
         url?: uri;
         /**
@@ -14204,6 +15744,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _title?: Element;
         /**
+         * Subordinate title of the library
+         */
+        subtitle?: string;
+        /**
+         * Contains extended information for property 'subtitle'.
+         */
+        _subtitle?: Element;
+        /**
          * draft | active | retired | unknown
          */
         status: code;
@@ -14224,7 +15772,15 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         type: CodeableConcept;
         /**
-         * Date this was last changed
+         * Type of individual the library content is focused on
+         */
+        subjectCodeableConcept?: CodeableConcept;
+        /**
+         * Type of individual the library content is focused on
+         */
+        subjectReference?: Reference;
+        /**
+         * Date last changed
          */
         date?: dateTime;
         /**
@@ -14240,6 +15796,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _publisher?: Element;
         /**
+         * Contact details for the publisher
+         */
+        contact?: ContactDetail[];
+        /**
          * Natural language description of the library
          */
         description?: markdown;
@@ -14247,6 +15807,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'description'.
          */
         _description?: Element;
+        /**
+         * The context that the content is intended to support
+         */
+        useContext?: UsageContext[];
+        /**
+         * Intended jurisdiction for library (if applicable)
+         */
+        jurisdiction?: CodeableConcept[];
         /**
          * Why this library is defined
          */
@@ -14263,6 +15831,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'usage'.
          */
         _usage?: Element;
+        /**
+         * Use and/or publishing restrictions
+         */
+        copyright?: markdown;
+        /**
+         * Contains extended information for property 'copyright'.
+         */
+        _copyright?: Element;
         /**
          * When the library was approved by publisher
          */
@@ -14284,33 +15860,25 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         effectivePeriod?: Period;
         /**
-         * Context the content is intended to support
-         */
-        useContext?: UsageContext[];
-        /**
-         * Intended jurisdiction for library (if applicable)
-         */
-        jurisdiction?: CodeableConcept[];
-        /**
-         * E.g. Education, Treatment, Assessment, etc
+         * E.g. Education, Treatment, Assessment, etc.
          */
         topic?: CodeableConcept[];
         /**
-         * A content contributor
+         * Who authored the content
          */
-        contributor?: Contributor[];
+        author?: ContactDetail[];
         /**
-         * Contact details for the publisher
+         * Who edited the content
          */
-        contact?: ContactDetail[];
+        editor?: ContactDetail[];
         /**
-         * Use and/or publishing restrictions
+         * Who reviewed the content
          */
-        copyright?: markdown;
+        reviewer?: ContactDetail[];
         /**
-         * Contains extended information for property 'copyright'.
+         * Who endorsed the content
          */
-        _copyright?: Element;
+        endorser?: ContactDetail[];
         /**
          * Additional documentation, citations, etc.
          */
@@ -14498,6 +16066,43 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         _altitude?: Element;
     }
     /**
+     * What days/times during a week is this location usually open
+     */
+    interface LocationHoursOfOperation extends BackboneElement {
+        /**
+         * mon | tue | wed | thu | fri | sat | sun
+         */
+        daysOfWeek?: code[];
+        /**
+         * Contains extended information for property 'daysOfWeek'.
+         */
+        _daysOfWeek?: Element[];
+        /**
+         * The Location is open all day
+         */
+        allDay?: boolean;
+        /**
+         * Contains extended information for property 'allDay'.
+         */
+        _allDay?: Element;
+        /**
+         * Time that the Location opens
+         */
+        openingTime?: time;
+        /**
+         * Contains extended information for property 'openingTime'.
+         */
+        _openingTime?: Element;
+        /**
+         * Time that the Location closes
+         */
+        closingTime?: time;
+        /**
+         * Contains extended information for property 'closingTime'.
+         */
+        _closingTime?: Element;
+    }
+    /**
      * Details and position information for a physical place
      */
     interface Location extends DomainResource {
@@ -14526,7 +16131,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _name?: Element;
         /**
-         * A list of alternate names that the location is known as, or was known as in the past
+         * A list of alternate names that the location is known as or was known as in the past
          */
         alias?: string[];
         /**
@@ -14552,7 +16157,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Type of function performed
          */
-        type?: CodeableConcept;
+        type?: CodeableConcept[];
         /**
          * Contact details of the location
          */
@@ -14578,6 +16183,18 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         partOf?: Reference;
         /**
+         * What days/times during a week is this location usually open
+         */
+        hoursOfOperation?: LocationHoursOfOperation[];
+        /**
+         * Description of availability exceptions
+         */
+        availabilityExceptions?: string;
+        /**
+         * Contains extended information for property 'availabilityExceptions'.
+         */
+        _availabilityExceptions?: Element;
+        /**
          * Technical endpoints providing access to services operated for the location
          */
         endpoint?: Reference[];
@@ -14587,17 +16204,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface MeasureGroup extends BackboneElement {
         /**
-         * Unique identifier
+         * Meaning of the group
          */
-        identifier: Identifier;
-        /**
-         * Short name
-         */
-        name?: string;
-        /**
-         * Contains extended information for property 'name'.
-         */
-        _name?: Element;
+        code?: CodeableConcept;
         /**
          * Summary description
          */
@@ -14620,21 +16229,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface MeasureGroupPopulation extends BackboneElement {
         /**
-         * Unique identifier
-         */
-        identifier?: Identifier;
-        /**
          * initial-population | numerator | numerator-exclusion | denominator | denominator-exclusion | denominator-exception | measure-population | measure-population-exclusion | measure-observation
          */
         code?: CodeableConcept;
-        /**
-         * Short name
-         */
-        name?: string;
-        /**
-         * Contains extended information for property 'name'.
-         */
-        _name?: Element;
         /**
          * The human readable description of this population criteria
          */
@@ -14644,74 +16241,62 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * The name of a valid referenced CQL expression (may be namespaced) that defines this population criteria
+         * The criteria that defines this population
          */
-        criteria: string;
-        /**
-         * Contains extended information for property 'criteria'.
-         */
-        _criteria?: Element;
+        criteria: Expression;
     }
     /**
      * Stratifier criteria for the measure
      */
     interface MeasureGroupStratifier extends BackboneElement {
         /**
-         * The identifier for the stratifier used to coordinate the reported data back to this stratifier
+         * Meaning of the stratifier
          */
-        identifier?: Identifier;
+        code?: CodeableConcept;
+        /**
+         * The human readable description of this stratifier
+         */
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
         /**
          * How the measure should be stratified
          */
-        criteria?: string;
-        /**
-         * Contains extended information for property 'criteria'.
-         */
-        _criteria?: Element;
-        /**
-         * Path to the stratifier
-         */
-        path?: string;
-        /**
-         * Contains extended information for property 'path'.
-         */
-        _path?: Element;
+        criteria: Expression;
     }
     /**
      * What other data should be reported with the measure
      */
     interface MeasureSupplementalData extends BackboneElement {
         /**
-         * Identifier, unique within the measure
+         * Meaning of the supplemental data
          */
-        identifier?: Identifier;
+        code?: CodeableConcept;
         /**
          * supplemental-data | risk-adjustment-factor
          */
         usage?: CodeableConcept[];
         /**
+         * The human readable description of this supplemental data
+         */
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
          * Expression describing additional data to be reported
          */
-        criteria?: string;
-        /**
-         * Contains extended information for property 'criteria'.
-         */
-        _criteria?: Element;
-        /**
-         * Path to the supplemental data element
-         */
-        path?: string;
-        /**
-         * Contains extended information for property 'path'.
-         */
-        _path?: Element;
+        criteria: Expression;
     }
     /**
      * A quality measure definition
      */
     interface Measure extends DomainResource {
         /**
-         * Logical URI to reference this measure (globally unique)
+         * Canonical identifier for this measure, represented as a URI (globally unique)
          */
         url?: uri;
         /**
@@ -14747,6 +16332,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _title?: Element;
         /**
+         * Subordinate title of the measure
+         */
+        subtitle?: string;
+        /**
+         * Contains extended information for property 'subtitle'.
+         */
+        _subtitle?: Element;
+        /**
          * draft | active | retired | unknown
          */
         status: code;
@@ -14763,7 +16356,15 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _experimental?: Element;
         /**
-         * Date this was last changed
+         * E.g. Patient, Practitioner, RelatedPerson, Organization, Location, Device
+         */
+        subjectCodeableConcept?: CodeableConcept;
+        /**
+         * E.g. Patient, Practitioner, RelatedPerson, Organization, Location, Device
+         */
+        subjectReference?: Reference;
+        /**
+         * Date last changed
          */
         date?: dateTime;
         /**
@@ -14779,6 +16380,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _publisher?: Element;
         /**
+         * Contact details for the publisher
+         */
+        contact?: ContactDetail[];
+        /**
          * Natural language description of the measure
          */
         description?: markdown;
@@ -14786,6 +16391,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'description'.
          */
         _description?: Element;
+        /**
+         * The context that the content is intended to support
+         */
+        useContext?: UsageContext[];
+        /**
+         * Intended jurisdiction for measure (if applicable)
+         */
+        jurisdiction?: CodeableConcept[];
         /**
          * Why this measure is defined
          */
@@ -14802,6 +16415,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'usage'.
          */
         _usage?: Element;
+        /**
+         * Use and/or publishing restrictions
+         */
+        copyright?: markdown;
+        /**
+         * Contains extended information for property 'copyright'.
+         */
+        _copyright?: Element;
         /**
          * When the measure was approved by publisher
          */
@@ -14823,41 +16444,37 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         effectivePeriod?: Period;
         /**
-         * Context the content is intended to support
-         */
-        useContext?: UsageContext[];
-        /**
-         * Intended jurisdiction for measure (if applicable)
-         */
-        jurisdiction?: CodeableConcept[];
-        /**
-         * E.g. Education, Treatment, Assessment, etc
+         * The category of the measure, such as Education, Treatment, Assessment, etc.
          */
         topic?: CodeableConcept[];
         /**
-         * A content contributor
+         * Who authored the content
          */
-        contributor?: Contributor[];
+        author?: ContactDetail[];
         /**
-         * Contact details for the publisher
+         * Who edited the content
          */
-        contact?: ContactDetail[];
+        editor?: ContactDetail[];
         /**
-         * Use and/or publishing restrictions
+         * Who reviewed the content
          */
-        copyright?: markdown;
+        reviewer?: ContactDetail[];
         /**
-         * Contains extended information for property 'copyright'.
+         * Who endorsed the content
          */
-        _copyright?: Element;
+        endorser?: ContactDetail[];
         /**
-         * Additional documentation, citations, etc
+         * Additional documentation, citations, etc.
          */
         relatedArtifact?: RelatedArtifact[];
         /**
          * Logic used by the measure
          */
-        library?: Reference[];
+        library?: canonical[];
+        /**
+         * Contains extended information for property 'library'.
+         */
+        _library?: Element[];
         /**
          * Disclaimer for use of the measure or its referenced content
          */
@@ -14879,7 +16496,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         type?: CodeableConcept[];
         /**
-         * How is risk adjustment applied for this measure
+         * How risk adjustment is applied for this measure
          */
         riskAdjustment?: string;
         /**
@@ -14895,7 +16512,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _rateAggregation?: Element;
         /**
-         * Why does this measure exist
+         * Detailed description of why the measure exists
          */
         rationale?: markdown;
         /**
@@ -14911,9 +16528,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _clinicalRecommendationStatement?: Element;
         /**
-         * Improvement notation for the measure, e.g. higher score indicates better quality
+         * increase | decrease
          */
-        improvementNotation?: string;
+        improvementNotation?: code;
         /**
          * Contains extended information for property 'improvementNotation'.
          */
@@ -14935,14 +16552,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _guidance?: Element;
         /**
-         * The measure set, e.g. Preventive Care and Screening
-         */
-        set?: string;
-        /**
-         * Contains extended information for property 'set'.
-         */
-        _set?: Element;
-        /**
          * Population criteria group
          */
         group?: MeasureGroup[];
@@ -14956,9 +16565,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface MeasureReportGroup extends BackboneElement {
         /**
-         * What group of the measure
+         * Meaning of the group
          */
-        identifier: Identifier;
+        code?: CodeableConcept;
         /**
          * The populations in the group
          */
@@ -14966,11 +16575,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * What score this group achieved
          */
-        measureScore?: decimal;
-        /**
-         * Contains extended information for property 'measureScore'.
-         */
-        _measureScore?: Element;
+        measureScore?: Quantity;
         /**
          * Stratification results
          */
@@ -14981,11 +16586,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface MeasureReportGroupPopulation extends BackboneElement {
         /**
-         * Population identifier as defined in the measure
-         */
-        identifier?: Identifier;
-        /**
-         * initial-population | numerator | numerator-exclusion | denominator | denominator-exclusion | denominator-exception | measure-population | measure-population-exclusion | measure-score
+         * initial-population | numerator | numerator-exclusion | denominator | denominator-exclusion | denominator-exception | measure-population | measure-population-exclusion | measure-observation
          */
         code?: CodeableConcept;
         /**
@@ -14997,9 +16598,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _count?: Element;
         /**
-         * For patient-list reports, the patients in this population
+         * For subject-list reports, the subject results in this population
          */
-        patients?: Reference;
+        subjectResults?: Reference;
     }
     /**
      * Stratification results
@@ -15008,7 +16609,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * What stratifier of the group
          */
-        identifier?: Identifier;
+        code?: CodeableConcept;
         /**
          * Stratum results, one for each unique value in the stratifier
          */
@@ -15021,11 +16622,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * The stratum value, e.g. male
          */
-        value: string;
-        /**
-         * Contains extended information for property 'value'.
-         */
-        _value?: Element;
+        value: CodeableConcept;
         /**
          * Population results in this stratum
          */
@@ -15033,22 +16630,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * What score this stratum achieved
          */
-        measureScore?: decimal;
-        /**
-         * Contains extended information for property 'measureScore'.
-         */
-        _measureScore?: Element;
+        measureScore?: Quantity;
     }
     /**
      * Population results in this stratum
      */
     interface MeasureReportGroupStratifierStratumPopulation extends BackboneElement {
         /**
-         * Population identifier as defined in the measure
-         */
-        identifier?: Identifier;
-        /**
-         * initial-population | numerator | numerator-exclusion | denominator | denominator-exclusion | denominator-exception | measure-population | measure-population-exclusion | measure-score
+         * initial-population | numerator | numerator-exclusion | denominator | denominator-exclusion | denominator-exception | measure-population | measure-population-exclusion | measure-observation
          */
         code?: CodeableConcept;
         /**
@@ -15060,18 +16649,18 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _count?: Element;
         /**
-         * For patient-list reports, the patients in this population
+         * For subject-list reports, the subject results in this population
          */
-        patients?: Reference;
+        subjectResults?: Reference;
     }
     /**
      * Results of a measure evaluation
      */
     interface MeasureReport extends DomainResource {
         /**
-         * Additional identifier for the Report
+         * Additional identifier for the MeasureReport
          */
-        identifier?: Identifier;
+        identifier?: Identifier[];
         /**
          * complete | pending | error
          */
@@ -15081,7 +16670,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _status?: Element;
         /**
-         * individual | patient-list | summary
+         * individual | subject-list | summary | data-collection
          */
         type: code;
         /**
@@ -15089,13 +16678,17 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _type?: Element;
         /**
-         * What measure was evaluated
+         * What measure was calculated
          */
-        measure: Reference;
+        measure: canonical;
         /**
-         * What patient the report is for
+         * Contains extended information for property 'measure'.
          */
-        patient?: Reference;
+        _measure?: Element;
+        /**
+         * What individual(s) the report is for
+         */
+        subject?: Reference;
         /**
          * When the report was generated
          */
@@ -15107,19 +16700,27 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Who is reporting the data
          */
-        reportingOrganization?: Reference;
+        reporter?: Reference;
         /**
          * What period the report covers
          */
         period: Period;
         /**
+         * increase | decrease
+         */
+        improvementNotation?: code;
+        /**
+         * Contains extended information for property 'improvementNotation'.
+         */
+        _improvementNotation?: Element;
+        /**
          * Measure results for each group
          */
         group?: MeasureReportGroup[];
         /**
-         * What data was evaluated to produce the measure score
+         * What data was used to calculate the measure score
          */
-        evaluatedResources?: Reference;
+        evaluatedResource?: Reference[];
     }
     /**
      * A photo, video, or audio recording acquired or used in healthcare. The actual content may be inline or provided by direct reference
@@ -15134,17 +16735,25 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         basedOn?: Reference[];
         /**
-         * photo | video | audio
+         * Part of referenced event
          */
-        type: code;
+        partOf?: Reference[];
         /**
-         * Contains extended information for property 'type'.
+         * preparation | in-progress | not-done | suspended | aborted | completed | entered-in-error | unknown
          */
-        _type?: Element;
+        status: code;
+        /**
+         * Contains extended information for property 'status'.
+         */
+        _status?: Element;
+        /**
+         * Classification of media as image, video, or audio
+         */
+        type?: CodeableConcept;
         /**
          * The type of acquisition equipment/process
          */
-        subtype?: CodeableConcept;
+        modality?: CodeableConcept;
         /**
          * Imaging view, e.g. Lateral or Antero-posterior
          */
@@ -15160,15 +16769,23 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * When Media was collected
          */
-        occurrenceDateTime?: dateTime;
+        createdDateTime?: dateTime;
         /**
-         * Contains extended information for property 'occurrenceDateTime'.
+         * Contains extended information for property 'createdDateTime'.
          */
-        _occurrenceDateTime?: Element;
+        _createdDateTime?: Element;
         /**
          * When Media was collected
          */
-        occurrencePeriod?: Period;
+        createdPeriod?: Period;
+        /**
+         * Date/Time this version was made available
+         */
+        issued?: instant;
+        /**
+         * Contains extended information for property 'issued'.
+         */
+        _issued?: Element;
         /**
          * The person who generated the image
          */
@@ -15178,9 +16795,17 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         reasonCode?: CodeableConcept[];
         /**
-         * Body part in media
+         * Observed body part
          */
         bodySite?: CodeableConcept;
+        /**
+         * Name of the device/manufacturer
+         */
+        deviceName?: string;
+        /**
+         * Contains extended information for property 'deviceName'.
+         */
+        _deviceName?: Element;
         /**
          * Observing Device
          */
@@ -15212,7 +16837,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Length in seconds (audio / video)
          */
-        duration?: unsignedInt;
+        duration?: decimal;
         /**
          * Contains extended information for property 'duration'.
          */
@@ -15231,11 +16856,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface MedicationIngredient extends BackboneElement {
         /**
-         * The product contained
+         * The actual ingredient or content
          */
         itemCodeableConcept?: CodeableConcept;
         /**
-         * The product contained
+         * The actual ingredient or content
          */
         itemReference?: Reference;
         /**
@@ -15254,41 +16879,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
     /**
      * Details about packaged medications
      */
-    interface MedicationPackage extends BackboneElement {
-        /**
-         * E.g. box, vial, blister-pack
-         */
-        container?: CodeableConcept;
-        /**
-         * What is  in the package
-         */
-        content?: MedicationPackageContent[];
-        /**
-         * Identifies a single production run
-         */
-        batch?: MedicationPackageBatch[];
-    }
-    /**
-     * What is  in the package
-     */
-    interface MedicationPackageContent extends BackboneElement {
-        /**
-         * The item in the package
-         */
-        itemCodeableConcept?: CodeableConcept;
-        /**
-         * The item in the package
-         */
-        itemReference?: Reference;
-        /**
-         * Quantity present in the package
-         */
-        amount?: Quantity;
-    }
-    /**
-     * Identifies a single production run
-     */
-    interface MedicationPackageBatch extends BackboneElement {
+    interface MedicationBatch extends BackboneElement {
         /**
          * Identifier assigned to batch
          */
@@ -15305,6 +16896,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'expirationDate'.
          */
         _expirationDate?: Element;
+        /**
+         * Identifier assigned to a drug at the time of manufacture
+         */
+        serialNumber?: string;
+        /**
+         * Contains extended information for property 'serialNumber'.
+         */
+        _serialNumber?: Element;
     }
     /**
      * Definition of a Medication
@@ -15323,22 +16922,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _status?: Element;
         /**
-         * True if a brand
-         */
-        isBrand?: boolean;
-        /**
-         * Contains extended information for property 'isBrand'.
-         */
-        _isBrand?: Element;
-        /**
-         * True if medication does not require a prescription
-         */
-        isOverTheCounter?: boolean;
-        /**
-         * Contains extended information for property 'isOverTheCounter'.
-         */
-        _isOverTheCounter?: Element;
-        /**
          * Manufacturer of the item
          */
         manufacturer?: Reference;
@@ -15347,30 +16930,30 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         form?: CodeableConcept;
         /**
+         * Amount of drug in package
+         */
+        amount?: Quantity;
+        /**
          * Active or inactive ingredient
          */
         ingredient?: MedicationIngredient[];
         /**
          * Details about packaged medications
          */
-        package?: MedicationPackage;
-        /**
-         * Picture of the medication
-         */
-        image?: Attachment[];
+        batch?: MedicationBatch;
     }
     /**
-     * Who administered substance
+     * Who performed the medication administration and what they did
      */
     interface MedicationAdministrationPerformer extends BackboneElement {
         /**
-         * Individual who was performing
+         * Type of performance
+         */
+        function?: CodeableConcept;
+        /**
+         * Who performed the medication administration
          */
         actor: Reference;
-        /**
-         * Organization organization was acting for
-         */
-        onBehalfOf?: Reference;
     }
     /**
      * Details of how medication was taken
@@ -15420,13 +17003,17 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Instantiates protocol or definition
          */
-        definition?: Reference[];
+        instantiates?: uri[];
+        /**
+         * Contains extended information for property 'instantiates'.
+         */
+        _instantiates?: Element[];
         /**
          * Part of referenced event
          */
         partOf?: Reference[];
         /**
-         * in-progress | on-hold | completed | entered-in-error | stopped | unknown
+         * in-progress | not-done | on-hold | completed | entered-in-error | stopped | unknown
          */
         status: code;
         /**
@@ -15470,33 +17057,25 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         effectivePeriod?: Period;
         /**
-         * Who administered substance
+         * Who performed the medication administration and what they did
          */
         performer?: MedicationAdministrationPerformer[];
         /**
-         * True if medication not administered
-         */
-        notGiven?: boolean;
-        /**
-         * Contains extended information for property 'notGiven'.
-         */
-        _notGiven?: Element;
-        /**
          * Reason administration not performed
          */
-        reasonNotGiven?: CodeableConcept[];
+        statusReason?: CodeableConcept[];
         /**
          * Reason administration performed
          */
         reasonCode?: CodeableConcept[];
         /**
-         * Condition or Observation that supports why the medication was administered
+         * Condition or observation that supports why the medication was administered
          */
         reasonReference?: Reference[];
         /**
          * Request administration performed against
          */
-        prescription?: Reference;
+        request?: Reference;
         /**
          * Device used to administer
          */
@@ -15519,13 +17098,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface MedicationDispensePerformer extends BackboneElement {
         /**
+         * Who performed the dispense and what they did
+         */
+        function?: CodeableConcept;
+        /**
          * Individual who was performing
          */
         actor: Reference;
-        /**
-         * Organization organization was acting for
-         */
-        onBehalfOf?: Reference;
     }
     /**
      * Whether a substitution was performed on the dispense
@@ -15565,9 +17144,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         partOf?: Reference[];
         /**
-         * preparation | in-progress | on-hold | completed | entered-in-error | stopped
+         * preparation | in-progress | cancelled | on-hold | completed | entered-in-error | stopped | unknown
          */
-        status?: code;
+        status: code;
         /**
          * Contains extended information for property 'status'.
          */
@@ -15600,6 +17179,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Who performed event
          */
         performer?: MedicationDispensePerformer[];
+        /**
+         * Where the dispense occurred
+         */
+        location?: Reference;
         /**
          * Medication order that authorizes the dispense
          */
@@ -15657,43 +17240,415 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         detectedIssue?: Reference[];
         /**
-         * Whether the dispense was or was not performed
+         * Why a dispense was not performed
          */
-        notDone?: boolean;
-        /**
-         * Contains extended information for property 'notDone'.
-         */
-        _notDone?: Element;
+        statusReasonCodeableConcept?: CodeableConcept;
         /**
          * Why a dispense was not performed
          */
-        notDoneReasonCodeableConcept?: CodeableConcept;
+        statusReasonReference?: Reference;
         /**
-         * Why a dispense was not performed
-         */
-        notDoneReasonReference?: Reference;
-        /**
-         * A list of releveant lifecycle events
+         * A list of relevant lifecycle events
          */
         eventHistory?: Reference[];
     }
     /**
-     * Who/What requested the Request
+     * Associated or related medication information
      */
-    interface MedicationRequestRequester extends BackboneElement {
+    interface MedicationKnowledgeRelatedMedicationKnowledge extends BackboneElement {
         /**
-         * Who ordered the initial medication(s)
+         * Category of medicationKnowledge
          */
-        agent: Reference;
+        type: CodeableConcept;
         /**
-         * Organization agent is acting for
+         * Associated documentation about the associated medication knowledge
          */
-        onBehalfOf?: Reference;
+        reference: Reference[];
+    }
+    /**
+     * Associated documentation about the medication
+     */
+    interface MedicationKnowledgeMonograph extends BackboneElement {
+        /**
+         * The category of medication document
+         */
+        type?: CodeableConcept;
+        /**
+         * Associated documentation about the medication
+         */
+        source?: Reference;
+    }
+    /**
+     * Active or inactive ingredient
+     */
+    interface MedicationKnowledgeIngredient extends BackboneElement {
+        /**
+         * Medication(s) or substance(s) contained in the medication
+         */
+        itemCodeableConcept?: CodeableConcept;
+        /**
+         * Medication(s) or substance(s) contained in the medication
+         */
+        itemReference?: Reference;
+        /**
+         * Active ingredient indicator
+         */
+        isActive?: boolean;
+        /**
+         * Contains extended information for property 'isActive'.
+         */
+        _isActive?: Element;
+        /**
+         * Quantity of ingredient present
+         */
+        strength?: Ratio;
+    }
+    /**
+     * The pricing of the medication
+     */
+    interface MedicationKnowledgeCost extends BackboneElement {
+        /**
+         * The category of the cost information
+         */
+        type: CodeableConcept;
+        /**
+         * The source or owner for the price information
+         */
+        source?: string;
+        /**
+         * Contains extended information for property 'source'.
+         */
+        _source?: Element;
+        /**
+         * The price of the medication
+         */
+        cost: Money;
+    }
+    /**
+     * Program under which a medication is reviewed
+     */
+    interface MedicationKnowledgeMonitoringProgram extends BackboneElement {
+        /**
+         * Type of program under which the medication is monitored
+         */
+        type?: CodeableConcept;
+        /**
+         * Name of the reviewing program
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+    }
+    /**
+     * Gudelines for administration of the medication
+     */
+    interface MedicationKnowledgeAdministrationGuidelines extends BackboneElement {
+        /**
+         * Dosage for the medication for the specific guidelines
+         */
+        dosage?: MedicationKnowledgeAdministrationGuidelinesDosage[];
+        /**
+         * Indication for use that apply to the specific administration guidelines
+         */
+        indicationCodeableConcept?: CodeableConcept;
+        /**
+         * Indication for use that apply to the specific administration guidelines
+         */
+        indicationReference?: Reference;
+        /**
+         * Characteristics of the patient that are relevant to the administration guidelines
+         */
+        patientCharacteristics?: MedicationKnowledgeAdministrationGuidelinesPatientCharacteristics[];
+    }
+    /**
+     * Dosage for the medication for the specific guidelines
+     */
+    interface MedicationKnowledgeAdministrationGuidelinesDosage extends BackboneElement {
+        /**
+         * Type of dosage
+         */
+        type: CodeableConcept;
+        /**
+         * Dosage for the medication for the specific guidelines
+         */
+        dosage: Dosage[];
+    }
+    /**
+     * Characteristics of the patient that are relevant to the administration guidelines
+     */
+    interface MedicationKnowledgeAdministrationGuidelinesPatientCharacteristics extends BackboneElement {
+        /**
+         * Specific characteristic that is relevant to the administration guideline
+         */
+        characteristicCodeableConcept?: CodeableConcept;
+        /**
+         * Specific characteristic that is relevant to the administration guideline
+         */
+        characteristicQuantity?: Quantity;
+        /**
+         * The specific characteristic
+         */
+        value?: string[];
+        /**
+         * Contains extended information for property 'value'.
+         */
+        _value?: Element[];
+    }
+    /**
+     * Categorization of the medication within a formulary or classification system
+     */
+    interface MedicationKnowledgeMedicineClassification extends BackboneElement {
+        /**
+         * The type of category for the medication (for example, therapeutic classification, therapeutic sub-classification)
+         */
+        type: CodeableConcept;
+        /**
+         * Specific category assigned to the medication
+         */
+        classification?: CodeableConcept[];
+    }
+    /**
+     * Details about packaged medications
+     */
+    interface MedicationKnowledgePackaging extends BackboneElement {
+        /**
+         * A code that defines the specific type of packaging that the medication can be found in
+         */
+        type?: CodeableConcept;
+        /**
+         * The number of product units the package would contain if fully loaded
+         */
+        quantity?: Quantity;
+    }
+    /**
+     * Specifies descriptive properties of the medicine
+     */
+    interface MedicationKnowledgeDrugCharacteristic extends BackboneElement {
+        /**
+         * Code specifying the type of characteristic of medication
+         */
+        type?: CodeableConcept;
+        /**
+         * Description of the characteristic
+         */
+        valueCodeableConcept?: CodeableConcept;
+        /**
+         * Description of the characteristic
+         */
+        valueString?: string;
+        /**
+         * Contains extended information for property 'valueString'.
+         */
+        _valueString?: Element;
+        /**
+         * Description of the characteristic
+         */
+        valueQuantity?: Quantity;
+        /**
+         * Description of the characteristic
+         */
+        valueBase64Binary?: base64Binary;
+        /**
+         * Contains extended information for property 'valueBase64Binary'.
+         */
+        _valueBase64Binary?: Element;
+    }
+    /**
+     * Regulatory information about a medication
+     */
+    interface MedicationKnowledgeRegulatory extends BackboneElement {
+        /**
+         * Specifies the authority of the regulation
+         */
+        regulatoryAuthority: Reference;
+        /**
+         * Specifies if changes are allowed when dispensing a medication from a regulatory perspective
+         */
+        substitution?: MedicationKnowledgeRegulatorySubstitution[];
+        /**
+         * Specifies the schedule of a medication in jurisdiction
+         */
+        schedule?: MedicationKnowledgeRegulatorySchedule[];
+        /**
+         * The maximum number of units of the medicaton that can be dispensed in a period
+         */
+        maxDispense?: MedicationKnowledgeRegulatoryMaxDispense;
+    }
+    /**
+     * Specifies if changes are allowed when dispensing a medication from a regulatory perspective
+     */
+    interface MedicationKnowledgeRegulatorySubstitution extends BackboneElement {
+        /**
+         * Specifies the type of substitution allowed
+         */
+        type: CodeableConcept;
+        /**
+         * Specifies if regulation allows for changes in the medication when dispensing
+         */
+        allowed: boolean;
+        /**
+         * Contains extended information for property 'allowed'.
+         */
+        _allowed?: Element;
+    }
+    /**
+     * Specifies the schedule of a medication in jurisdiction
+     */
+    interface MedicationKnowledgeRegulatorySchedule extends BackboneElement {
+        /**
+         * Specifies the specific drug schedule
+         */
+        schedule: CodeableConcept;
+    }
+    /**
+     * The maximum number of units of the medicaton that can be dispensed in a period
+     */
+    interface MedicationKnowledgeRegulatoryMaxDispense extends BackboneElement {
+        /**
+         * The maximum number of units of the medicaton that can be dispensed
+         */
+        quantity: Quantity;
+        /**
+         * The period that applies to the maximum number of units
+         */
+        period?: Duration;
+    }
+    /**
+     * The time course of drug absorption, distribution, metabolism and excretion of a medication from the body
+     */
+    interface MedicationKnowledgeKinetics extends BackboneElement {
+        /**
+         * The drug concentration measured at certain discrete points in time
+         */
+        areaUnderCurve?: Quantity[];
+        /**
+         * The median lethal dose of a drug
+         */
+        lethalDose50?: Quantity[];
+        /**
+         * Time required for concentration in the body to decrease by half
+         */
+        halfLifePeriod?: Duration;
+    }
+    /**
+     * Definition of Medication Knowledge
+     */
+    interface MedicationKnowledge extends DomainResource {
+        /**
+         * Code that identifies this medication
+         */
+        code?: CodeableConcept;
+        /**
+         * active | inactive | entered-in-error
+         */
+        status?: code;
+        /**
+         * Contains extended information for property 'status'.
+         */
+        _status?: Element;
+        /**
+         * Manufacturer of the item
+         */
+        manufacturer?: Reference;
+        /**
+         * powder | tablets | capsule +
+         */
+        doseForm?: CodeableConcept;
+        /**
+         * Amount of drug in package
+         */
+        amount?: Quantity;
+        /**
+         * Additional names for a medication
+         */
+        synonym?: string[];
+        /**
+         * Contains extended information for property 'synonym'.
+         */
+        _synonym?: Element[];
+        /**
+         * Associated or related medication information
+         */
+        relatedMedicationKnowledge?: MedicationKnowledgeRelatedMedicationKnowledge[];
+        /**
+         * A medication resource that is associated with this medication
+         */
+        associatedMedication?: Reference[];
+        /**
+         * Category of the medication or product
+         */
+        productType?: CodeableConcept[];
+        /**
+         * Associated documentation about the medication
+         */
+        monograph?: MedicationKnowledgeMonograph[];
+        /**
+         * Active or inactive ingredient
+         */
+        ingredient?: MedicationKnowledgeIngredient[];
+        /**
+         * The instructions for preparing the medication
+         */
+        preparationInstruction?: markdown;
+        /**
+         * Contains extended information for property 'preparationInstruction'.
+         */
+        _preparationInstruction?: Element;
+        /**
+         * The intended or approved route of administration
+         */
+        intendedRoute?: CodeableConcept[];
+        /**
+         * The pricing of the medication
+         */
+        cost?: MedicationKnowledgeCost[];
+        /**
+         * Program under which a medication is reviewed
+         */
+        monitoringProgram?: MedicationKnowledgeMonitoringProgram[];
+        /**
+         * Gudelines for administration of the medication
+         */
+        administrationGuidelines?: MedicationKnowledgeAdministrationGuidelines[];
+        /**
+         * Categorization of the medication within a formulary or classification system
+         */
+        medicineClassification?: MedicationKnowledgeMedicineClassification[];
+        /**
+         * Details about packaged medications
+         */
+        packaging?: MedicationKnowledgePackaging;
+        /**
+         * Specifies descriptive properties of the medicine
+         */
+        drugCharacteristic?: MedicationKnowledgeDrugCharacteristic[];
+        /**
+         * Potential clinical issue with or between medication(s)
+         */
+        contraindication?: Reference[];
+        /**
+         * Regulatory information about a medication
+         */
+        regulatory?: MedicationKnowledgeRegulatory[];
+        /**
+         * The time course of drug absorption, distribution, metabolism and excretion of a medication from the body
+         */
+        kinetics?: MedicationKnowledgeKinetics[];
     }
     /**
      * Medication supply authorization
      */
     interface MedicationRequestDispenseRequest extends BackboneElement {
+        /**
+         * First fill details
+         */
+        initialFill?: MedicationRequestDispenseRequestInitialFill;
+        /**
+         * Minimum period of time between dispenses
+         */
+        dispenseInterval?: Duration;
         /**
          * Time period supply is authorized for
          */
@@ -15701,7 +17656,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Number of refills authorized
          */
-        numberOfRepeatsAllowed?: positiveInt;
+        numberOfRepeatsAllowed?: unsignedInt;
         /**
          * Contains extended information for property 'numberOfRepeatsAllowed'.
          */
@@ -15718,6 +17673,19 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Intended dispenser
          */
         performer?: Reference;
+    }
+    /**
+     * First fill details
+     */
+    interface MedicationRequestDispenseRequestInitialFill extends BackboneElement {
+        /**
+         * First fill quantity
+         */
+        quantity?: Quantity;
+        /**
+         * First fill duration
+         */
+        duration?: Duration;
     }
     /**
      * Any restrictions on medication substitution
@@ -15745,27 +17713,15 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         identifier?: Identifier[];
         /**
-         * Protocol or definition
-         */
-        definition?: Reference[];
-        /**
-         * What request fulfills
-         */
-        basedOn?: Reference[];
-        /**
-         * Composite request this is part of
-         */
-        groupIdentifier?: Identifier;
-        /**
          * active | on-hold | cancelled | completed | entered-in-error | stopped | draft | unknown
          */
-        status?: code;
+        status: code;
         /**
          * Contains extended information for property 'status'.
          */
         _status?: Element;
         /**
-         * proposal | plan | order | instance-order
+         * proposal | plan | order | original-order | instance-order | option
          */
         intent: code;
         /**
@@ -15775,15 +17731,23 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Type of medication usage
          */
-        category?: CodeableConcept;
+        category?: CodeableConcept[];
         /**
-         * routine | urgent | stat | asap
+         * routine | urgent | asap | stat
          */
         priority?: code;
         /**
          * Contains extended information for property 'priority'.
          */
         _priority?: Element;
+        /**
+         * True if request is prohibiting action
+         */
+        doNotPerform?: boolean;
+        /**
+         * Contains extended information for property 'doNotPerform'.
+         */
+        _doNotPerform?: Element;
         /**
          * Medication to be taken
          */
@@ -15815,19 +17779,55 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Who/What requested the Request
          */
-        requester?: MedicationRequestRequester;
+        requester?: Reference;
+        /**
+         * Intended performer of administration
+         */
+        performer?: Reference;
+        /**
+         * Desired kind of performer of the medication administration
+         */
+        performerType?: CodeableConcept;
         /**
          * Person who entered the request
          */
         recorder?: Reference;
         /**
-         * Reason or indication for writing the prescription
+         * Reason or indication for ordering or not ordering the medication
          */
         reasonCode?: CodeableConcept[];
         /**
-         * Condition or Observation that supports why the prescription is being written
+         * Condition or observation that supports why the prescription is being written
          */
         reasonReference?: Reference[];
+        /**
+         * Instantiates protocol or definition
+         */
+        instantiates?: uri[];
+        /**
+         * Contains extended information for property 'instantiates'.
+         */
+        _instantiates?: Element[];
+        /**
+         * What request fulfills
+         */
+        basedOn?: Reference[];
+        /**
+         * Composite request this is part of
+         */
+        groupIdentifier?: Identifier;
+        /**
+         * Reason for current status
+         */
+        statusReason?: CodeableConcept;
+        /**
+         * Overall pattern of medication administration
+         */
+        courseOfTherapyType?: CodeableConcept;
+        /**
+         * Associated insurance coverage
+         */
+        insurance?: Reference[];
         /**
          * Information about the prescription
          */
@@ -15874,17 +17874,17 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         partOf?: Reference[];
         /**
-         * Encounter / Episode associated with MedicationStatement
-         */
-        context?: Reference;
-        /**
-         * active | completed | entered-in-error | intended | stopped | on-hold
+         * active | completed | entered-in-error | intended | stopped | on-hold | unknown | not-taken
          */
         status: code;
         /**
          * Contains extended information for property 'status'.
          */
         _status?: Element;
+        /**
+         * Reason for current status
+         */
+        statusReason?: CodeableConcept[];
         /**
          * Type of medication usage
          */
@@ -15898,7 +17898,15 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         medicationReference?: Reference;
         /**
-         * The date/time or interval when the medication was taken
+         * Who is/was taking  the medication
+         */
+        subject: Reference;
+        /**
+         * Encounter / Episode associated with MedicationStatement
+         */
+        context?: Reference;
+        /**
+         * The date/time or interval when the medication is/was/will taken
          */
         effectiveDateTime?: dateTime;
         /**
@@ -15906,7 +17914,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _effectiveDateTime?: Element;
         /**
-         * The date/time or interval when the medication was taken
+         * The date/time or interval when the medication is/was/will taken
          */
         effectivePeriod?: Period;
         /**
@@ -15922,25 +17930,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         informationSource?: Reference;
         /**
-         * Who is/was taking  the medication
-         */
-        subject: Reference;
-        /**
          * Additional supporting information
          */
         derivedFrom?: Reference[];
-        /**
-         * y | n | unk | na
-         */
-        taken: code;
-        /**
-         * Contains extended information for property 'taken'.
-         */
-        _taken?: Element;
-        /**
-         * True if asserting medication was not given
-         */
-        reasonNotTaken?: CodeableConcept[];
         /**
          * Reason for why the medication is being/was taken
          */
@@ -15959,6 +17951,1316 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         dosage?: Dosage[];
     }
     /**
+     * The marketing status describes the date when a medicinal product is actually put on the market or the date as of which it is no longer available
+     */
+    interface MarketingStatus extends BackboneElement {
+        /**
+         * The country in which the marketing authorisation has been granted shall be specified It should be specified using the ISO 3166 ‑ 1 alpha-2 code elements
+         */
+        country: CodeableConcept;
+        /**
+         * Where a Medicines Regulatory Agency has granted a marketing authorisation for which specific provisions within a jurisdiction apply, the jurisdiction can be specified using an appropriate controlled terminology The controlled term and the controlled term identifier shall be specified
+         */
+        jurisdiction?: CodeableConcept;
+        /**
+         * This attribute provides information on the status of the marketing of the medicinal product See ISO/TS 20443 for more information and examples
+         */
+        status: CodeableConcept;
+        /**
+         * The date when the Medicinal Product is placed on the market by the Marketing Authorisation Holder (or where applicable, the manufacturer/distributor) in a country and/or jurisdiction shall be provided A complete date consisting of day, month and year shall be specified using the ISO 8601 date format NOTE “Placed on the market” refers to the release of the Medicinal Product into the distribution chain
+         */
+        dateRange: Period;
+        /**
+         * The date when the Medicinal Product is placed on the market by the Marketing Authorisation Holder (or where applicable, the manufacturer/distributor) in a country and/or jurisdiction shall be provided A complete date consisting of day, month and year shall be specified using the ISO 8601 date format NOTE “Placed on the market” refers to the release of the Medicinal Product into the distribution chain
+         */
+        restoreDate?: dateTime;
+        /**
+         * Contains extended information for property 'restoreDate'.
+         */
+        _restoreDate?: Element;
+    }
+    /**
+     * The product's name, including full name and possibly coded parts
+     */
+    interface MedicinalProductName extends BackboneElement {
+        /**
+         * The full product name
+         */
+        productName: string;
+        /**
+         * Contains extended information for property 'productName'.
+         */
+        _productName?: Element;
+        /**
+         * Coding words or phrases of the name
+         */
+        namePart?: MedicinalProductNameNamePart[];
+        /**
+         * Country where the name applies
+         */
+        countryLanguage?: MedicinalProductNameCountryLanguage[];
+    }
+    /**
+     * Coding words or phrases of the name
+     */
+    interface MedicinalProductNameNamePart extends BackboneElement {
+        /**
+         * A fragment of a product name
+         */
+        part: string;
+        /**
+         * Contains extended information for property 'part'.
+         */
+        _part?: Element;
+        /**
+         * Idenifying type for this part of the name (e.g. strength part)
+         */
+        type: Coding;
+    }
+    /**
+     * Country where the name applies
+     */
+    interface MedicinalProductNameCountryLanguage extends BackboneElement {
+        /**
+         * Country code for where this name applies
+         */
+        country: CodeableConcept;
+        /**
+         * Jurisdiction code for where this name applies
+         */
+        jurisdiction?: CodeableConcept;
+        /**
+         * Language code for this name
+         */
+        language: CodeableConcept;
+    }
+    /**
+     * An operation applied to the product, for manufacturing or adminsitrative purpose
+     */
+    interface MedicinalProductManufacturingBusinessOperation extends BackboneElement {
+        /**
+         * The type of manufacturing operation
+         */
+        operationType?: CodeableConcept;
+        /**
+         * Regulatory authorization reference number
+         */
+        authorisationReferenceNumber?: Identifier;
+        /**
+         * Regulatory authorization date
+         */
+        effectiveDate?: dateTime;
+        /**
+         * Contains extended information for property 'effectiveDate'.
+         */
+        _effectiveDate?: Element;
+        /**
+         * To indicate if this proces is commercially confidential
+         */
+        confidentialityIndicator?: CodeableConcept;
+        /**
+         * The manufacturer or establishment associated with the process
+         */
+        manufacturer?: Reference[];
+        /**
+         * A regulator which oversees the operation
+         */
+        regulator?: Reference;
+    }
+    /**
+     * Indicates if the medicinal product has an orphan designation for the treatment of a rare disease
+     */
+    interface MedicinalProductSpecialDesignation extends BackboneElement {
+        /**
+         * Identifier for the designation, or procedure number
+         */
+        identifier?: Identifier[];
+        /**
+         * The intended use of the product, e.g. prevention, treatment
+         */
+        intendedUse?: CodeableConcept;
+        /**
+         * Condition for which the medicinal use applies
+         */
+        indication?: CodeableConcept;
+        /**
+         * For example granted, pending, expired or withdrawn
+         */
+        status?: CodeableConcept;
+        /**
+         * Date when the designation was granted
+         */
+        date?: dateTime;
+        /**
+         * Contains extended information for property 'date'.
+         */
+        _date?: Element;
+        /**
+         * Animal species for which this applies
+         */
+        species?: CodeableConcept;
+    }
+    /**
+     * Detailed definition of a medicinal product, typically for uses other than direct patient care (e.g. regulatory use)
+     */
+    interface MedicinalProduct extends DomainResource {
+        /**
+         * Business idenfifier for this product. Could be an MPID
+         */
+        identifier?: Identifier[];
+        /**
+         * Regulatory type, e.g. Investigational or Authorized
+         */
+        type?: CodeableConcept;
+        /**
+         * If this medicine applies to human or veterinary uses
+         */
+        domain?: Coding;
+        /**
+         * The dose form for a single part product, or combined form of a multiple part product
+         */
+        combinedPharmaceuticalDoseForm?: CodeableConcept;
+        /**
+         * Whether the Medicinal Product is subject to additional monitoring for regulatory reasons
+         */
+        additionalMonitoringIndicator?: CodeableConcept;
+        /**
+         * Whether the Medicinal Product is subject to special measures for regulatory reasons
+         */
+        specialMeasures?: string[];
+        /**
+         * Contains extended information for property 'specialMeasures'.
+         */
+        _specialMeasures?: Element[];
+        /**
+         * If authorised for use in children
+         */
+        paediatricUseIndicator?: CodeableConcept;
+        /**
+         * Allows the product to be classified by various systems
+         */
+        productClassification?: CodeableConcept[];
+        /**
+         * Marketing status of the medicinal product, in contrast to marketing authorizaton
+         */
+        marketingStatus?: MarketingStatus[];
+        /**
+         * Product regulatory authorization
+         */
+        marketingAuthorization?: Reference;
+        /**
+         * Package representation for the product
+         */
+        packagedMedicinalProduct?: Reference[];
+        /**
+         * Pharmaceutical aspects of product
+         */
+        pharmaceuticalProduct?: Reference[];
+        /**
+         * Clinical contraindications, reasons for not giving this
+         */
+        contraindication?: Reference[];
+        /**
+         * Clinical interactions with other medications or substances
+         */
+        interaction?: Reference[];
+        /**
+         * Clinical reason for use
+         */
+        therapeuticIndication?: Reference[];
+        /**
+         * Potential clinical unwanted effects of use
+         */
+        undesirableEffect?: Reference[];
+        /**
+         * Supporting documentation, typically for regulatory submission
+         */
+        attachedDocument?: Reference[];
+        /**
+         * A master file for to the medicinal product (e.g. Pharmacovigilance System Master File)
+         */
+        masterFile?: Reference[];
+        /**
+         * A product specific contact, person (in a role), or an organization
+         */
+        contact?: Reference[];
+        /**
+         * Clinical trials or studies that this product is involved in
+         */
+        clinicalTrial?: Reference[];
+        /**
+         * The product's name, including full name and possibly coded parts
+         */
+        name: MedicinalProductName[];
+        /**
+         * Reference to another product, e.g. for linking authorised to investigational product
+         */
+        crossReference?: Identifier[];
+        /**
+         * An operation applied to the product, for manufacturing or adminsitrative purpose
+         */
+        manufacturingBusinessOperation?: MedicinalProductManufacturingBusinessOperation[];
+        /**
+         * Indicates if the medicinal product has an orphan designation for the treatment of a rare disease
+         */
+        specialDesignation?: MedicinalProductSpecialDesignation[];
+    }
+    /**
+     * Authorization in areas within a country
+     */
+    interface MedicinalProductAuthorizationJurisdictionalAuthorization extends BackboneElement {
+        /**
+         * The assigned number for the marketing authorization
+         */
+        identifier?: Identifier[];
+        /**
+         * Country of authorization
+         */
+        country?: CodeableConcept;
+        /**
+         * Jurisdiction within a country
+         */
+        jurisdiction?: CodeableConcept[];
+        /**
+         * The legal status of supply in a jurisdiction or region
+         */
+        legalStatusOfSupply?: CodeableConcept;
+        /**
+         * The start and expected end date of the authorization
+         */
+        validityPeriod?: Period;
+    }
+    /**
+     * The regulatory procedure for granting or amending a marketing authorization
+     */
+    interface MedicinalProductAuthorizationProcedure extends BackboneElement {
+        /**
+         * Identifier for this procedure
+         */
+        identifier?: Identifier;
+        /**
+         * Type of procedure
+         */
+        type: CodeableConcept;
+        /**
+         * Date of procedure
+         */
+        datePeriod?: Period;
+        /**
+         * Date of procedure
+         */
+        dateDateTime?: dateTime;
+        /**
+         * Contains extended information for property 'dateDateTime'.
+         */
+        _dateDateTime?: Element;
+        /**
+         * Applcations submitted to obtain a marketing authorization
+         */
+        application?: MedicinalProductAuthorizationProcedure[];
+    }
+    /**
+     * The regulatory authorization of a medicinal product
+     */
+    interface MedicinalProductAuthorization extends DomainResource {
+        /**
+         * Business identifier for the marketing authorization, as assigned by a regulator
+         */
+        identifier?: Identifier[];
+        /**
+         * The medicinal product that is being authorized
+         */
+        subject?: Reference;
+        /**
+         * The country in which the marketing authorization has been granted
+         */
+        country?: CodeableConcept[];
+        /**
+         * Jurisdiction within a country
+         */
+        jurisdiction?: CodeableConcept[];
+        /**
+         * The legal status of supply of the medicinal product as classified by the regulator
+         */
+        legalStatusOfSupply?: CodeableConcept;
+        /**
+         * The status of the marketing authorization
+         */
+        status?: CodeableConcept;
+        /**
+         * The date at which the given status has become applicable
+         */
+        statusDate?: dateTime;
+        /**
+         * Contains extended information for property 'statusDate'.
+         */
+        _statusDate?: Element;
+        /**
+         * The date when a suspended the marketing or the marketing authorization of the product is anticipated to be restored
+         */
+        restoreDate?: dateTime;
+        /**
+         * Contains extended information for property 'restoreDate'.
+         */
+        _restoreDate?: Element;
+        /**
+         * The beginning of the time period in which the marketing authorization is in the specific status shall be specified A complete date consisting of day, month and year shall be specified using the ISO 8601 date format
+         */
+        validityPeriod?: Period;
+        /**
+         * A period of time after authorization before generic product applicatiosn can be submitted
+         */
+        dataExclusivityPeriod?: Period;
+        /**
+         * The date when the first authorization was granted by a Medicines Regulatory Agency
+         */
+        dateOfFirstAuthorization?: dateTime;
+        /**
+         * Contains extended information for property 'dateOfFirstAuthorization'.
+         */
+        _dateOfFirstAuthorization?: Element;
+        /**
+         * Date of first marketing authorization for a company's new medicinal product in any country in the World
+         */
+        internationalBirthDate?: dateTime;
+        /**
+         * Contains extended information for property 'internationalBirthDate'.
+         */
+        _internationalBirthDate?: Element;
+        /**
+         * The legal framework against which this authorization is granted
+         */
+        legalBasis?: CodeableConcept;
+        /**
+         * Authorization in areas within a country
+         */
+        jurisdictionalAuthorization?: MedicinalProductAuthorizationJurisdictionalAuthorization[];
+        /**
+         * Marketing Authorization Holder
+         */
+        holder?: Reference;
+        /**
+         * Medicines Regulatory Agency
+         */
+        regulator?: Reference;
+        /**
+         * The regulatory procedure for granting or amending a marketing authorization
+         */
+        procedure?: MedicinalProductAuthorizationProcedure;
+    }
+    /**
+     * Describe the undesirable effects of the medicinal product
+     */
+    interface MedicinalProductClinicalsUndesirableEffects extends BackboneElement {
+        /**
+         * The symptom, condition or undesirable effect
+         */
+        symptomConditionEffect?: CodeableConcept;
+        /**
+         * Classification of the effect
+         */
+        classification?: CodeableConcept;
+        /**
+         * The frequency of occurrence of the effect
+         */
+        frequencyOfOccurrence?: CodeableConcept;
+        /**
+         * The population group to which this applies
+         */
+        population?: MedicinalProductClinicalsUndesirableEffectsPopulation[];
+    }
+    /**
+     * The population group to which this applies
+     */
+    interface MedicinalProductClinicalsUndesirableEffectsPopulation extends BackboneElement {
+        /**
+         * The age of the specific population
+         */
+        ageRange?: Range;
+        /**
+         * The age of the specific population
+         */
+        ageCodeableConcept?: CodeableConcept;
+        /**
+         * The gender of the specific population
+         */
+        gender?: CodeableConcept;
+        /**
+         * Race of the specific population
+         */
+        race?: CodeableConcept;
+        /**
+         * The existing physiological conditions of the specific population to which this applies
+         */
+        physiologicalCondition?: CodeableConcept;
+    }
+    /**
+     * Indication for the Medicinal Product
+     */
+    interface MedicinalProductClinicalsTherapeuticIndication extends BackboneElement {
+        /**
+         * The disease, symptom or procedure that is the indication for treatment
+         */
+        diseaseSymptomProcedure?: CodeableConcept;
+        /**
+         * The status of the disease or symptom for which the indication applies
+         */
+        diseaseStatus?: CodeableConcept;
+        /**
+         * Comorbidity (concurrent condition) or co-infection as part of the indication
+         */
+        comorbidity?: CodeableConcept[];
+        /**
+         * The intended effect, aim or strategy to be achieved by the indication
+         */
+        intendedEffect?: CodeableConcept;
+        /**
+         * Timing or duration information as part of the indication
+         */
+        duration?: Quantity;
+        /**
+         * Information about the use of the medicinal product in relation to other therapies as part of the indication
+         */
+        undesirableEffects?: MedicinalProductClinicalsUndesirableEffects[];
+        /**
+         * Information about the use of the medicinal product in relation to other therapies described as part of the indication
+         */
+        otherTherapy?: MedicinalProductClinicalsTherapeuticIndicationOtherTherapy[];
+        /**
+         * The population group to which this applies
+         */
+        population?: MedicinalProductClinicalsUndesirableEffectsPopulation[];
+    }
+    /**
+     * Information about the use of the medicinal product in relation to other therapies described as part of the indication
+     */
+    interface MedicinalProductClinicalsTherapeuticIndicationOtherTherapy extends BackboneElement {
+        /**
+         * The type of relationship between the medicinal product indication or contraindication and another therapy
+         */
+        therapyRelationshipType: CodeableConcept;
+        /**
+         * Reference to a specific medication (active substance, medicinal product or class of products) as part of an indication or contraindication
+         */
+        medicationCodeableConcept?: CodeableConcept;
+        /**
+         * Reference to a specific medication (active substance, medicinal product or class of products) as part of an indication or contraindication
+         */
+        medicationReference?: Reference;
+    }
+    /**
+     * Contraindication for the medicinal product
+     */
+    interface MedicinalProductClinicalsContraindication extends BackboneElement {
+        /**
+         * The disease, symptom or procedure for the contraindication
+         */
+        disease?: CodeableConcept;
+        /**
+         * The status of the disease or symptom for the contraindication
+         */
+        diseaseStatus?: CodeableConcept;
+        /**
+         * A comorbidity (concurrent condition) or coinfection
+         */
+        comorbidity?: CodeableConcept[];
+        /**
+         * Information about the use of the medicinal product in relation to other therapies as part of the indication
+         */
+        therapeuticIndication?: MedicinalProductClinicalsTherapeuticIndication[];
+        /**
+         * Information about the use of the medicinal product in relation to other therapies described as part of the contraindication
+         */
+        otherTherapy?: MedicinalProductClinicalsTherapeuticIndicationOtherTherapy[];
+        /**
+         * The population group to which this applies
+         */
+        population?: MedicinalProductClinicalsUndesirableEffectsPopulation[];
+    }
+    /**
+     * The interactions of the medicinal product with other medicinal products, or other forms of interactions
+     */
+    interface MedicinalProductClinicalsInteractions extends BackboneElement {
+        /**
+         * The interaction described
+         */
+        interaction?: string;
+        /**
+         * Contains extended information for property 'interaction'.
+         */
+        _interaction?: Element;
+        /**
+         * The specific medication, food or laboratory test that interacts
+         */
+        interactant?: CodeableConcept[];
+        /**
+         * The type of the interaction
+         */
+        type?: CodeableConcept;
+        /**
+         * The effect of the interaction
+         */
+        effect?: CodeableConcept;
+        /**
+         * The incidence of the interaction
+         */
+        incidence?: CodeableConcept;
+        /**
+         * Actions for managing the interaction
+         */
+        management?: CodeableConcept;
+    }
+    /**
+     * MedicinalProductClinicals
+     */
+    interface MedicinalProductClinicals extends DomainResource {
+        /**
+         * Describe the undesirable effects of the medicinal product
+         */
+        undesirableEffects?: MedicinalProductClinicalsUndesirableEffects[];
+        /**
+         * Indication for the Medicinal Product
+         */
+        therapeuticIndication: MedicinalProductClinicalsTherapeuticIndication[];
+        /**
+         * Contraindication for the medicinal product
+         */
+        contraindication?: MedicinalProductClinicalsContraindication[];
+        /**
+         * The interactions of the medicinal product with other medicinal products, or other forms of interactions
+         */
+        interactions?: MedicinalProductClinicalsInteractions[];
+    }
+    /**
+     * Information about the use of the medicinal product in relation to other therapies described as part of the indication
+     */
+    interface MedicinalProductContraindicationOtherTherapy extends BackboneElement {
+        /**
+         * The type of relationship between the medicinal product indication or contraindication and another therapy
+         */
+        therapyRelationshipType: CodeableConcept;
+        /**
+         * Reference to a specific medication (active substance, medicinal product or class of products) as part of an indication or contraindication
+         */
+        medicationCodeableConcept?: CodeableConcept;
+        /**
+         * Reference to a specific medication (active substance, medicinal product or class of products) as part of an indication or contraindication
+         */
+        medicationReference?: Reference;
+    }
+    /**
+     * The population group to which this applies
+     */
+    interface MedicinalProductContraindicationPopulation extends BackboneElement {
+        /**
+         * The age of the specific population
+         */
+        ageRange?: Range;
+        /**
+         * The age of the specific population
+         */
+        ageCodeableConcept?: CodeableConcept;
+        /**
+         * The gender of the specific population
+         */
+        gender?: CodeableConcept;
+        /**
+         * Race of the specific population
+         */
+        race?: CodeableConcept;
+        /**
+         * The existing physiological conditions of the specific population to which this applies
+         */
+        physiologicalCondition?: CodeableConcept;
+    }
+    /**
+     * MedicinalProductContraindication
+     */
+    interface MedicinalProductContraindication extends DomainResource {
+        /**
+         * The medication for which this is an indication
+         */
+        subject?: Reference[];
+        /**
+         * The disease, symptom or procedure for the contraindication
+         */
+        disease?: CodeableConcept;
+        /**
+         * The status of the disease or symptom for the contraindication
+         */
+        diseaseStatus?: CodeableConcept;
+        /**
+         * A comorbidity (concurrent condition) or coinfection
+         */
+        comorbidity?: CodeableConcept[];
+        /**
+         * Information about the use of the medicinal product in relation to other therapies as part of the indication
+         */
+        therapeuticIndication?: Reference[];
+        /**
+         * Information about the use of the medicinal product in relation to other therapies described as part of the indication
+         */
+        otherTherapy?: MedicinalProductContraindicationOtherTherapy[];
+        /**
+         * The population group to which this applies
+         */
+        population?: MedicinalProductContraindicationPopulation[];
+    }
+    /**
+     * A substance used to create the material(s) of which the device is made
+     */
+    interface MedicinalProductDeviceSpecMaterial extends BackboneElement {
+        /**
+         * The substance
+         */
+        substance: CodeableConcept;
+        /**
+         * Indicates an alternative material of the device
+         */
+        alternate?: boolean;
+        /**
+         * Contains extended information for property 'alternate'.
+         */
+        _alternate?: Element;
+        /**
+         * Whether the substance is a known or suspected allergen
+         */
+        allergenicIndicator?: boolean;
+        /**
+         * Contains extended information for property 'allergenicIndicator'.
+         */
+        _allergenicIndicator?: Element;
+    }
+    /**
+     * A detailed description of a device, typically as part of a regulated medicinal product. It is not intended to replace the Device resource, which covers use of device instances
+     */
+    interface MedicinalProductDeviceSpec extends DomainResource {
+        /**
+         * Business identifier
+         */
+        identifier?: Identifier;
+        /**
+         * The type of device
+         */
+        type: CodeableConcept;
+        /**
+         * Trade name of the device, where applicable
+         */
+        tradeName?: string;
+        /**
+         * Contains extended information for property 'tradeName'.
+         */
+        _tradeName?: Element;
+        /**
+         * The quantity of the device present in the packaging of a medicinal product
+         */
+        quantity?: Quantity;
+        /**
+         * Device listing number
+         */
+        listingNumber?: string;
+        /**
+         * Contains extended information for property 'listingNumber'.
+         */
+        _listingNumber?: Element;
+        /**
+         * Device model or reference number
+         */
+        modelNumber?: string;
+        /**
+         * Contains extended information for property 'modelNumber'.
+         */
+        _modelNumber?: Element;
+        /**
+         * Whether the device is supplied as sterile
+         */
+        sterilityIndicator?: CodeableConcept;
+        /**
+         * Whether the device must be sterilised before use
+         */
+        sterilisationRequirement?: CodeableConcept;
+        /**
+         * Usage pattern including the number of times that the device may be used
+         */
+        usage?: CodeableConcept;
+        /**
+         * A nomenclature term for the device
+         */
+        nomenclature?: CodeableConcept[];
+        /**
+         * Shelf Life and storage information
+         */
+        shelfLifeStorage?: ProductShelfLife[];
+        /**
+         * Dimensions, color etc.
+         */
+        physicalCharacteristics?: ProdCharacteristic;
+        /**
+         * Other codeable characteristics
+         */
+        otherCharacteristics?: CodeableConcept[];
+        /**
+         * Batch number or expiry date of a device
+         */
+        batchIdentifier?: Identifier[];
+        /**
+         * Manufacturer of this Device
+         */
+        manufacturer?: Reference[];
+        /**
+         * A substance used to create the material(s) of which the device is made
+         */
+        material?: MedicinalProductDeviceSpecMaterial[];
+    }
+    /**
+     * Information about the use of the medicinal product in relation to other therapies described as part of the indication
+     */
+    interface MedicinalProductIndicationOtherTherapy extends BackboneElement {
+        /**
+         * The type of relationship between the medicinal product indication or contraindication and another therapy
+         */
+        therapyRelationshipType: CodeableConcept;
+        /**
+         * Reference to a specific medication (active substance, medicinal product or class of products) as part of an indication or contraindication
+         */
+        medicationCodeableConcept?: CodeableConcept;
+        /**
+         * Reference to a specific medication (active substance, medicinal product or class of products) as part of an indication or contraindication
+         */
+        medicationReference?: Reference;
+    }
+    /**
+     * The population group to which this applies
+     */
+    interface MedicinalProductIndicationPopulation extends BackboneElement {
+        /**
+         * The age of the specific population
+         */
+        ageRange?: Range;
+        /**
+         * The age of the specific population
+         */
+        ageCodeableConcept?: CodeableConcept;
+        /**
+         * The gender of the specific population
+         */
+        gender?: CodeableConcept;
+        /**
+         * Race of the specific population
+         */
+        race?: CodeableConcept;
+        /**
+         * The existing physiological conditions of the specific population to which this applies
+         */
+        physiologicalCondition?: CodeableConcept;
+    }
+    /**
+     * MedicinalProductIndication
+     */
+    interface MedicinalProductIndication extends DomainResource {
+        /**
+         * The medication for which this is an indication
+         */
+        subject?: Reference[];
+        /**
+         * The disease, symptom or procedure that is the indication for treatment
+         */
+        diseaseSymptomProcedure?: CodeableConcept;
+        /**
+         * The status of the disease or symptom for which the indication applies
+         */
+        diseaseStatus?: CodeableConcept;
+        /**
+         * Comorbidity (concurrent condition) or co-infection as part of the indication
+         */
+        comorbidity?: CodeableConcept[];
+        /**
+         * The intended effect, aim or strategy to be achieved by the indication
+         */
+        intendedEffect?: CodeableConcept;
+        /**
+         * Timing or duration information as part of the indication
+         */
+        duration?: Quantity;
+        /**
+         * Information about the use of the medicinal product in relation to other therapies described as part of the indication
+         */
+        otherTherapy?: MedicinalProductIndicationOtherTherapy[];
+        /**
+         * Describe the undesirable effects of the medicinal product
+         */
+        undesirableEffect?: Reference[];
+        /**
+         * The population group to which this applies
+         */
+        population?: MedicinalProductIndicationPopulation[];
+    }
+    /**
+     * A specified substance that comprises this ingredient
+     */
+    interface MedicinalProductIngredientSpecifiedSubstance extends BackboneElement {
+        /**
+         * The specified substance
+         */
+        code: CodeableConcept;
+        /**
+         * The group of specified substance, e.g. group 1 to 4
+         */
+        group: CodeableConcept;
+        /**
+         * Confidentiality level of the specified substance as the ingredient
+         */
+        confidentiality?: CodeableConcept;
+        /**
+         * Quantity of the substance or specified substance present in the manufactured item or pharmaceutical product
+         */
+        strength?: MedicinalProductIngredientSpecifiedSubstanceStrength[];
+    }
+    /**
+     * Quantity of the substance or specified substance present in the manufactured item or pharmaceutical product
+     */
+    interface MedicinalProductIngredientSpecifiedSubstanceStrength extends BackboneElement {
+        /**
+         * The quantity of substance in the unit of presentation, or in the volume (or mass) of the single pharmaceutical product or manufactured item
+         */
+        presentation: Ratio;
+        /**
+         * A lower limit for the quantity of substance in the unit of presentation. For use when there is a range of strengths, this is the lower limit, with the presentation attribute becoming the upper limit
+         */
+        presentationLowLimit?: Ratio;
+        /**
+         * The strength per unitary volume (or mass)
+         */
+        concentration?: Ratio;
+        /**
+         * A lower limit for the strength per unitary volume (or mass), for when there is a range. The concentration attribute then becomes the upper limit
+         */
+        concentrationLowLimit?: Ratio;
+        /**
+         * For when strength is measured at a particular point or distance
+         */
+        measurementPoint?: string;
+        /**
+         * Contains extended information for property 'measurementPoint'.
+         */
+        _measurementPoint?: Element;
+        /**
+         * The country or countries for which the strength range applies
+         */
+        country?: CodeableConcept[];
+        /**
+         * Strength expressed in terms of a reference substance
+         */
+        referenceStrength?: MedicinalProductIngredientSpecifiedSubstanceStrengthReferenceStrength[];
+    }
+    /**
+     * Strength expressed in terms of a reference substance
+     */
+    interface MedicinalProductIngredientSpecifiedSubstanceStrengthReferenceStrength extends BackboneElement {
+        /**
+         * Relevent refrerence substance
+         */
+        substance?: CodeableConcept;
+        /**
+         * Strength expressed in terms of a reference substance
+         */
+        strength: Ratio;
+        /**
+         * For when strength is measured at a particular point or distance
+         */
+        measurementPoint?: string;
+        /**
+         * Contains extended information for property 'measurementPoint'.
+         */
+        _measurementPoint?: Element;
+        /**
+         * The country or countries for which the strength range applies
+         */
+        country?: CodeableConcept[];
+    }
+    /**
+     * The ingredient substance
+     */
+    interface MedicinalProductIngredientSubstance extends BackboneElement {
+        /**
+         * The ingredient substance
+         */
+        code: CodeableConcept;
+        /**
+         * Quantity of the substance or specified substance present in the manufactured item or pharmaceutical product
+         */
+        strength?: MedicinalProductIngredientSpecifiedSubstanceStrength[];
+    }
+    /**
+     * An ingredient of a manufactured item or pharmaceutical product
+     */
+    interface MedicinalProductIngredient extends DomainResource {
+        /**
+         * Identifier for the ingredient
+         */
+        identifier?: Identifier;
+        /**
+         * Ingredient role e.g. Active ingredient, excipient
+         */
+        role: CodeableConcept;
+        /**
+         * If the ingredient is a known or suspected allergen
+         */
+        allergenicIndicator?: boolean;
+        /**
+         * Contains extended information for property 'allergenicIndicator'.
+         */
+        _allergenicIndicator?: Element;
+        /**
+         * Manufacturer of this Ingredient
+         */
+        manufacturer?: Reference[];
+        /**
+         * A specified substance that comprises this ingredient
+         */
+        specifiedSubstance?: MedicinalProductIngredientSpecifiedSubstance[];
+        /**
+         * The ingredient substance
+         */
+        substance?: MedicinalProductIngredientSubstance;
+    }
+    /**
+     * MedicinalProductInteraction
+     */
+    interface MedicinalProductInteraction extends DomainResource {
+        /**
+         * The medication for which this is an indication
+         */
+        subject?: Reference[];
+        /**
+         * The interaction described
+         */
+        interaction?: string;
+        /**
+         * Contains extended information for property 'interaction'.
+         */
+        _interaction?: Element;
+        /**
+         * The specific medication, food or laboratory test that interacts
+         */
+        interactant?: CodeableConcept[];
+        /**
+         * The type of the interaction
+         */
+        type?: CodeableConcept;
+        /**
+         * The effect of the interaction
+         */
+        effect?: CodeableConcept;
+        /**
+         * The incidence of the interaction
+         */
+        incidence?: CodeableConcept;
+        /**
+         * Actions for managing the interaction
+         */
+        management?: CodeableConcept;
+    }
+    /**
+     * The manufactured item as contained in the packaged medicinal product
+     */
+    interface MedicinalProductManufactured extends DomainResource {
+        /**
+         * Dose form as manufactured and before any transformation into the pharmaceutical product
+         */
+        manufacturedDoseForm: CodeableConcept;
+        /**
+         * The “real world” units in which the quantity of the manufactured item is described
+         */
+        unitOfPresentation?: CodeableConcept;
+        /**
+         * The quantity or "count number" of the manufactured item
+         */
+        quantity: Quantity;
+        /**
+         * Manufacturer of the item (Note that this should be named "manufacturer" but it currently causes technical issues)
+         */
+        manufacturer?: Reference[];
+        /**
+         * Ingredient
+         */
+        ingredient?: Reference[];
+        /**
+         * Dimensions, color etc.
+         */
+        physicalCharacteristics?: ProdCharacteristic;
+        /**
+         * Other codeable characteristics
+         */
+        otherCharacteristics?: CodeableConcept[];
+    }
+    /**
+     * Batch numbering
+     */
+    interface MedicinalProductPackagedBatchIdentifier extends BackboneElement {
+        /**
+         * A number appearing on the outer packaging of a specific batch
+         */
+        outerPackaging: Identifier;
+        /**
+         * A number appearing on the immediate packaging (and not the outer packaging)
+         */
+        immediatePackaging?: Identifier;
+    }
+    /**
+     * A packaging item, as a contained for medicine, possibly with other packaging items within
+     */
+    interface MedicinalProductPackagedPackageItem extends BackboneElement {
+        /**
+         * Including possibly Data Carrier Identifier
+         */
+        identifier?: Identifier[];
+        /**
+         * The physical type of the container of the medicine
+         */
+        type: CodeableConcept;
+        /**
+         * The quantity of this package in the medicinal product, at the current level of packaging. The outermost is always 1
+         */
+        quantity: Quantity;
+        /**
+         * Material type of the package item
+         */
+        material?: CodeableConcept[];
+        /**
+         * A possible alternate material for the packaging
+         */
+        alternateMaterial?: CodeableConcept[];
+        /**
+         * A device accompanying a medicinal product
+         */
+        device?: Reference[];
+        /**
+         * The manufactured item as contained in the packaged medicinal product
+         */
+        manufacturedItem?: Reference[];
+        /**
+         * Allows containers within containers
+         */
+        packageItem?: MedicinalProductPackagedPackageItem[];
+        /**
+         * Dimensions, color etc.
+         */
+        physicalCharacteristics?: ProdCharacteristic;
+        /**
+         * Other codeable characteristics
+         */
+        otherCharacteristics?: CodeableConcept[];
+        /**
+         * Shelf Life and storage information
+         */
+        shelfLifeStorage?: ProductShelfLife[];
+        /**
+         * Manufacturer of this Package Item
+         */
+        manufacturer?: Reference[];
+    }
+    /**
+     * A medicinal product in a container or package
+     */
+    interface MedicinalProductPackaged extends DomainResource {
+        /**
+         * Unique identifier
+         */
+        identifier: Identifier;
+        /**
+         * Textual description
+         */
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Marketing information
+         */
+        marketingStatus?: MarketingStatus[];
+        /**
+         * Manufacturer of this Package Item
+         */
+        marketingAuthorization?: Reference;
+        /**
+         * Manufacturer of this Package Item
+         */
+        manufacturer?: Reference[];
+        /**
+         * Batch numbering
+         */
+        batchIdentifier?: MedicinalProductPackagedBatchIdentifier[];
+        /**
+         * A packaging item, as a contained for medicine, possibly with other packaging items within
+         */
+        packageItem: MedicinalProductPackagedPackageItem[];
+    }
+    /**
+     * Characteristics e.g. a products onset of action
+     */
+    interface MedicinalProductPharmaceuticalCharacteristics extends BackboneElement {
+        /**
+         * A coded characteristic
+         */
+        code: CodeableConcept;
+        /**
+         * The status of characteristic e.g. assigned or pending
+         */
+        status?: CodeableConcept;
+    }
+    /**
+     * The path by which the pharmaceutical product is taken into or makes contact with the body
+     */
+    interface MedicinalProductPharmaceuticalRouteOfAdministration extends BackboneElement {
+        /**
+         * Coded expression for the route
+         */
+        code: CodeableConcept;
+        /**
+         * The first dose (dose quantity) administered in humans can be specified, for a product under investigation, using a numerical value and its unit of measurement
+         */
+        firstDose?: Quantity;
+        /**
+         * The maximum single dose that can be administered as per the protocol of a clinical trial can be specified using a numerical value and its unit of measurement
+         */
+        maxSingleDose?: Quantity;
+        /**
+         * The maximum dose per day (maximum dose quantity to be administered in any one 24-h period) that can be administered as per the protocol referenced in the clinical trial authorisation
+         */
+        maxDosePerDay?: Quantity;
+        /**
+         * The maximum dose per treatment period that can be administered as per the protocol referenced in the clinical trial authorisation
+         */
+        maxDosePerTreatmentPeriod?: Ratio;
+        /**
+         * The maximum treatment period during which an Investigational Medicinal Product can be administered as per the protocol referenced in the clinical trial authorisation
+         */
+        maxTreatmentPeriod?: Duration;
+        /**
+         * A species for which this route applies
+         */
+        targetSpecies?: MedicinalProductPharmaceuticalRouteOfAdministrationTargetSpecies[];
+    }
+    /**
+     * A species for which this route applies
+     */
+    interface MedicinalProductPharmaceuticalRouteOfAdministrationTargetSpecies extends BackboneElement {
+        /**
+         * Coded expression for the species
+         */
+        code: CodeableConcept;
+        /**
+         * A species specific time during which consumption of animal product is not appropriate
+         */
+        withdrawalPeriod?: MedicinalProductPharmaceuticalRouteOfAdministrationTargetSpeciesWithdrawalPeriod[];
+    }
+    /**
+     * A species specific time during which consumption of animal product is not appropriate
+     */
+    interface MedicinalProductPharmaceuticalRouteOfAdministrationTargetSpeciesWithdrawalPeriod extends BackboneElement {
+        /**
+         * Coded expression for the type of tissue for which the withdrawal period applues, e.g. meat, milk
+         */
+        tissue: CodeableConcept;
+        /**
+         * A value for the time
+         */
+        value: Quantity;
+        /**
+         * Extra information about the withdrawal period
+         */
+        supportingInformation?: string;
+        /**
+         * Contains extended information for property 'supportingInformation'.
+         */
+        _supportingInformation?: Element;
+    }
+    /**
+     * A pharmaceutical product described in terms of its composition and dose form
+     */
+    interface MedicinalProductPharmaceutical extends DomainResource {
+        /**
+         * An identifier for the pharmaceutical medicinal product
+         */
+        identifier?: Identifier[];
+        /**
+         * The administrable dose form, after necessary reconstitution
+         */
+        administrableDoseForm: CodeableConcept;
+        /**
+         * Todo
+         */
+        unitOfPresentation?: CodeableConcept;
+        /**
+         * Ingredient
+         */
+        ingredient?: Reference[];
+        /**
+         * Accompanying device
+         */
+        device?: Reference[];
+        /**
+         * Characteristics e.g. a products onset of action
+         */
+        characteristics?: MedicinalProductPharmaceuticalCharacteristics[];
+        /**
+         * The path by which the pharmaceutical product is taken into or makes contact with the body
+         */
+        routeOfAdministration: MedicinalProductPharmaceuticalRouteOfAdministration[];
+    }
+    /**
+     * The population group to which this applies
+     */
+    interface MedicinalProductUndesirableEffectPopulation extends BackboneElement {
+        /**
+         * The age of the specific population
+         */
+        ageRange?: Range;
+        /**
+         * The age of the specific population
+         */
+        ageCodeableConcept?: CodeableConcept;
+        /**
+         * The gender of the specific population
+         */
+        gender?: CodeableConcept;
+        /**
+         * Race of the specific population
+         */
+        race?: CodeableConcept;
+        /**
+         * The existing physiological conditions of the specific population to which this applies
+         */
+        physiologicalCondition?: CodeableConcept;
+    }
+    /**
+     * MedicinalProductUndesirableEffect
+     */
+    interface MedicinalProductUndesirableEffect extends DomainResource {
+        /**
+         * The medication for which this is an indication
+         */
+        subject?: Reference[];
+        /**
+         * The symptom, condition or undesirable effect
+         */
+        symptomConditionEffect?: CodeableConcept;
+        /**
+         * Classification of the effect
+         */
+        classification?: CodeableConcept;
+        /**
+         * The frequency of occurrence of the effect
+         */
+        frequencyOfOccurrence?: CodeableConcept;
+        /**
+         * The population group to which this applies
+         */
+        population?: MedicinalProductUndesirableEffectPopulation[];
+    }
+    /**
      * Resource(s) that are the subject of the event
      */
     interface MessageDefinitionFocus extends BackboneElement {
@@ -15973,11 +19275,15 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Profile that must be adhered to by focus
          */
-        profile?: Reference;
+        profile?: canonical;
+        /**
+         * Contains extended information for property 'profile'.
+         */
+        _profile?: Element;
         /**
          * Minimum number of focuses of this type
          */
-        min?: unsignedInt;
+        min: unsignedInt;
         /**
          * Contains extended information for property 'min'.
          */
@@ -15998,7 +19304,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Reference to allowed message definition response
          */
-        message: Reference;
+        message: canonical;
+        /**
+         * Contains extended information for property 'message'.
+         */
+        _message?: Element;
         /**
          * When should this response be used
          */
@@ -16013,7 +19323,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface MessageDefinition extends DomainResource {
         /**
-         * Logical URI to reference this message definition (globally unique)
+         * Business Identifier for a given MessageDefinition
          */
         url?: uri;
         /**
@@ -16021,9 +19331,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _url?: Element;
         /**
-         * Additional identifier for the message definition
+         * Primary key for the message definition on a given server
          */
-        identifier?: Identifier;
+        identifier?: Identifier[];
         /**
          * Business version of the message definition
          */
@@ -16049,6 +19359,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _title?: Element;
         /**
+         * Takes the place of
+         */
+        replaces?: canonical[];
+        /**
+         * Contains extended information for property 'replaces'.
+         */
+        _replaces?: Element[];
+        /**
          * draft | active | retired | unknown
          */
         status: code;
@@ -16065,7 +19383,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _experimental?: Element;
         /**
-         * Date this was last changed
+         * Date last changed
          */
         date: dateTime;
         /**
@@ -16093,7 +19411,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * Context the content is intended to support
+         * The context that the content is intended to support
          */
         useContext?: UsageContext[];
         /**
@@ -16119,21 +19437,33 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Definition this one is based on
          */
-        base?: Reference;
+        base?: canonical;
+        /**
+         * Contains extended information for property 'base'.
+         */
+        _base?: Element;
         /**
          * Protocol/workflow this is part of
          */
-        parent?: Reference[];
+        parent?: canonical[];
         /**
-         * Takes the place of
+         * Contains extended information for property 'parent'.
          */
-        replaces?: Reference[];
+        _parent?: Element[];
         /**
-         * Event type
+         * Event code  or link to the EventDefinition
          */
-        event: Coding;
+        eventCoding?: Coding;
         /**
-         * Consequence | Currency | Notification
+         * Event code  or link to the EventDefinition
+         */
+        eventUri?: uri;
+        /**
+         * Contains extended information for property 'eventUri'.
+         */
+        _eventUri?: Element;
+        /**
+         * consequence | currency | notification
          */
         category?: code;
         /**
@@ -16145,9 +19475,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         focus?: MessageDefinitionFocus[];
         /**
-         * Is a response required?
+         * always | on-error | never | on-success
          */
-        responseRequired?: boolean;
+        responseRequired?: code;
         /**
          * Contains extended information for property 'responseRequired'.
          */
@@ -16156,6 +19486,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Responses to this message
          */
         allowedResponse?: MessageDefinitionAllowedResponse[];
+        /**
+         * Canonical URL for a GraphDefinition
+         */
+        graph?: canonical[];
+        /**
+         * Contains extended information for property 'graph'.
+         */
+        _graph?: Element[];
     }
     /**
      * Message destination application(s)
@@ -16176,11 +19514,15 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Actual destination address or id
          */
-        endpoint: uri;
+        endpoint: url;
         /**
          * Contains extended information for property 'endpoint'.
          */
         _endpoint?: Element;
+        /**
+         * Intended "real-world" recipient for the data
+         */
+        receiver?: Reference;
     }
     /**
      * Message source application
@@ -16217,7 +19559,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Actual message source address or id
          */
-        endpoint: uri;
+        endpoint: url;
         /**
          * Contains extended information for property 'endpoint'.
          */
@@ -16253,29 +19595,25 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface MessageHeader extends DomainResource {
         /**
-         * Code for the event this message represents
+         * Code for the event this message represents or link to event definition
          */
-        event: Coding;
+        eventCoding?: Coding;
+        /**
+         * Code for the event this message represents or link to event definition
+         */
+        eventUri?: uri;
+        /**
+         * Contains extended information for property 'eventUri'.
+         */
+        _eventUri?: Element;
         /**
          * Message destination application(s)
          */
         destination?: MessageHeaderDestination[];
         /**
-         * Intended "real-world" recipient for the data
-         */
-        receiver?: Reference;
-        /**
          * Real world sender of the message
          */
         sender?: Reference;
-        /**
-         * Time that the message was sent
-         */
-        timestamp: instant;
-        /**
-         * Contains extended information for property 'timestamp'.
-         */
-        _timestamp?: Element;
         /**
          * The source of the data entry
          */
@@ -16304,6 +19642,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * The actual content of the message
          */
         focus?: Reference[];
+        /**
+         * Link to the definition for this message
+         */
+        definition?: canonical;
+        /**
+         * Contains extended information for property 'definition'.
+         */
+        _definition?: Element;
     }
     /**
      * Unique identifiers used for system
@@ -16375,7 +19721,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _kind?: Element;
         /**
-         * Date this was last changed
+         * Date last changed
          */
         date: dateTime;
         /**
@@ -16415,7 +19761,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * Context the content is intended to support
+         * The context that the content is intended to support
          */
         useContext?: UsageContext[];
         /**
@@ -16434,10 +19780,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Unique identifiers used for system
          */
         uniqueId: NamingSystemUniqueId[];
-        /**
-         * Use this instead
-         */
-        replacedBy?: Reference;
     }
     /**
      * Oral diet components
@@ -16614,13 +19956,45 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         identifier?: Identifier[];
         /**
+         * Instantiates FHIR protocol or definition
+         */
+        instantiatesCanonical?: canonical[];
+        /**
+         * Contains extended information for property 'instantiatesCanonical'.
+         */
+        _instantiatesCanonical?: Element[];
+        /**
+         * Instantiates external protocol or definition
+         */
+        instantiatesUri?: uri[];
+        /**
+         * Contains extended information for property 'instantiatesUri'.
+         */
+        _instantiatesUri?: Element[];
+        /**
+         * Instantiates protocol or definition
+         */
+        instantiates?: uri[];
+        /**
+         * Contains extended information for property 'instantiates'.
+         */
+        _instantiates?: Element[];
+        /**
          * proposed | draft | planned | requested | active | on-hold | completed | cancelled | entered-in-error
          */
-        status?: code;
+        status: code;
         /**
          * Contains extended information for property 'status'.
          */
         _status?: Element;
+        /**
+         * proposal | plan | order
+         */
+        intent: code;
+        /**
+         * Contains extended information for property 'intent'.
+         */
+        _intent?: Element;
         /**
          * The person who requires the diet, formula or nutritional supplement
          */
@@ -16628,7 +20002,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * The encounter associated with this nutrition order
          */
-        encounter?: Reference;
+        context?: Reference;
         /**
          * Date and time the nutrition order was requested
          */
@@ -16665,6 +20039,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Enteral formula components
          */
         enteralFormula?: NutritionOrderEnteralFormula;
+        /**
+         * Comments
+         */
+        note?: Annotation[];
     }
     /**
      * Provides guide for interpretation
@@ -16700,23 +20078,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         _text?: Element;
     }
     /**
-     * Resource related to this observation
-     */
-    interface ObservationRelated extends BackboneElement {
-        /**
-         * has-member | derived-from | sequel-to | replaces | qualified-by | interfered-by
-         */
-        type?: code;
-        /**
-         * Contains extended information for property 'type'.
-         */
-        _type?: Element;
-        /**
-         * Resource that is related to this one
-         */
-        target: Reference;
-    }
-    /**
      * Component results
      */
     interface ObservationComponent extends BackboneElement {
@@ -16743,6 +20104,22 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Actual component result
          */
+        valueBoolean?: boolean;
+        /**
+         * Contains extended information for property 'valueBoolean'.
+         */
+        _valueBoolean?: Element;
+        /**
+         * Actual component result
+         */
+        valueInteger?: integer;
+        /**
+         * Contains extended information for property 'valueInteger'.
+         */
+        _valueInteger?: Element;
+        /**
+         * Actual component result
+         */
         valueRange?: Range;
         /**
          * Actual component result
@@ -16752,10 +20129,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Actual component result
          */
         valueSampledData?: SampledData;
-        /**
-         * Actual component result
-         */
-        valueAttachment?: Attachment;
         /**
          * Actual component result
          */
@@ -16783,7 +20156,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * High, low, normal, etc.
          */
-        interpretation?: CodeableConcept;
+        interpretation?: CodeableConcept[];
         /**
          * Provides guide for interpretation of component result
          */
@@ -16802,6 +20175,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         basedOn?: Reference[];
         /**
+         * Part of referenced event
+         */
+        partOf?: Reference[];
+        /**
          * registered | preliminary | final | amended +
          */
         status: code;
@@ -16818,13 +20195,17 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         code: CodeableConcept;
         /**
-         * Who and/or what this is about
+         * Who and/or what the observation is about
          */
         subject?: Reference;
         /**
+         * What the observation is about, when it is not about the subject of record
+         */
+        focus?: Reference[];
+        /**
          * Healthcare event during which this observation is made
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * Clinically relevant time/time-period for observation
          */
@@ -16838,7 +20219,19 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         effectivePeriod?: Period;
         /**
-         * Date/Time this was made available
+         * Clinically relevant time/time-period for observation
+         */
+        effectiveTiming?: Timing;
+        /**
+         * Clinically relevant time/time-period for observation
+         */
+        effectiveInstant?: instant;
+        /**
+         * Contains extended information for property 'effectiveInstant'.
+         */
+        _effectiveInstant?: Element;
+        /**
+         * Date/Time this version was made available
          */
         issued?: instant;
         /**
@@ -16876,6 +20269,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Actual result
          */
+        valueInteger?: integer;
+        /**
+         * Contains extended information for property 'valueInteger'.
+         */
+        _valueInteger?: Element;
+        /**
+         * Actual result
+         */
         valueRange?: Range;
         /**
          * Actual result
@@ -16885,10 +20286,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Actual result
          */
         valueSampledData?: SampledData;
-        /**
-         * Actual result
-         */
-        valueAttachment?: Attachment;
         /**
          * Actual result
          */
@@ -16916,9 +20313,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * High, low, normal, etc.
          */
-        interpretation?: CodeableConcept;
+        interpretation?: CodeableConcept[];
         /**
-         * Comments about result
+         * Comments about the test result value
          */
         comment?: string;
         /**
@@ -16946,13 +20343,160 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         referenceRange?: ObservationReferenceRange[];
         /**
-         * Resource related to this observation
+         * Related resource that belongs to the Observation group
          */
-        related?: ObservationRelated[];
+        hasMember?: Reference[];
+        /**
+         * Related measurements the observation is made from
+         */
+        derivedFrom?: Reference[];
         /**
          * Component results
          */
         component?: ObservationComponent[];
+    }
+    /**
+     * Characteristics of quantitative results
+     */
+    interface ObservationDefinitionQuantitativeDetails extends BackboneElement {
+        /**
+         * Customary unit for quantitative results
+         */
+        customaryUnit?: Coding;
+        /**
+         * SI unit for quantitative results
+         */
+        unit?: Coding;
+        /**
+         * SI to Customary unit conversion factor
+         */
+        conversionFactor?: decimal;
+        /**
+         * Contains extended information for property 'conversionFactor'.
+         */
+        _conversionFactor?: Element;
+        /**
+         * Decimal precision of observation quantitative results
+         */
+        decimalPrecision?: integer;
+        /**
+         * Contains extended information for property 'decimalPrecision'.
+         */
+        _decimalPrecision?: Element;
+    }
+    /**
+     * Reference range for observation result
+     */
+    interface ObservationDefinitionQualifiedInterval extends BackboneElement {
+        /**
+         * The category or type of interval
+         */
+        category?: CodeableConcept;
+        /**
+         * Low bound of reference range, if relevant
+         */
+        range?: Range;
+        /**
+         * Reference range qualifier
+         */
+        type?: CodeableConcept;
+        /**
+         * Reference range population
+         */
+        appliesTo?: CodeableConcept[];
+        /**
+         * Applicable age range, if relevant
+         */
+        age?: Range;
+        /**
+         * Applicable gestational age range, if relevant
+         */
+        gestationalAge?: Range;
+        /**
+         * Condition associated with the reference range
+         */
+        condition?: string;
+        /**
+         * Contains extended information for property 'condition'.
+         */
+        _condition?: Element;
+    }
+    /**
+     * Definition of an observation
+     */
+    interface ObservationDefinition extends DomainResource {
+        /**
+         * Category of observation
+         */
+        category?: Coding;
+        /**
+         * Type of observation (code / type)
+         */
+        code: Coding;
+        /**
+         * Permitted data type for observation value
+         */
+        permittedDataType?: Coding[];
+        /**
+         * Multiple results allowed
+         */
+        multipleResultsAllowed?: boolean;
+        /**
+         * Contains extended information for property 'multipleResultsAllowed'.
+         */
+        _multipleResultsAllowed?: Element;
+        /**
+         * The method or technique used to perform the observation
+         */
+        method?: CodeableConcept;
+        /**
+         * Preferred report name
+         */
+        preferredReportName?: string;
+        /**
+         * Contains extended information for property 'preferredReportName'.
+         */
+        _preferredReportName?: Element;
+        /**
+         * Characteristics of quantitative results
+         */
+        quantitativeDetails?: ObservationDefinitionQuantitativeDetails;
+        /**
+         * Reference range for observation result
+         */
+        qualifiedInterval?: ObservationDefinitionQualifiedInterval[];
+        /**
+         * Value set of valid coded values for the observation
+         */
+        validCodedValueSet?: uri;
+        /**
+         * Contains extended information for property 'validCodedValueSet'.
+         */
+        _validCodedValueSet?: Element;
+        /**
+         * Value set of normal coded values for the observation
+         */
+        normalCodedValueSet?: uri;
+        /**
+         * Contains extended information for property 'normalCodedValueSet'.
+         */
+        _normalCodedValueSet?: Element;
+        /**
+         * Value set of abnormal coded values for the observation
+         */
+        abnormalCodedValueSet?: uri;
+        /**
+         * Contains extended information for property 'abnormalCodedValueSet'.
+         */
+        _abnormalCodedValueSet?: Element;
+        /**
+         * Value set of critical coded values for the observation
+         */
+        criticalCodedValueSet?: uri;
+        /**
+         * Contains extended information for property 'criticalCodedValueSet'.
+         */
+        _criticalCodedValueSet?: Element;
     }
     /**
      * Parameters for the operation/query
@@ -17007,7 +20551,15 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _type?: Element;
         /**
-         * number | date | string | token | reference | composite | quantity | uri
+         * If type is Reference | canonical, allowed targets
+         */
+        targetProfile?: canonical[];
+        /**
+         * Contains extended information for property 'targetProfile'.
+         */
+        _targetProfile?: Element[];
+        /**
+         * number | date | string | token | reference | composite | quantity | uri | special
          */
         searchType?: code;
         /**
@@ -17015,13 +20567,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _searchType?: Element;
         /**
-         * Profile on the type
-         */
-        profile?: Reference;
-        /**
          * ValueSet details if this is coded
          */
         binding?: OperationDefinitionParameterBinding;
+        /**
+         * References to this parameter
+         */
+        referencedFrom?: OperationDefinitionParameterReferencedFrom[];
         /**
          * Parts of a nested Parameter
          */
@@ -17042,15 +20594,32 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Source of value set
          */
-        valueSetUri?: uri;
+        valueSet: canonical;
         /**
-         * Contains extended information for property 'valueSetUri'.
+         * Contains extended information for property 'valueSet'.
          */
-        _valueSetUri?: Element;
+        _valueSet?: Element;
+    }
+    /**
+     * References to this parameter
+     */
+    interface OperationDefinitionParameterReferencedFrom extends BackboneElement {
         /**
-         * Source of value set
+         * Referencing parameter
          */
-        valueSetReference?: Reference;
+        source: string;
+        /**
+         * Contains extended information for property 'source'.
+         */
+        _source?: Element;
+        /**
+         * Element id of reference
+         */
+        sourceId?: string;
+        /**
+         * Contains extended information for property 'sourceId'.
+         */
+        _sourceId?: Element;
     }
     /**
      * Define overloaded variants for when  generating code
@@ -17078,7 +20647,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface OperationDefinition extends DomainResource {
         /**
-         * Logical URI to reference this operation definition (globally unique)
+         * Canonical identifier for this operation definition, represented as a URI (globally unique)
          */
         url?: uri;
         /**
@@ -17101,6 +20670,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'name'.
          */
         _name?: Element;
+        /**
+         * Name for this operation definition (human friendly)
+         */
+        title?: string;
+        /**
+         * Contains extended information for property 'title'.
+         */
+        _title?: Element;
         /**
          * draft | active | retired | unknown
          */
@@ -17126,7 +20703,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _experimental?: Element;
         /**
-         * Date this was last changed
+         * Date last changed
          */
         date?: dateTime;
         /**
@@ -17154,7 +20731,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * Context the content is intended to support
+         * The context that the content is intended to support
          */
         useContext?: UsageContext[];
         /**
@@ -17170,13 +20747,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _purpose?: Element;
         /**
-         * Whether content is unchanged by the operation
+         * Whether content is changed by the operation
          */
-        idempotent?: boolean;
+        affectsState?: boolean;
         /**
-         * Contains extended information for property 'idempotent'.
+         * Contains extended information for property 'affectsState'.
          */
-        _idempotent?: Element;
+        _affectsState?: Element;
         /**
          * Name used to invoke the operation
          */
@@ -17188,7 +20765,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Additional information about use
          */
-        comment?: string;
+        comment?: markdown;
         /**
          * Contains extended information for property 'comment'.
          */
@@ -17196,7 +20773,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Marks this as a profile of the base
          */
-        base?: Reference;
+        base?: canonical;
+        /**
+         * Contains extended information for property 'base'.
+         */
+        _base?: Element;
         /**
          * Types this operation applies to
          */
@@ -17214,7 +20795,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _system?: Element;
         /**
-         * Invole at the type level?
+         * Invoke at the type level?
          */
         type: boolean;
         /**
@@ -17229,6 +20810,22 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'instance'.
          */
         _instance?: Element;
+        /**
+         * Validation information for in parameters
+         */
+        inputProfile?: canonical;
+        /**
+         * Contains extended information for property 'inputProfile'.
+         */
+        _inputProfile?: Element;
+        /**
+         * Validation information for out parameters
+         */
+        outputProfile?: canonical;
+        /**
+         * Contains extended information for property 'outputProfile'.
+         */
+        _outputProfile?: Element;
         /**
          * Parameters for the operation/query
          */
@@ -17271,7 +20868,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _diagnostics?: Element;
         /**
-         * Path of element(s) related to issue
+         * Deprecated: Path of element(s) related to issue
          */
         location?: string[];
         /**
@@ -17346,7 +20943,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _name?: Element;
         /**
-         * A list of alternate names that the organization is known as, or was known as in the past
+         * A list of alternate names that the organization is known as, or was known as in the past
          */
         alias?: string[];
         /**
@@ -17371,6 +20968,63 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         contact?: OrganizationContact[];
         /**
          * Technical endpoints providing access to services operated for the organization
+         */
+        endpoint?: Reference[];
+    }
+    /**
+     * Defines an affiliation/assotiation/relationship between 2 distinct oganizations, that is not a part-of relationship/sub-division relationship
+     */
+    interface OrganizationAffiliation extends DomainResource {
+        /**
+         * Business identifiers that are specific to this role
+         */
+        identifier?: Identifier[];
+        /**
+         * Whether this organization affiliation record is in active use
+         */
+        active?: boolean;
+        /**
+         * Contains extended information for property 'active'.
+         */
+        _active?: Element;
+        /**
+         * The period during which the participatingOrganization is affiliated with the primary organization
+         */
+        period?: Period;
+        /**
+         * Organization where the role is available
+         */
+        organization?: Reference;
+        /**
+         * Organization that provides/performs the role (e.g. providing services or is a member of)
+         */
+        participatingOrganization?: Reference;
+        /**
+         * Health insurance provider network in which the participatingOrganization provides the role's services (if defined) at the indicated locations (if defined)
+         */
+        network?: Reference[];
+        /**
+         * Definition of the role the participatingOrganization plays
+         */
+        code?: CodeableConcept[];
+        /**
+         * Specific specialty of the participatingOrganization in the context of the role
+         */
+        specialty?: CodeableConcept[];
+        /**
+         * The location(s) at which the role occurs
+         */
+        location?: Reference[];
+        /**
+         * Healthcare services provided through the role
+         */
+        healthcareService?: Reference[];
+        /**
+         * Contact details at the participatingOrganization relevant to this Affiliation
+         */
+        telecom?: ContactPoint[];
+        /**
+         * Technical endpoints providing access to services operated for this role
          */
         endpoint?: Reference[];
     }
@@ -17402,6 +21056,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'valueBoolean'.
          */
         _valueBoolean?: Element;
+        /**
+         * If parameter is a data type
+         */
+        valueCanonical?: canonical;
+        /**
+         * Contains extended information for property 'valueCanonical'.
+         */
+        _valueCanonical?: Element;
         /**
          * If parameter is a data type
          */
@@ -17517,6 +21179,22 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * If parameter is a data type
          */
+        valueUrl?: url;
+        /**
+         * Contains extended information for property 'valueUrl'.
+         */
+        _valueUrl?: Element;
+        /**
+         * If parameter is a data type
+         */
+        valueUuid?: uuid;
+        /**
+         * Contains extended information for property 'valueUuid'.
+         */
+        _valueUuid?: Element;
+        /**
+         * If parameter is a data type
+         */
         valueAddress?: Address;
         /**
          * If parameter is a data type
@@ -17601,7 +21279,39 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * If parameter is a data type
          */
-        valueMeta?: Meta;
+        valueParameterDefinition?: ParameterDefinition;
+        /**
+         * If parameter is a data type
+         */
+        valueDataRequirement?: DataRequirement;
+        /**
+         * If parameter is a data type
+         */
+        valueRelatedArtifact?: RelatedArtifact;
+        /**
+         * If parameter is a data type
+         */
+        valueContactDetail?: ContactDetail;
+        /**
+         * If parameter is a data type
+         */
+        valueContributor?: Contributor;
+        /**
+         * If parameter is a data type
+         */
+        valueTriggerDefinition?: TriggerDefinition;
+        /**
+         * If parameter is a data type
+         */
+        valueExpression?: Expression;
+        /**
+         * If parameter is a data type
+         */
+        valueUsageContext?: UsageContext;
+        /**
+         * If parameter is a data type
+         */
+        valueDosage?: Dosage;
         /**
          * If parameter is a whole resource
          */
@@ -17658,24 +21368,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         period?: Period;
     }
     /**
-     * This patient is known to be an animal (non-human)
-     */
-    interface PatientAnimal extends BackboneElement {
-        /**
-         * E.g. Dog, Cow
-         */
-        species: CodeableConcept;
-        /**
-         * E.g. Poodle, Angus
-         */
-        breed?: CodeableConcept;
-        /**
-         * E.g. Neutered, Intact
-         */
-        genderStatus?: CodeableConcept;
-    }
-    /**
-     * A list of Languages which may be used to communicate with the patient about his or her health
+     * A language which may be used to communicate with the patient about his or her health
      */
     interface PatientCommunication extends BackboneElement {
         /**
@@ -17700,7 +21393,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         other: Reference;
         /**
-         * replaced-by | replaces | refer | seealso - type of link
+         * replaced-by | replaces | refer | seealso
          */
         type: code;
         /**
@@ -17765,7 +21458,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _deceasedDateTime?: Element;
         /**
-         * Addresses for the individual
+         * An address for the individual
          */
         address?: Address[];
         /**
@@ -17797,11 +21490,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         contact?: PatientContact[];
         /**
-         * This patient is known to be an animal (non-human)
-         */
-        animal?: PatientAnimal;
-        /**
-         * A list of Languages which may be used to communicate with the patient about his or her health
+         * A language which may be used to communicate with the patient about his or her health
          */
         communication?: PatientCommunication[];
         /**
@@ -17866,10 +21555,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         provider?: Reference;
         /**
-         * Responsible organization
-         */
-        organization?: Reference;
-        /**
          * Whether payment has been sent or cleared
          */
         paymentStatus?: CodeableConcept;
@@ -17918,7 +21603,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * display | print | printoper
          */
-        type?: CodeableConcept;
+        type?: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
         /**
          * Comment on the processing
          */
@@ -17965,9 +21654,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         request?: Reference;
         /**
-         * complete | error | partial
+         * queued | complete | error | partial
          */
-        outcome?: CodeableConcept;
+        outcome?: code;
+        /**
+         * Contains extended information for property 'outcome'.
+         */
+        _outcome?: Element;
         /**
          * Disposition Message
          */
@@ -17980,10 +21673,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Responsible practitioner
          */
         requestProvider?: Reference;
-        /**
-         * Responsible organization
-         */
-        requestOrganization?: Reference;
         /**
          * List of settlements
          */
@@ -18080,7 +21769,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface PlanDefinitionGoal extends BackboneElement {
         /**
-         * E.g. Treatment, dietary, behavioral, etc
+         * E.g. Treatment, dietary, behavioral
          */
         category?: CodeableConcept;
         /**
@@ -18138,13 +21827,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface PlanDefinitionAction extends BackboneElement {
         /**
-         * User-visible label for the action (e.g. 1. or A.)
+         * User-visible prefix for the action (e.g. 1. or A.)
          */
-        label?: string;
+        prefix?: string;
         /**
-         * Contains extended information for property 'label'.
+         * Contains extended information for property 'prefix'.
          */
-        _label?: Element;
+        _prefix?: Element;
         /**
          * User-visible title
          */
@@ -18154,7 +21843,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _title?: Element;
         /**
-         * Short description of the action
+         * Brief description of the action
          */
         description?: string;
         /**
@@ -18169,6 +21858,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'textEquivalent'.
          */
         _textEquivalent?: Element;
+        /**
+         * routine | urgent | asap | stat
+         */
+        priority?: code;
+        /**
+         * Contains extended information for property 'priority'.
+         */
+        _priority?: Element;
         /**
          * Code representing the meaning of the action or sub-actions
          */
@@ -18192,7 +21889,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * When the action should be triggered
          */
-        triggerDefinition?: TriggerDefinition[];
+        trigger?: TriggerDefinition[];
         /**
          * Whether or not the action is applicable
          */
@@ -18220,6 +21917,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * When the action should take place
          */
+        timingAge?: Age;
+        /**
+         * When the action should take place
+         */
         timingPeriod?: Period;
         /**
          * When the action should take place
@@ -18240,7 +21941,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * create | update | remove | fire-event
          */
-        type?: Coding;
+        type?: CodeableConcept;
         /**
          * visual-group | logical-group | sentence-group
          */
@@ -18284,11 +21985,19 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Description of the activity to be performed
          */
-        definition?: Reference;
+        definition?: canonical;
+        /**
+         * Contains extended information for property 'definition'.
+         */
+        _definition?: Element;
         /**
          * Transform to apply the template
          */
-        transform?: Reference;
+        transform?: canonical;
+        /**
+         * Contains extended information for property 'transform'.
+         */
+        _transform?: Element;
         /**
          * Dynamic aspects of the definition
          */
@@ -18297,55 +22006,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * A sub-action
          */
         action?: PlanDefinitionAction[];
-    }
-    /**
-     * Defines an expected trigger for a module
-     */
-    interface TriggerDefinition extends Element {
-        /**
-         * named-event | periodic | data-added | data-modified | data-removed | data-accessed | data-access-ended
-         */
-        type: code;
-        /**
-         * Contains extended information for property 'type'.
-         */
-        _type?: Element;
-        /**
-         * Triggering event name
-         */
-        eventName?: string;
-        /**
-         * Contains extended information for property 'eventName'.
-         */
-        _eventName?: Element;
-        /**
-         * Timing of the event
-         */
-        eventTimingTiming?: Timing;
-        /**
-         * Timing of the event
-         */
-        eventTimingReference?: Reference;
-        /**
-         * Timing of the event
-         */
-        eventTimingDate?: date;
-        /**
-         * Contains extended information for property 'eventTimingDate'.
-         */
-        _eventTimingDate?: Element;
-        /**
-         * Timing of the event
-         */
-        eventTimingDateTime?: dateTime;
-        /**
-         * Contains extended information for property 'eventTimingDateTime'.
-         */
-        _eventTimingDateTime?: Element;
-        /**
-         * Triggering data of the event
-         */
-        eventData?: DataRequirement;
     }
     /**
      * Whether or not the action is applicable
@@ -18360,29 +22020,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _kind?: Element;
         /**
-         * Natural language description of the condition
-         */
-        description?: string;
-        /**
-         * Contains extended information for property 'description'.
-         */
-        _description?: Element;
-        /**
-         * Language of the expression
-         */
-        language?: string;
-        /**
-         * Contains extended information for property 'language'.
-         */
-        _language?: Element;
-        /**
          * Boolean-valued expression
          */
-        expression?: string;
-        /**
-         * Contains extended information for property 'expression'.
-         */
-        _expression?: Element;
+        expression?: Expression;
     }
     /**
      * Relationship to another action
@@ -18418,7 +22058,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface PlanDefinitionActionParticipant extends BackboneElement {
         /**
-         * patient | practitioner | related-person
+         * patient | practitioner | related-person | device
          */
         type: code;
         /**
@@ -18426,7 +22066,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _type?: Element;
         /**
-         * E.g. Nurse, Surgeon, Parent, etc
+         * E.g. Nurse, Surgeon, Parent
          */
         role?: CodeableConcept;
     }
@@ -18434,14 +22074,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      * Dynamic aspects of the definition
      */
     interface PlanDefinitionActionDynamicValue extends BackboneElement {
-        /**
-         * Natural language description of the dynamic value
-         */
-        description?: string;
-        /**
-         * Contains extended information for property 'description'.
-         */
-        _description?: Element;
         /**
          * The path to the element to be set dynamically
          */
@@ -18451,28 +22083,16 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _path?: Element;
         /**
-         * Language of the expression
-         */
-        language?: string;
-        /**
-         * Contains extended information for property 'language'.
-         */
-        _language?: Element;
-        /**
          * An expression that provides the dynamic value for the customization
          */
-        expression?: string;
-        /**
-         * Contains extended information for property 'expression'.
-         */
-        _expression?: Element;
+        expression?: Expression;
     }
     /**
      * The definition of a plan for a series of actions, independent of any specific patient or context
      */
     interface PlanDefinition extends DomainResource {
         /**
-         * Logical URI to reference this plan definition (globally unique)
+         * Canonical identifier for this plan definition, represented as a URI (globally unique)
          */
         url?: uri;
         /**
@@ -18508,7 +22128,15 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _title?: Element;
         /**
-         * order-set | protocol | eca-rule
+         * Subordinate title of the plan definition
+         */
+        subtitle?: string;
+        /**
+         * Contains extended information for property 'subtitle'.
+         */
+        _subtitle?: Element;
+        /**
+         * order-set | clinical-protocol | eca-rule | workflow-definition
          */
         type?: CodeableConcept;
         /**
@@ -18528,7 +22156,15 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _experimental?: Element;
         /**
-         * Date this was last changed
+         * Type of individual the plan definition is focused on
+         */
+        subjectCodeableConcept?: CodeableConcept;
+        /**
+         * Type of individual the plan definition is focused on
+         */
+        subjectReference?: Reference;
+        /**
+         * Date last changed
          */
         date?: dateTime;
         /**
@@ -18544,6 +22180,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _publisher?: Element;
         /**
+         * Contact details for the publisher
+         */
+        contact?: ContactDetail[];
+        /**
          * Natural language description of the plan definition
          */
         description?: markdown;
@@ -18551,6 +22191,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'description'.
          */
         _description?: Element;
+        /**
+         * The context that the content is intended to support
+         */
+        useContext?: UsageContext[];
+        /**
+         * Intended jurisdiction for plan definition (if applicable)
+         */
+        jurisdiction?: CodeableConcept[];
         /**
          * Why this plan definition is defined
          */
@@ -18560,13 +22208,21 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _purpose?: Element;
         /**
-         * Describes the clinical usage of the asset
+         * Describes the clinical usage of the plan
          */
         usage?: string;
         /**
          * Contains extended information for property 'usage'.
          */
         _usage?: Element;
+        /**
+         * Use and/or publishing restrictions
+         */
+        copyright?: markdown;
+        /**
+         * Contains extended information for property 'copyright'.
+         */
+        _copyright?: Element;
         /**
          * When the plan definition was approved by publisher
          */
@@ -18588,41 +22244,37 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         effectivePeriod?: Period;
         /**
-         * Context the content is intended to support
-         */
-        useContext?: UsageContext[];
-        /**
-         * Intended jurisdiction for plan definition (if applicable)
-         */
-        jurisdiction?: CodeableConcept[];
-        /**
-         * E.g. Education, Treatment, Assessment, etc
+         * E.g. Education, Treatment, Assessment
          */
         topic?: CodeableConcept[];
         /**
-         * A content contributor
+         * Who authored the content
          */
-        contributor?: Contributor[];
+        author?: ContactDetail[];
         /**
-         * Contact details for the publisher
+         * Who edited the content
          */
-        contact?: ContactDetail[];
+        editor?: ContactDetail[];
         /**
-         * Use and/or publishing restrictions
+         * Who reviewed the content
          */
-        copyright?: markdown;
+        reviewer?: ContactDetail[];
         /**
-         * Contains extended information for property 'copyright'.
+         * Who endorsed the content
          */
-        _copyright?: Element;
+        endorser?: ContactDetail[];
         /**
-         * Related artifacts for the asset
+         * Additional documentation, citations
          */
         relatedArtifact?: RelatedArtifact[];
         /**
          * Logic used by the plan definition
          */
-        library?: Reference[];
+        library?: canonical[];
+        /**
+         * Contains extended information for property 'library'.
+         */
+        _library?: Element[];
         /**
          * What the plan is trying to accomplish
          */
@@ -18633,7 +22285,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         action?: PlanDefinitionAction[];
     }
     /**
-     * Qualifications obtained by training and certification
+     * Certification, licenses, or training pertaining to the provision of care
      */
     interface PractitionerQualification extends BackboneElement {
         /**
@@ -18658,7 +22310,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface Practitioner extends DomainResource {
         /**
-         * A identifier for the person as this agent
+         * An identifier for the person as this agent
          */
         identifier?: Identifier[];
         /**
@@ -18702,11 +22354,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         photo?: Attachment[];
         /**
-         * Qualifications obtained by training and certification
+         * Certification, licenses, or training pertaining to the provision of care
          */
         qualification?: PractitionerQualification[];
         /**
-         * A language the practitioner is able to use in patient communication
+         * A language the practitioner can use in patient communication
          */
         communication?: CodeableConcept[];
     }
@@ -18760,7 +22412,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * Service not availablefrom this date
+         * Service not available from this date
          */
         during?: Period;
     }
@@ -18773,7 +22425,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         identifier?: Identifier[];
         /**
-         * Whether this practitioner's record is in active use
+         * Whether this practitioner role record is in active use
          */
         active?: boolean;
         /**
@@ -18785,7 +22437,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         period?: Period;
         /**
-         * Practitioner that is able to provide the defined services for the organation
+         * Practitioner that is able to provide the defined services for the organization
          */
         practitioner?: Reference;
         /**
@@ -18838,9 +22490,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface ProcedurePerformer extends BackboneElement {
         /**
-         * The role the actor was in
+         * Type of performance
          */
-        role?: CodeableConcept;
+        function?: CodeableConcept;
         /**
          * The reference to the practitioner
          */
@@ -18851,7 +22503,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         onBehalfOf?: Reference;
     }
     /**
-     * Device changed in procedure
+     * Manipulated, implanted, or removed device
      */
     interface ProcedureFocalDevice extends BackboneElement {
         /**
@@ -18872,9 +22524,21 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         identifier?: Identifier[];
         /**
-         * Instantiates protocol or definition
+         * Instantiates FHIR protocol or definition
          */
-        definition?: Reference[];
+        instantiatesCanonical?: canonical[];
+        /**
+         * Contains extended information for property 'instantiatesCanonical'.
+         */
+        _instantiatesCanonical?: Element[];
+        /**
+         * Instantiates external protocol or definition
+         */
+        instantiatesUri?: uri[];
+        /**
+         * Contains extended information for property 'instantiatesUri'.
+         */
+        _instantiatesUri?: Element[];
         /**
          * A request for this procedure
          */
@@ -18884,7 +22548,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         partOf?: Reference[];
         /**
-         * preparation | in-progress | suspended | aborted | completed | entered-in-error | unknown
+         * preparation | in-progress | not-done | suspended | aborted | completed | entered-in-error | unknown
          */
         status: code;
         /**
@@ -18892,17 +22556,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _status?: Element;
         /**
-         * True if procedure was not performed as scheduled
+         * Reason for current status
          */
-        notDone?: boolean;
-        /**
-         * Contains extended information for property 'notDone'.
-         */
-        _notDone?: Element;
-        /**
-         * Reason procedure was not performed
-         */
-        notDoneReason?: CodeableConcept;
+        statusReason?: CodeableConcept;
         /**
          * Classification of the procedure
          */
@@ -18920,7 +22576,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         context?: Reference;
         /**
-         * Date/Period the procedure was performed
+         * When the procedure was performed
          */
         performedDateTime?: dateTime;
         /**
@@ -18928,9 +22584,33 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _performedDateTime?: Element;
         /**
-         * Date/Period the procedure was performed
+         * When the procedure was performed
          */
         performedPeriod?: Period;
+        /**
+         * When the procedure was performed
+         */
+        performedString?: string;
+        /**
+         * Contains extended information for property 'performedString'.
+         */
+        _performedString?: Element;
+        /**
+         * When the procedure was performed
+         */
+        performedAge?: Age;
+        /**
+         * When the procedure was performed
+         */
+        performedRange?: Range;
+        /**
+         * Who recorded the procedure
+         */
+        recorder?: Reference;
+        /**
+         * Person who asserts this procedure
+         */
+        asserter?: Reference;
         /**
          * The people who performed the procedure
          */
@@ -18944,7 +22624,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         reasonCode?: CodeableConcept[];
         /**
-         * Condition that is the reason the procedure performed
+         * The justification that the procedure was performed
          */
         reasonReference?: Reference[];
         /**
@@ -18964,7 +22644,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         complication?: CodeableConcept[];
         /**
-         * A condition that is a result of the procedure
+         * A condition that is a result of the procedure
          */
         complicationDetail?: Reference[];
         /**
@@ -18976,7 +22656,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         note?: Annotation[];
         /**
-         * Device changed in procedure
+         * Manipulated, implanted, or removed device
          */
         focalDevice?: ProcedureFocalDevice[];
         /**
@@ -18987,168 +22667,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Coded items used during the procedure
          */
         usedCode?: CodeableConcept[];
-    }
-    /**
-     * Who/what is requesting procedure or diagnostic
-     */
-    interface ProcedureRequestRequester extends BackboneElement {
-        /**
-         * Individual making the request
-         */
-        agent: Reference;
-        /**
-         * Organization agent is acting for
-         */
-        onBehalfOf?: Reference;
-    }
-    /**
-     * A request for a procedure or diagnostic to be performed
-     */
-    interface ProcedureRequest extends DomainResource {
-        /**
-         * Identifiers assigned to this order
-         */
-        identifier?: Identifier[];
-        /**
-         * Protocol or definition
-         */
-        definition?: Reference[];
-        /**
-         * What request fulfills
-         */
-        basedOn?: Reference[];
-        /**
-         * What request replaces
-         */
-        replaces?: Reference[];
-        /**
-         * Composite Request ID
-         */
-        requisition?: Identifier;
-        /**
-         * draft | active | suspended | completed | entered-in-error | cancelled
-         */
-        status: code;
-        /**
-         * Contains extended information for property 'status'.
-         */
-        _status?: Element;
-        /**
-         * proposal | plan | order +
-         */
-        intent: code;
-        /**
-         * Contains extended information for property 'intent'.
-         */
-        _intent?: Element;
-        /**
-         * routine | urgent | asap | stat
-         */
-        priority?: code;
-        /**
-         * Contains extended information for property 'priority'.
-         */
-        _priority?: Element;
-        /**
-         * True if procedure should not be performed
-         */
-        doNotPerform?: boolean;
-        /**
-         * Contains extended information for property 'doNotPerform'.
-         */
-        _doNotPerform?: Element;
-        /**
-         * Classification of procedure
-         */
-        category?: CodeableConcept[];
-        /**
-         * What is being requested/ordered
-         */
-        code: CodeableConcept;
-        /**
-         * Individual the service is ordered for
-         */
-        subject: Reference;
-        /**
-         * Encounter or Episode during which request was created
-         */
-        context?: Reference;
-        /**
-         * When procedure should occur
-         */
-        occurrenceDateTime?: dateTime;
-        /**
-         * Contains extended information for property 'occurrenceDateTime'.
-         */
-        _occurrenceDateTime?: Element;
-        /**
-         * When procedure should occur
-         */
-        occurrencePeriod?: Period;
-        /**
-         * When procedure should occur
-         */
-        occurrenceTiming?: Timing;
-        /**
-         * Preconditions for procedure or diagnostic
-         */
-        asNeededBoolean?: boolean;
-        /**
-         * Contains extended information for property 'asNeededBoolean'.
-         */
-        _asNeededBoolean?: Element;
-        /**
-         * Preconditions for procedure or diagnostic
-         */
-        asNeededCodeableConcept?: CodeableConcept;
-        /**
-         * Date request signed
-         */
-        authoredOn?: dateTime;
-        /**
-         * Contains extended information for property 'authoredOn'.
-         */
-        _authoredOn?: Element;
-        /**
-         * Who/what is requesting procedure or diagnostic
-         */
-        requester?: ProcedureRequestRequester;
-        /**
-         * Performer role
-         */
-        performerType?: CodeableConcept;
-        /**
-         * Requested perfomer
-         */
-        performer?: Reference;
-        /**
-         * Explanation/Justification for test
-         */
-        reasonCode?: CodeableConcept[];
-        /**
-         * Explanation/Justification for test
-         */
-        reasonReference?: Reference[];
-        /**
-         * Additional clinical information
-         */
-        supportingInfo?: Reference[];
-        /**
-         * Procedure Samples
-         */
-        specimen?: Reference[];
-        /**
-         * Location on Body
-         */
-        bodySite?: CodeableConcept[];
-        /**
-         * Comments
-         */
-        note?: Annotation[];
-        /**
-         * Request provenance
-         */
-        relevantHistory?: Reference[];
     }
     /**
      * Items to re-adjudicate
@@ -19164,7 +22682,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         _sequenceLinkId?: Element;
     }
     /**
-     * Request to perform some action on or in regards to an existing resource
+     * Request to perform some action on or in regard to an existing resource
      */
     interface ProcessRequest extends DomainResource {
         /**
@@ -19203,10 +22721,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Responsible practitioner
          */
         provider?: Reference;
-        /**
-         * Responsible organization
-         */
-        organization?: Reference;
         /**
          * Reference to the Request resource
          */
@@ -19263,7 +22777,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * display | print | printoper
          */
-        type?: CodeableConcept;
+        type?: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
         /**
          * Comment on the processing
          */
@@ -19308,7 +22826,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Processing outcome
          */
-        outcome?: CodeableConcept;
+        outcome?: code;
+        /**
+         * Contains extended information for property 'outcome'.
+         */
+        _outcome?: Element;
         /**
          * Disposition Message
          */
@@ -19321,10 +22843,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Responsible Practitioner
          */
         requestProvider?: Reference;
-        /**
-         * Responsible organization
-         */
-        requestOrganization?: Reference;
         /**
          * Printed Form Identifier
          */
@@ -19347,37 +22865,21 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface ProvenanceAgent extends BackboneElement {
         /**
+         * How the agent participated
+         */
+        type?: CodeableConcept;
+        /**
          * What the agents role was
          */
         role?: CodeableConcept[];
         /**
          * Who participated
          */
-        whoUri?: uri;
-        /**
-         * Contains extended information for property 'whoUri'.
-         */
-        _whoUri?: Element;
-        /**
-         * Who participated
-         */
-        whoReference?: Reference;
+        who: Reference;
         /**
          * Who the agent is representing
          */
-        onBehalfOfUri?: uri;
-        /**
-         * Contains extended information for property 'onBehalfOfUri'.
-         */
-        _onBehalfOfUri?: Element;
-        /**
-         * Who the agent is representing
-         */
-        onBehalfOfReference?: Reference;
-        /**
-         * Type of relationship between agents
-         */
-        relatedAgentType?: CodeableConcept;
+        onBehalfOf?: Reference;
     }
     /**
      * An entity used in this activity
@@ -19394,19 +22896,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Identity of entity
          */
-        whatUri?: uri;
-        /**
-         * Contains extended information for property 'whatUri'.
-         */
-        _whatUri?: Element;
-        /**
-         * Identity of entity
-         */
-        whatReference?: Reference;
-        /**
-         * Identity of entity
-         */
-        whatIdentifier?: Identifier;
+        what: Reference;
         /**
          * Entity is attributed to this agent
          */
@@ -19423,7 +22913,15 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * When the activity occurred
          */
-        period?: Period;
+        occurredPeriod?: Period;
+        /**
+         * When the activity occurred
+         */
+        occurredDateTime?: dateTime;
+        /**
+         * Contains extended information for property 'occurredDateTime'.
+         */
+        _occurredDateTime?: Element;
         /**
          * When the activity was recorded / updated
          */
@@ -19447,11 +22945,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Reason the activity is occurring
          */
-        reason?: Coding[];
+        reason?: CodeableConcept[];
         /**
          * Activity that occurred
          */
-        activity?: Coding;
+        activity?: CodeableConcept;
         /**
          * Actor involved
          */
@@ -19518,14 +23016,16 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         enableWhen?: QuestionnaireItemEnableWhen[];
         /**
+         * all | any
+         */
+        enableBehavior?: code;
+        /**
+         * Contains extended information for property 'enableBehavior'.
+         */
+        _enableBehavior?: Element;
+        /**
          * Whether the item must be included in data results
          */
-
-        enableBehaviour?: code; // added for R4
-        _enableBehaviour?: code; // added for R4
-
-
-
         required?: boolean;
         /**
          * Contains extended information for property 'required'.
@@ -19555,110 +23055,27 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'maxLength'.
          */
         _maxLength?: Element;
-
-        answerValueSet?: canonical; // ValueSet, added for R4
-        _answerValueSet?: canonical; // ValueSet, added for R4
-
         /**
          * Valueset containing permitted answers
          */
-        // options?: Reference;
+        answerValueSet?: canonical;
+        /**
+         * Contains extended information for property 'answerValueSet'.
+         */
+        _answerValueSet?: Element;
         /**
          * Permitted answer
          */
         answerOption?: QuestionnaireItemAnswerOption[];
-    
+        /**
+         * Initial value(s) when item is first rendered
+         */
         initial?: QuestionnaireItemInitial[];
         /**
          * Nested questionnaire items
          */
         item?: QuestionnaireItem[];
     }
-
-    interface QuestionnaireItemInitial extends BackboneElement { // added for R4
-
-            /**
-         * Default value when item is first rendered
-         */
-        valueBoolean?: boolean;
-        /**
-         * Contains extended information for property 'valueBoolean'.
-         */
-        _valueBoolean?: Element;
-        /**
-         * Default value when item is first rendered
-         */
-        valueDecimal?: decimal;
-        /**
-         * Contains extended information for property 'valueDecimal'.
-         */
-        _valueDecimal?: Element;
-        /**
-         * Default value when item is first rendered
-         */
-        valueInteger?: integer;
-        /**
-         * Contains extended information for property 'valueInteger'.
-         */
-        _valueInteger?: Element;
-        /**
-         * Default value when item is first rendered
-         */
-        valueDate?: date;
-        /**
-         * Contains extended information for property 'valueDate'.
-         */
-        _valueDate?: Element;
-        /**
-         * Default value when item is first rendered
-         */
-        valueDateTime?: dateTime;
-        /**
-         * Contains extended information for property 'valueDateTime'.
-         */
-        _valueDateTime?: Element;
-        /**
-         * Default value when item is first rendered
-         */
-        valueTime?: time;
-        /**
-         * Contains extended information for property 'valueTime'.
-         */
-        _valueTime?: Element;
-        /**
-         * Default value when item is first rendered
-         */
-        valueString?: string;
-        /**
-         * Contains extended information for property 'valueString'.
-         */
-        _valueString?: Element;
-        /**
-         * Default value when item is first rendered
-         */
-        valueUri?: uri;
-        /**
-         * Contains extended information for property 'valueUri'.
-         */
-        _valueUri?: Element;
-        /**
-         * Default value when item is first rendered
-         */
-        valueAttachment?: Attachment;
-        /**
-         * Default value when item is first rendered
-         */
-        valueCoding?: Coding;
-        /**
-         * Default value when item is first rendered
-         */
-        valueQuantity?: Quantity;
-        /**
-         * Default value when item is first rendered
-         */
-        valueReference?: Reference;
-    }
-
     /**
      * Only allow data when
      */
@@ -19671,19 +23088,16 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'question'.
          */
         _question?: Element;
-
-        operator: code; // added for R4
-        _operator?: code; // added for R4
         /**
-         * Enable when answered or not
+         * exists | = | != | > | < | >= | <=
          */
-//        hasAnswer?: boolean;
+        operator: code;
         /**
-         * Contains extended information for property 'hasAnswer'.
+         * Contains extended information for property 'operator'.
          */
-//        _hasAnswer?: Element;
+        _operator?: Element;
         /**
-         * Value question must have
+         * Value for question comparison based on operator
          */
         answerBoolean?: boolean;
         /**
@@ -19691,7 +23105,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _answerBoolean?: Element;
         /**
-         * Value question must have
+         * Value for question comparison based on operator
          */
         answerDecimal?: decimal;
         /**
@@ -19699,7 +23113,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _answerDecimal?: Element;
         /**
-         * Value question must have
+         * Value for question comparison based on operator
          */
         answerInteger?: integer;
         /**
@@ -19707,7 +23121,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _answerInteger?: Element;
         /**
-         * Value question must have
+         * Value for question comparison based on operator
          */
         answerDate?: date;
         /**
@@ -19715,7 +23129,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _answerDate?: Element;
         /**
-         * Value question must have
+         * Value for question comparison based on operator
          */
         answerDateTime?: dateTime;
         /**
@@ -19723,7 +23137,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _answerDateTime?: Element;
         /**
-         * Value question must have
+         * Value for question comparison based on operator
          */
         answerTime?: time;
         /**
@@ -19731,7 +23145,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _answerTime?: Element;
         /**
-         * Value question must have
+         * Value for question comparison based on operator
          */
         answerString?: string;
         /**
@@ -19739,34 +23153,22 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _answerString?: Element;
         /**
-         * Value question must have
-         */
-//        answerUri?: uri;
-        /**
-         * Contains extended information for property 'answerUri'.
-         */
-//        _answerUri?: Element;
-        /**
-         * Value question must have
-         */
-//        answerAttachment?: Attachment;
-        /**
-         * Value question must have
+         * Value for question comparison based on operator
          */
         answerCoding?: Coding;
         /**
-         * Value question must have
+         * Value for question comparison based on operator
          */
         answerQuantity?: Quantity;
         /**
-         * Value question must have
+         * Value for question comparison based on operator
          */
         answerReference?: Reference;
     }
     /**
      * Permitted answer
      */
-    interface QuestionnaireItemAnswerOption extends BackboneElement { // modified for R4
+    interface QuestionnaireItemAnswerOption extends BackboneElement {
         /**
          * Answer value
          */
@@ -19803,15 +23205,110 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Answer value
          */
         valueCoding?: Coding;
-
-        valueReference?: Reference; // added for R4
+        /**
+         * Answer value
+         */
+        valueReference?: Reference;
+        /**
+         * Whether option is selected by default
+         */
+        initialSelected?: boolean;
+        /**
+         * Contains extended information for property 'initialSelected'.
+         */
+        _initialSelected?: Element;
+    }
+    /**
+     * Initial value(s) when item is first rendered
+     */
+    interface QuestionnaireItemInitial extends BackboneElement {
+        /**
+         * Actual value for initializing the question
+         */
+        valueBoolean?: boolean;
+        /**
+         * Contains extended information for property 'valueBoolean'.
+         */
+        _valueBoolean?: Element;
+        /**
+         * Actual value for initializing the question
+         */
+        valueDecimal?: decimal;
+        /**
+         * Contains extended information for property 'valueDecimal'.
+         */
+        _valueDecimal?: Element;
+        /**
+         * Actual value for initializing the question
+         */
+        valueInteger?: integer;
+        /**
+         * Contains extended information for property 'valueInteger'.
+         */
+        _valueInteger?: Element;
+        /**
+         * Actual value for initializing the question
+         */
+        valueDate?: date;
+        /**
+         * Contains extended information for property 'valueDate'.
+         */
+        _valueDate?: Element;
+        /**
+         * Actual value for initializing the question
+         */
+        valueDateTime?: dateTime;
+        /**
+         * Contains extended information for property 'valueDateTime'.
+         */
+        _valueDateTime?: Element;
+        /**
+         * Actual value for initializing the question
+         */
+        valueTime?: time;
+        /**
+         * Contains extended information for property 'valueTime'.
+         */
+        _valueTime?: Element;
+        /**
+         * Actual value for initializing the question
+         */
+        valueString?: string;
+        /**
+         * Contains extended information for property 'valueString'.
+         */
+        _valueString?: Element;
+        /**
+         * Actual value for initializing the question
+         */
+        valueUri?: uri;
+        /**
+         * Contains extended information for property 'valueUri'.
+         */
+        _valueUri?: Element;
+        /**
+         * Actual value for initializing the question
+         */
+        valueAttachment?: Attachment;
+        /**
+         * Actual value for initializing the question
+         */
+        valueCoding?: Coding;
+        /**
+         * Actual value for initializing the question
+         */
+        valueQuantity?: Quantity;
+        /**
+         * Actual value for initializing the question
+         */
+        valueReference?: Reference;
     }
     /**
      * A structured set of questions
      */
     interface Questionnaire extends DomainResource {
         /**
-         * Logical URI to reference this questionnaire (globally unique)
+         * Canonical identifier for this questionnaire, represented as a URI (globally unique)
          */
         url?: uri;
         /**
@@ -19847,12 +23344,16 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _title?: Element;
         /**
+         * Instantiates protocol or definition
+         */
+        derivedFrom?: canonical[];
+        /**
+         * Contains extended information for property 'derivedFrom'.
+         */
+        _derivedFrom?: Element[];
+        /**
          * draft | active | retired | unknown
          */
-
-        derivedFrom?: canonical[]; // added for R4
-        _derivedFrom?: canonical[]; // added for R4
-
         status: code;
         /**
          * Contains extended information for property 'status'.
@@ -19867,7 +23368,15 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _experimental?: Element;
         /**
-         * Date this was last changed
+         * Resource that can be subject of QuestionnaireResponse
+         */
+        subjectType?: code[];
+        /**
+         * Contains extended information for property 'subjectType'.
+         */
+        _subjectType?: Element[];
+        /**
+         * Date last changed
          */
         date?: dateTime;
         /**
@@ -19883,6 +23392,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _publisher?: Element;
         /**
+         * Contact details for the publisher
+         */
+        contact?: ContactDetail[];
+        /**
          * Natural language description of the questionnaire
          */
         description?: markdown;
@@ -19891,6 +23404,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
+         * The context that the content is intended to support
+         */
+        useContext?: UsageContext[];
+        /**
+         * Intended jurisdiction for questionnaire (if applicable)
+         */
+        jurisdiction?: CodeableConcept[];
+        /**
          * Why this questionnaire is defined
          */
         purpose?: markdown;
@@ -19898,6 +23419,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'purpose'.
          */
         _purpose?: Element;
+        /**
+         * Use and/or publishing restrictions
+         */
+        copyright?: markdown;
+        /**
+         * Contains extended information for property 'copyright'.
+         */
+        _copyright?: Element;
         /**
          * When the questionnaire was approved by publisher
          */
@@ -19919,37 +23448,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         effectivePeriod?: Period;
         /**
-         * Context the content is intended to support
-         */
-        useContext?: UsageContext[];
-        /**
-         * Intended jurisdiction for questionnaire (if applicable)
-         */
-        jurisdiction?: CodeableConcept[];
-        /**
-         * Contact details for the publisher
-         */
-        contact?: ContactDetail[];
-        /**
-         * Use and/or publishing restrictions
-         */
-        copyright?: markdown;
-        /**
-         * Contains extended information for property 'copyright'.
-         */
-        _copyright?: Element;
-        /**
          * Concept that represents the overall questionnaire
          */
         code?: Coding[];
-        /**
-         * Resource that can be subject of QuestionnaireResponse
-         */
-        subjectType?: code[];
-        /**
-         * Contains extended information for property 'subjectType'.
-         */
-        _subjectType?: Element[];
         /**
          * Questions and sections within the Questionnaire
          */
@@ -19983,10 +23484,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'text'.
          */
         _text?: Element;
-        /**
-         * The subject this group's answers are about
-         */
-        subject?: Reference;
         /**
          * The response(s) to the question
          */
@@ -20100,11 +23597,15 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Part of this action
          */
-        parent?: Reference[];
+        partOf?: Reference[];
         /**
          * Form being answered
          */
-        questionnaire?: Reference;
+        questionnaire?: canonical;
+        /**
+         * Contains extended information for property 'questionnaire'.
+         */
+        _questionnaire?: Element;
         /**
          * in-progress | completed | amended | entered-in-error | stopped
          */
@@ -20143,145 +23644,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         item?: QuestionnaireResponseItem[];
     }
     /**
-     * Who/what is requesting service
-     */
-    interface ReferralRequestRequester extends BackboneElement {
-        /**
-         * Individual making the request
-         */
-        agent: Reference;
-        /**
-         * Organization agent is acting for
-         */
-        onBehalfOf?: Reference;
-    }
-    /**
-     * A request for referral or transfer of care
-     */
-    interface ReferralRequest extends DomainResource {
-        /**
-         * Business identifier
-         */
-        identifier?: Identifier[];
-        /**
-         * Instantiates protocol or definition
-         */
-        definition?: Reference[];
-        /**
-         * Request fulfilled by this request
-         */
-        basedOn?: Reference[];
-        /**
-         * Request(s) replaced by this request
-         */
-        replaces?: Reference[];
-        /**
-         * Composite request this is part of
-         */
-        groupIdentifier?: Identifier;
-        /**
-         * draft | active | suspended | cancelled | completed | entered-in-error | unknown
-         */
-        status: code;
-        /**
-         * Contains extended information for property 'status'.
-         */
-        _status?: Element;
-        /**
-         * proposal | plan | order
-         */
-        intent: code;
-        /**
-         * Contains extended information for property 'intent'.
-         */
-        _intent?: Element;
-        /**
-         * Referral/Transition of care request type
-         */
-        type?: CodeableConcept;
-        /**
-         * Urgency of referral / transfer of care request
-         */
-        priority?: code;
-        /**
-         * Contains extended information for property 'priority'.
-         */
-        _priority?: Element;
-        /**
-         * Actions requested as part of the referral
-         */
-        serviceRequested?: CodeableConcept[];
-        /**
-         * Patient referred to care or transfer
-         */
-        subject: Reference;
-        /**
-         * Originating encounter
-         */
-        context?: Reference;
-        /**
-         * When the service(s) requested in the referral should occur
-         */
-        occurrenceDateTime?: dateTime;
-        /**
-         * Contains extended information for property 'occurrenceDateTime'.
-         */
-        _occurrenceDateTime?: Element;
-        /**
-         * When the service(s) requested in the referral should occur
-         */
-        occurrencePeriod?: Period;
-        /**
-         * Date of creation/activation
-         */
-        authoredOn?: dateTime;
-        /**
-         * Contains extended information for property 'authoredOn'.
-         */
-        _authoredOn?: Element;
-        /**
-         * Who/what is requesting service
-         */
-        requester?: ReferralRequestRequester;
-        /**
-         * The clinical specialty (discipline) that the referral is requested for
-         */
-        specialty?: CodeableConcept;
-        /**
-         * Receiver of referral / transfer of care request
-         */
-        recipient?: Reference[];
-        /**
-         * Reason for referral / transfer of care request
-         */
-        reasonCode?: CodeableConcept[];
-        /**
-         * Why is service needed?
-         */
-        reasonReference?: Reference[];
-        /**
-         * A textual description of the referral
-         */
-        description?: string;
-        /**
-         * Contains extended information for property 'description'.
-         */
-        _description?: Element;
-        /**
-         * Additonal information to support referral or transfer of care request
-         */
-        supportingInfo?: Reference[];
-        /**
-         * Comments made about referral request
-         */
-        note?: Annotation[];
-        /**
-         * Key events in history of request
-         */
-        relevantHistory?: Reference[];
-    }
-    /**
-     * An person that is related to a patient, but who is not a direct target of care
+     * A person that is related to a patient, but who is not a direct target of care
      */
     interface RelatedPerson extends DomainResource {
         /**
@@ -20303,7 +23666,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * The nature of the relationship
          */
-        relationship?: CodeableConcept;
+        relationship?: CodeableConcept[];
         /**
          * A name associated with the person
          */
@@ -20346,13 +23709,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface RequestGroupAction extends BackboneElement {
         /**
-         * User-visible label for the action (e.g. 1. or A.)
+         * User-visible prefix for the action (e.g. 1. or A.)
          */
-        label?: string;
+        prefix?: string;
         /**
-         * Contains extended information for property 'label'.
+         * Contains extended information for property 'prefix'.
          */
-        _label?: Element;
+        _prefix?: Element;
         /**
          * User-visible title
          */
@@ -20377,6 +23740,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'textEquivalent'.
          */
         _textEquivalent?: Element;
+        /**
+         * routine | urgent | asap | stat
+         */
+        priority?: code;
+        /**
+         * Contains extended information for property 'priority'.
+         */
+        _priority?: Element;
         /**
          * Code representing the meaning of the action or sub-actions
          */
@@ -20404,6 +23775,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * When the action should take place
          */
+        timingAge?: Age;
+        /**
+         * When the action should take place
+         */
         timingPeriod?: Period;
         /**
          * When the action should take place
@@ -20424,7 +23799,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * create | update | remove | fire-event
          */
-        type?: Coding;
+        type?: CodeableConcept;
         /**
          * visual-group | logical-group | sentence-group
          */
@@ -20549,9 +23924,21 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         identifier?: Identifier[];
         /**
-         * Instantiates protocol or definition
+         * Instantiates FHIR protocol or definition
          */
-        definition?: Reference[];
+        instantiatesCanonical?: canonical[];
+        /**
+         * Contains extended information for property 'instantiatesCanonical'.
+         */
+        _instantiatesCanonical?: Element[];
+        /**
+         * Instantiates external protocol or definition
+         */
+        instantiatesUri?: uri[];
+        /**
+         * Contains extended information for property 'instantiatesUri'.
+         */
+        _instantiatesUri?: Element[];
         /**
          * Fulfills plan, proposal, or order
          */
@@ -20589,6 +23976,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _priority?: Element;
         /**
+         * What's being requested/ordered
+         */
+        code?: CodeableConcept;
+        /**
          * Who the request group is about
          */
         subject?: Reference;
@@ -20609,13 +24000,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         author?: Reference;
         /**
-         * Reason for the request group
+         * Why the request group is needed
          */
-        reasonCodeableConcept?: CodeableConcept;
+        reasonCode?: CodeableConcept[];
         /**
-         * Reason for the request group
+         * Why the request group is needed
          */
-        reasonReference?: Reference;
+        reasonReference?: Reference[];
         /**
          * Additional notes about the response
          */
@@ -20640,7 +24031,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Categorization of study arm
          */
-        code?: CodeableConcept;
+        type?: CodeableConcept;
         /**
          * Short explanation of study path
          */
@@ -20649,6 +24040,23 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'description'.
          */
         _description?: Element;
+    }
+    /**
+     * A goal for the study
+     */
+    interface ResearchStudyObjective extends BackboneElement {
+        /**
+         * Label for the objective
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * primary | secondary | exploratory
+         */
+        type?: CodeableConcept;
     }
     /**
      * Investigation to increase healthcare-related patient-independent knowledge
@@ -20675,7 +24083,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         partOf?: Reference[];
         /**
-         * draft | in-progress | suspended | stopped | completed | entered-in-error
+         * active | administratively-completed | approved | closed-to-accrual | closed-to-accrual-and-intervention | completed | disapproved | in-review | temporarily-closed-to-accrual | temporarily-closed-to-accrual-and-intervention | withdrawn
          */
         status: code;
         /**
@@ -20683,13 +24091,25 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _status?: Element;
         /**
+         * treatment | prevention | diagnostic | supportive-care | screening | health-services-research | basic-science | device-feasibility
+         */
+        primaryPurposeType?: CodeableConcept;
+        /**
+         * n-a | early-phase-1 | phase-1 | phase-1-phase-2 | phase-2 | phase-2-phase-3 | phase-3 | phase-4
+         */
+        phase?: CodeableConcept;
+        /**
          * Classifications for the study
          */
         category?: CodeableConcept[];
         /**
-         * Drugs, devices, conditions, etc. under study
+         * Drugs, devices, etc. under study
          */
         focus?: CodeableConcept[];
+        /**
+         * Condition being studied
+         */
+        condition?: CodeableConcept[];
         /**
          * Contact details for the study
          */
@@ -20705,7 +24125,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Geographic region(s) for study
          */
-        jurisdiction?: CodeableConcept[];
+        location?: CodeableConcept[];
         /**
          * What this is study doing
          */
@@ -20723,40 +24143,44 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         period?: Period;
         /**
-         * Organization responsible for the study
+         * Organization that initiates and is legally responsible for the study
          */
         sponsor?: Reference;
         /**
-         * The individual responsible for the study
+         * Researcher who oversees multiple aspects of the study
          */
         principalInvestigator?: Reference;
         /**
-         * Location involved in study execution
+         * Facility where study activities are conducted
          */
         site?: Reference[];
         /**
-         * Reason for terminating study early
+         * accrual-goal-met | closed-due-to-toxicity | closed-due-to-lack-of-study-progress | temporarily-closed-per-study-design
          */
         reasonStopped?: CodeableConcept;
         /**
-         * Comments made about the event
+         * Comments made about the study
          */
         note?: Annotation[];
         /**
          * Defined path through the study for a subject
          */
         arm?: ResearchStudyArm[];
+        /**
+         * A goal for the study
+         */
+        objective?: ResearchStudyObjective[];
     }
     /**
-     * Investigation to increase healthcare-related patient-independent knowledge
+     * Physical entity which is the primary unit of interest in the study
      */
     interface ResearchSubject extends DomainResource {
         /**
-         * Business Identifier for research subject
+         * Business Identifier for research subject in a study
          */
-        identifier?: Identifier;
+        identifier?: Identifier[];
         /**
-         * candidate | enrolled | active | suspended | withdrawn | completed
+         * candidate | eligible | follow-up | ineligible | not-registered | off-study | on-study | on-study-intervention | on-study-observation | pending-on-study | potential-candidate | screening | withdrawn
          */
         status: code;
         /**
@@ -20803,7 +24227,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Possible outcome for the subject
          */
-        outcome: CodeableConcept;
+        outcome?: CodeableConcept;
         /**
          * Likelihood of specified outcome
          */
@@ -20852,7 +24276,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Unique identifier for the assessment
          */
-        identifier?: Identifier;
+        identifier?: Identifier[];
         /**
          * Request fulfilled by this assessment
          */
@@ -20880,7 +24304,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Who/what does assessment apply to?
          */
-        subject?: Reference;
+        subject: Reference;
         /**
          * Where was assessment performed?
          */
@@ -20908,11 +24332,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Why the assessment was necessary?
          */
-        reasonCodeableConcept?: CodeableConcept;
+        reasonCode?: CodeableConcept[];
         /**
          * Why the assessment was necessary?
          */
-        reasonReference?: Reference;
+        reasonReference?: Reference[];
         /**
          * Information used in assessment
          */
@@ -20932,11 +24356,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Comments on the risk assessment
          */
-        comment?: string;
-        /**
-         * Contains extended information for property 'comment'.
-         */
-        _comment?: Element;
+        note?: Annotation[];
     }
     /**
      * A container for slots of time that may be available for booking appointments
@@ -20955,27 +24375,27 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _active?: Element;
         /**
-         * A broad categorisation of the service that is to be performed during this appointment
+         * High-level category
          */
-        serviceCategory?: CodeableConcept;
+        serviceCategory?: CodeableConcept[];
         /**
-         * The specific service that is to be performed during this appointment
+         * Specific service
          */
         serviceType?: CodeableConcept[];
         /**
-         * The specialty of a practitioner that would be required to perform the service requested in this appointment
+         * Type of specialty needed
          */
         specialty?: CodeableConcept[];
         /**
-         * The resource this Schedule resource is providing availability information for. These are expected to usually be one of HealthcareService, Location, Practitioner, PractitionerRole, Device, Patient or RelatedPerson
+         * E.g. HealthCareService, Location, Practitioner, etc.
          */
         actor: Reference[];
         /**
-         * The period of time that the slots that are attached to this Schedule resource cover (even if none exist). These  cover the amount of time that an organization's planning horizon; the interval for which they are currently accepting appointments. This does not define a "template" for planning outside these dates
+         * Period of time covered by schedule
          */
         planningHorizon?: Period;
         /**
-         * Comments on the availability to describe any extended information. Such as custom constraints on the slots that may be associated
+         * Comments on availability
          */
         comment?: string;
         /**
@@ -20990,7 +24410,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Defines how the part works
          */
-        definition: Reference;
+        definition: canonical;
+        /**
+         * Contains extended information for property 'definition'.
+         */
+        _definition?: Element;
         /**
          * Subexpression relative to main expression
          */
@@ -21001,11 +24425,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         _expression?: Element;
     }
     /**
-     * Search Parameter for a resource
+     * Search parameter for a resource
      */
     interface SearchParameter extends DomainResource {
         /**
-         * Logical URI to reference this search parameter (globally unique)
+         * Canonical identifier for this search parameter, represented as a URI (globally unique)
          */
         url: uri;
         /**
@@ -21029,6 +24453,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _name?: Element;
         /**
+         * Original definition for the search parameter
+         */
+        derivedFrom?: canonical;
+        /**
+         * Contains extended information for property 'derivedFrom'.
+         */
+        _derivedFrom?: Element;
+        /**
          * draft | active | retired | unknown
          */
         status: code;
@@ -21045,7 +24477,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _experimental?: Element;
         /**
-         * Date this was last changed
+         * Date last changed
          */
         date?: dateTime;
         /**
@@ -21065,7 +24497,15 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         contact?: ContactDetail[];
         /**
-         * Context the content is intended to support
+         * Natural language description of the search parameter
+         */
+        description: markdown;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * The context that the content is intended to support
          */
         useContext?: UsageContext[];
         /**
@@ -21097,29 +24537,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _base?: Element[];
         /**
-         * number | date | string | token | reference | composite | quantity | uri
+         * number | date | string | token | reference | composite | quantity | uri | special
          */
         type: code;
         /**
          * Contains extended information for property 'type'.
          */
         _type?: Element;
-        /**
-         * Original Definition for the search parameter
-         */
-        derivedFrom?: uri;
-        /**
-         * Contains extended information for property 'derivedFrom'.
-         */
-        _derivedFrom?: Element;
-        /**
-         * Natural language description of the search parameter
-         */
-        description: markdown;
-        /**
-         * Contains extended information for property 'description'.
-         */
-        _description?: Element;
         /**
          * FHIRPath expression that extracts the values
          */
@@ -21153,6 +24577,22 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _target?: Element[];
         /**
+         * Allow multiple values per parameter (or)
+         */
+        multipleOr?: boolean;
+        /**
+         * Contains extended information for property 'multipleOr'.
+         */
+        _multipleOr?: Element;
+        /**
+         * Allow multiple parameters (and)
+         */
+        multipleAnd?: boolean;
+        /**
+         * Contains extended information for property 'multipleAnd'.
+         */
+        _multipleAnd?: Element;
+        /**
          * eq | ne | gt | lt | ge | le | sa | eb | ap
          */
         comparator?: code[];
@@ -21161,7 +24601,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _comparator?: Element[];
         /**
-         * missing | exact | contains | not | text | in | not-in | below | above | type
+         * missing | exact | contains | not | text | in | not-in | below | above | type | identifier | ofType
          */
         modifier?: code[];
         /**
@@ -21198,6 +24638,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _genomeBuild?: Element;
         /**
+         * sense | antisense
+         */
+        orientation?: code;
+        /**
+         * Contains extended information for property 'orientation'.
+         */
+        _orientation?: Element;
+        /**
          * Reference identifier
          */
         referenceSeqId?: CodeableConcept;
@@ -21214,9 +24662,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _referenceSeqString?: Element;
         /**
-         * Directionality of DNA ( +1/-1)
+         * watson | crick
          */
-        strand?: integer;
+        strand?: code;
         /**
          * Contains extended information for property 'strand'.
          */
@@ -21391,6 +24839,71 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'fScore'.
          */
         _fScore?: Element;
+        /**
+         * Receiver Operator Characteristic (ROC) Curve
+         */
+        roc?: SequenceQualityRoc;
+    }
+    /**
+     * Receiver Operator Characteristic (ROC) Curve
+     */
+    interface SequenceQualityRoc extends BackboneElement {
+        /**
+         * Genotype quality score
+         */
+        score?: integer[];
+        /**
+         * Contains extended information for property 'score'.
+         */
+        _score?: Element[];
+        /**
+         * Roc score true positive numbers
+         */
+        numTP?: integer[];
+        /**
+         * Contains extended information for property 'numTP'.
+         */
+        _numTP?: Element[];
+        /**
+         * Roc score false positive numbers
+         */
+        numFP?: integer[];
+        /**
+         * Contains extended information for property 'numFP'.
+         */
+        _numFP?: Element[];
+        /**
+         * Roc score false negative numbers
+         */
+        numFN?: integer[];
+        /**
+         * Contains extended information for property 'numFN'.
+         */
+        _numFN?: Element[];
+        /**
+         * Precision of the GQ score
+         */
+        precision?: decimal[];
+        /**
+         * Contains extended information for property 'precision'.
+         */
+        _precision?: Element[];
+        /**
+         * Sensitivity of the GQ score
+         */
+        sensitivity?: decimal[];
+        /**
+         * Contains extended information for property 'sensitivity'.
+         */
+        _sensitivity?: Element[];
+        /**
+         * FScore of the GQ score
+         */
+        fMeasure?: decimal[];
+        /**
+         * Contains extended information for property 'fMeasure'.
+         */
+        _fMeasure?: Element[];
     }
     /**
      * External repository which contains detailed report related with observedSeq in this resource
@@ -21444,6 +24957,85 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'readsetId'.
          */
         _readsetId?: Element;
+    }
+    /**
+     * Structural variant
+     */
+    interface SequenceStructureVariant extends BackboneElement {
+        /**
+         * Precision of boundaries
+         */
+        precision?: string;
+        /**
+         * Contains extended information for property 'precision'.
+         */
+        _precision?: Element;
+        /**
+         * Structural Variant reported aCGH ratio
+         */
+        reportedaCGHRatio?: decimal;
+        /**
+         * Contains extended information for property 'reportedaCGHRatio'.
+         */
+        _reportedaCGHRatio?: Element;
+        /**
+         * Structural Variant Length
+         */
+        length?: integer;
+        /**
+         * Contains extended information for property 'length'.
+         */
+        _length?: Element;
+        /**
+         * Structural variant outer
+         */
+        outer?: SequenceStructureVariantOuter;
+        /**
+         * Structural variant inner
+         */
+        inner?: SequenceStructureVariantInner;
+    }
+    /**
+     * Structural variant outer
+     */
+    interface SequenceStructureVariantOuter extends BackboneElement {
+        /**
+         * Structural Variant Outer Start
+         */
+        start?: integer;
+        /**
+         * Contains extended information for property 'start'.
+         */
+        _start?: Element;
+        /**
+         * Structural Variant Outer End
+         */
+        end?: integer;
+        /**
+         * Contains extended information for property 'end'.
+         */
+        _end?: Element;
+    }
+    /**
+     * Structural variant inner
+     */
+    interface SequenceStructureVariantInner extends BackboneElement {
+        /**
+         * Structural Variant Inner Start
+         */
+        start?: integer;
+        /**
+         * Contains extended information for property 'start'.
+         */
+        _start?: Element;
+        /**
+         * Structural Variant Inner End
+         */
+        end?: integer;
+        /**
+         * Contains extended information for property 'end'.
+         */
+        _end?: Element;
     }
     /**
      * Information about a biological sequence
@@ -21525,49 +25117,49 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Pointer to next atomic sequence
          */
         pointer?: Reference[];
+        /**
+         * Structural variant
+         */
+        structureVariant?: SequenceStructureVariant[];
     }
     /**
-     * A description of decision support service functionality
+     * A request for a service to be performed
      */
-    interface ServiceDefinition extends DomainResource {
+    interface ServiceRequest extends DomainResource {
         /**
-         * Logical URI to reference this service definition (globally unique)
-         */
-        url?: uri;
-        /**
-         * Contains extended information for property 'url'.
-         */
-        _url?: Element;
-        /**
-         * Additional identifier for the service definition
+         * Identifiers assigned to this order
          */
         identifier?: Identifier[];
         /**
-         * Business version of the service definition
+         * Instantiates FHIR protocol or definition
          */
-        version?: string;
+        instantiatesCanonical?: canonical[];
         /**
-         * Contains extended information for property 'version'.
+         * Contains extended information for property 'instantiatesCanonical'.
          */
-        _version?: Element;
+        _instantiatesCanonical?: Element[];
         /**
-         * Name for this service definition (computer friendly)
+         * Instantiates external protocol or definition
          */
-        name?: string;
+        instantiatesUri?: uri[];
         /**
-         * Contains extended information for property 'name'.
+         * Contains extended information for property 'instantiatesUri'.
          */
-        _name?: Element;
+        _instantiatesUri?: Element[];
         /**
-         * Name for this service definition (human friendly)
+         * What request fulfills
          */
-        title?: string;
+        basedOn?: Reference[];
         /**
-         * Contains extended information for property 'title'.
+         * What request replaces
          */
-        _title?: Element;
+        replaces?: Reference[];
         /**
-         * draft | active | retired | unknown
+         * Composite Request ID
+         */
+        requisition?: Identifier;
+        /**
+         * draft | active | suspended | completed | entered-in-error | cancelled
          */
         status: code;
         /**
@@ -21575,117 +25167,157 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _status?: Element;
         /**
-         * For testing purposes, not real usage
+         * proposal | plan | order +
          */
-        experimental?: boolean;
+        intent: code;
         /**
-         * Contains extended information for property 'experimental'.
+         * Contains extended information for property 'intent'.
          */
-        _experimental?: Element;
+        _intent?: Element;
         /**
-         * Date this was last changed
+         * Classification of service
          */
-        date?: dateTime;
+        category?: CodeableConcept[];
         /**
-         * Contains extended information for property 'date'.
+         * routine | urgent | asap | stat
          */
-        _date?: Element;
+        priority?: code;
         /**
-         * Name of the publisher (organization or individual)
+         * Contains extended information for property 'priority'.
          */
-        publisher?: string;
+        _priority?: Element;
         /**
-         * Contains extended information for property 'publisher'.
+         * True if service/procedure should not be performed
          */
-        _publisher?: Element;
+        doNotPerform?: boolean;
         /**
-         * Natural language description of the service definition
+         * Contains extended information for property 'doNotPerform'.
          */
-        description?: markdown;
+        _doNotPerform?: Element;
         /**
-         * Contains extended information for property 'description'.
+         * What is being requested/ordered
          */
-        _description?: Element;
+        code?: CodeableConcept;
         /**
-         * Why this service definition is defined
+         * Additional order information
          */
-        purpose?: markdown;
+        orderDetail?: CodeableConcept[];
         /**
-         * Contains extended information for property 'purpose'.
+         * Service amount
          */
-        _purpose?: Element;
+        quantityQuantity?: Quantity;
         /**
-         * Describes the clinical usage of the module
+         * Service amount
          */
-        usage?: string;
+        quantityRatio?: Ratio;
         /**
-         * Contains extended information for property 'usage'.
+         * Service amount
          */
-        _usage?: Element;
+        quantityRange?: Range;
         /**
-         * When the service definition was approved by publisher
+         * Individual the service is ordered for
          */
-        approvalDate?: date;
+        subject: Reference;
         /**
-         * Contains extended information for property 'approvalDate'.
+         * Encounter or Episode during which request was created
          */
-        _approvalDate?: Element;
+        context?: Reference;
         /**
-         * When the service definition was last reviewed
+         * When service should occur
          */
-        lastReviewDate?: date;
+        occurrenceDateTime?: dateTime;
         /**
-         * Contains extended information for property 'lastReviewDate'.
+         * Contains extended information for property 'occurrenceDateTime'.
          */
-        _lastReviewDate?: Element;
+        _occurrenceDateTime?: Element;
         /**
-         * When the service definition is expected to be used
+         * When service should occur
          */
-        effectivePeriod?: Period;
+        occurrencePeriod?: Period;
         /**
-         * Context the content is intended to support
+         * When service should occur
          */
-        useContext?: UsageContext[];
+        occurrenceTiming?: Timing;
         /**
-         * Intended jurisdiction for service definition (if applicable)
+         * Preconditions for service
          */
-        jurisdiction?: CodeableConcept[];
+        asNeededBoolean?: boolean;
         /**
-         * E.g. Education, Treatment, Assessment, etc
+         * Contains extended information for property 'asNeededBoolean'.
          */
-        topic?: CodeableConcept[];
+        _asNeededBoolean?: Element;
         /**
-         * A content contributor
+         * Preconditions for service
          */
-        contributor?: Contributor[];
+        asNeededCodeableConcept?: CodeableConcept;
         /**
-         * Contact details for the publisher
+         * Date request signed
          */
-        contact?: ContactDetail[];
+        authoredOn?: dateTime;
         /**
-         * Use and/or publishing restrictions
+         * Contains extended information for property 'authoredOn'.
          */
-        copyright?: markdown;
+        _authoredOn?: Element;
         /**
-         * Contains extended information for property 'copyright'.
+         * Who/what is requesting service
          */
-        _copyright?: Element;
+        requester?: Reference;
         /**
-         * Additional documentation, citations, etc
+         * Performer role
          */
-        relatedArtifact?: RelatedArtifact[];
+        performerType?: CodeableConcept;
         /**
-         * "when" the module should be invoked
+         * Requested performer
          */
-        trigger?: TriggerDefinition[];
+        performer?: Reference[];
         /**
-         * What data is used by the module
+         * Requested location
          */
-        dataRequirement?: DataRequirement[];
+        locationCode?: CodeableConcept[];
         /**
-         * Operation to invoke
+         * Requested location
          */
-        operationDefinition?: Reference;
+        locationReference?: Reference[];
+        /**
+         * Explanation/Justification for procedure or service
+         */
+        reasonCode?: CodeableConcept[];
+        /**
+         * Explanation/Justification for service or service
+         */
+        reasonReference?: Reference[];
+        /**
+         * Associated insurance coverage
+         */
+        insurance?: Reference[];
+        /**
+         * Additional clinical information
+         */
+        supportingInfo?: Reference[];
+        /**
+         * Procedure Samples
+         */
+        specimen?: Reference[];
+        /**
+         * Location on Body
+         */
+        bodySite?: CodeableConcept[];
+        /**
+         * Comments
+         */
+        note?: Annotation[];
+        /**
+         * Patient or consumer-oriented instructions
+         */
+        patientInstruction?: string;
+        /**
+         * Contains extended information for property 'patientInstruction'.
+         */
+        _patientInstruction?: Element;
+        /**
+         * Request provenance
+         */
+        relevantHistory?: Reference[];
     }
     /**
      * A slot of time on a schedule that may be available for booking appointments
@@ -21696,9 +25328,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         identifier?: Identifier[];
         /**
-         * A broad categorisation of the service that is to be performed during this appointment
+         * A broad categorization of the service that is to be performed during this appointment
          */
-        serviceCategory?: CodeableConcept;
+        serviceCategory?: CodeableConcept[];
         /**
          * The type of appointments that can be booked into this slot (ideally this would be an identifiable service - which is at a location, rather than the location itself). If provided then this overrides the value provided on the availability resource
          */
@@ -21777,6 +25409,10 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         collectedPeriod?: Period;
         /**
+         * How long it took to collect specimen
+         */
+        duration?: Duration;
+        /**
          * The quantity of specimen collected
          */
         quantity?: Quantity;
@@ -21788,6 +25424,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Anatomical collection site
          */
         bodySite?: CodeableConcept;
+        /**
+         * Whether or how long patient abstained from food and/or drink
+         */
+        fastingStatusCodeableConcept?: CodeableConcept;
+        /**
+         * Whether or how long patient abstained from food and/or drink
+         */
+        fastingStatusDuration?: Duration;
     }
     /**
      * Processing and processing step details
@@ -21884,9 +25528,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         type?: CodeableConcept;
         /**
-         * Where the specimen came from. This may be from the patient(s) or from the environment or a device
+         * Where the specimen came from. This may be from patient(s),from a location (e.g., the source of an environmental sample), or a sampling of a substance or a device
          */
-        subject: Reference;
+        subject?: Reference;
         /**
          * The time when specimen was received for processing
          */
@@ -21916,9 +25560,181 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         container?: SpecimenContainer[];
         /**
+         * State of the specimen
+         */
+        condition?: CodeableConcept[];
+        /**
          * Comments
          */
         note?: Annotation[];
+    }
+    /**
+     * Specimen in container intended for testing by lab
+     */
+    interface SpecimenDefinitionSpecimenToLab extends BackboneElement {
+        /**
+         * Primary or secondary specimen
+         */
+        isDerived: boolean;
+        /**
+         * Contains extended information for property 'isDerived'.
+         */
+        _isDerived?: Element;
+        /**
+         * Type of intended specimen
+         */
+        type?: CodeableConcept;
+        /**
+         * preferred | alternate
+         */
+        preference: code;
+        /**
+         * Contains extended information for property 'preference'.
+         */
+        _preference?: Element;
+        /**
+         * Container material
+         */
+        containerMaterial?: CodeableConcept;
+        /**
+         * Kind of container associated with the kind of specimen
+         */
+        containerType?: CodeableConcept;
+        /**
+         * Color of container cap
+         */
+        containerCap?: CodeableConcept;
+        /**
+         * Container description
+         */
+        containerDescription?: string;
+        /**
+         * Contains extended information for property 'containerDescription'.
+         */
+        _containerDescription?: Element;
+        /**
+         * Container capacity
+         */
+        containerCapacity?: Quantity;
+        /**
+         * Minimum volume
+         */
+        containerMinimumVolume?: Quantity;
+        /**
+         * Additive associated with container
+         */
+        containerAdditive?: SpecimenDefinitionSpecimenToLabContainerAdditive[];
+        /**
+         * Specimen container preparation
+         */
+        containerPreparation?: string;
+        /**
+         * Contains extended information for property 'containerPreparation'.
+         */
+        _containerPreparation?: Element;
+        /**
+         * Specimen requirements
+         */
+        requirement?: string;
+        /**
+         * Contains extended information for property 'requirement'.
+         */
+        _requirement?: Element;
+        /**
+         * Specimen retention time
+         */
+        retentionTime?: Duration;
+        /**
+         * Rejection criterion
+         */
+        rejectionCriterion?: CodeableConcept[];
+        /**
+         * Specimen handling before testing
+         */
+        handling?: SpecimenDefinitionSpecimenToLabHandling[];
+    }
+    /**
+     * Additive associated with container
+     */
+    interface SpecimenDefinitionSpecimenToLabContainerAdditive extends BackboneElement {
+        /**
+         * Additive associated with container
+         */
+        additiveCodeableConcept?: CodeableConcept;
+        /**
+         * Additive associated with container
+         */
+        additiveReference?: Reference;
+    }
+    /**
+     * Specimen handling before testing
+     */
+    interface SpecimenDefinitionSpecimenToLabHandling extends BackboneElement {
+        /**
+         * Conservation condition set
+         */
+        conditionSet?: CodeableConcept;
+        /**
+         * Temperature range
+         */
+        tempRange?: Range;
+        /**
+         * Maximum conservation time
+         */
+        maxDuration?: Duration;
+        /**
+         * Light exposure
+         */
+        lightExposure?: string;
+        /**
+         * Contains extended information for property 'lightExposure'.
+         */
+        _lightExposure?: Element;
+        /**
+         * Conservation instruction
+         */
+        instruction?: string;
+        /**
+         * Contains extended information for property 'instruction'.
+         */
+        _instruction?: Element;
+    }
+    /**
+     * Kind of specimen
+     */
+    interface SpecimenDefinition extends DomainResource {
+        /**
+         * Business identifier of a kind of specimen
+         */
+        identifier?: Identifier;
+        /**
+         * Kind of material to collect
+         */
+        typeCollected?: CodeableConcept;
+        /**
+         * Patient preparation for collection
+         */
+        patientPreparation?: string;
+        /**
+         * Contains extended information for property 'patientPreparation'.
+         */
+        _patientPreparation?: Element;
+        /**
+         * Time aspect for collection
+         */
+        timeAspect?: string;
+        /**
+         * Contains extended information for property 'timeAspect'.
+         */
+        _timeAspect?: Element;
+        /**
+         * Specimen collection procedure
+         */
+        collection?: CodeableConcept[];
+        /**
+         * Specimen in container intended for testing by lab
+         */
+        specimenToLab?: SpecimenDefinitionSpecimenToLab[];
     }
     /**
      * External specification that the content is mapped to
@@ -21958,6 +25774,27 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         _comment?: Element;
     }
     /**
+     * If an extension, where it can be used in instances
+     */
+    interface StructureDefinitionContext extends BackboneElement {
+        /**
+         * fhirpath | element | extension
+         */
+        type: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+        /**
+         * Where the extension can be used in instances
+         */
+        expression: string;
+        /**
+         * Contains extended information for property 'expression'.
+         */
+        _expression?: Element;
+    }
+    /**
      * Snapshot view of the structure
      */
     interface StructureDefinitionSnapshot extends BackboneElement {
@@ -21965,6 +25802,1703 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Definition of elements in the resource (if no StructureDefinition)
          */
         element: ElementDefinition[];
+    }
+    /**
+     * This element is sliced - slices follow
+     */
+    interface ElementDefinitionSlicing extends Element {
+        /**
+         * Element values that are used to distinguish the slices
+         */
+        discriminator?: ElementDefinitionSlicingDiscriminator[];
+        /**
+         * Text description of how slicing works (or not)
+         */
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * If elements must be in same order as slices
+         */
+        ordered?: boolean;
+        /**
+         * Contains extended information for property 'ordered'.
+         */
+        _ordered?: Element;
+        /**
+         * closed | open | openAtEnd
+         */
+        rules: code;
+        /**
+         * Contains extended information for property 'rules'.
+         */
+        _rules?: Element;
+    }
+    /**
+     * Element values that are used to distinguish the slices
+     */
+    interface ElementDefinitionSlicingDiscriminator extends Element {
+        /**
+         * value | exists | pattern | type | profile
+         */
+        type: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+        /**
+         * Path to element value
+         */
+        path: string;
+        /**
+         * Contains extended information for property 'path'.
+         */
+        _path?: Element;
+    }
+    /**
+     * Base definition information for tools
+     */
+    interface ElementDefinitionBase extends Element {
+        /**
+         * Path that identifies the base element
+         */
+        path: string;
+        /**
+         * Contains extended information for property 'path'.
+         */
+        _path?: Element;
+        /**
+         * Min cardinality of the base element
+         */
+        min: unsignedInt;
+        /**
+         * Contains extended information for property 'min'.
+         */
+        _min?: Element;
+        /**
+         * Max cardinality of the base element
+         */
+        max: string;
+        /**
+         * Contains extended information for property 'max'.
+         */
+        _max?: Element;
+    }
+    /**
+     * Data type and Profile for this element
+     */
+    interface ElementDefinitionType extends Element {
+        /**
+         * Data type or Resource (reference to definition)
+         */
+        code: uri;
+        /**
+         * Contains extended information for property 'code'.
+         */
+        _code?: Element;
+        /**
+         * Profiles (StructureDefinition or IG) - one must apply
+         */
+        profile?: canonical[];
+        /**
+         * Contains extended information for property 'profile'.
+         */
+        _profile?: Element[];
+        /**
+         * Profile (StructureDefinition or IG) on the Reference/canonical target - one must apply
+         */
+        targetProfile?: canonical[];
+        /**
+         * Contains extended information for property 'targetProfile'.
+         */
+        _targetProfile?: Element[];
+        /**
+         * contained | referenced | bundled - how aggregated
+         */
+        aggregation?: code[];
+        /**
+         * Contains extended information for property 'aggregation'.
+         */
+        _aggregation?: Element[];
+        /**
+         * either | independent | specific
+         */
+        versioning?: code;
+        /**
+         * Contains extended information for property 'versioning'.
+         */
+        _versioning?: Element;
+    }
+    /**
+     * Example value (as defined for type)
+     */
+    interface ElementDefinitionExample extends Element {
+        /**
+         * Describes the purpose of this example
+         */
+        label: string;
+        /**
+         * Contains extended information for property 'label'.
+         */
+        _label?: Element;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueBase64Binary?: base64Binary;
+        /**
+         * Contains extended information for property 'valueBase64Binary'.
+         */
+        _valueBase64Binary?: Element;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueBoolean?: boolean;
+        /**
+         * Contains extended information for property 'valueBoolean'.
+         */
+        _valueBoolean?: Element;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueCanonical?: canonical;
+        /**
+         * Contains extended information for property 'valueCanonical'.
+         */
+        _valueCanonical?: Element;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueCode?: code;
+        /**
+         * Contains extended information for property 'valueCode'.
+         */
+        _valueCode?: Element;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueDate?: date;
+        /**
+         * Contains extended information for property 'valueDate'.
+         */
+        _valueDate?: Element;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueDateTime?: dateTime;
+        /**
+         * Contains extended information for property 'valueDateTime'.
+         */
+        _valueDateTime?: Element;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueDecimal?: decimal;
+        /**
+         * Contains extended information for property 'valueDecimal'.
+         */
+        _valueDecimal?: Element;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueId?: id;
+        /**
+         * Contains extended information for property 'valueId'.
+         */
+        _valueId?: Element;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueInstant?: instant;
+        /**
+         * Contains extended information for property 'valueInstant'.
+         */
+        _valueInstant?: Element;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueInteger?: integer;
+        /**
+         * Contains extended information for property 'valueInteger'.
+         */
+        _valueInteger?: Element;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueMarkdown?: markdown;
+        /**
+         * Contains extended information for property 'valueMarkdown'.
+         */
+        _valueMarkdown?: Element;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueOid?: oid;
+        /**
+         * Contains extended information for property 'valueOid'.
+         */
+        _valueOid?: Element;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valuePositiveInt?: positiveInt;
+        /**
+         * Contains extended information for property 'valuePositiveInt'.
+         */
+        _valuePositiveInt?: Element;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueString?: string;
+        /**
+         * Contains extended information for property 'valueString'.
+         */
+        _valueString?: Element;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueTime?: time;
+        /**
+         * Contains extended information for property 'valueTime'.
+         */
+        _valueTime?: Element;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueUnsignedInt?: unsignedInt;
+        /**
+         * Contains extended information for property 'valueUnsignedInt'.
+         */
+        _valueUnsignedInt?: Element;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueUri?: uri;
+        /**
+         * Contains extended information for property 'valueUri'.
+         */
+        _valueUri?: Element;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueUrl?: url;
+        /**
+         * Contains extended information for property 'valueUrl'.
+         */
+        _valueUrl?: Element;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueUuid?: uuid;
+        /**
+         * Contains extended information for property 'valueUuid'.
+         */
+        _valueUuid?: Element;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueAddress?: Address;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueAge?: Age;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueAnnotation?: Annotation;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueAttachment?: Attachment;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueCodeableConcept?: CodeableConcept;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueCoding?: Coding;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueContactPoint?: ContactPoint;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueCount?: Count;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueDistance?: Distance;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueDuration?: Duration;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueHumanName?: HumanName;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueIdentifier?: Identifier;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueMoney?: Money;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valuePeriod?: Period;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueQuantity?: Quantity;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueRange?: Range;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueRatio?: Ratio;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueReference?: Reference;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueSampledData?: SampledData;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueSignature?: Signature;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueTiming?: Timing;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueParameterDefinition?: ParameterDefinition;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueDataRequirement?: DataRequirement;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueRelatedArtifact?: RelatedArtifact;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueContactDetail?: ContactDetail;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueContributor?: Contributor;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueTriggerDefinition?: TriggerDefinition;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueExpression?: Expression;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueUsageContext?: UsageContext;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueDosage?: Dosage;
+    }
+    /**
+     * Condition that must evaluate to true
+     */
+    interface ElementDefinitionConstraint extends Element {
+        /**
+         * Target of 'condition' reference above
+         */
+        key: id;
+        /**
+         * Contains extended information for property 'key'.
+         */
+        _key?: Element;
+        /**
+         * Why this constraint is necessary or appropriate
+         */
+        requirements?: string;
+        /**
+         * Contains extended information for property 'requirements'.
+         */
+        _requirements?: Element;
+        /**
+         * error | warning
+         */
+        severity: code;
+        /**
+         * Contains extended information for property 'severity'.
+         */
+        _severity?: Element;
+        /**
+         * Human description of constraint
+         */
+        human: string;
+        /**
+         * Contains extended information for property 'human'.
+         */
+        _human?: Element;
+        /**
+         * FHIRPath expression of constraint
+         */
+        expression?: string;
+        /**
+         * Contains extended information for property 'expression'.
+         */
+        _expression?: Element;
+        /**
+         * XPath expression of constraint
+         */
+        xpath?: string;
+        /**
+         * Contains extended information for property 'xpath'.
+         */
+        _xpath?: Element;
+        /**
+         * Reference to original source of constraint
+         */
+        source?: canonical;
+        /**
+         * Contains extended information for property 'source'.
+         */
+        _source?: Element;
+    }
+    /**
+     * ValueSet details if this is coded
+     */
+    interface ElementDefinitionBinding extends Element {
+        /**
+         * required | extensible | preferred | example
+         */
+        strength: code;
+        /**
+         * Contains extended information for property 'strength'.
+         */
+        _strength?: Element;
+        /**
+         * Human explanation of the value set
+         */
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Source of value set
+         */
+        valueSet?: canonical;
+        /**
+         * Contains extended information for property 'valueSet'.
+         */
+        _valueSet?: Element;
+    }
+    /**
+     * Map element to another set of definitions
+     */
+    interface ElementDefinitionMapping extends Element {
+        /**
+         * Reference to mapping declaration
+         */
+        identity: id;
+        /**
+         * Contains extended information for property 'identity'.
+         */
+        _identity?: Element;
+        /**
+         * Computable language of mapping
+         */
+        language?: code;
+        /**
+         * Contains extended information for property 'language'.
+         */
+        _language?: Element;
+        /**
+         * Details of the mapping
+         */
+        map: string;
+        /**
+         * Contains extended information for property 'map'.
+         */
+        _map?: Element;
+        /**
+         * Comments about the mapping or its use
+         */
+        comment?: string;
+        /**
+         * Contains extended information for property 'comment'.
+         */
+        _comment?: Element;
+    }
+    /**
+     * Definition of an element in a resource or extension
+     */
+    interface ElementDefinition extends BackboneElement {
+        /**
+         * Path of the element in the hierarchy of elements
+         */
+        path: string;
+        /**
+         * Contains extended information for property 'path'.
+         */
+        _path?: Element;
+        /**
+         * xmlAttr | xmlText | typeAttr | cdaText | xhtml
+         */
+        representation?: code[];
+        /**
+         * Contains extended information for property 'representation'.
+         */
+        _representation?: Element[];
+        /**
+         * Name for this particular element (in a set of slices)
+         */
+        sliceName?: string;
+        /**
+         * Contains extended information for property 'sliceName'.
+         */
+        _sliceName?: Element;
+        /**
+         * If this slice definition constrains an inherited slice definition (or not)
+         */
+        sliceIsConstraining?: boolean;
+        /**
+         * Contains extended information for property 'sliceIsConstraining'.
+         */
+        _sliceIsConstraining?: Element;
+        /**
+         * Name for element to display with or prompt for element
+         */
+        label?: string;
+        /**
+         * Contains extended information for property 'label'.
+         */
+        _label?: Element;
+        /**
+         * Corresponding codes in terminologies
+         */
+        code?: Coding[];
+        /**
+         * This element is sliced - slices follow
+         */
+        slicing?: ElementDefinitionSlicing;
+        /**
+         * Concise definition for space-constrained presentation
+         */
+        short?: string;
+        /**
+         * Contains extended information for property 'short'.
+         */
+        _short?: Element;
+        /**
+         * Full formal definition as narrative text
+         */
+        definition?: markdown;
+        /**
+         * Contains extended information for property 'definition'.
+         */
+        _definition?: Element;
+        /**
+         * Comments about the use of this element
+         */
+        comment?: markdown;
+        /**
+         * Contains extended information for property 'comment'.
+         */
+        _comment?: Element;
+        /**
+         * Why this resource has been created
+         */
+        requirements?: markdown;
+        /**
+         * Contains extended information for property 'requirements'.
+         */
+        _requirements?: Element;
+        /**
+         * Other names
+         */
+        alias?: string[];
+        /**
+         * Contains extended information for property 'alias'.
+         */
+        _alias?: Element[];
+        /**
+         * Minimum Cardinality
+         */
+        min?: unsignedInt;
+        /**
+         * Contains extended information for property 'min'.
+         */
+        _min?: Element;
+        /**
+         * Maximum Cardinality (a number or *)
+         */
+        max?: string;
+        /**
+         * Contains extended information for property 'max'.
+         */
+        _max?: Element;
+        /**
+         * Base definition information for tools
+         */
+        base?: ElementDefinitionBase;
+        /**
+         * Reference to definition of content for the element
+         */
+        contentReference?: uri;
+        /**
+         * Contains extended information for property 'contentReference'.
+         */
+        _contentReference?: Element;
+        /**
+         * Data type and Profile for this element
+         */
+        type?: ElementDefinitionType[];
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueBase64Binary?: base64Binary;
+        /**
+         * Contains extended information for property 'defaultValueBase64Binary'.
+         */
+        _defaultValueBase64Binary?: Element;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueBoolean?: boolean;
+        /**
+         * Contains extended information for property 'defaultValueBoolean'.
+         */
+        _defaultValueBoolean?: Element;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueCanonical?: canonical;
+        /**
+         * Contains extended information for property 'defaultValueCanonical'.
+         */
+        _defaultValueCanonical?: Element;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueCode?: code;
+        /**
+         * Contains extended information for property 'defaultValueCode'.
+         */
+        _defaultValueCode?: Element;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueDate?: date;
+        /**
+         * Contains extended information for property 'defaultValueDate'.
+         */
+        _defaultValueDate?: Element;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueDateTime?: dateTime;
+        /**
+         * Contains extended information for property 'defaultValueDateTime'.
+         */
+        _defaultValueDateTime?: Element;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueDecimal?: decimal;
+        /**
+         * Contains extended information for property 'defaultValueDecimal'.
+         */
+        _defaultValueDecimal?: Element;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueId?: id;
+        /**
+         * Contains extended information for property 'defaultValueId'.
+         */
+        _defaultValueId?: Element;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueInstant?: instant;
+        /**
+         * Contains extended information for property 'defaultValueInstant'.
+         */
+        _defaultValueInstant?: Element;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueInteger?: integer;
+        /**
+         * Contains extended information for property 'defaultValueInteger'.
+         */
+        _defaultValueInteger?: Element;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueMarkdown?: markdown;
+        /**
+         * Contains extended information for property 'defaultValueMarkdown'.
+         */
+        _defaultValueMarkdown?: Element;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueOid?: oid;
+        /**
+         * Contains extended information for property 'defaultValueOid'.
+         */
+        _defaultValueOid?: Element;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValuePositiveInt?: positiveInt;
+        /**
+         * Contains extended information for property 'defaultValuePositiveInt'.
+         */
+        _defaultValuePositiveInt?: Element;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueString?: string;
+        /**
+         * Contains extended information for property 'defaultValueString'.
+         */
+        _defaultValueString?: Element;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueTime?: time;
+        /**
+         * Contains extended information for property 'defaultValueTime'.
+         */
+        _defaultValueTime?: Element;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueUnsignedInt?: unsignedInt;
+        /**
+         * Contains extended information for property 'defaultValueUnsignedInt'.
+         */
+        _defaultValueUnsignedInt?: Element;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueUri?: uri;
+        /**
+         * Contains extended information for property 'defaultValueUri'.
+         */
+        _defaultValueUri?: Element;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueUrl?: url;
+        /**
+         * Contains extended information for property 'defaultValueUrl'.
+         */
+        _defaultValueUrl?: Element;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueUuid?: uuid;
+        /**
+         * Contains extended information for property 'defaultValueUuid'.
+         */
+        _defaultValueUuid?: Element;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueAddress?: Address;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueAge?: Age;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueAnnotation?: Annotation;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueAttachment?: Attachment;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueCodeableConcept?: CodeableConcept;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueCoding?: Coding;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueContactPoint?: ContactPoint;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueCount?: Count;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueDistance?: Distance;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueDuration?: Duration;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueHumanName?: HumanName;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueIdentifier?: Identifier;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueMoney?: Money;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValuePeriod?: Period;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueQuantity?: Quantity;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueRange?: Range;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueRatio?: Ratio;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueReference?: Reference;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueSampledData?: SampledData;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueSignature?: Signature;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueTiming?: Timing;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueParameterDefinition?: ParameterDefinition;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueDataRequirement?: DataRequirement;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueRelatedArtifact?: RelatedArtifact;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueContactDetail?: ContactDetail;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueContributor?: Contributor;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueTriggerDefinition?: TriggerDefinition;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueExpression?: Expression;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueUsageContext?: UsageContext;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueDosage?: Dosage;
+        /**
+         * Implicit meaning when this element is missing
+         */
+        meaningWhenMissing?: markdown;
+        /**
+         * Contains extended information for property 'meaningWhenMissing'.
+         */
+        _meaningWhenMissing?: Element;
+        /**
+         * What the order of the elements means
+         */
+        orderMeaning?: string;
+        /**
+         * Contains extended information for property 'orderMeaning'.
+         */
+        _orderMeaning?: Element;
+        /**
+         * Value must be exactly this
+         */
+        fixedBase64Binary?: base64Binary;
+        /**
+         * Contains extended information for property 'fixedBase64Binary'.
+         */
+        _fixedBase64Binary?: Element;
+        /**
+         * Value must be exactly this
+         */
+        fixedBoolean?: boolean;
+        /**
+         * Contains extended information for property 'fixedBoolean'.
+         */
+        _fixedBoolean?: Element;
+        /**
+         * Value must be exactly this
+         */
+        fixedCanonical?: canonical;
+        /**
+         * Contains extended information for property 'fixedCanonical'.
+         */
+        _fixedCanonical?: Element;
+        /**
+         * Value must be exactly this
+         */
+        fixedCode?: code;
+        /**
+         * Contains extended information for property 'fixedCode'.
+         */
+        _fixedCode?: Element;
+        /**
+         * Value must be exactly this
+         */
+        fixedDate?: date;
+        /**
+         * Contains extended information for property 'fixedDate'.
+         */
+        _fixedDate?: Element;
+        /**
+         * Value must be exactly this
+         */
+        fixedDateTime?: dateTime;
+        /**
+         * Contains extended information for property 'fixedDateTime'.
+         */
+        _fixedDateTime?: Element;
+        /**
+         * Value must be exactly this
+         */
+        fixedDecimal?: decimal;
+        /**
+         * Contains extended information for property 'fixedDecimal'.
+         */
+        _fixedDecimal?: Element;
+        /**
+         * Value must be exactly this
+         */
+        fixedId?: id;
+        /**
+         * Contains extended information for property 'fixedId'.
+         */
+        _fixedId?: Element;
+        /**
+         * Value must be exactly this
+         */
+        fixedInstant?: instant;
+        /**
+         * Contains extended information for property 'fixedInstant'.
+         */
+        _fixedInstant?: Element;
+        /**
+         * Value must be exactly this
+         */
+        fixedInteger?: integer;
+        /**
+         * Contains extended information for property 'fixedInteger'.
+         */
+        _fixedInteger?: Element;
+        /**
+         * Value must be exactly this
+         */
+        fixedMarkdown?: markdown;
+        /**
+         * Contains extended information for property 'fixedMarkdown'.
+         */
+        _fixedMarkdown?: Element;
+        /**
+         * Value must be exactly this
+         */
+        fixedOid?: oid;
+        /**
+         * Contains extended information for property 'fixedOid'.
+         */
+        _fixedOid?: Element;
+        /**
+         * Value must be exactly this
+         */
+        fixedPositiveInt?: positiveInt;
+        /**
+         * Contains extended information for property 'fixedPositiveInt'.
+         */
+        _fixedPositiveInt?: Element;
+        /**
+         * Value must be exactly this
+         */
+        fixedString?: string;
+        /**
+         * Contains extended information for property 'fixedString'.
+         */
+        _fixedString?: Element;
+        /**
+         * Value must be exactly this
+         */
+        fixedTime?: time;
+        /**
+         * Contains extended information for property 'fixedTime'.
+         */
+        _fixedTime?: Element;
+        /**
+         * Value must be exactly this
+         */
+        fixedUnsignedInt?: unsignedInt;
+        /**
+         * Contains extended information for property 'fixedUnsignedInt'.
+         */
+        _fixedUnsignedInt?: Element;
+        /**
+         * Value must be exactly this
+         */
+        fixedUri?: uri;
+        /**
+         * Contains extended information for property 'fixedUri'.
+         */
+        _fixedUri?: Element;
+        /**
+         * Value must be exactly this
+         */
+        fixedUrl?: url;
+        /**
+         * Contains extended information for property 'fixedUrl'.
+         */
+        _fixedUrl?: Element;
+        /**
+         * Value must be exactly this
+         */
+        fixedUuid?: uuid;
+        /**
+         * Contains extended information for property 'fixedUuid'.
+         */
+        _fixedUuid?: Element;
+        /**
+         * Value must be exactly this
+         */
+        fixedAddress?: Address;
+        /**
+         * Value must be exactly this
+         */
+        fixedAge?: Age;
+        /**
+         * Value must be exactly this
+         */
+        fixedAnnotation?: Annotation;
+        /**
+         * Value must be exactly this
+         */
+        fixedAttachment?: Attachment;
+        /**
+         * Value must be exactly this
+         */
+        fixedCodeableConcept?: CodeableConcept;
+        /**
+         * Value must be exactly this
+         */
+        fixedCoding?: Coding;
+        /**
+         * Value must be exactly this
+         */
+        fixedContactPoint?: ContactPoint;
+        /**
+         * Value must be exactly this
+         */
+        fixedCount?: Count;
+        /**
+         * Value must be exactly this
+         */
+        fixedDistance?: Distance;
+        /**
+         * Value must be exactly this
+         */
+        fixedDuration?: Duration;
+        /**
+         * Value must be exactly this
+         */
+        fixedHumanName?: HumanName;
+        /**
+         * Value must be exactly this
+         */
+        fixedIdentifier?: Identifier;
+        /**
+         * Value must be exactly this
+         */
+        fixedMoney?: Money;
+        /**
+         * Value must be exactly this
+         */
+        fixedPeriod?: Period;
+        /**
+         * Value must be exactly this
+         */
+        fixedQuantity?: Quantity;
+        /**
+         * Value must be exactly this
+         */
+        fixedRange?: Range;
+        /**
+         * Value must be exactly this
+         */
+        fixedRatio?: Ratio;
+        /**
+         * Value must be exactly this
+         */
+        fixedReference?: Reference;
+        /**
+         * Value must be exactly this
+         */
+        fixedSampledData?: SampledData;
+        /**
+         * Value must be exactly this
+         */
+        fixedSignature?: Signature;
+        /**
+         * Value must be exactly this
+         */
+        fixedTiming?: Timing;
+        /**
+         * Value must be exactly this
+         */
+        fixedParameterDefinition?: ParameterDefinition;
+        /**
+         * Value must be exactly this
+         */
+        fixedDataRequirement?: DataRequirement;
+        /**
+         * Value must be exactly this
+         */
+        fixedRelatedArtifact?: RelatedArtifact;
+        /**
+         * Value must be exactly this
+         */
+        fixedContactDetail?: ContactDetail;
+        /**
+         * Value must be exactly this
+         */
+        fixedContributor?: Contributor;
+        /**
+         * Value must be exactly this
+         */
+        fixedTriggerDefinition?: TriggerDefinition;
+        /**
+         * Value must be exactly this
+         */
+        fixedExpression?: Expression;
+        /**
+         * Value must be exactly this
+         */
+        fixedUsageContext?: UsageContext;
+        /**
+         * Value must be exactly this
+         */
+        fixedDosage?: Dosage;
+        /**
+         * Value must have at least these property values
+         */
+        patternBase64Binary?: base64Binary;
+        /**
+         * Contains extended information for property 'patternBase64Binary'.
+         */
+        _patternBase64Binary?: Element;
+        /**
+         * Value must have at least these property values
+         */
+        patternBoolean?: boolean;
+        /**
+         * Contains extended information for property 'patternBoolean'.
+         */
+        _patternBoolean?: Element;
+        /**
+         * Value must have at least these property values
+         */
+        patternCanonical?: canonical;
+        /**
+         * Contains extended information for property 'patternCanonical'.
+         */
+        _patternCanonical?: Element;
+        /**
+         * Value must have at least these property values
+         */
+        patternCode?: code;
+        /**
+         * Contains extended information for property 'patternCode'.
+         */
+        _patternCode?: Element;
+        /**
+         * Value must have at least these property values
+         */
+        patternDate?: date;
+        /**
+         * Contains extended information for property 'patternDate'.
+         */
+        _patternDate?: Element;
+        /**
+         * Value must have at least these property values
+         */
+        patternDateTime?: dateTime;
+        /**
+         * Contains extended information for property 'patternDateTime'.
+         */
+        _patternDateTime?: Element;
+        /**
+         * Value must have at least these property values
+         */
+        patternDecimal?: decimal;
+        /**
+         * Contains extended information for property 'patternDecimal'.
+         */
+        _patternDecimal?: Element;
+        /**
+         * Value must have at least these property values
+         */
+        patternId?: id;
+        /**
+         * Contains extended information for property 'patternId'.
+         */
+        _patternId?: Element;
+        /**
+         * Value must have at least these property values
+         */
+        patternInstant?: instant;
+        /**
+         * Contains extended information for property 'patternInstant'.
+         */
+        _patternInstant?: Element;
+        /**
+         * Value must have at least these property values
+         */
+        patternInteger?: integer;
+        /**
+         * Contains extended information for property 'patternInteger'.
+         */
+        _patternInteger?: Element;
+        /**
+         * Value must have at least these property values
+         */
+        patternMarkdown?: markdown;
+        /**
+         * Contains extended information for property 'patternMarkdown'.
+         */
+        _patternMarkdown?: Element;
+        /**
+         * Value must have at least these property values
+         */
+        patternOid?: oid;
+        /**
+         * Contains extended information for property 'patternOid'.
+         */
+        _patternOid?: Element;
+        /**
+         * Value must have at least these property values
+         */
+        patternPositiveInt?: positiveInt;
+        /**
+         * Contains extended information for property 'patternPositiveInt'.
+         */
+        _patternPositiveInt?: Element;
+        /**
+         * Value must have at least these property values
+         */
+        patternString?: string;
+        /**
+         * Contains extended information for property 'patternString'.
+         */
+        _patternString?: Element;
+        /**
+         * Value must have at least these property values
+         */
+        patternTime?: time;
+        /**
+         * Contains extended information for property 'patternTime'.
+         */
+        _patternTime?: Element;
+        /**
+         * Value must have at least these property values
+         */
+        patternUnsignedInt?: unsignedInt;
+        /**
+         * Contains extended information for property 'patternUnsignedInt'.
+         */
+        _patternUnsignedInt?: Element;
+        /**
+         * Value must have at least these property values
+         */
+        patternUri?: uri;
+        /**
+         * Contains extended information for property 'patternUri'.
+         */
+        _patternUri?: Element;
+        /**
+         * Value must have at least these property values
+         */
+        patternUrl?: url;
+        /**
+         * Contains extended information for property 'patternUrl'.
+         */
+        _patternUrl?: Element;
+        /**
+         * Value must have at least these property values
+         */
+        patternUuid?: uuid;
+        /**
+         * Contains extended information for property 'patternUuid'.
+         */
+        _patternUuid?: Element;
+        /**
+         * Value must have at least these property values
+         */
+        patternAddress?: Address;
+        /**
+         * Value must have at least these property values
+         */
+        patternAge?: Age;
+        /**
+         * Value must have at least these property values
+         */
+        patternAnnotation?: Annotation;
+        /**
+         * Value must have at least these property values
+         */
+        patternAttachment?: Attachment;
+        /**
+         * Value must have at least these property values
+         */
+        patternCodeableConcept?: CodeableConcept;
+        /**
+         * Value must have at least these property values
+         */
+        patternCoding?: Coding;
+        /**
+         * Value must have at least these property values
+         */
+        patternContactPoint?: ContactPoint;
+        /**
+         * Value must have at least these property values
+         */
+        patternCount?: Count;
+        /**
+         * Value must have at least these property values
+         */
+        patternDistance?: Distance;
+        /**
+         * Value must have at least these property values
+         */
+        patternDuration?: Duration;
+        /**
+         * Value must have at least these property values
+         */
+        patternHumanName?: HumanName;
+        /**
+         * Value must have at least these property values
+         */
+        patternIdentifier?: Identifier;
+        /**
+         * Value must have at least these property values
+         */
+        patternMoney?: Money;
+        /**
+         * Value must have at least these property values
+         */
+        patternPeriod?: Period;
+        /**
+         * Value must have at least these property values
+         */
+        patternQuantity?: Quantity;
+        /**
+         * Value must have at least these property values
+         */
+        patternRange?: Range;
+        /**
+         * Value must have at least these property values
+         */
+        patternRatio?: Ratio;
+        /**
+         * Value must have at least these property values
+         */
+        patternReference?: Reference;
+        /**
+         * Value must have at least these property values
+         */
+        patternSampledData?: SampledData;
+        /**
+         * Value must have at least these property values
+         */
+        patternSignature?: Signature;
+        /**
+         * Value must have at least these property values
+         */
+        patternTiming?: Timing;
+        /**
+         * Value must have at least these property values
+         */
+        patternParameterDefinition?: ParameterDefinition;
+        /**
+         * Value must have at least these property values
+         */
+        patternDataRequirement?: DataRequirement;
+        /**
+         * Value must have at least these property values
+         */
+        patternRelatedArtifact?: RelatedArtifact;
+        /**
+         * Value must have at least these property values
+         */
+        patternContactDetail?: ContactDetail;
+        /**
+         * Value must have at least these property values
+         */
+        patternContributor?: Contributor;
+        /**
+         * Value must have at least these property values
+         */
+        patternTriggerDefinition?: TriggerDefinition;
+        /**
+         * Value must have at least these property values
+         */
+        patternExpression?: Expression;
+        /**
+         * Value must have at least these property values
+         */
+        patternUsageContext?: UsageContext;
+        /**
+         * Value must have at least these property values
+         */
+        patternDosage?: Dosage;
+        /**
+         * Example value (as defined for type)
+         */
+        example?: ElementDefinitionExample[];
+        /**
+         * Minimum Allowed Value (for some types)
+         */
+        minValueDate?: date;
+        /**
+         * Contains extended information for property 'minValueDate'.
+         */
+        _minValueDate?: Element;
+        /**
+         * Minimum Allowed Value (for some types)
+         */
+        minValueDateTime?: dateTime;
+        /**
+         * Contains extended information for property 'minValueDateTime'.
+         */
+        _minValueDateTime?: Element;
+        /**
+         * Minimum Allowed Value (for some types)
+         */
+        minValueInstant?: instant;
+        /**
+         * Contains extended information for property 'minValueInstant'.
+         */
+        _minValueInstant?: Element;
+        /**
+         * Minimum Allowed Value (for some types)
+         */
+        minValueTime?: time;
+        /**
+         * Contains extended information for property 'minValueTime'.
+         */
+        _minValueTime?: Element;
+        /**
+         * Minimum Allowed Value (for some types)
+         */
+        minValueDecimal?: decimal;
+        /**
+         * Contains extended information for property 'minValueDecimal'.
+         */
+        _minValueDecimal?: Element;
+        /**
+         * Minimum Allowed Value (for some types)
+         */
+        minValueInteger?: integer;
+        /**
+         * Contains extended information for property 'minValueInteger'.
+         */
+        _minValueInteger?: Element;
+        /**
+         * Minimum Allowed Value (for some types)
+         */
+        minValuePositiveInt?: positiveInt;
+        /**
+         * Contains extended information for property 'minValuePositiveInt'.
+         */
+        _minValuePositiveInt?: Element;
+        /**
+         * Minimum Allowed Value (for some types)
+         */
+        minValueUnsignedInt?: unsignedInt;
+        /**
+         * Contains extended information for property 'minValueUnsignedInt'.
+         */
+        _minValueUnsignedInt?: Element;
+        /**
+         * Minimum Allowed Value (for some types)
+         */
+        minValueQuantity?: Quantity;
+        /**
+         * Maximum Allowed Value (for some types)
+         */
+        maxValueDate?: date;
+        /**
+         * Contains extended information for property 'maxValueDate'.
+         */
+        _maxValueDate?: Element;
+        /**
+         * Maximum Allowed Value (for some types)
+         */
+        maxValueDateTime?: dateTime;
+        /**
+         * Contains extended information for property 'maxValueDateTime'.
+         */
+        _maxValueDateTime?: Element;
+        /**
+         * Maximum Allowed Value (for some types)
+         */
+        maxValueInstant?: instant;
+        /**
+         * Contains extended information for property 'maxValueInstant'.
+         */
+        _maxValueInstant?: Element;
+        /**
+         * Maximum Allowed Value (for some types)
+         */
+        maxValueTime?: time;
+        /**
+         * Contains extended information for property 'maxValueTime'.
+         */
+        _maxValueTime?: Element;
+        /**
+         * Maximum Allowed Value (for some types)
+         */
+        maxValueDecimal?: decimal;
+        /**
+         * Contains extended information for property 'maxValueDecimal'.
+         */
+        _maxValueDecimal?: Element;
+        /**
+         * Maximum Allowed Value (for some types)
+         */
+        maxValueInteger?: integer;
+        /**
+         * Contains extended information for property 'maxValueInteger'.
+         */
+        _maxValueInteger?: Element;
+        /**
+         * Maximum Allowed Value (for some types)
+         */
+        maxValuePositiveInt?: positiveInt;
+        /**
+         * Contains extended information for property 'maxValuePositiveInt'.
+         */
+        _maxValuePositiveInt?: Element;
+        /**
+         * Maximum Allowed Value (for some types)
+         */
+        maxValueUnsignedInt?: unsignedInt;
+        /**
+         * Contains extended information for property 'maxValueUnsignedInt'.
+         */
+        _maxValueUnsignedInt?: Element;
+        /**
+         * Maximum Allowed Value (for some types)
+         */
+        maxValueQuantity?: Quantity;
+        /**
+         * Max length for strings
+         */
+        maxLength?: integer;
+        /**
+         * Contains extended information for property 'maxLength'.
+         */
+        _maxLength?: Element;
+        /**
+         * Reference to invariant about presence
+         */
+        condition?: id[];
+        /**
+         * Contains extended information for property 'condition'.
+         */
+        _condition?: Element[];
+        /**
+         * Condition that must evaluate to true
+         */
+        constraint?: ElementDefinitionConstraint[];
+        /**
+         * If the element must be supported
+         */
+        mustSupport?: boolean;
+        /**
+         * Contains extended information for property 'mustSupport'.
+         */
+        _mustSupport?: Element;
+        /**
+         * If this modifies the meaning of other elements
+         */
+        isModifier?: boolean;
+        /**
+         * Contains extended information for property 'isModifier'.
+         */
+        _isModifier?: Element;
+        /**
+         * Reason that this element is marked as a modifier
+         */
+        isModifierReason?: string;
+        /**
+         * Contains extended information for property 'isModifierReason'.
+         */
+        _isModifierReason?: Element;
+        /**
+         * Include when _summary = true?
+         */
+        isSummary?: boolean;
+        /**
+         * Contains extended information for property 'isSummary'.
+         */
+        _isSummary?: Element;
+        /**
+         * ValueSet details if this is coded
+         */
+        binding?: ElementDefinitionBinding;
+        /**
+         * Map element to another set of definitions
+         */
+        mapping?: ElementDefinitionMapping[];
     }
     /**
      * Differential view of the structure
@@ -21980,7 +27514,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface StructureDefinition extends DomainResource {
         /**
-         * Logical URI to reference this structure definition (globally unique)
+         * Canonical identifier for this structure definition, represented as a URI (globally unique)
          */
         url: uri;
         /**
@@ -22032,7 +27566,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _experimental?: Element;
         /**
-         * Date this was last changed
+         * Date last changed
          */
         date?: dateTime;
         /**
@@ -22060,7 +27594,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * Context the content is intended to support
+         * The context that the content is intended to support
          */
         useContext?: UsageContext[];
         /**
@@ -22116,21 +27650,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _abstract?: Element;
         /**
-         * resource | datatype | extension
+         * If an extension, where it can be used in instances
          */
-        contextType?: code;
-        /**
-         * Contains extended information for property 'contextType'.
-         */
-        _contextType?: Element;
-        /**
-         * Where the extension can be used in instances
-         */
-        context?: string[];
-        /**
-         * Contains extended information for property 'context'.
-         */
-        _context?: Element[];
+        context?: StructureDefinitionContext[];
         /**
          * FHIRPath invariants - when the extension can be used
          */
@@ -22142,7 +27664,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Type defined or constrained by this structure
          */
-        type: code;
+        type: uri;
         /**
          * Contains extended information for property 'type'.
          */
@@ -22150,7 +27672,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Definition that this type is constrained/specialized from
          */
-        baseDefinition?: uri;
+        baseDefinition?: canonical;
         /**
          * Contains extended information for property 'baseDefinition'.
          */
@@ -22179,7 +27701,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Canonical URL for structure definition
          */
-        url: uri;
+        url: canonical;
         /**
          * Contains extended information for property 'url'.
          */
@@ -22238,7 +27760,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _typeMode?: Element;
         /**
-         * Additional description/explaination for group
+         * Additional description/explanation for group
          */
         documentation?: string;
         /**
@@ -22383,6 +27905,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Default value if no value exists
          */
+        defaultValueCanonical?: canonical;
+        /**
+         * Contains extended information for property 'defaultValueCanonical'.
+         */
+        _defaultValueCanonical?: Element;
+        /**
+         * Default value if no value exists
+         */
         defaultValueCode?: code;
         /**
          * Contains extended information for property 'defaultValueCode'.
@@ -22495,6 +28025,22 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Default value if no value exists
          */
+        defaultValueUrl?: url;
+        /**
+         * Contains extended information for property 'defaultValueUrl'.
+         */
+        _defaultValueUrl?: Element;
+        /**
+         * Default value if no value exists
+         */
+        defaultValueUuid?: uuid;
+        /**
+         * Contains extended information for property 'defaultValueUuid'.
+         */
+        _defaultValueUuid?: Element;
+        /**
+         * Default value if no value exists
+         */
         defaultValueAddress?: Address;
         /**
          * Default value if no value exists
@@ -22579,7 +28125,39 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Default value if no value exists
          */
-        defaultValueMeta?: Meta;
+        defaultValueParameterDefinition?: ParameterDefinition;
+        /**
+         * Default value if no value exists
+         */
+        defaultValueDataRequirement?: DataRequirement;
+        /**
+         * Default value if no value exists
+         */
+        defaultValueRelatedArtifact?: RelatedArtifact;
+        /**
+         * Default value if no value exists
+         */
+        defaultValueContactDetail?: ContactDetail;
+        /**
+         * Default value if no value exists
+         */
+        defaultValueContributor?: Contributor;
+        /**
+         * Default value if no value exists
+         */
+        defaultValueTriggerDefinition?: TriggerDefinition;
+        /**
+         * Default value if no value exists
+         */
+        defaultValueExpression?: Expression;
+        /**
+         * Default value if no value exists
+         */
+        defaultValueUsageContext?: UsageContext;
+        /**
+         * Default value if no value exists
+         */
+        defaultValueDosage?: Dosage;
         /**
          * Optional field for this source
          */
@@ -22620,6 +28198,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'check'.
          */
         _check?: Element;
+        /**
+         * Message to put in log if source exists (FHIRPath)
+         */
+        logMessage?: string;
+        /**
+         * Contains extended information for property 'logMessage'.
+         */
+        _logMessage?: Element;
     }
     /**
      * Content to create because of this mapping rule
@@ -22757,7 +28343,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface StructureMap extends DomainResource {
         /**
-         * Logical URI to reference this structure map (globally unique)
+         * Canonical identifier for this structure map, represented as a URI (globally unique)
          */
         url: uri;
         /**
@@ -22809,7 +28395,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _experimental?: Element;
         /**
-         * Date this was last changed
+         * Date last changed
          */
         date?: dateTime;
         /**
@@ -22837,7 +28423,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * Context the content is intended to support
+         * The context that the content is intended to support
          */
         useContext?: UsageContext[];
         /**
@@ -22867,7 +28453,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Other maps used by this map (canonical URLs)
          */
-        import?: uri[];
+        import?: canonical[];
         /**
          * Contains extended information for property 'import'.
          */
@@ -22892,13 +28478,13 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Where the channel points to
          */
-        endpoint?: uri;
+        endpoint?: url;
         /**
          * Contains extended information for property 'endpoint'.
          */
         _endpoint?: Element;
         /**
-         * Mimetype to send, or omit for no payload
+         * MIME type to send, or omit for no payload
          */
         payload?: string;
         /**
@@ -22915,7 +28501,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         _header?: Element[];
     }
     /**
-     * A server push subscription criteria
+     * Server push subscription criteria
      */
     interface Subscription extends DomainResource {
         /**
@@ -22947,7 +28533,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _reason?: Element;
         /**
-         * Rule for server push criteria
+         * Rule for server push
          */
         criteria: string;
         /**
@@ -23051,6 +28637,791 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         ingredient?: SubstanceIngredient[];
     }
     /**
+     * Todo
+     */
+    interface SubstancePolymerMonomerSet extends BackboneElement {
+        /**
+         * Todo
+         */
+        ratioType?: CodeableConcept;
+        /**
+         * Todo
+         */
+        startingMaterial?: SubstancePolymerMonomerSetStartingMaterial[];
+    }
+    /**
+     * Todo
+     */
+    interface SubstancePolymerMonomerSetStartingMaterial extends BackboneElement {
+        /**
+         * Todo
+         */
+        material?: CodeableConcept;
+        /**
+         * Todo
+         */
+        type?: CodeableConcept;
+        /**
+         * Todo
+         */
+        isDefining?: boolean;
+        /**
+         * Contains extended information for property 'isDefining'.
+         */
+        _isDefining?: Element;
+        /**
+         * Todo
+         */
+        amount?: SubstanceAmount;
+    }
+    /**
+     * Reference range of possible or expected values
+     */
+    interface SubstanceAmountReferenceRange extends Element {
+        /**
+         * Lower limit possible or expected
+         */
+        lowLimit?: Quantity;
+        /**
+         * Upper limit possible or expected
+         */
+        highLimit?: Quantity;
+    }
+    /**
+     * Chemical substances are a single substance type whose primary defining element is the molecular structure. Chemical substances shall be defined on the basis of their complete covalent molecular structure; the presence of a salt (counter-ion) and/or solvates (water, alcohols) is also captured. Purity, grade, physical form or particle size are not taken into account in the definition of a chemical substance or in the assignment of a Substance ID
+     */
+    interface SubstanceAmount extends BackboneElement {
+        /**
+         * Used to capture quantitative values for a variety of elements. If only limits are given, the arithmetic mean would be the average. If only a single definite value for a given element is given, it would be captured in this field
+         */
+        amountQuantity?: Quantity;
+        /**
+         * Used to capture quantitative values for a variety of elements. If only limits are given, the arithmetic mean would be the average. If only a single definite value for a given element is given, it would be captured in this field
+         */
+        amountRange?: Range;
+        /**
+         * Used to capture quantitative values for a variety of elements. If only limits are given, the arithmetic mean would be the average. If only a single definite value for a given element is given, it would be captured in this field
+         */
+        amountString?: string;
+        /**
+         * Contains extended information for property 'amountString'.
+         */
+        _amountString?: Element;
+        /**
+         * Most elements that require a quantitative value will also have a field called amount type. Amount type should always be specified because the actual value of the amount is often dependent on it. EXAMPLE: In capturing the actual relative amounts of substances or molecular fragments it is essential to indicate whether the amount refers to a mole ratio or weight ratio. For any given element an effort should be made to use same the amount type for all related definitional elements
+         */
+        amountType?: CodeableConcept;
+        /**
+         * A textual comment on a numeric value
+         */
+        amountText?: string;
+        /**
+         * Contains extended information for property 'amountText'.
+         */
+        _amountText?: Element;
+        /**
+         * Reference range of possible or expected values
+         */
+        referenceRange?: SubstanceAmountReferenceRange;
+    }
+    /**
+     * Todo
+     */
+    interface SubstancePolymerRepeat extends BackboneElement {
+        /**
+         * Todo
+         */
+        numberOfUnits?: integer;
+        /**
+         * Contains extended information for property 'numberOfUnits'.
+         */
+        _numberOfUnits?: Element;
+        /**
+         * Todo
+         */
+        averageMolecularFormula?: string;
+        /**
+         * Contains extended information for property 'averageMolecularFormula'.
+         */
+        _averageMolecularFormula?: Element;
+        /**
+         * Todo
+         */
+        repeatUnitAmountType?: CodeableConcept;
+        /**
+         * Todo
+         */
+        repeatUnit?: SubstancePolymerRepeatRepeatUnit[];
+    }
+    /**
+     * Todo
+     */
+    interface SubstancePolymerRepeatRepeatUnit extends BackboneElement {
+        /**
+         * Todo
+         */
+        orientationOfPolymerisation?: CodeableConcept;
+        /**
+         * Todo
+         */
+        repeatUnit?: string;
+        /**
+         * Contains extended information for property 'repeatUnit'.
+         */
+        _repeatUnit?: Element;
+        /**
+         * Todo
+         */
+        amount?: SubstanceAmount;
+        /**
+         * Todo
+         */
+        degreeOfPolymerisation?: SubstancePolymerRepeatRepeatUnitDegreeOfPolymerisation[];
+        /**
+         * Todo
+         */
+        structuralRepresentation?: SubstancePolymerRepeatRepeatUnitStructuralRepresentation[];
+    }
+    /**
+     * Todo
+     */
+    interface SubstancePolymerRepeatRepeatUnitDegreeOfPolymerisation extends BackboneElement {
+        /**
+         * Todo
+         */
+        degree?: CodeableConcept;
+        /**
+         * Todo
+         */
+        amount?: SubstanceAmount;
+    }
+    /**
+     * Todo
+     */
+    interface SubstancePolymerRepeatRepeatUnitStructuralRepresentation extends BackboneElement {
+        /**
+         * Todo
+         */
+        type?: CodeableConcept;
+        /**
+         * Todo
+         */
+        representation?: string;
+        /**
+         * Contains extended information for property 'representation'.
+         */
+        _representation?: Element;
+        /**
+         * Todo
+         */
+        attachment?: Attachment;
+    }
+    /**
+     * Todo
+     */
+    interface SubstancePolymer extends DomainResource {
+        /**
+         * Todo
+         */
+        class?: CodeableConcept;
+        /**
+         * Todo
+         */
+        geometry?: CodeableConcept;
+        /**
+         * Todo
+         */
+        copolymerConnectivity?: CodeableConcept[];
+        /**
+         * Todo
+         */
+        modification?: string[];
+        /**
+         * Contains extended information for property 'modification'.
+         */
+        _modification?: Element[];
+        /**
+         * Todo
+         */
+        monomerSet?: SubstancePolymerMonomerSet[];
+        /**
+         * Todo
+         */
+        repeat?: SubstancePolymerRepeat[];
+    }
+    /**
+     * Todo
+     */
+    interface SubstanceReferenceInformationGene extends BackboneElement {
+        /**
+         * Todo
+         */
+        geneSequenceOrigin?: CodeableConcept;
+        /**
+         * Todo
+         */
+        gene?: CodeableConcept;
+        /**
+         * Todo
+         */
+        source?: Reference[];
+    }
+    /**
+     * Todo
+     */
+    interface SubstanceReferenceInformationGeneElement extends BackboneElement {
+        /**
+         * Todo
+         */
+        type?: CodeableConcept;
+        /**
+         * Todo
+         */
+        element?: Identifier;
+        /**
+         * Todo
+         */
+        source?: Reference[];
+    }
+    /**
+     * Todo
+     */
+    interface SubstanceReferenceInformationClassification extends BackboneElement {
+        /**
+         * Todo
+         */
+        domain?: CodeableConcept;
+        /**
+         * Todo
+         */
+        classification?: CodeableConcept;
+        /**
+         * Todo
+         */
+        subtype?: CodeableConcept[];
+        /**
+         * Todo
+         */
+        source?: Reference[];
+    }
+    /**
+     * Todo
+     */
+    interface SubstanceReferenceInformationRelationship extends BackboneElement {
+        /**
+         * Todo
+         */
+        substanceReference?: Reference;
+        /**
+         * Todo
+         */
+        substanceCodeableConcept?: CodeableConcept;
+        /**
+         * Todo
+         */
+        relationship?: CodeableConcept;
+        /**
+         * Todo
+         */
+        interaction?: CodeableConcept;
+        /**
+         * Todo
+         */
+        isDefining?: boolean;
+        /**
+         * Contains extended information for property 'isDefining'.
+         */
+        _isDefining?: Element;
+        /**
+         * Todo
+         */
+        amountQuantity?: Quantity;
+        /**
+         * Todo
+         */
+        amountRange?: Range;
+        /**
+         * Todo
+         */
+        amountString?: string;
+        /**
+         * Contains extended information for property 'amountString'.
+         */
+        _amountString?: Element;
+        /**
+         * Todo
+         */
+        amountType?: CodeableConcept;
+        /**
+         * Todo
+         */
+        amountText?: string;
+        /**
+         * Contains extended information for property 'amountText'.
+         */
+        _amountText?: Element;
+        /**
+         * Todo
+         */
+        source?: Reference[];
+    }
+    /**
+     * Todo
+     */
+    interface SubstanceReferenceInformationTarget extends BackboneElement {
+        /**
+         * Todo
+         */
+        target?: Identifier;
+        /**
+         * Todo
+         */
+        type?: CodeableConcept;
+        /**
+         * Todo
+         */
+        interaction?: CodeableConcept;
+        /**
+         * Todo
+         */
+        organism?: CodeableConcept;
+        /**
+         * Todo
+         */
+        organismType?: CodeableConcept;
+        /**
+         * Todo
+         */
+        source?: Reference[];
+        /**
+         * Todo
+         */
+        amountQuantity?: Quantity;
+        /**
+         * Todo
+         */
+        amountRange?: Range;
+        /**
+         * Todo
+         */
+        amountString?: string;
+        /**
+         * Contains extended information for property 'amountString'.
+         */
+        _amountString?: Element;
+        /**
+         * Todo
+         */
+        amountType?: CodeableConcept;
+    }
+    /**
+     * Todo
+     */
+    interface SubstanceReferenceInformation extends DomainResource {
+        /**
+         * Todo
+         */
+        comment?: string;
+        /**
+         * Contains extended information for property 'comment'.
+         */
+        _comment?: Element;
+        /**
+         * Todo
+         */
+        gene?: SubstanceReferenceInformationGene[];
+        /**
+         * Todo
+         */
+        geneElement?: SubstanceReferenceInformationGeneElement[];
+        /**
+         * Todo
+         */
+        classification?: SubstanceReferenceInformationClassification[];
+        /**
+         * Todo
+         */
+        relationship?: SubstanceReferenceInformationRelationship[];
+        /**
+         * Todo
+         */
+        target?: SubstanceReferenceInformationTarget[];
+    }
+    /**
+     * Moiety, for structural modifications
+     */
+    interface SubstanceSpecificationMoiety extends BackboneElement {
+        /**
+         * Role that the moiety is playing
+         */
+        role?: CodeableConcept;
+        /**
+         * Identifier by which this moiety substance is known
+         */
+        identifier?: Identifier;
+        /**
+         * Textual name for this moiety substance
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Stereochemistry type
+         */
+        stereochemistry?: CodeableConcept;
+        /**
+         * Optical activity type
+         */
+        opticalActivity?: CodeableConcept;
+        /**
+         * Molecular formula
+         */
+        molecularFormula?: string;
+        /**
+         * Contains extended information for property 'molecularFormula'.
+         */
+        _molecularFormula?: Element;
+        /**
+         * Quantitative value for this moiety
+         */
+        amount?: string;
+        /**
+         * Contains extended information for property 'amount'.
+         */
+        _amount?: Element;
+    }
+    /**
+     * General specifications for this substance, including how it is related to other substances
+     */
+    interface SubstanceSpecificationProperty extends BackboneElement {
+        /**
+         * Description todo
+         */
+        type?: CodeableConcept;
+        /**
+         * Description todo
+         */
+        name?: CodeableConcept;
+        /**
+         * A field that should be used to capture parameters that were used in the measurement of a property
+         */
+        parameters?: string;
+        /**
+         * Contains extended information for property 'parameters'.
+         */
+        _parameters?: Element;
+        /**
+         * Identifier for a substance upon which a defining property depends
+         */
+        substanceId?: Identifier;
+        /**
+         * Description todo
+         */
+        substanceName?: string;
+        /**
+         * Contains extended information for property 'substanceName'.
+         */
+        _substanceName?: Element;
+        /**
+         * Quantitative value for this property
+         */
+        amount?: string;
+        /**
+         * Contains extended information for property 'amount'.
+         */
+        _amount?: Element;
+    }
+    /**
+     * Structural information
+     */
+    interface SubstanceSpecificationStructure extends BackboneElement {
+        /**
+         * Stereochemistry type
+         */
+        stereochemistry?: CodeableConcept;
+        /**
+         * Optical activity type
+         */
+        opticalActivity?: CodeableConcept;
+        /**
+         * Molecular formula
+         */
+        molecularFormula?: string;
+        /**
+         * Contains extended information for property 'molecularFormula'.
+         */
+        _molecularFormula?: Element;
+        /**
+         * Specified per moiety according to the Hill system, i.e. first C, then H, then alphabetical. and each moiety separated by a dot
+         */
+        molecularFormulaByMoiety?: string;
+        /**
+         * Contains extended information for property 'molecularFormulaByMoiety'.
+         */
+        _molecularFormulaByMoiety?: Element;
+        /**
+         * Applicable for single substances that contain a radionuclide or a non-natural isotopic ratio
+         */
+        isotope?: SubstanceSpecificationStructureIsotope[];
+        /**
+         * The molecular weight or weight range (for proteins, polymers or nucleic acids)
+         */
+        molecularWeight?: SubstanceSpecificationStructureIsotopeMolecularWeight;
+        /**
+         * Supporting literature
+         */
+        referenceSource?: Reference[];
+        /**
+         * Molectular structural representation
+         */
+        structuralRepresentation?: SubstanceSpecificationStructureStructuralRepresentation[];
+    }
+    /**
+     * Applicable for single substances that contain a radionuclide or a non-natural isotopic ratio
+     */
+    interface SubstanceSpecificationStructureIsotope extends BackboneElement {
+        /**
+         * Substance identifier for each non-natural or radioisotope
+         */
+        nuclideId?: Identifier;
+        /**
+         * Substance name for each non-natural or radioisotope
+         */
+        nuclideName?: CodeableConcept;
+        /**
+         * The type of isotopic substitution present in a single substance
+         */
+        substitutionType?: CodeableConcept;
+        /**
+         * Half life - for a non-natural nuclide
+         */
+        nuclideHalfLife?: Quantity;
+        /**
+         * Quantitative values for this isotope
+         */
+        amount?: string;
+        /**
+         * Contains extended information for property 'amount'.
+         */
+        _amount?: Element;
+        /**
+         * The molecular weight or weight range (for proteins, polymers or nucleic acids)
+         */
+        molecularWeight?: SubstanceSpecificationStructureIsotopeMolecularWeight;
+    }
+    /**
+     * The molecular weight or weight range (for proteins, polymers or nucleic acids)
+     */
+    interface SubstanceSpecificationStructureIsotopeMolecularWeight extends BackboneElement {
+        /**
+         * The method by which the molecular weight was determined
+         */
+        method?: CodeableConcept;
+        /**
+         * Type of molecular weight such as exact, average (also known as. number average), weight average
+         */
+        type?: CodeableConcept;
+        /**
+         * Used to capture quantitative values for a variety of elements. If only limits are given, the arithmetic mean would be the average. If only a single definite value for a given element is given, it would be captured in this field
+         */
+        amount?: string;
+        /**
+         * Contains extended information for property 'amount'.
+         */
+        _amount?: Element;
+    }
+    /**
+     * Molectular structural representation
+     */
+    interface SubstanceSpecificationStructureStructuralRepresentation extends BackboneElement {
+        /**
+         * The type of structure (e.g. Full, Partial, Representative)
+         */
+        type?: CodeableConcept;
+        /**
+         * The structural representation as text string in a format e.g. InChI, SMILES, MOLFILE, CDX
+         */
+        representation?: string;
+        /**
+         * Contains extended information for property 'representation'.
+         */
+        _representation?: Element;
+        /**
+         * An attached file with the structural representation
+         */
+        attachment?: Attachment;
+    }
+    /**
+     * Codes associated with the substance
+     */
+    interface SubstanceSpecificationSubstanceCode extends BackboneElement {
+        /**
+         * The specific code
+         */
+        code?: CodeableConcept;
+        /**
+         * Status of the code assignment
+         */
+        status?: CodeableConcept;
+        /**
+         * The date at which the code status is changed as part of the terminology maintenance
+         */
+        statusDate?: dateTime;
+        /**
+         * Contains extended information for property 'statusDate'.
+         */
+        _statusDate?: Element;
+        /**
+         * Any comment can be provided in this field, if necessary
+         */
+        comment?: string;
+        /**
+         * Contains extended information for property 'comment'.
+         */
+        _comment?: Element;
+        /**
+         * Supporting literature
+         */
+        referenceSource?: string[];
+        /**
+         * Contains extended information for property 'referenceSource'.
+         */
+        _referenceSource?: Element[];
+    }
+    /**
+     * Names applicable to this substence
+     */
+    interface SubstanceSpecificationSubstanceName extends BackboneElement {
+        /**
+         * The actual name
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Name type
+         */
+        type?: CodeableConcept;
+        /**
+         * Language of the name
+         */
+        language?: CodeableConcept[];
+        /**
+         * The use context of this name for example if there is a different name a drug active ingredient as opposed to a food colour additive
+         */
+        domain?: CodeableConcept[];
+        /**
+         * The jurisdiction where this name applies
+         */
+        jurisdiction?: CodeableConcept[];
+        /**
+         * Details of the official nature of this name
+         */
+        officialName?: SubstanceSpecificationSubstanceNameOfficialName[];
+        /**
+         * Supporting literature
+         */
+        referenceSource?: string[];
+        /**
+         * Contains extended information for property 'referenceSource'.
+         */
+        _referenceSource?: Element[];
+    }
+    /**
+     * Details of the official nature of this name
+     */
+    interface SubstanceSpecificationSubstanceNameOfficialName extends BackboneElement {
+        /**
+         * Which authority uses this official name
+         */
+        authority?: CodeableConcept;
+        /**
+         * The status of the official name
+         */
+        status?: CodeableConcept;
+        /**
+         * Date of official name change
+         */
+        date?: dateTime;
+        /**
+         * Contains extended information for property 'date'.
+         */
+        _date?: Element;
+    }
+    /**
+     * The detailed description of a substance, typically at a level beyond what is used for prescribing
+     */
+    interface SubstanceSpecification extends DomainResource {
+        /**
+         * Textual comment
+         */
+        comment?: string;
+        /**
+         * Contains extended information for property 'comment'.
+         */
+        _comment?: Element;
+        /**
+         * Chemicals may be stoichiometric or non-stoichiometric
+         */
+        stoichiometric?: boolean;
+        /**
+         * Contains extended information for property 'stoichiometric'.
+         */
+        _stoichiometric?: Element;
+        /**
+         * Identifier by which this substance is known
+         */
+        identifier?: Identifier;
+        /**
+         * High level categorization, e.g. polymer or nucleic acid
+         */
+        type?: CodeableConcept;
+        /**
+         * Supporting literature
+         */
+        referenceSource?: string[];
+        /**
+         * Contains extended information for property 'referenceSource'.
+         */
+        _referenceSource?: Element[];
+        /**
+         * Moiety, for structural modifications
+         */
+        moiety?: SubstanceSpecificationMoiety[];
+        /**
+         * General specifications for this substance, including how it is related to other substances
+         */
+        property?: SubstanceSpecificationProperty[];
+        /**
+         * General information detailing this substance
+         */
+        referenceInformation?: Reference;
+        /**
+         * Structural information
+         */
+        structure?: SubstanceSpecificationStructure;
+        /**
+         * Codes associated with the substance
+         */
+        substanceCode?: SubstanceSpecificationSubstanceCode[];
+        /**
+         * Names applicable to this substence
+         */
+        substanceName?: SubstanceSpecificationSubstanceName[];
+        /**
+         * The molecular weight or weight range (for proteins, polymers or nucleic acids)
+         */
+        molecularWeight?: SubstanceSpecificationStructureIsotopeMolecularWeight[];
+        /**
+         * Data items specific to polymers
+         */
+        polymer?: Reference;
+    }
+    /**
      * The item that is delivered or supplied
      */
     interface SupplyDeliverySuppliedItem extends BackboneElement {
@@ -23074,7 +29445,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * External identifier
          */
-        identifier?: Identifier;
+        identifier?: Identifier[];
         /**
          * Fulfills plan, proposal or order
          */
@@ -23133,34 +29504,33 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         receiver?: Reference[];
     }
     /**
-     * The item being requested
+     * Ordered item details
      */
-    interface SupplyRequestOrderedItem extends BackboneElement {
+    interface SupplyRequestParameter extends BackboneElement {
         /**
-         * The requested amount of the item indicated
+         * Item detail
          */
-        quantity: Quantity;
+        code?: CodeableConcept;
         /**
-         * Medication, Substance, or Device requested to be supplied
+         * Value of detail
          */
-        itemCodeableConcept?: CodeableConcept;
+        valueCodeableConcept?: CodeableConcept;
         /**
-         * Medication, Substance, or Device requested to be supplied
+         * Value of detail
          */
-        itemReference?: Reference;
-    }
-    /**
-     * Who/what is requesting service
-     */
-    interface SupplyRequestRequester extends BackboneElement {
+        valueQuantity?: Quantity;
         /**
-         * Individual making the request
+         * Value of detail
          */
-        agent: Reference;
+        valueRange?: Range;
         /**
-         * Organization agent is acting for
+         * Value of detail
          */
-        onBehalfOf?: Reference;
+        valueBoolean?: boolean;
+        /**
+         * Contains extended information for property 'valueBoolean'.
+         */
+        _valueBoolean?: Element;
     }
     /**
      * Request for a medication, substance or device
@@ -23191,9 +29561,21 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _priority?: Element;
         /**
-         * The item being requested
+         * Medication, Substance, or Device requested to be supplied
          */
-        orderedItem?: SupplyRequestOrderedItem;
+        itemCodeableConcept?: CodeableConcept;
+        /**
+         * Medication, Substance, or Device requested to be supplied
+         */
+        itemReference?: Reference;
+        /**
+         * The requested amount of the item indicated
+         */
+        quantity: Quantity;
+        /**
+         * Ordered item details
+         */
+        parameter?: SupplyRequestParameter[];
         /**
          * When the request should be fulfilled
          */
@@ -23219,21 +29601,21 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _authoredOn?: Element;
         /**
-         * Who/what is requesting service
+         * Individual making the request
          */
-        requester?: SupplyRequestRequester;
+        requester?: Reference;
         /**
          * Who is intended to fulfill the request
          */
         supplier?: Reference[];
         /**
-         * Why the supply item was requested
+         * The reason why the supply item was requested
          */
-        reasonCodeableConcept?: CodeableConcept;
+        reasonCode?: CodeableConcept[];
         /**
-         * Why the supply item was requested
+         * The reason why the supply item was requested
          */
-        reasonReference?: Reference;
+        reasonReference?: Reference[];
         /**
          * The origin of the supply
          */
@@ -23242,19 +29624,6 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * The destination of the supply
          */
         deliverTo?: Reference;
-    }
-    /**
-     * Who is asking for task to be done
-     */
-    interface TaskRequester extends BackboneElement {
-        /**
-         * Individual asking for task
-         */
-        agent: Reference;
-        /**
-         * Organization individual is acting for
-         */
-        onBehalfOf?: Reference;
     }
     /**
      * Constraints on fulfillment tasks
@@ -23304,6 +29673,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Content to use in performing the task
          */
+        valueCanonical?: canonical;
+        /**
+         * Contains extended information for property 'valueCanonical'.
+         */
+        _valueCanonical?: Element;
+        /**
+         * Content to use in performing the task
+         */
         valueCode?: code;
         /**
          * Contains extended information for property 'valueCode'.
@@ -23416,6 +29793,22 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Content to use in performing the task
          */
+        valueUrl?: url;
+        /**
+         * Contains extended information for property 'valueUrl'.
+         */
+        _valueUrl?: Element;
+        /**
+         * Content to use in performing the task
+         */
+        valueUuid?: uuid;
+        /**
+         * Contains extended information for property 'valueUuid'.
+         */
+        _valueUuid?: Element;
+        /**
+         * Content to use in performing the task
+         */
         valueAddress?: Address;
         /**
          * Content to use in performing the task
@@ -23500,7 +29893,39 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Content to use in performing the task
          */
-        valueMeta?: Meta;
+        valueParameterDefinition?: ParameterDefinition;
+        /**
+         * Content to use in performing the task
+         */
+        valueDataRequirement?: DataRequirement;
+        /**
+         * Content to use in performing the task
+         */
+        valueRelatedArtifact?: RelatedArtifact;
+        /**
+         * Content to use in performing the task
+         */
+        valueContactDetail?: ContactDetail;
+        /**
+         * Content to use in performing the task
+         */
+        valueContributor?: Contributor;
+        /**
+         * Content to use in performing the task
+         */
+        valueTriggerDefinition?: TriggerDefinition;
+        /**
+         * Content to use in performing the task
+         */
+        valueExpression?: Expression;
+        /**
+         * Content to use in performing the task
+         */
+        valueUsageContext?: UsageContext;
+        /**
+         * Content to use in performing the task
+         */
+        valueDosage?: Dosage;
     }
     /**
      * Information produced as part of task
@@ -23529,6 +29954,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Result of output
          */
+        valueCanonical?: canonical;
+        /**
+         * Contains extended information for property 'valueCanonical'.
+         */
+        _valueCanonical?: Element;
+        /**
+         * Result of output
+         */
         valueCode?: code;
         /**
          * Contains extended information for property 'valueCode'.
@@ -23641,6 +30074,22 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Result of output
          */
+        valueUrl?: url;
+        /**
+         * Contains extended information for property 'valueUrl'.
+         */
+        _valueUrl?: Element;
+        /**
+         * Result of output
+         */
+        valueUuid?: uuid;
+        /**
+         * Contains extended information for property 'valueUuid'.
+         */
+        _valueUuid?: Element;
+        /**
+         * Result of output
+         */
         valueAddress?: Address;
         /**
          * Result of output
@@ -23725,7 +30174,39 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Result of output
          */
-        valueMeta?: Meta;
+        valueParameterDefinition?: ParameterDefinition;
+        /**
+         * Result of output
+         */
+        valueDataRequirement?: DataRequirement;
+        /**
+         * Result of output
+         */
+        valueRelatedArtifact?: RelatedArtifact;
+        /**
+         * Result of output
+         */
+        valueContactDetail?: ContactDetail;
+        /**
+         * Result of output
+         */
+        valueContributor?: Contributor;
+        /**
+         * Result of output
+         */
+        valueTriggerDefinition?: TriggerDefinition;
+        /**
+         * Result of output
+         */
+        valueExpression?: Expression;
+        /**
+         * Result of output
+         */
+        valueUsageContext?: UsageContext;
+        /**
+         * Result of output
+         */
+        valueDosage?: Dosage;
     }
     /**
      * A task to be performed
@@ -23738,15 +30219,19 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Formal definition of task
          */
-        definitionUri?: uri;
+        instantiatesCanonical?: canonical;
         /**
-         * Contains extended information for property 'definitionUri'.
+         * Contains extended information for property 'instantiatesCanonical'.
          */
-        _definitionUri?: Element;
+        _instantiatesCanonical?: Element;
         /**
          * Formal definition of task
          */
-        definitionReference?: Reference;
+        instantiatesUri?: uri;
+        /**
+         * Contains extended information for property 'instantiatesUri'.
+         */
+        _instantiatesUri?: Element;
         /**
          * Request fulfilled by this task
          */
@@ -23776,7 +30261,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         businessStatus?: CodeableConcept;
         /**
-         * proposal | plan | order +
+         * unknown | proposal | plan | order | original-order | reflex-order | filler-order | instance-order | option
          */
         intent: code;
         /**
@@ -23784,7 +30269,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _intent?: Element;
         /**
-         * normal | urgent | asap | stat
+         * routine | urgent | asap | stat
          */
         priority?: code;
         /**
@@ -23838,7 +30323,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Who is asking for task to be done
          */
-        requester?: TaskRequester;
+        requester?: Reference;
         /**
          * requester | dispatcher | scheduler | performer | monitor | manager | acquirer | reviewer
          */
@@ -23848,9 +30333,21 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         owner?: Reference;
         /**
+         * Where task occurs
+         */
+        location?: Reference;
+        /**
          * Why task is needed
          */
-        reason?: CodeableConcept;
+        reasonCode?: CodeableConcept;
+        /**
+         * Why task is needed
+         */
+        reasonReference?: Reference;
+        /**
+         * Associated insurance coverage
+         */
+        insurance?: Reference[];
         /**
          * Comments made about the task
          */
@@ -23871,6 +30368,401 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Information produced as part of task
          */
         output?: TaskOutput[];
+    }
+    /**
+     * Software that is covered by this terminology capability statement
+     */
+    interface TerminologyCapabilitiesSoftware extends BackboneElement {
+        /**
+         * A name the software is known by
+         */
+        name: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Version covered by this statement
+         */
+        version?: string;
+        /**
+         * Contains extended information for property 'version'.
+         */
+        _version?: Element;
+    }
+    /**
+     * If this describes a specific instance
+     */
+    interface TerminologyCapabilitiesImplementation extends BackboneElement {
+        /**
+         * Describes this specific instance
+         */
+        description: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Base URL for the implementation
+         */
+        url?: url;
+        /**
+         * Contains extended information for property 'url'.
+         */
+        _url?: Element;
+    }
+    /**
+     * A code system supported by the server
+     */
+    interface TerminologyCapabilitiesCodeSystem extends BackboneElement {
+        /**
+         * URI for the Code System
+         */
+        uri?: canonical;
+        /**
+         * Contains extended information for property 'uri'.
+         */
+        _uri?: Element;
+        /**
+         * Version of Code System supported
+         */
+        version?: TerminologyCapabilitiesCodeSystemVersion[];
+        /**
+         * Whether subsumption is supported
+         */
+        subsumption?: boolean;
+        /**
+         * Contains extended information for property 'subsumption'.
+         */
+        _subsumption?: Element;
+    }
+    /**
+     * Version of Code System supported
+     */
+    interface TerminologyCapabilitiesCodeSystemVersion extends BackboneElement {
+        /**
+         * Version identifier for this version
+         */
+        code?: string;
+        /**
+         * Contains extended information for property 'code'.
+         */
+        _code?: Element;
+        /**
+         * If this is the default version for this code system
+         */
+        isDefault?: boolean;
+        /**
+         * Contains extended information for property 'isDefault'.
+         */
+        _isDefault?: Element;
+        /**
+         * If compositional grammar is supported
+         */
+        compositional?: boolean;
+        /**
+         * Contains extended information for property 'compositional'.
+         */
+        _compositional?: Element;
+        /**
+         * Language Displays supported
+         */
+        language?: code[];
+        /**
+         * Contains extended information for property 'language'.
+         */
+        _language?: Element[];
+        /**
+         * Filter Properties supported
+         */
+        filter?: TerminologyCapabilitiesCodeSystemVersionFilter[];
+        /**
+         * Properties supported for $lookup
+         */
+        property?: code[];
+        /**
+         * Contains extended information for property 'property'.
+         */
+        _property?: Element[];
+    }
+    /**
+     * Filter Properties supported
+     */
+    interface TerminologyCapabilitiesCodeSystemVersionFilter extends BackboneElement {
+        /**
+         * Code of the property supported
+         */
+        code: code;
+        /**
+         * Contains extended information for property 'code'.
+         */
+        _code?: Element;
+        /**
+         * Operations supported for the property
+         */
+        op: code[];
+        /**
+         * Contains extended information for property 'op'.
+         */
+        _op?: Element[];
+    }
+    /**
+     * Information about the [ValueSet/$expand](valueset-operation-expand.html) operation
+     */
+    interface TerminologyCapabilitiesExpansion extends BackboneElement {
+        /**
+         * Whether the server can return nested value sets
+         */
+        hierarchical?: boolean;
+        /**
+         * Contains extended information for property 'hierarchical'.
+         */
+        _hierarchical?: Element;
+        /**
+         * Whether the server supports paging on expansion
+         */
+        paging?: boolean;
+        /**
+         * Contains extended information for property 'paging'.
+         */
+        _paging?: Element;
+        /**
+         * Allow request for incomplete expansions?
+         */
+        incomplete?: boolean;
+        /**
+         * Contains extended information for property 'incomplete'.
+         */
+        _incomplete?: Element;
+        /**
+         * Supported expansion parameter
+         */
+        parameter?: TerminologyCapabilitiesExpansionParameter[];
+        /**
+         * Documentation about text searching works
+         */
+        textFilter?: markdown;
+        /**
+         * Contains extended information for property 'textFilter'.
+         */
+        _textFilter?: Element;
+    }
+    /**
+     * Supported expansion parameter
+     */
+    interface TerminologyCapabilitiesExpansionParameter extends BackboneElement {
+        /**
+         * Expansion Parameter name
+         */
+        name: code;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Description of support for parameter
+         */
+        documentation?: string;
+        /**
+         * Contains extended information for property 'documentation'.
+         */
+        _documentation?: Element;
+    }
+    /**
+     * Information about the [ValueSet/$validate-code](valueset-operation-validate-code.html) operation
+     */
+    interface TerminologyCapabilitiesValidateCode extends BackboneElement {
+        /**
+         * Whether translations are validated
+         */
+        translations: boolean;
+        /**
+         * Contains extended information for property 'translations'.
+         */
+        _translations?: Element;
+    }
+    /**
+     * Information about the [ConceptMap/$translate](conceptmap-operation-translate.html) operation
+     */
+    interface TerminologyCapabilitiesTranslation extends BackboneElement {
+        /**
+         * Whether the client must identify the map
+         */
+        needsMap: boolean;
+        /**
+         * Contains extended information for property 'needsMap'.
+         */
+        _needsMap?: Element;
+    }
+    /**
+     * Information about the [ConceptMap/$closure](conceptmap-operation-closure.html) operation
+     */
+    interface TerminologyCapabilitiesClosure extends BackboneElement {
+        /**
+         * If cross-system closure is supported
+         */
+        translation?: boolean;
+        /**
+         * Contains extended information for property 'translation'.
+         */
+        _translation?: Element;
+    }
+    /**
+     * A statement of system capabilities
+     */
+    interface TerminologyCapabilities extends DomainResource {
+        /**
+         * Canonical identifier for this terminology capabilities, represented as a URI (globally unique)
+         */
+        url?: uri;
+        /**
+         * Contains extended information for property 'url'.
+         */
+        _url?: Element;
+        /**
+         * Business version of the terminology capabilities
+         */
+        version?: string;
+        /**
+         * Contains extended information for property 'version'.
+         */
+        _version?: Element;
+        /**
+         * Name for this terminology capabilities (computer friendly)
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Name for this terminology capabilities (human friendly)
+         */
+        title?: string;
+        /**
+         * Contains extended information for property 'title'.
+         */
+        _title?: Element;
+        /**
+         * draft | active | retired | unknown
+         */
+        status: code;
+        /**
+         * Contains extended information for property 'status'.
+         */
+        _status?: Element;
+        /**
+         * For testing purposes, not real usage
+         */
+        experimental?: boolean;
+        /**
+         * Contains extended information for property 'experimental'.
+         */
+        _experimental?: Element;
+        /**
+         * Date last changed
+         */
+        date: dateTime;
+        /**
+         * Contains extended information for property 'date'.
+         */
+        _date?: Element;
+        /**
+         * Name of the publisher (organization or individual)
+         */
+        publisher?: string;
+        /**
+         * Contains extended information for property 'publisher'.
+         */
+        _publisher?: Element;
+        /**
+         * Contact details for the publisher
+         */
+        contact?: ContactDetail[];
+        /**
+         * Natural language description of the terminology capabilities
+         */
+        description?: markdown;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * The context that the content is intended to support
+         */
+        useContext?: UsageContext[];
+        /**
+         * Intended jurisdiction for terminology capabilities (if applicable)
+         */
+        jurisdiction?: CodeableConcept[];
+        /**
+         * Why this terminology capabilities is defined
+         */
+        purpose?: markdown;
+        /**
+         * Contains extended information for property 'purpose'.
+         */
+        _purpose?: Element;
+        /**
+         * Use and/or publishing restrictions
+         */
+        copyright?: markdown;
+        /**
+         * Contains extended information for property 'copyright'.
+         */
+        _copyright?: Element;
+        /**
+         * instance | capability | requirements
+         */
+        kind: code;
+        /**
+         * Contains extended information for property 'kind'.
+         */
+        _kind?: Element;
+        /**
+         * Software that is covered by this terminology capability statement
+         */
+        software?: TerminologyCapabilitiesSoftware;
+        /**
+         * If this describes a specific instance
+         */
+        implementation?: TerminologyCapabilitiesImplementation;
+        /**
+         * Whether lockedDate is supported
+         */
+        lockedDate?: boolean;
+        /**
+         * Contains extended information for property 'lockedDate'.
+         */
+        _lockedDate?: Element;
+        /**
+         * A code system supported by the server
+         */
+        codeSystem?: TerminologyCapabilitiesCodeSystem[];
+        /**
+         * Information about the [ValueSet/$expand](valueset-operation-expand.html) operation
+         */
+        expansion?: TerminologyCapabilitiesExpansion;
+        /**
+         * explicit | all
+         */
+        codeSearch?: code;
+        /**
+         * Contains extended information for property 'codeSearch'.
+         */
+        _codeSearch?: Element;
+        /**
+         * Information about the [ValueSet/$validate-code](valueset-operation-validate-code.html) operation
+         */
+        validateCode?: TerminologyCapabilitiesValidateCode;
+        /**
+         * Information about the [ConceptMap/$translate](conceptmap-operation-translate.html) operation
+         */
+        translation?: TerminologyCapabilitiesTranslation;
+        /**
+         * Information about the [ConceptMap/$closure](conceptmap-operation-closure.html) operation
+         */
+        closure?: TerminologyCapabilitiesClosure;
     }
     /**
      * A participant in the test execution, either the execution engine, a client, or a server
@@ -24189,7 +31081,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Are the capabilities required?
          */
-        required?: boolean;
+        required: boolean;
         /**
          * Contains extended information for property 'required'.
          */
@@ -24197,7 +31089,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Are the capabilities validated?
          */
-        validated?: boolean;
+        validated: boolean;
         /**
          * Contains extended information for property 'validated'.
          */
@@ -24237,7 +31129,11 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Required Capability Statement
          */
-        capabilities: Reference;
+        capabilities: canonical;
+        /**
+         * Contains extended information for property 'capabilities'.
+         */
+        _capabilities?: Element;
     }
     /**
      * Fixture in the test script - by reference (uri)
@@ -24246,7 +31142,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Whether or not to implicitly create the fixture during setup
          */
-        autocreate?: boolean;
+        autocreate: boolean;
         /**
          * Contains extended information for property 'autocreate'.
          */
@@ -24254,7 +31150,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Whether or not to implicitly delete the fixture during teardown
          */
-        autodelete?: boolean;
+        autodelete: boolean;
         /**
          * Contains extended information for property 'autodelete'.
          */
@@ -24293,7 +31189,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * The fluentpath expression against the fixture body
+         * The FHIRPath expression against the fixture body
          */
         expression?: string;
         /**
@@ -24473,7 +31369,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * xml | json | ttl | none
+         * Mime type to accept in the payload of the response, with charset etc.
          */
         accept?: code;
         /**
@@ -24481,7 +31377,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _accept?: Element;
         /**
-         * xml | json | ttl | none
+         * Mime type of the request payload contents, with charset etc.
          */
         contentType?: code;
         /**
@@ -24499,7 +31395,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Whether or not to send the request url in encoded format
          */
-        encodeRequestUrl?: boolean;
+        encodeRequestUrl: boolean;
         /**
          * Contains extended information for property 'encodeRequestUrl'.
          */
@@ -24623,7 +31519,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _compareToSourceId?: Element;
         /**
-         * The fluentpath expression to evaluate against the source fixture
+         * The FHIRPath expression to evaluate against the source fixture
          */
         compareToSourceExpression?: string;
         /**
@@ -24639,7 +31535,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _compareToSourcePath?: Element;
         /**
-         * xml | json | ttl | none
+         * Mime type to compare against the 'Content-Type' header
          */
         contentType?: code;
         /**
@@ -24647,7 +31543,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _contentType?: Element;
         /**
-         * The fluentpath expression to be evaluated
+         * The FHIRPath expression to be evaluated
          */
         expression?: string;
         /**
@@ -24769,7 +31665,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Will this assert produce a warning only on error?
          */
-        warningOnly?: boolean;
+        warningOnly: boolean;
         /**
          * Contains extended information for property 'warningOnly'.
          */
@@ -24929,7 +31825,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface TestScript extends DomainResource {
         /**
-         * Logical URI to reference this test script (globally unique)
+         * Canonical identifier for this test script, represented as a URI (globally unique)
          */
         url: uri;
         /**
@@ -24981,7 +31877,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _experimental?: Element;
         /**
-         * Date this was last changed
+         * Date last changed
          */
         date?: dateTime;
         /**
@@ -25009,7 +31905,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * Context the content is intended to support
+         * The context that the content is intended to support
          */
         useContext?: UsageContext[];
         /**
@@ -25078,11 +31974,98 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         teardown?: TestScriptTeardown;
     }
     /**
-     * Definition of the content of the value set (CLD)
+     * Status of the session
+     */
+    interface UserSessionStatus extends BackboneElement {
+        /**
+         * activating | active | suspended | closing | closed
+         */
+        code: code;
+        /**
+         * Contains extended information for property 'code'.
+         */
+        _code?: Element;
+        /**
+         * user | system
+         */
+        source: code;
+        /**
+         * Contains extended information for property 'source'.
+         */
+        _source?: Element;
+    }
+    /**
+     * Additional information about the session
+     */
+    interface UserSessionContext extends BackboneElement {
+        /**
+         * What type of context value
+         */
+        type: string;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+        /**
+         * Value of the context
+         */
+        valueCodeableConcept?: CodeableConcept;
+        /**
+         * Value of the context
+         */
+        valueQuantity?: Quantity;
+    }
+    /**
+     * Information about a user's current session
+     */
+    interface UserSession extends DomainResource {
+        /**
+         * Business identifier
+         */
+        identifier?: Identifier;
+        /**
+         * User engaged in the session
+         */
+        user: Reference;
+        /**
+         * Status of the session
+         */
+        status?: UserSessionStatus;
+        /**
+         * Where is the session
+         */
+        workstation?: Identifier;
+        /**
+         * What is the user's current focus
+         */
+        focus?: Reference[];
+        /**
+         * When was the session created
+         */
+        created?: instant;
+        /**
+         * Contains extended information for property 'created'.
+         */
+        _created?: Element;
+        /**
+         * When does the session expire
+         */
+        expires?: instant;
+        /**
+         * Contains extended information for property 'expires'.
+         */
+        _expires?: Element;
+        /**
+         * Additional information about the session
+         */
+        context?: UserSessionContext[];
+    }
+    /**
+     * Content logical definition of the value set (CLD)
      */
     interface ValueSetCompose extends BackboneElement {
         /**
-         * Fixed date for version-less references (transitive)
+         * Fixed date for references with no specified version (transitive)
          */
         lockedDate?: date;
         /**
@@ -25135,9 +32118,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         filter?: ValueSetComposeIncludeFilter[];
         /**
-         * Select only contents included in this value set
+         * Select the contents included in this value set
          */
-        valueSet?: uri[];
+        valueSet?: canonical[];
         /**
          * Contains extended information for property 'valueSet'.
          */
@@ -25181,7 +32164,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _language?: Element;
         /**
-         * Details how this designation would be used
+         * Types of uses of designations
          */
         use?: Coding;
         /**
@@ -25216,7 +32199,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Code from the system, or regex criteria, or boolean value for exists
          */
-        value: code;
+        value: string;
         /**
          * Contains extended information for property 'value'.
          */
@@ -25227,9 +32210,9 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface ValueSetExpansion extends BackboneElement {
         /**
-         * Uniquely identifies this expansion
+         * Identifies the value set expansion (business identifier)
          */
-        identifier: uri;
+        identifier?: uri;
         /**
          * Contains extended information for property 'identifier'.
          */
@@ -25272,7 +32255,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface ValueSetExpansionParameter extends BackboneElement {
         /**
-         * Name as assigned by the server
+         * Name as assigned by the client or server
          */
         name: string;
         /**
@@ -25327,6 +32310,14 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          * Contains extended information for property 'valueCode'.
          */
         _valueCode?: Element;
+        /**
+         * Value of the named parameter
+         */
+        valueDateTime?: dateTime;
+        /**
+         * Contains extended information for property 'valueDateTime'.
+         */
+        _valueDateTime?: Element;
     }
     /**
      * Codes in the value set
@@ -25394,7 +32385,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
      */
     interface ValueSet extends DomainResource {
         /**
-         * Logical URI to reference this value set (globally unique)
+         * Canonical identifier for this value set, represented as a URI (globally unique)
          */
         url?: uri;
         /**
@@ -25402,7 +32393,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _url?: Element;
         /**
-         * Additional identifier for the value set
+         * Additional identifier for the value set (business identifier)
          */
         identifier?: Identifier[];
         /**
@@ -25446,7 +32437,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _experimental?: Element;
         /**
-         * Date this was last changed
+         * Date last changed
          */
         date?: dateTime;
         /**
@@ -25474,7 +32465,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _description?: Element;
         /**
-         * Context the content is intended to support
+         * The context that the content is intended to support
          */
         useContext?: UsageContext[];
         /**
@@ -25506,21 +32497,237 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
          */
         _copyright?: Element;
         /**
-         * Whether this is intended to be used with an extensible binding
-         */
-        extensible?: boolean;
-        /**
-         * Contains extended information for property 'extensible'.
-         */
-        _extensible?: Element;
-        /**
-         * Definition of the content of the value set (CLD)
+         * Content logical definition of the value set (CLD)
          */
         compose?: ValueSetCompose;
         /**
          * Used when the value set is "expanded"
          */
         expansion?: ValueSetExpansion;
+    }
+    /**
+     * Information about the primary source(s) involved in validation
+     */
+    interface VerificationResultPrimarySource extends BackboneElement {
+        /**
+         * Reference to the primary source
+         */
+        organization?: Reference;
+        /**
+         * Type of primary source (License Board; Primary Education; Continuing Education; Postal Service; Relationship owner; Registration Authority; legal source; issuing source; authoritative source)
+         */
+        type?: CodeableConcept[];
+        /**
+         * The process(es) by which the target is validated
+         */
+        validationProcess?: CodeableConcept[];
+        /**
+         * successful | failed | unknown
+         */
+        validationStatus?: CodeableConcept;
+        /**
+         * When the target was validated against the primary source
+         */
+        validationDate?: dateTime;
+        /**
+         * Contains extended information for property 'validationDate'.
+         */
+        _validationDate?: Element;
+        /**
+         * yes | no | undetermined
+         */
+        canPushUpdates?: CodeableConcept;
+        /**
+         * specific | any | source
+         */
+        pushTypeAvailable?: CodeableConcept[];
+    }
+    /**
+     * Information about the entity attesting to information
+     */
+    interface VerificationResultAttestation extends BackboneElement {
+        /**
+         * The individual attesting to information
+         */
+        source?: Reference;
+        /**
+         * The organization attesting to information
+         */
+        organization?: Reference;
+        /**
+         * Who is providing the attested information (owner; authorized representative; authorized intermediary; non-authorized source)
+         */
+        method?: CodeableConcept;
+        /**
+         * The date the information was attested to
+         */
+        date?: date;
+        /**
+         * Contains extended information for property 'date'.
+         */
+        _date?: Element;
+        /**
+         * A digital identity certificate associated with the attestation source
+         */
+        sourceIdentityCertificate?: string;
+        /**
+         * Contains extended information for property 'sourceIdentityCertificate'.
+         */
+        _sourceIdentityCertificate?: Element;
+        /**
+         * A digital identity certificate associated with the proxy entity submitting attested information on behalf of the attestation source
+         */
+        proxyIdentityCertificate?: string;
+        /**
+         * Contains extended information for property 'proxyIdentityCertificate'.
+         */
+        _proxyIdentityCertificate?: Element;
+        /**
+         * Proxy signature
+         */
+        signedProxyRightString?: string;
+        /**
+         * Contains extended information for property 'signedProxyRightString'.
+         */
+        _signedProxyRightString?: Element;
+        /**
+         * Proxy signature
+         */
+        signedProxyRightUri?: uri;
+        /**
+         * Contains extended information for property 'signedProxyRightUri'.
+         */
+        _signedProxyRightUri?: Element;
+        /**
+         * Attester signature
+         */
+        signedSourceAttestationString?: string;
+        /**
+         * Contains extended information for property 'signedSourceAttestationString'.
+         */
+        _signedSourceAttestationString?: Element;
+        /**
+         * Attester signature
+         */
+        signedSourceAttestationUri?: uri;
+        /**
+         * Contains extended information for property 'signedSourceAttestationUri'.
+         */
+        _signedSourceAttestationUri?: Element;
+    }
+    /**
+     * Information about the entity validating information
+     */
+    interface VerificationResultValidator extends BackboneElement {
+        /**
+         * Reference to the organization validating information
+         */
+        organization: Reference;
+        /**
+         * A digital identity certificate associated with the validator
+         */
+        identityCertificate?: string;
+        /**
+         * Contains extended information for property 'identityCertificate'.
+         */
+        _identityCertificate?: Element;
+        /**
+         * Validator signature
+         */
+        signedValidatorAttestationString?: string;
+        /**
+         * Contains extended information for property 'signedValidatorAttestationString'.
+         */
+        _signedValidatorAttestationString?: Element;
+        /**
+         * Validator signature
+         */
+        signedValidatorAttestationUri?: uri;
+        /**
+         * Contains extended information for property 'signedValidatorAttestationUri'.
+         */
+        _signedValidatorAttestationUri?: Element;
+    }
+    /**
+     * Describes validation requirements, source(s), status and dates for one or more elements
+     */
+    interface VerificationResult extends DomainResource {
+        /**
+         * A resource that was validated
+         */
+        target?: Reference[];
+        /**
+         * The fhirpath location(s) within the resource that was validated
+         */
+        targetLocation?: string[];
+        /**
+         * Contains extended information for property 'targetLocation'.
+         */
+        _targetLocation?: Element[];
+        /**
+         * none | initial | periodic
+         */
+        need?: CodeableConcept;
+        /**
+         * attested | validated | in-process | req-revalid | val-fail | reval-fail
+         */
+        status: code;
+        /**
+         * Contains extended information for property 'status'.
+         */
+        _status?: Element;
+        /**
+         * When the validation status was updated
+         */
+        statusDate?: dateTime;
+        /**
+         * Contains extended information for property 'statusDate'.
+         */
+        _statusDate?: Element;
+        /**
+         * nothing | primary | multiple
+         */
+        validationType?: CodeableConcept;
+        /**
+         * The primary process by which the target is validated (edit check; value set; primary source; multiple sources; standalone; in context)
+         */
+        validationProcess?: CodeableConcept[];
+        /**
+         * Frequency of revalidation
+         */
+        frequency?: Timing;
+        /**
+         * The date/time validation was last completed (incl. failed validations)
+         */
+        lastPerformed?: dateTime;
+        /**
+         * Contains extended information for property 'lastPerformed'.
+         */
+        _lastPerformed?: Element;
+        /**
+         * The date when target is next validated, if appropriate
+         */
+        nextScheduled?: date;
+        /**
+         * Contains extended information for property 'nextScheduled'.
+         */
+        _nextScheduled?: Element;
+        /**
+         * fatal | warn | rec-only | none
+         */
+        failureAction?: CodeableConcept;
+        /**
+         * Information about the primary source(s) involved in validation
+         */
+        primarySource?: VerificationResultPrimarySource[];
+        /**
+         * Information about the entity attesting to information
+         */
+        attestation?: VerificationResultAttestation;
+        /**
+         * Information about the entity validating information
+         */
+        validator?: VerificationResultValidator[];
     }
     /**
      * Vision supply authorization
@@ -25565,19 +32772,7 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         /**
          * Lens prism
          */
-        prism?: decimal;
-        /**
-         * Contains extended information for property 'prism'.
-         */
-        _prism?: Element;
-        /**
-         * up | down | in | out
-         */
-        base?: code;
-        /**
-         * Contains extended information for property 'base'.
-         */
-        _base?: Element;
+        prism?: VisionPrescriptionDispensePrism[];
         /**
          * Lens add
          */
@@ -25636,6 +32831,27 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
         note?: Annotation[];
     }
     /**
+     * Lens prism
+     */
+    interface VisionPrescriptionDispensePrism extends BackboneElement {
+        /**
+         * Amount of adjustment
+         */
+        amount: decimal;
+        /**
+         * Contains extended information for property 'amount'.
+         */
+        _amount?: Element;
+        /**
+         * up | down | in | out
+         */
+        base: code;
+        /**
+         * Contains extended information for property 'base'.
+         */
+        _base?: Element;
+    }
+    /**
      * Prescription for vision correction products for a patient
      */
     interface VisionPrescription extends DomainResource {
@@ -25687,5 +32903,5 @@ An adverse event is an event that caused harm to a patient,  an adverse reaction
     /**
      * Reference to a sub-type of ResourceBase. This is needed for stricter object literal typing introduced in TypeScript 1.6.
      */
-    type Resource = (DomainResource|Account|ActivityDefinition|AdverseEvent|AllergyIntolerance|Appointment|AppointmentResponse|AuditEvent|Basic|BodySite|CapabilityStatement|CarePlan|CareTeam|ChargeItem|Claim|ClaimResponse|ClinicalImpression|CodeSystem|Communication|CommunicationRequest|CompartmentDefinition|Composition|ConceptMap|Condition|Consent|Contract|Coverage|DataElement|DetectedIssue|Device|DeviceComponent|DeviceMetric|DeviceRequest|DeviceUseStatement|DiagnosticReport|DocumentManifest|DocumentReference|EligibilityRequest|EligibilityResponse|Encounter|Endpoint|EnrollmentRequest|EnrollmentResponse|EpisodeOfCare|ExpansionProfile|ExplanationOfBenefit|FamilyMemberHistory|Flag|Goal|GraphDefinition|Group|GuidanceResponse|HealthcareService|ImagingManifest|ImagingStudy|Immunization|ImmunizationRecommendation|ImplementationGuide|Library|Linkage|List|Location|Measure|MeasureReport|Media|Medication|MedicationAdministration|MedicationDispense|MedicationRequest|MedicationStatement|MessageDefinition|MessageHeader|NamingSystem|NutritionOrder|Observation|OperationDefinition|OperationOutcome|Organization|Patient|PaymentNotice|PaymentReconciliation|Person|PlanDefinition|Practitioner|PractitionerRole|Procedure|ProcedureRequest|ProcessRequest|ProcessResponse|Provenance|Questionnaire|QuestionnaireResponse|ReferralRequest|RelatedPerson|RequestGroup|ResearchStudy|ResearchSubject|RiskAssessment|Schedule|SearchParameter|Sequence|ServiceDefinition|Slot|Specimen|StructureDefinition|StructureMap|Subscription|Substance|SupplyDelivery|SupplyRequest|Task|TestReport|TestScript|ValueSet|VisionPrescription|Binary|Bundle|Parameters);
+    type Resource = (DomainResource|Account|ActivityDefinition|AdverseEvent|AllergyIntolerance|Appointment|AppointmentResponse|AuditEvent|Basic|BiologicallyDerivedProduct|BodyStructure|CapabilityStatement|CarePlan|CareTeam|ChargeItem|ChargeItemDefinition|Claim|ClaimResponse|ClinicalImpression|CodeSystem|Communication|CommunicationRequest|CompartmentDefinition|Composition|ConceptMap|Condition|Consent|Contract|Coverage|CoverageEligibilityRequest|CoverageEligibilityResponse|DetectedIssue|Device|DeviceDefinition|DeviceMetric|DeviceRequest|DeviceUseStatement|DiagnosticReport|DocumentManifest|DocumentReference|Encounter|Endpoint|EnrollmentRequest|EnrollmentResponse|EntryDefinition|EpisodeOfCare|EventDefinition|ExampleScenario|ExplanationOfBenefit|FamilyMemberHistory|Flag|Goal|GraphDefinition|Group|GuidanceResponse|HealthcareService|ImagingStudy|Immunization|ImmunizationEvaluation|ImmunizationRecommendation|ImplementationGuide|InsurancePlan|Invoice|ItemInstance|Library|Linkage|List|Location|Measure|MeasureReport|Media|Medication|MedicationAdministration|MedicationDispense|MedicationKnowledge|MedicationRequest|MedicationStatement|MedicinalProduct|MedicinalProductAuthorization|MedicinalProductClinicals|MedicinalProductContraindication|MedicinalProductDeviceSpec|MedicinalProductIndication|MedicinalProductIngredient|MedicinalProductInteraction|MedicinalProductManufactured|MedicinalProductPackaged|MedicinalProductPharmaceutical|MedicinalProductUndesirableEffect|MessageDefinition|MessageHeader|NamingSystem|NutritionOrder|Observation|ObservationDefinition|OperationDefinition|OperationOutcome|Organization|OrganizationAffiliation|Patient|PaymentNotice|PaymentReconciliation|Person|PlanDefinition|Practitioner|PractitionerRole|Procedure|ProcessRequest|ProcessResponse|Provenance|Questionnaire|QuestionnaireResponse|RelatedPerson|RequestGroup|ResearchStudy|ResearchSubject|RiskAssessment|Schedule|SearchParameter|Sequence|ServiceRequest|Slot|Specimen|SpecimenDefinition|StructureDefinition|StructureMap|Subscription|Substance|SubstancePolymer|SubstanceReferenceInformation|SubstanceSpecification|SupplyDelivery|SupplyRequest|Task|TerminologyCapabilities|TestReport|TestScript|UserSession|ValueSet|VerificationResult|VisionPrescription|Binary|Bundle|Parameters);
 }
