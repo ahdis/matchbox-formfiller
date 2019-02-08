@@ -35,6 +35,7 @@ import { QuestionnaireItemComponent } from './questionnaire-item/questionnaire-i
 
 import { QuestionnaireModule } from './questionnaire/questionnaire.module';
 import { FhirPathComponent } from './fhir-path/fhir-path.component';
+import { MappingLanguageComponent } from './mapping-language/mapping-language.component';
 
 const routes: Routes = [
   {
@@ -43,7 +44,9 @@ const routes: Routes = [
   {
     path: 'fhirpath', component: FhirPathComponent
   },
-
+  {
+    path: 'mappinglanguage', component: MappingLanguageComponent
+  },
   {
     path: 'patients', component: PatientsComponent
   },
@@ -73,7 +76,8 @@ const routes: Routes = [
     QuestionnaireDetailComponent,
     QuestionnaireFormFillerComponent,
     QuestionnaireItemComponent,
-    FhirPathComponent
+    FhirPathComponent,
+    MappingLanguageComponent
   ],
   imports: [
     BrowserModule,

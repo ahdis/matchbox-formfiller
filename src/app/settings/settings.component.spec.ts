@@ -12,7 +12,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhirjs';
 
 export const FHIR_JS_CONFIG: FhirConfig = {
-  baseUrl: 'http://test.fhir.org/r3',
+  baseUrl: 'http://localhost:8080/fhir',
   credentials: 'same-origin'
 };
 

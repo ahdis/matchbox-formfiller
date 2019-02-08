@@ -13,7 +13,7 @@ declare module fhir.r4 {
      */
     type base64Binary = string;
     /**
-     * A URI that is a reference to a canonical URI on a FHIR resource
+     * A URI that is a reference to a canonical URL on a FHIR resource
      */
     type canonical = string;
     /**
@@ -738,7 +738,7 @@ declare module fhir.r4 {
      */
     interface BackboneElement extends Element {
         /**
-         * Extensions that cannot be ignored if unrecognized
+         * Extensions that cannot be ignored even if unrecognized
          */
         modifierExtension?: Extension[];
     }
@@ -893,51 +893,28 @@ declare module fhir.r4 {
         code?: CodeableConcept;
     }
     /**
-     * Definition of a parameter to a module
+     * Contact information
      */
-    interface ParameterDefinition extends Element {
+    interface ContactDetail extends Element {
         /**
-         * Name used to access the parameter value
+         * Name of an individual to contact
          */
-        name?: code;
+        name?: string;
         /**
          * Contains extended information for property 'name'.
          */
         _name?: Element;
         /**
-         * in | out
+         * Contact details for individual or organization
          */
-        use: code;
+        telecom?: ContactPoint[];
+    }
+    /**
+     * Contributor information
+     */
+    interface Contributor extends Element {
         /**
-         * Contains extended information for property 'use'.
-         */
-        _use?: Element;
-        /**
-         * Minimum cardinality
-         */
-        min?: integer;
-        /**
-         * Contains extended information for property 'min'.
-         */
-        _min?: Element;
-        /**
-         * Maximum cardinality (a number of *)
-         */
-        max?: string;
-        /**
-         * Contains extended information for property 'max'.
-         */
-        _max?: Element;
-        /**
-         * A brief description of the parameter
-         */
-        documentation?: string;
-        /**
-         * Contains extended information for property 'documentation'.
-         */
-        _documentation?: Element;
-        /**
-         * What type of value
+         * author | editor | reviewer | endorser
          */
         type: code;
         /**
@@ -945,13 +922,17 @@ declare module fhir.r4 {
          */
         _type?: Element;
         /**
-         * What profile the value is expected to be
+         * Who contributed the content
          */
-        profile?: canonical;
+        name: string;
         /**
-         * Contains extended information for property 'profile'.
+         * Contains extended information for property 'name'.
          */
-        _profile?: Element;
+        _name?: Element;
+        /**
+         * Contact details of the contributor
+         */
+        contact?: ContactDetail[];
     }
     /**
      * What codes are expected
@@ -1102,97 +1083,6 @@ declare module fhir.r4 {
         sort?: DataRequirementSort[];
     }
     /**
-     * Related artifacts for a knowledge resource
-     */
-    interface RelatedArtifact extends Element {
-        /**
-         * documentation | justification | citation | predecessor | successor | derived-from | depends-on | composed-of
-         */
-        type: code;
-        /**
-         * Contains extended information for property 'type'.
-         */
-        _type?: Element;
-        /**
-         * Brief description of the related artifact
-         */
-        display?: string;
-        /**
-         * Contains extended information for property 'display'.
-         */
-        _display?: Element;
-        /**
-         * Bibliographic citation for the artifact
-         */
-        citation?: string;
-        /**
-         * Contains extended information for property 'citation'.
-         */
-        _citation?: Element;
-        /**
-         * Where the artifact can be accessed
-         */
-        url?: url;
-        /**
-         * Contains extended information for property 'url'.
-         */
-        _url?: Element;
-        /**
-         * What document is being referenced
-         */
-        document?: Attachment;
-        /**
-         * What resource is being referenced
-         */
-        resource?: canonical;
-        /**
-         * Contains extended information for property 'resource'.
-         */
-        _resource?: Element;
-    }
-    /**
-     * Contact information
-     */
-    interface ContactDetail extends Element {
-        /**
-         * Name of an individual to contact
-         */
-        name?: string;
-        /**
-         * Contains extended information for property 'name'.
-         */
-        _name?: Element;
-        /**
-         * Contact details for individual or organization
-         */
-        telecom?: ContactPoint[];
-    }
-    /**
-     * Contributor information
-     */
-    interface Contributor extends Element {
-        /**
-         * author | editor | reviewer | endorser
-         */
-        type: code;
-        /**
-         * Contains extended information for property 'type'.
-         */
-        _type?: Element;
-        /**
-         * Who contributed the content
-         */
-        name: string;
-        /**
-         * Contains extended information for property 'name'.
-         */
-        _name?: Element;
-        /**
-         * Contact details of the contributor
-         */
-        contact?: ContactDetail[];
-    }
-    /**
      * An expression that can be used to generate a value
      */
     interface Expression extends Element {
@@ -1236,6 +1126,124 @@ declare module fhir.r4 {
          * Contains extended information for property 'reference'.
          */
         _reference?: Element;
+    }
+    /**
+     * Definition of a parameter to a module
+     */
+    interface ParameterDefinition extends Element {
+        /**
+         * Name used to access the parameter value
+         */
+        name?: code;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * in | out
+         */
+        use: code;
+        /**
+         * Contains extended information for property 'use'.
+         */
+        _use?: Element;
+        /**
+         * Minimum cardinality
+         */
+        min?: integer;
+        /**
+         * Contains extended information for property 'min'.
+         */
+        _min?: Element;
+        /**
+         * Maximum cardinality (a number of *)
+         */
+        max?: string;
+        /**
+         * Contains extended information for property 'max'.
+         */
+        _max?: Element;
+        /**
+         * A brief description of the parameter
+         */
+        documentation?: string;
+        /**
+         * Contains extended information for property 'documentation'.
+         */
+        _documentation?: Element;
+        /**
+         * What type of value
+         */
+        type: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+        /**
+         * What profile the value is expected to be
+         */
+        profile?: canonical;
+        /**
+         * Contains extended information for property 'profile'.
+         */
+        _profile?: Element;
+    }
+    /**
+     * Related artifacts for a knowledge resource
+     */
+    interface RelatedArtifact extends Element {
+        /**
+         * documentation | justification | citation | predecessor | successor | derived-from | depends-on | composed-of
+         */
+        type: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+        /**
+         * Short label
+         */
+        label?: string;
+        /**
+         * Contains extended information for property 'label'.
+         */
+        _label?: Element;
+        /**
+         * Brief description of the related artifact
+         */
+        display?: string;
+        /**
+         * Contains extended information for property 'display'.
+         */
+        _display?: Element;
+        /**
+         * Bibliographic citation for the artifact
+         */
+        citation?: markdown;
+        /**
+         * Contains extended information for property 'citation'.
+         */
+        _citation?: Element;
+        /**
+         * Where the artifact can be accessed
+         */
+        url?: url;
+        /**
+         * Contains extended information for property 'url'.
+         */
+        _url?: Element;
+        /**
+         * What document is being referenced
+         */
+        document?: Attachment;
+        /**
+         * What resource is being referenced
+         */
+        resource?: canonical;
+        /**
+         * Contains extended information for property 'resource'.
+         */
+        _resource?: Element;
     }
     /**
      * Defines an expected trigger for a module
@@ -1282,9 +1290,9 @@ declare module fhir.r4 {
          */
         _timingDateTime?: Element;
         /**
-         * Triggering data of the event
+         * Triggering data of the event (multiple = 'and')
          */
-        data?: DataRequirement;
+        data?: DataRequirement[];
         /**
          * Whether the event triggers (boolean expression)
          */
@@ -1310,6 +1318,10 @@ declare module fhir.r4 {
          * Value that defines the context
          */
         valueRange?: Range;
+        /**
+         * Value that defines the context
+         */
+        valueReference?: Reference;
     }
     /**
      * Amount of medication administered
@@ -1318,7 +1330,7 @@ declare module fhir.r4 {
         /**
          * The kind of dose or rate specified
          */
-        type: CodeableConcept;
+        type?: CodeableConcept;
         /**
          * Amount of medication per dose
          */
@@ -1668,18 +1680,6 @@ declare module fhir.r4 {
         /**
          * Value of extension
          */
-        valueParameterDefinition?: ParameterDefinition;
-        /**
-         * Value of extension
-         */
-        valueDataRequirement?: DataRequirement;
-        /**
-         * Value of extension
-         */
-        valueRelatedArtifact?: RelatedArtifact;
-        /**
-         * Value of extension
-         */
         valueContactDetail?: ContactDetail;
         /**
          * Value of extension
@@ -1688,11 +1688,23 @@ declare module fhir.r4 {
         /**
          * Value of extension
          */
-        valueTriggerDefinition?: TriggerDefinition;
+        valueDataRequirement?: DataRequirement;
         /**
          * Value of extension
          */
         valueExpression?: Expression;
+        /**
+         * Value of extension
+         */
+        valueParameterDefinition?: ParameterDefinition;
+        /**
+         * Value of extension
+         */
+        valueRelatedArtifact?: RelatedArtifact;
+        /**
+         * Value of extension
+         */
+        valueTriggerDefinition?: TriggerDefinition;
         /**
          * Value of extension
          */
@@ -1715,7 +1727,7 @@ declare module fhir.r4 {
          */
         _fhir_comments?: Element[];
         /**
-         * xml:id (or equivalent in JSON)
+         * Unique id for inter-element referencing
          */
         id?: string;
         /**
@@ -1814,7 +1826,7 @@ declare module fhir.r4 {
         _language?: Element;
     }
     /**
-     * A human-readable formatted text, including images
+     * Human-readable summary of the resource (essential clinical and business information)
      */
     interface Narrative extends Element {
         /**
@@ -1847,7 +1859,7 @@ declare module fhir.r4 {
          */
         contained?: Resource[];
         /**
-         * Additional Content defined by implementations
+         * Additional content defined by implementations
          */
         extension?: Extension[];
         /**
@@ -1873,7 +1885,7 @@ declare module fhir.r4 {
         _priority?: Element;
     }
     /**
-     * Responsible for the account
+     * The parties ultimately responsible for balancing the Account
      */
     interface AccountGuarantor extends BackboneElement {
         /**
@@ -1922,7 +1934,7 @@ declare module fhir.r4 {
          */
         _name?: Element;
         /**
-         * What is account tied to?
+         * The entity that caused the expenses
          */
         subject?: Reference[];
         /**
@@ -1934,7 +1946,7 @@ declare module fhir.r4 {
          */
         coverage?: AccountCoverage[];
         /**
-         * Who is responsible?
+         * Entity managing the Account
          */
         owner?: Reference;
         /**
@@ -1946,7 +1958,7 @@ declare module fhir.r4 {
          */
         _description?: Element;
         /**
-         * Responsible for the account
+         * The parties ultimately responsible for balancing the Account
          */
         guarantor?: AccountGuarantor[];
         /**
@@ -2364,9 +2376,9 @@ declare module fhir.r4 {
          */
         subject: Reference;
         /**
-         * Encounter or episode of care that establishes the context for this AdverseEvent
+         * Encounter created as part of
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * When the event occurred
          */
@@ -2492,19 +2504,11 @@ declare module fhir.r4 {
         /**
          * active | inactive | resolved
          */
-        clinicalStatus?: code;
-        /**
-         * Contains extended information for property 'clinicalStatus'.
-         */
-        _clinicalStatus?: Element;
+        clinicalStatus?: CodeableConcept;
         /**
          * unconfirmed | confirmed | refuted | entered-in-error
          */
-        verificationStatus?: code;
-        /**
-         * Contains extended information for property 'verificationStatus'.
-         */
-        _verificationStatus?: Element;
+        verificationStatus?: CodeableConcept;
         /**
          * allergy | intolerance - Underlying mechanism (if known)
          */
@@ -2570,7 +2574,7 @@ declare module fhir.r4 {
          */
         _onsetString?: Element;
         /**
-         * Date record was first recorded
+         * Date first version of the resource instance was recorded
          */
         recordedDate?: dateTime;
         /**
@@ -2644,13 +2648,17 @@ declare module fhir.r4 {
          */
         identifier?: Identifier[];
         /**
-         * proposed | pending | booked | arrived | fulfilled | cancelled | noshow | entered-in-error | checked-in
+         * proposed | pending | booked | arrived | fulfilled | cancelled | noshow | entered-in-error | checked-in | waitlist
          */
         status: code;
         /**
          * Contains extended information for property 'status'.
          */
         _status?: Element;
+        /**
+         * The coded reason for the appointment being cancelled
+         */
+        cancelationReason?: CodeableConcept;
         /**
          * A broad categorization of the service that is to be performed during this appointment
          */
@@ -2668,13 +2676,13 @@ declare module fhir.r4 {
          */
         appointmentType?: CodeableConcept;
         /**
-         * Reason this appointment is scheduled
+         * Coded reason this appointment is scheduled
          */
-        reason?: CodeableConcept[];
+        reasonCode?: CodeableConcept[];
         /**
-         * Reason the appointment is to takes place (resource)
+         * Reason the appointment is to take place (resource)
          */
-        indication?: Reference[];
+        reasonReference?: Reference[];
         /**
          * Used to make informed decisions if needing to re-prioritize
          */
@@ -3126,11 +3134,11 @@ declare module fhir.r4 {
      */
     interface BiologicallyDerivedProductCollection extends BackboneElement {
         /**
-         * HealthCare Professional performing collection
+         * Individual performing collection
          */
         collector?: Reference;
         /**
-         * Person or entity providing product
+         * Who is product from
          */
         source?: Reference;
         /**
@@ -3280,7 +3288,7 @@ declare module fhir.r4 {
         /**
          * BiologicallyDerivedProduct parent
          */
-        parent?: Reference;
+        parent?: Reference[];
         /**
          * How this product was collected
          */
@@ -4155,9 +4163,9 @@ declare module fhir.r4 {
          */
         implementation?: CapabilityStatementImplementation;
         /**
-         * FHIR Version the system uses
+         * FHIR Version the system supports
          */
-        fhirVersion: id;
+        fhirVersion: code;
         /**
          * Contains extended information for property 'fhirVersion'.
          */
@@ -4414,9 +4422,9 @@ declare module fhir.r4 {
          */
         subject: Reference;
         /**
-         * Created in context of
+         * Encounter created as part of
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * Time period plan covers
          */
@@ -4516,9 +4524,9 @@ declare module fhir.r4 {
          */
         subject?: Reference;
         /**
-         * Encounter or episode associated with CareTeam
+         * Encounter created as part of
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * Time period team covers
          */
@@ -4549,6 +4557,96 @@ declare module fhir.r4 {
         note?: Annotation[];
     }
     /**
+     * An item that this catalog entry is related to
+     */
+    interface CatalogEntryRelatedEntry extends BackboneElement {
+        /**
+         * triggers | is-replaced-by
+         */
+        relationtype: code;
+        /**
+         * Contains extended information for property 'relationtype'.
+         */
+        _relationtype?: Element;
+        /**
+         * The reference to the related item
+         */
+        item: Reference;
+    }
+    /**
+     * An entry in a catalog
+     */
+    interface CatalogEntry extends DomainResource {
+        /**
+         * Unique identifier of the catalog item
+         */
+        identifier?: Identifier[];
+        /**
+         * The type of item - medication, device, service, protocol or other
+         */
+        type?: CodeableConcept;
+        /**
+         * Whether the entry represents an orderable item
+         */
+        orderable: boolean;
+        /**
+         * Contains extended information for property 'orderable'.
+         */
+        _orderable?: Element;
+        /**
+         * The item that is being defined
+         */
+        referencedItem: Reference;
+        /**
+         * Any additional identifier(s) for the catalog item, in the same granularity or concept
+         */
+        additionalIdentifier?: Identifier[];
+        /**
+         * Classification (category or class) of the item entry
+         */
+        classification?: CodeableConcept[];
+        /**
+         * draft | active | retired | unknown
+         */
+        status?: code;
+        /**
+         * Contains extended information for property 'status'.
+         */
+        _status?: Element;
+        /**
+         * The time period in which this catalog entry is expected to be active
+         */
+        validityPeriod?: Period;
+        /**
+         * The date until which this catalog entry is expected to be active
+         */
+        validTo?: dateTime;
+        /**
+         * Contains extended information for property 'validTo'.
+         */
+        _validTo?: Element;
+        /**
+         * When was this catalog last updated
+         */
+        lastUpdated?: dateTime;
+        /**
+         * Contains extended information for property 'lastUpdated'.
+         */
+        _lastUpdated?: Element;
+        /**
+         * Additional characteristics of the catalog entry
+         */
+        additionalCharacteristic?: CodeableConcept[];
+        /**
+         * Additional classification of the catalog entry
+         */
+        additionalClassification?: CodeableConcept[];
+        /**
+         * An item that this catalog entry is related to
+         */
+        relatedEntry?: CatalogEntryRelatedEntry[];
+    }
+    /**
      * Who performed charged service
      */
     interface ChargeItemPerformer extends BackboneElement {
@@ -4572,11 +4670,19 @@ declare module fhir.r4 {
         /**
          * Defining information about the code of this charge item
          */
-        definition?: uri[];
+        definitionUri?: uri[];
         /**
-         * Contains extended information for property 'definition'.
+         * Contains extended information for property 'definitionUri'.
          */
-        _definition?: Element[];
+        _definitionUri?: Element[];
+        /**
+         * Resource defining the code of this ChargeItem
+         */
+        definitionCanonical?: canonical[];
+        /**
+         * Contains extended information for property 'definitionCanonical'.
+         */
+        _definitionCanonical?: Element[];
         /**
          * planned | billable | not-billable | aborted | billed | entered-in-error | unknown
          */
@@ -4622,7 +4728,7 @@ declare module fhir.r4 {
          */
         performer?: ChargeItemPerformer[];
         /**
-         * Organization providing the charged sevice
+         * Organization providing the charged service
          */
         performingOrganization?: Reference;
         /**
@@ -4927,7 +5033,7 @@ declare module fhir.r4 {
         propertyGroup?: ChargeItemDefinitionPropertyGroup[];
     }
     /**
-     * Related Claims which may be relevant to processing this claim
+     * Prior or corollary claims
      */
     interface ClaimRelated extends BackboneElement {
         /**
@@ -4939,24 +5045,20 @@ declare module fhir.r4 {
          */
         relationship?: CodeableConcept;
         /**
-         * Related file or case reference
+         * File or case reference
          */
         reference?: Identifier;
     }
     /**
-     * Party to be paid any benefits payable
+     * Recipient of benefits payable
      */
     interface ClaimPayee extends BackboneElement {
         /**
-         * Type of party: Subscriber, Provider, other
+         * Category of recipient
          */
         type: CodeableConcept;
         /**
-         * organization | patient | practitioner | relatedperson
-         */
-        resource?: Coding;
-        /**
-         * Party to receive the payable
+         * Recipient reference
          */
         party?: Reference;
     }
@@ -4965,7 +5067,7 @@ declare module fhir.r4 {
      */
     interface ClaimCareTeam extends BackboneElement {
         /**
-         * Number to convey order of careTeam
+         * Order of care team
          */
         sequence: positiveInt;
         /**
@@ -4973,11 +5075,11 @@ declare module fhir.r4 {
          */
         _sequence?: Element;
         /**
-         * Provider individual or organization
+         * Practitioner or organization
          */
         provider: Reference;
         /**
-         * Billing provider
+         * Indicator of the lead practitioner
          */
         responsible?: boolean;
         /**
@@ -4985,18 +5087,18 @@ declare module fhir.r4 {
          */
         _responsible?: Element;
         /**
-         * Role on the team
+         * Function within the team
          */
         role?: CodeableConcept;
         /**
-         * Type, classification or Specialization
+         * Practitioner credential or specialization
          */
         qualification?: CodeableConcept;
     }
     /**
-     * Exceptions, special considerations, the condition, situation, prior or concurrent issues
+     * Supporting information
      */
-    interface ClaimInformation extends BackboneElement {
+    interface ClaimSupportingInfo extends BackboneElement {
         /**
          * Information instance identifier
          */
@@ -5006,7 +5108,7 @@ declare module fhir.r4 {
          */
         _sequence?: Element;
         /**
-         * General class of information
+         * Classification of the supplied information
          */
         category: CodeableConcept;
         /**
@@ -5026,7 +5128,7 @@ declare module fhir.r4 {
          */
         timingPeriod?: Period;
         /**
-         * Additional Data or supporting information
+         * Data to be provided
          */
         valueBoolean?: boolean;
         /**
@@ -5034,7 +5136,7 @@ declare module fhir.r4 {
          */
         _valueBoolean?: Element;
         /**
-         * Additional Data or supporting information
+         * Data to be provided
          */
         valueString?: string;
         /**
@@ -5042,28 +5144,28 @@ declare module fhir.r4 {
          */
         _valueString?: Element;
         /**
-         * Additional Data or supporting information
+         * Data to be provided
          */
         valueQuantity?: Quantity;
         /**
-         * Additional Data or supporting information
+         * Data to be provided
          */
         valueAttachment?: Attachment;
         /**
-         * Additional Data or supporting information
+         * Data to be provided
          */
         valueReference?: Reference;
         /**
-         * Reason associated with the information
+         * Explanation for the information
          */
         reason?: CodeableConcept;
     }
     /**
-     * List of Diagnosis
+     * Pertinent diagnosis information
      */
     interface ClaimDiagnosis extends BackboneElement {
         /**
-         * Number to convey order of diagnosis
+         * Diagnosis instance identifier
          */
         sequence: positiveInt;
         /**
@@ -5071,11 +5173,11 @@ declare module fhir.r4 {
          */
         _sequence?: Element;
         /**
-         * Patient's diagnosis
+         * Nature of illness or problem
          */
         diagnosisCodeableConcept?: CodeableConcept;
         /**
-         * Patient's diagnosis
+         * Nature of illness or problem
          */
         diagnosisReference?: Reference;
         /**
@@ -5092,17 +5194,21 @@ declare module fhir.r4 {
         packageCode?: CodeableConcept;
     }
     /**
-     * Procedures performed
+     * Clinical procedures performed
      */
     interface ClaimProcedure extends BackboneElement {
         /**
-         * Procedure sequence for reference
+         * Procedure instance identifier
          */
         sequence: positiveInt;
         /**
          * Contains extended information for property 'sequence'.
          */
         _sequence?: Element;
+        /**
+         * Category of Procedure
+         */
+        type?: CodeableConcept[];
         /**
          * When the procedure was performed
          */
@@ -5112,20 +5218,24 @@ declare module fhir.r4 {
          */
         _date?: Element;
         /**
-         * Patient's list of procedures performed
+         * Specific clinical procedure
          */
         procedureCodeableConcept?: CodeableConcept;
         /**
-         * Patient's list of procedures performed
+         * Specific clinical procedure
          */
         procedureReference?: Reference;
+        /**
+         * Unique device identifier
+         */
+        udi?: Reference[];
     }
     /**
-     * Insurance or medical plan
+     * Patient insurance information
      */
     interface ClaimInsurance extends BackboneElement {
         /**
-         * Service instance identifier
+         * Insurance instance identifier
          */
         sequence: positiveInt;
         /**
@@ -5133,7 +5243,7 @@ declare module fhir.r4 {
          */
         _sequence?: Element;
         /**
-         * Is the focal Coverage
+         * Coverage to be used for adjudication
          */
         focal: boolean;
         /**
@@ -5141,7 +5251,7 @@ declare module fhir.r4 {
          */
         _focal?: Element;
         /**
-         * Claim number
+         * Pre-assigned Claim number
          */
         identifier?: Identifier;
         /**
@@ -5149,7 +5259,7 @@ declare module fhir.r4 {
          */
         coverage: Reference;
         /**
-         * Business agreement
+         * Additional provider contract number
          */
         businessArrangement?: string;
         /**
@@ -5157,7 +5267,7 @@ declare module fhir.r4 {
          */
         _businessArrangement?: Element;
         /**
-         * Pre-Authorization/Determination Reference
+         * Prior authorization reference number
          */
         preAuthRef?: string[];
         /**
@@ -5170,13 +5280,11 @@ declare module fhir.r4 {
         claimResponse?: Reference;
     }
     /**
-     * Details about an accident
+     * Details of the event
      */
     interface ClaimAccident extends BackboneElement {
         /**
-         * When the accident occurred
-         * see information codes
-         * see information codes
+         * When the incident occurred
          */
         date: date;
         /**
@@ -5188,20 +5296,20 @@ declare module fhir.r4 {
          */
         type?: CodeableConcept;
         /**
-         * Accident Place
+         * Where the event occurred
          */
         locationAddress?: Address;
         /**
-         * Accident Place
+         * Where the event occurred
          */
         locationReference?: Reference;
     }
     /**
-     * Goods and Services
+     * Product or service provided
      */
     interface ClaimItem extends BackboneElement {
         /**
-         * Service instance
+         * Item instance identifier
          */
         sequence: positiveInt;
         /**
@@ -5245,23 +5353,23 @@ declare module fhir.r4 {
          */
         revenue?: CodeableConcept;
         /**
-         * Type of service or product
+         * Benefit classification
          */
         category?: CodeableConcept;
         /**
-         * Billing Code
+         * Billing, service, product, or drug code
          */
-        billcode?: CodeableConcept;
+        productOrService: CodeableConcept;
         /**
-         * Service/Product billing modifiers
+         * Product or service billing modifiers
          */
         modifier?: CodeableConcept[];
         /**
-         * Program specific reason for item inclusion
+         * Program the product or service is provided under
          */
         programCode?: CodeableConcept[];
         /**
-         * Date or dates of Service
+         * Date or dates of service or product delivery
          */
         servicedDate?: date;
         /**
@@ -5269,27 +5377,27 @@ declare module fhir.r4 {
          */
         _servicedDate?: Element;
         /**
-         * Date or dates of Service
+         * Date or dates of service or product delivery
          */
         servicedPeriod?: Period;
         /**
-         * Place of service
+         * Place of service or where product was supplied
          */
         locationCodeableConcept?: CodeableConcept;
         /**
-         * Place of service
+         * Place of service or where product was supplied
          */
         locationAddress?: Address;
         /**
-         * Place of service
+         * Place of service or where product was supplied
          */
         locationReference?: Reference;
         /**
-         * Count of Products or Services
+         * Count of products or services
          */
         quantity?: Quantity;
         /**
-         * Fee, charge or cost per point
+         * Fee, charge or cost per item
          */
         unitPrice?: Money;
         /**
@@ -5305,15 +5413,15 @@ declare module fhir.r4 {
          */
         net?: Money;
         /**
-         * Unique Device Identifier
+         * Unique device identifier
          */
         udi?: Reference[];
         /**
-         * Service Location
+         * Anatomical location
          */
         bodySite?: CodeableConcept;
         /**
-         * Service Sub-location
+         * Anatomical sub-location
          */
         subSite?: CodeableConcept[];
         /**
@@ -5321,16 +5429,16 @@ declare module fhir.r4 {
          */
         encounter?: Reference[];
         /**
-         * Additional items
+         * Product or service provided
          */
         detail?: ClaimItemDetail[];
     }
     /**
-     * Additional items
+     * Product or service provided
      */
     interface ClaimItemDetail extends BackboneElement {
         /**
-         * Service instance
+         * Item instance identifier
          */
         sequence: positiveInt;
         /**
@@ -5342,27 +5450,27 @@ declare module fhir.r4 {
          */
         revenue?: CodeableConcept;
         /**
-         * Type of service or product
+         * Benefit classification
          */
         category?: CodeableConcept;
         /**
-         * Billing Code
+         * Billing, service, product, or drug code
          */
-        billcode?: CodeableConcept;
+        productOrService: CodeableConcept;
         /**
          * Service/Product billing modifiers
          */
         modifier?: CodeableConcept[];
         /**
-         * Program specific reason for item inclusion
+         * Program the product or service is provided under
          */
         programCode?: CodeableConcept[];
         /**
-         * Count of Products or Services
+         * Count of products or services
          */
         quantity?: Quantity;
         /**
-         * Fee, charge or cost per point
+         * Fee, charge or cost per item
          */
         unitPrice?: Money;
         /**
@@ -5374,24 +5482,24 @@ declare module fhir.r4 {
          */
         _factor?: Element;
         /**
-         * Total additional item cost
+         * Total item cost
          */
         net?: Money;
         /**
-         * Unique Device Identifier
+         * Unique device identifier
          */
         udi?: Reference[];
         /**
-         * Additional items
+         * Product or service provided
          */
         subDetail?: ClaimItemDetailSubDetail[];
     }
     /**
-     * Additional items
+     * Product or service provided
      */
     interface ClaimItemDetailSubDetail extends BackboneElement {
         /**
-         * Service instance
+         * Item instance identifier
          */
         sequence: positiveInt;
         /**
@@ -5403,27 +5511,27 @@ declare module fhir.r4 {
          */
         revenue?: CodeableConcept;
         /**
-         * Type of service or product
+         * Benefit classification
          */
         category?: CodeableConcept;
         /**
-         * Billing Code
+         * Billing, service, product, or drug code
          */
-        billcode?: CodeableConcept;
+        productOrService: CodeableConcept;
         /**
          * Service/Product billing modifiers
          */
         modifier?: CodeableConcept[];
         /**
-         * Program specific reason for item inclusion
+         * Program the product or service is provided under
          */
         programCode?: CodeableConcept[];
         /**
-         * Count of Products or Services
+         * Count of products or services
          */
         quantity?: Quantity;
         /**
-         * Fee, charge or cost per point
+         * Fee, charge or cost per item
          */
         unitPrice?: Money;
         /**
@@ -5435,11 +5543,11 @@ declare module fhir.r4 {
          */
         _factor?: Element;
         /**
-         * Net additional item cost
+         * Total item cost
          */
         net?: Money;
         /**
-         * Unique Device Identifier
+         * Unique device identifier
          */
         udi?: Reference[];
     }
@@ -5448,51 +5556,51 @@ declare module fhir.r4 {
      */
     interface Claim extends DomainResource {
         /**
-         * Claim number
+         * Business Identifier for claim
          */
         identifier?: Identifier[];
         /**
          * active | cancelled | draft | entered-in-error
          */
-        status?: code;
+        status: code;
         /**
          * Contains extended information for property 'status'.
          */
         _status?: Element;
         /**
-         * Type or discipline
+         * Category or discipline
          */
-        type?: CodeableConcept;
+        type: CodeableConcept;
         /**
-         * Finer grained claim type information
+         * More granular claim type
          */
         subType?: CodeableConcept;
         /**
          * claim | preauthorization | predetermination
          */
-        use?: code;
+        use: code;
         /**
          * Contains extended information for property 'use'.
          */
         _use?: Element;
         /**
-         * The subject of the Products and Services
+         * The recipient of the products and services
          */
-        patient?: Reference;
+        patient: Reference;
         /**
-         * Period for charge submission
+         * Relevant time frame for the claim
          */
         billablePeriod?: Period;
         /**
-         * Creation date
+         * Resource creation date
          */
-        created?: dateTime;
+        created: dateTime;
         /**
          * Contains extended information for property 'created'.
          */
         _created?: Element;
         /**
-         * Author
+         * Author of the claim
          */
         enterer?: Reference;
         /**
@@ -5500,23 +5608,23 @@ declare module fhir.r4 {
          */
         insurer?: Reference;
         /**
-         * Responsible provider
+         * Party responsible for the claim
          */
-        provider?: Reference;
+        provider: Reference;
         /**
-         * Desired processing priority
+         * Desired processing ugency
          */
-        priority?: CodeableConcept;
+        priority: CodeableConcept;
         /**
-         * Funds requested to be reserved
+         * For whom to reserve funds
          */
         fundsReserve?: CodeableConcept;
         /**
-         * Related Claims which may be relevant to processing this claim
+         * Prior or corollary claims
          */
         related?: ClaimRelated[];
         /**
-         * Prescription authorizing services or products
+         * Prescription authorizing services and products
          */
         prescription?: Reference;
         /**
@@ -5524,15 +5632,15 @@ declare module fhir.r4 {
          */
         originalPrescription?: Reference;
         /**
-         * Party to be paid any benefits payable
+         * Recipient of benefits payable
          */
         payee?: ClaimPayee;
         /**
-         * Treatment Referral
+         * Treatment referral
          */
         referral?: Reference;
         /**
-         * Servicing Facility
+         * Servicing facility
          */
         facility?: Reference;
         /**
@@ -5540,27 +5648,27 @@ declare module fhir.r4 {
          */
         careTeam?: ClaimCareTeam[];
         /**
-         * Exceptions, special considerations, the condition, situation, prior or concurrent issues
+         * Supporting information
          */
-        information?: ClaimInformation[];
+        supportingInfo?: ClaimSupportingInfo[];
         /**
-         * List of Diagnosis
+         * Pertinent diagnosis information
          */
         diagnosis?: ClaimDiagnosis[];
         /**
-         * Procedures performed
+         * Clinical procedures performed
          */
         procedure?: ClaimProcedure[];
         /**
-         * Insurance or medical plan
+         * Patient insurance information
          */
-        insurance?: ClaimInsurance[];
+        insurance: ClaimInsurance[];
         /**
-         * Details about an accident
+         * Details of the event
          */
         accident?: ClaimAccident;
         /**
-         * Goods and Services
+         * Product or service provided
          */
         item?: ClaimItem[];
         /**
@@ -5569,11 +5677,11 @@ declare module fhir.r4 {
         total?: Money;
     }
     /**
-     * Line items
+     * Adjudication for claim line items
      */
     interface ClaimResponseItem extends BackboneElement {
         /**
-         * Service instance
+         * Claim item instance identifier
          */
         itemSequence: positiveInt;
         /**
@@ -5581,7 +5689,7 @@ declare module fhir.r4 {
          */
         _itemSequence?: Element;
         /**
-         * List of note numbers which apply
+         * Applicable note numbers
          */
         noteNumber?: positiveInt[];
         /**
@@ -5591,9 +5699,9 @@ declare module fhir.r4 {
         /**
          * Adjudication details
          */
-        adjudication?: ClaimResponseItemAdjudication[];
+        adjudication: ClaimResponseItemAdjudication[];
         /**
-         * Detail line items
+         * Adjudication for claim details
          */
         detail?: ClaimResponseItemDetail[];
     }
@@ -5602,11 +5710,11 @@ declare module fhir.r4 {
      */
     interface ClaimResponseItemAdjudication extends BackboneElement {
         /**
-         * Adjudication category such as co-pay, eligible, benefit, etc.
+         * Type of adjudication information
          */
         category: CodeableConcept;
         /**
-         * Explanation of Adjudication outcome
+         * Explanation of adjudication outcome
          */
         reason?: CodeableConcept;
         /**
@@ -5623,11 +5731,11 @@ declare module fhir.r4 {
         _value?: Element;
     }
     /**
-     * Detail line items
+     * Adjudication for claim details
      */
     interface ClaimResponseItemDetail extends BackboneElement {
         /**
-         * Service instance
+         * Claim detail instance identifier
          */
         detailSequence: positiveInt;
         /**
@@ -5635,7 +5743,7 @@ declare module fhir.r4 {
          */
         _detailSequence?: Element;
         /**
-         * List of note numbers which apply
+         * Applicable note numbers
          */
         noteNumber?: positiveInt[];
         /**
@@ -5645,18 +5753,18 @@ declare module fhir.r4 {
         /**
          * Detail level adjudication details
          */
-        adjudication?: ClaimResponseItemAdjudication[];
+        adjudication: ClaimResponseItemAdjudication[];
         /**
-         * Subdetail line items
+         * Adjudication for claim sub-details
          */
         subDetail?: ClaimResponseItemDetailSubDetail[];
     }
     /**
-     * Subdetail line items
+     * Adjudication for claim sub-details
      */
     interface ClaimResponseItemDetailSubDetail extends BackboneElement {
         /**
-         * Service instance
+         * Claim sub-detail instance identifier
          */
         subDetailSequence: positiveInt;
         /**
@@ -5664,7 +5772,7 @@ declare module fhir.r4 {
          */
         _subDetailSequence?: Element;
         /**
-         * List of note numbers which apply
+         * Applicable note numbers
          */
         noteNumber?: positiveInt[];
         /**
@@ -5681,7 +5789,7 @@ declare module fhir.r4 {
      */
     interface ClaimResponseAddItem extends BackboneElement {
         /**
-         * Service instances
+         * Item sequence number
          */
         itemSequence?: positiveInt[];
         /**
@@ -5709,19 +5817,19 @@ declare module fhir.r4 {
          */
         provider?: Reference[];
         /**
-         * Group, Service or Product
+         * Billing, service, product, or drug code
          */
-        billcode?: CodeableConcept;
+        productOrService: CodeableConcept;
         /**
          * Service/Product billing modifiers
          */
         modifier?: CodeableConcept[];
         /**
-         * Program specific reason for item inclusion
+         * Program the product or service is provided under
          */
         programCode?: CodeableConcept[];
         /**
-         * Date or dates of Service
+         * Date or dates of service or product delivery
          */
         servicedDate?: date;
         /**
@@ -5729,27 +5837,27 @@ declare module fhir.r4 {
          */
         _servicedDate?: Element;
         /**
-         * Date or dates of Service
+         * Date or dates of service or product delivery
          */
         servicedPeriod?: Period;
         /**
-         * Place of service
+         * Place of service or where product was supplied
          */
         locationCodeableConcept?: CodeableConcept;
         /**
-         * Place of service
+         * Place of service or where product was supplied
          */
         locationAddress?: Address;
         /**
-         * Place of service
+         * Place of service or where product was supplied
          */
         locationReference?: Reference;
         /**
-         * Count of Products or Services
+         * Count of products or services
          */
         quantity?: Quantity;
         /**
-         * Fee, charge or cost per point
+         * Fee, charge or cost per item
          */
         unitPrice?: Money;
         /**
@@ -5765,15 +5873,15 @@ declare module fhir.r4 {
          */
         net?: Money;
         /**
-         * Service Location
+         * Anatomical location
          */
         bodySite?: CodeableConcept;
         /**
-         * Service Sub-location
+         * Anatomical sub-location
          */
         subSite?: CodeableConcept[];
         /**
-         * List of note numbers which apply
+         * Applicable note numbers
          */
         noteNumber?: positiveInt[];
         /**
@@ -5783,30 +5891,30 @@ declare module fhir.r4 {
         /**
          * Added items adjudication
          */
-        adjudication?: ClaimResponseItemAdjudication[];
+        adjudication: ClaimResponseItemAdjudication[];
         /**
-         * Insurer added line items
+         * Insurer added line details
          */
         detail?: ClaimResponseAddItemDetail[];
     }
     /**
-     * Insurer added line items
+     * Insurer added line details
      */
     interface ClaimResponseAddItemDetail extends BackboneElement {
         /**
-         * Group, Service or Product
+         * Billing, service, product, or drug code
          */
-        billcode?: CodeableConcept;
+        productOrService: CodeableConcept;
         /**
          * Service/Product billing modifiers
          */
         modifier?: CodeableConcept[];
         /**
-         * Count of Products or Services
+         * Count of products or services
          */
         quantity?: Quantity;
         /**
-         * Fee, charge or cost per point
+         * Fee, charge or cost per item
          */
         unitPrice?: Money;
         /**
@@ -5822,7 +5930,7 @@ declare module fhir.r4 {
          */
         net?: Money;
         /**
-         * List of note numbers which apply
+         * Applicable note numbers
          */
         noteNumber?: positiveInt[];
         /**
@@ -5832,7 +5940,7 @@ declare module fhir.r4 {
         /**
          * Added items detail adjudication
          */
-        adjudication?: ClaimResponseItemAdjudication[];
+        adjudication: ClaimResponseItemAdjudication[];
         /**
          * Insurer added line items
          */
@@ -5843,19 +5951,19 @@ declare module fhir.r4 {
      */
     interface ClaimResponseAddItemDetailSubDetail extends BackboneElement {
         /**
-         * Group, Service or Product
+         * Billing, service, product, or drug code
          */
-        billcode?: CodeableConcept;
+        productOrService: CodeableConcept;
         /**
          * Service/Product billing modifiers
          */
         modifier?: CodeableConcept[];
         /**
-         * Count of Products or Services
+         * Count of products or services
          */
         quantity?: Quantity;
         /**
-         * Fee, charge or cost per point
+         * Fee, charge or cost per item
          */
         unitPrice?: Money;
         /**
@@ -5871,7 +5979,7 @@ declare module fhir.r4 {
          */
         net?: Money;
         /**
-         * List of note numbers which apply
+         * Applicable note numbers
          */
         noteNumber?: positiveInt[];
         /**
@@ -5881,7 +5989,123 @@ declare module fhir.r4 {
         /**
          * Added items detail adjudication
          */
-        adjudication?: ClaimResponseItemAdjudication[];
+        adjudication: ClaimResponseItemAdjudication[];
+    }
+    /**
+     * Adjudication totals
+     */
+    interface ClaimResponseTotal extends BackboneElement {
+        /**
+         * Type of adjudication information
+         */
+        category: CodeableConcept;
+        /**
+         * Financial total for the category
+         */
+        amount: Money;
+    }
+    /**
+     * Payment Details
+     */
+    interface ClaimResponsePayment extends BackboneElement {
+        /**
+         * Partial or complete payment
+         */
+        type: CodeableConcept;
+        /**
+         * Payment adjustment for non-claim issues
+         */
+        adjustment?: Money;
+        /**
+         * Explanation for the adjustment
+         */
+        adjustmentReason?: CodeableConcept;
+        /**
+         * Expected date of payment
+         */
+        date?: date;
+        /**
+         * Contains extended information for property 'date'.
+         */
+        _date?: Element;
+        /**
+         * Payable amount after adjustment
+         */
+        amount: Money;
+        /**
+         * Business identifier for the payment
+         */
+        identifier?: Identifier;
+    }
+    /**
+     * Note concerning adjudication
+     */
+    interface ClaimResponseProcessNote extends BackboneElement {
+        /**
+         * Note instance identifier
+         */
+        number?: positiveInt;
+        /**
+         * Contains extended information for property 'number'.
+         */
+        _number?: Element;
+        /**
+         * display | print | printoper
+         */
+        type?: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+        /**
+         * Note explanatory text
+         */
+        text: string;
+        /**
+         * Contains extended information for property 'text'.
+         */
+        _text?: Element;
+        /**
+         * Language of the text
+         */
+        language?: CodeableConcept;
+    }
+    /**
+     * Patient insurance information
+     */
+    interface ClaimResponseInsurance extends BackboneElement {
+        /**
+         * Insurance instance identifier
+         */
+        sequence: positiveInt;
+        /**
+         * Contains extended information for property 'sequence'.
+         */
+        _sequence?: Element;
+        /**
+         * Coverage to be used for adjudication
+         */
+        focal: boolean;
+        /**
+         * Contains extended information for property 'focal'.
+         */
+        _focal?: Element;
+        /**
+         * Insurance information
+         */
+        coverage: Reference;
+        /**
+         * Additional provider contract number
+         */
+        businessArrangement?: string;
+        /**
+         * Contains extended information for property 'businessArrangement'.
+         */
+        _businessArrangement?: Element;
+        /**
+         * Adjudication results
+         */
+        claimResponse?: Reference;
     }
     /**
      * Processing errors
@@ -5917,173 +6141,57 @@ declare module fhir.r4 {
         code: CodeableConcept;
     }
     /**
-     * Adjudication totals
-     */
-    interface ClaimResponseTotal extends BackboneElement {
-        /**
-         * Adjudication category such as submitted, co-pay, eligible, benefit, etc.
-         */
-        category: CodeableConcept;
-        /**
-         * Monetary amount
-         */
-        amount: Money;
-    }
-    /**
-     * Payment Details
-     */
-    interface ClaimResponsePayment extends BackboneElement {
-        /**
-         * Partial or Complete
-         */
-        type?: CodeableConcept;
-        /**
-         * Payment adjustment for non-Claim issues
-         */
-        adjustment?: Money;
-        /**
-         * Explanation for the non-claim adjustment
-         */
-        adjustmentReason?: CodeableConcept;
-        /**
-         * Expected data of Payment
-         */
-        date?: date;
-        /**
-         * Contains extended information for property 'date'.
-         */
-        _date?: Element;
-        /**
-         * Payable amount after adjustment
-         */
-        amount?: Money;
-        /**
-         * Identifier of the payment instrument
-         */
-        identifier?: Identifier;
-    }
-    /**
-     * Processing notes
-     */
-    interface ClaimResponseProcessNote extends BackboneElement {
-        /**
-         * Sequence Number for this note
-         */
-        number?: positiveInt;
-        /**
-         * Contains extended information for property 'number'.
-         */
-        _number?: Element;
-        /**
-         * display | print | printoper
-         */
-        type?: code;
-        /**
-         * Contains extended information for property 'type'.
-         */
-        _type?: Element;
-        /**
-         * Note explanatory text
-         */
-        text?: string;
-        /**
-         * Contains extended information for property 'text'.
-         */
-        _text?: Element;
-        /**
-         * Language if different from the resource
-         */
-        language?: CodeableConcept;
-    }
-    /**
-     * Insurance or medical plan
-     */
-    interface ClaimResponseInsurance extends BackboneElement {
-        /**
-         * Service instance identifier
-         */
-        sequence: positiveInt;
-        /**
-         * Contains extended information for property 'sequence'.
-         */
-        _sequence?: Element;
-        /**
-         * Is the focal Coverage
-         */
-        focal: boolean;
-        /**
-         * Contains extended information for property 'focal'.
-         */
-        _focal?: Element;
-        /**
-         * Insurance information
-         */
-        coverage: Reference;
-        /**
-         * Business agreement
-         */
-        businessArrangement?: string;
-        /**
-         * Contains extended information for property 'businessArrangement'.
-         */
-        _businessArrangement?: Element;
-        /**
-         * Adjudication results
-         */
-        claimResponse?: Reference;
-    }
-    /**
-     * ClaimResponse resource
+     * Response to a claim predetermination or preauthorization
      */
     interface ClaimResponse extends DomainResource {
         /**
-         * Response  number
+         * Business Identifier for a claim response
          */
         identifier?: Identifier[];
         /**
          * active | cancelled | draft | entered-in-error
          */
-        status?: code;
+        status: code;
         /**
          * Contains extended information for property 'status'.
          */
         _status?: Element;
         /**
-         * Type or discipline
+         * More granular claim type
          */
-        type?: CodeableConcept;
+        type: CodeableConcept;
         /**
-         * Finer grained claim type information
+         * More granular claim type
          */
         subType?: CodeableConcept;
         /**
          * claim | preauthorization | predetermination
          */
-        use?: code;
+        use: code;
         /**
          * Contains extended information for property 'use'.
          */
         _use?: Element;
         /**
-         * The subject of the Products and Services
+         * The recipient of the products and services
          */
-        patient?: Reference;
+        patient: Reference;
         /**
-         * Creation date
+         * Response creation date
          */
-        created?: dateTime;
+        created: dateTime;
         /**
          * Contains extended information for property 'created'.
          */
         _created?: Element;
         /**
-         * Insurance issuing organization
+         * Party responsible for reimbursement
          */
-        insurer?: Reference;
+        insurer: Reference;
         /**
-         * Responsible practitioner
+         * Party responsible for the claim
          */
-        requestProvider?: Reference;
+        requestor?: Reference;
         /**
          * Id of resource triggering adjudication
          */
@@ -6091,7 +6199,7 @@ declare module fhir.r4 {
         /**
          * queued | complete | error | partial
          */
-        outcome?: code;
+        outcome: code;
         /**
          * Contains extended information for property 'outcome'.
          */
@@ -6105,7 +6213,7 @@ declare module fhir.r4 {
          */
         _disposition?: Element;
         /**
-         * Pre-Authorization/Determination Reference
+         * Preauthorization reference
          */
         preAuthRef?: string;
         /**
@@ -6113,11 +6221,15 @@ declare module fhir.r4 {
          */
         _preAuthRef?: Element;
         /**
+         * Preauthorization reference effective period
+         */
+        preAuthPeriod?: Period;
+        /**
          * Party to be paid any benefits payable
          */
         payeeType?: CodeableConcept;
         /**
-         * Line items
+         * Adjudication for claim line items
          */
         item?: ClaimResponseItem[];
         /**
@@ -6125,9 +6237,9 @@ declare module fhir.r4 {
          */
         addItem?: ClaimResponseAddItem[];
         /**
-         * Processing errors
+         * Header-level adjudication
          */
-        error?: ClaimResponseError[];
+        adjudication?: ClaimResponseItemAdjudication[];
         /**
          * Adjudication totals
          */
@@ -6139,13 +6251,17 @@ declare module fhir.r4 {
         /**
          * Funds reserved status
          */
-        reserved?: Coding;
+        fundsReserve?: CodeableConcept;
         /**
-         * Printed Form Identifier
+         * Printed form identifier
          */
-        form?: CodeableConcept;
+        formCode?: CodeableConcept;
         /**
-         * Processing notes
+         * Printed reference or actual form
+         */
+        form?: Attachment;
+        /**
+         * Note concerning adjudication
          */
         processNote?: ClaimResponseProcessNote[];
         /**
@@ -6153,9 +6269,13 @@ declare module fhir.r4 {
          */
         communicationRequest?: Reference[];
         /**
-         * Insurance or medical plan
+         * Patient insurance information
          */
         insurance?: ClaimResponseInsurance[];
+        /**
+         * Processing errors
+         */
+        error?: ClaimResponseError[];
     }
     /**
      * One or more sets of investigations (signs, symptoms, etc.)
@@ -6228,9 +6348,9 @@ declare module fhir.r4 {
          */
         subject: Reference;
         /**
-         * Encounter or Episode created from
+         * Encounter created as part of
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * Time of assessment
          */
@@ -6522,7 +6642,7 @@ declare module fhir.r4 {
          */
         _url?: Element;
         /**
-         * Additional identifier for the code system
+         * Additional identifier for the code system (business identifier)
          */
         identifier?: Identifier[];
         /**
@@ -6626,7 +6746,7 @@ declare module fhir.r4 {
          */
         _caseSensitive?: Element;
         /**
-         * Canonical URL for value set with entire code system
+         * Canonical reference to the value set with entire code system
          */
         valueSet?: canonical;
         /**
@@ -6666,7 +6786,7 @@ declare module fhir.r4 {
          */
         _content?: Element;
         /**
-         * Code System this adds designations and properties to
+         * Canonical URL of Code System this adds designations and properties to
          */
         supplements?: canonical;
         /**
@@ -6792,9 +6912,9 @@ declare module fhir.r4 {
          */
         about?: Reference[];
         /**
-         * Encounter or episode leading to message
+         * Encounter created as part of
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * When sent
          */
@@ -6922,9 +7042,9 @@ declare module fhir.r4 {
          */
         about?: Reference[];
         /**
-         * Encounter or episode leading to message
+         * Encounter created as part of
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * Message payload
          */
@@ -7191,6 +7311,10 @@ declare module fhir.r4 {
          * Who and/or what authored the section
          */
         author?: Reference[];
+        /**
+         * Who/what the section is about, when it is not about the subject of composition
+         */
+        focus?: Reference;
         /**
          * Text summary of the section, for human interpretation
          */
@@ -7482,7 +7606,7 @@ declare module fhir.r4 {
          */
         _display?: Element;
         /**
-         * Canonical URI for an additional ConceptMap to use for mapping if the source concept is unmapped
+         * canonical reference to an additional ConceptMap to use for mapping if the source concept is unmapped
          */
         url?: canonical;
         /**
@@ -7674,7 +7798,7 @@ declare module fhir.r4 {
          */
         identifier?: Identifier[];
         /**
-         * active | recurrence | relapse | well-controlled | poorly-controlled | inactive | remission | resolved
+         * active | recurrence | relapse | inactive | remission | resolved
          */
         clinicalStatus?: CodeableConcept;
         /**
@@ -7702,9 +7826,9 @@ declare module fhir.r4 {
          */
         subject: Reference;
         /**
-         * Encounter or episode when condition first asserted
+         * Encounter created as part of
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * Estimated or actual date,  date-time, or age
          */
@@ -7967,10 +8091,6 @@ declare module fhir.r4 {
          * Source from which this consent is taken
          */
         sourceAttachment?: Attachment;
-        /**
-         * Source from which this consent is taken
-         */
-        sourceIdentifier?: Identifier;
         /**
          * Source from which this consent is taken
          */
@@ -8863,9 +8983,9 @@ declare module fhir.r4 {
         /**
          * Type of class such as 'group' or 'plan'
          */
-        type: Coding;
+        type: CodeableConcept;
         /**
-         * The tag or value under the classification
+         * Value associated with the type
          */
         value: string;
         /**
@@ -8873,7 +8993,7 @@ declare module fhir.r4 {
          */
         _value?: Element;
         /**
-         * Display text for an identifier for the group
+         * Human readable description of the type and value
          */
         name?: string;
         /**
@@ -8884,34 +9004,55 @@ declare module fhir.r4 {
     /**
      * Patient payments for services/products
      */
-    interface CoverageCopay extends BackboneElement {
+    interface CoverageCostToBeneficiary extends BackboneElement {
         /**
-         * The type of service or product
+         * Cost category
          */
-        type?: Coding;
+        type?: CodeableConcept;
         /**
-         * The amount or percentage of the copayment
+         * The amount or percentage due from the beneficiary
          */
-        value: Quantity;
+        valueQuantity?: Quantity;
+        /**
+         * The amount or percentage due from the beneficiary
+         */
+        valueMoney?: Money;
+        /**
+         * Exceptions for patient payments
+         */
+        exception?: CoverageCostToBeneficiaryException[];
+    }
+    /**
+     * Exceptions for patient payments
+     */
+    interface CoverageCostToBeneficiaryException extends BackboneElement {
+        /**
+         * Exception category
+         */
+        type: CodeableConcept;
+        /**
+         * The effective period of the exception
+         */
+        period?: Period;
     }
     /**
      * Insurance or medical plan or a payment agreement
      */
     interface Coverage extends DomainResource {
         /**
-         * The primary coverage ID
+         * Business Identifier for the coverage
          */
         identifier?: Identifier[];
         /**
          * active | cancelled | draft | entered-in-error
          */
-        status?: code;
+        status: code;
         /**
          * Contains extended information for property 'status'.
          */
         _status?: Element;
         /**
-         * Type of coverage such as medical or accident
+         * Coverage category such as medical or accident
          */
         type?: CodeableConcept;
         /**
@@ -8923,7 +9064,7 @@ declare module fhir.r4 {
          */
         subscriber?: Reference;
         /**
-         * ID assigned to the Subscriber
+         * ID assigned to the subscriber
          */
         subscriberId?: string;
         /**
@@ -8931,9 +9072,9 @@ declare module fhir.r4 {
          */
         _subscriberId?: Element;
         /**
-         * Plan Beneficiary
+         * Plan beneficiary
          */
-        beneficiary?: Reference;
+        beneficiary: Reference;
         /**
          * Dependent number
          */
@@ -8943,7 +9084,7 @@ declare module fhir.r4 {
          */
         _dependent?: Element;
         /**
-         * Beneficiary relationship to the Subscriber
+         * Beneficiary relationship to the subscriber
          */
         relationship?: CodeableConcept;
         /**
@@ -8951,9 +9092,9 @@ declare module fhir.r4 {
          */
         period?: Period;
         /**
-         * Identifier for the plan or agreement issuer
+         * Issuer of the policy
          */
-        payor?: Reference[];
+        payor: Reference[];
         /**
          * Additional coverage classifications
          */
@@ -8977,16 +9118,24 @@ declare module fhir.r4 {
         /**
          * Patient payments for services/products
          */
-        copay?: CoverageCopay[];
+        costToBeneficiary?: CoverageCostToBeneficiary[];
+        /**
+         * Reimbursement to insurer
+         */
+        subrogation?: boolean;
+        /**
+         * Contains extended information for property 'subrogation'.
+         */
+        _subrogation?: Element;
         /**
          * Contract details
          */
         contract?: Reference[];
     }
     /**
-     * Exceptions, special considerations, the condition, situation, prior or concurrent issues
+     * Supporting information
      */
-    interface CoverageEligibilityRequestSupportingInformation extends BackboneElement {
+    interface CoverageEligibilityRequestSupportingInfo extends BackboneElement {
         /**
          * Information instance identifier
          */
@@ -8996,7 +9145,7 @@ declare module fhir.r4 {
          */
         _sequence?: Element;
         /**
-         * Additional Data or supporting information
+         * Data to be provided
          */
         information: Reference;
         /**
@@ -9009,11 +9158,11 @@ declare module fhir.r4 {
         _appliesToAll?: Element;
     }
     /**
-     * Patient's Insurance or medical plan(s)
+     * Patient insurance information
      */
     interface CoverageEligibilityRequestInsurance extends BackboneElement {
         /**
-         * Is the focal Coverage
+         * Applicable coverage
          */
         focal?: boolean;
         /**
@@ -9021,11 +9170,11 @@ declare module fhir.r4 {
          */
         _focal?: Element;
         /**
-         * Insurance or medical plan
+         * Insurance information
          */
         coverage: Reference;
         /**
-         * Business agreement
+         * Additional provider contract number
          */
         businessArrangement?: string;
         /**
@@ -9034,27 +9183,27 @@ declare module fhir.r4 {
         _businessArrangement?: Element;
     }
     /**
-     * Service types, codes and supporting information
+     * Item to be evaluated for eligibiity
      */
     interface CoverageEligibilityRequestItem extends BackboneElement {
         /**
-         * Applicable exception and supporting information
+         * Applicable exception or supporting information
          */
-        supportingInformationSequence?: positiveInt[];
+        supportingInfoSequence?: positiveInt[];
         /**
-         * Contains extended information for property 'supportingInformationSequence'.
+         * Contains extended information for property 'supportingInfoSequence'.
          */
-        _supportingInformationSequence?: Element[];
+        _supportingInfoSequence?: Element[];
         /**
-         * Type of service
+         * Benefit classification
          */
         category?: CodeableConcept;
         /**
-         * Billing Code
+         * Billing, service, product, or drug code
          */
-        billcode?: CodeableConcept;
+        productOrService?: CodeableConcept;
         /**
-         * Service/Product billing modifiers
+         * Product or service billing modifiers
          */
         modifier?: CodeableConcept[];
         /**
@@ -9066,15 +9215,15 @@ declare module fhir.r4 {
          */
         quantity?: Quantity;
         /**
-         * Fee, charge or cost per point
+         * Fee, charge or cost per item
          */
         unitPrice?: Money;
         /**
-         * Servicing Facility
+         * Servicing facility
          */
         facility?: Reference;
         /**
-         * List of Diagnosis
+         * Applicable diagnosis
          */
         diagnosis?: CoverageEligibilityRequestItemDiagnosis[];
         /**
@@ -9083,15 +9232,15 @@ declare module fhir.r4 {
         detail?: Reference[];
     }
     /**
-     * List of Diagnosis
+     * Applicable diagnosis
      */
     interface CoverageEligibilityRequestItemDiagnosis extends BackboneElement {
         /**
-         * Patient's diagnosis
+         * Nature of illness or problem
          */
         diagnosisCodeableConcept?: CodeableConcept;
         /**
-         * Patient's diagnosis
+         * Nature of illness or problem
          */
         diagnosisReference?: Reference;
     }
@@ -9100,13 +9249,13 @@ declare module fhir.r4 {
      */
     interface CoverageEligibilityRequest extends DomainResource {
         /**
-         * Business Identifier
+         * Business Identifier for coverage eligiblity request
          */
         identifier?: Identifier[];
         /**
          * active | cancelled | draft | entered-in-error
          */
-        status?: code;
+        status: code;
         /**
          * Contains extended information for property 'status'.
          */
@@ -9124,11 +9273,11 @@ declare module fhir.r4 {
          */
         _purpose?: Element[];
         /**
-         * The subject of the Products and Services
+         * Intended recipient of products and services
          */
-        patient?: Reference;
+        patient: Reference;
         /**
-         * Estimated date or dates of Service
+         * Estimated date or dates of service
          */
         servicedDate?: date;
         /**
@@ -9136,13 +9285,13 @@ declare module fhir.r4 {
          */
         _servicedDate?: Element;
         /**
-         * Estimated date or dates of Service
+         * Estimated date or dates of service
          */
         servicedPeriod?: Period;
         /**
          * Creation date
          */
-        created?: dateTime;
+        created: dateTime;
         /**
          * Contains extended information for property 'created'.
          */
@@ -9152,42 +9301,38 @@ declare module fhir.r4 {
          */
         enterer?: Reference;
         /**
-         * Responsible provider
+         * Party responsible for the request
          */
         provider?: Reference;
         /**
-         * Target
+         * Coverage issuer
          */
-        insurer?: Reference;
+        insurer: Reference;
         /**
-         * Servicing Facility
+         * Servicing facility
          */
         facility?: Reference;
         /**
-         * Exceptions, special considerations, the condition, situation, prior or concurrent issues
+         * Supporting information
          */
-        supportingInformation?: CoverageEligibilityRequestSupportingInformation[];
+        supportingInfo?: CoverageEligibilityRequestSupportingInfo[];
         /**
-         * Patient's Insurance or medical plan(s)
+         * Patient insurance information
          */
         insurance?: CoverageEligibilityRequestInsurance[];
         /**
-         * Service types, codes and supporting information
+         * Item to be evaluated for eligibiity
          */
         item?: CoverageEligibilityRequestItem[];
     }
     /**
-     * Details by insurance coverage
+     * Patient insurance information
      */
     interface CoverageEligibilityResponseInsurance extends BackboneElement {
         /**
-         * Updated Coverage details
+         * Insurance information
          */
-        coverage?: Reference;
-        /**
-         * Contract details
-         */
-        contract?: Reference;
+        coverage: Reference;
         /**
          * Coverage inforce indicator
          */
@@ -9197,24 +9342,28 @@ declare module fhir.r4 {
          */
         _inforce?: Element;
         /**
-         * Benefits and Authorization requirements by Category or Service
+         * When the benefits are applicable
+         */
+        benefitPeriod?: Period;
+        /**
+         * Benefits and authorization details
          */
         item?: CoverageEligibilityResponseInsuranceItem[];
     }
     /**
-     * Benefits and Authorization requirements by Category or Service
+     * Benefits and authorization details
      */
     interface CoverageEligibilityResponseInsuranceItem extends BackboneElement {
         /**
-         * Type of service
+         * Benefit classification
          */
         category?: CodeableConcept;
         /**
-         * Billing Code
+         * Billing, service, product, or drug code
          */
-        billcode?: CodeableConcept;
+        productOrService?: CodeableConcept;
         /**
-         * Service/Product billing modifiers
+         * Product or service billing modifiers
          */
         modifier?: CodeableConcept[];
         /**
@@ -9270,11 +9419,11 @@ declare module fhir.r4 {
          */
         _authorizationRequired?: Element;
         /**
-         * Codes or text of materials to be submitted
+         * Type of required supporting materials
          */
         authorizationSupporting?: CodeableConcept[];
         /**
-         * Pre-authorization requirements
+         * Preauthorization requirements endpoint
          */
         authorizationUrl?: uri;
         /**
@@ -9287,7 +9436,7 @@ declare module fhir.r4 {
      */
     interface CoverageEligibilityResponseInsuranceItemBenefit extends BackboneElement {
         /**
-         * Deductible, visits, benefit amount
+         * Benefit classification
          */
         type: CodeableConcept;
         /**
@@ -9321,6 +9470,14 @@ declare module fhir.r4 {
         /**
          * Benefits used
          */
+        usedString?: string;
+        /**
+         * Contains extended information for property 'usedString'.
+         */
+        _usedString?: Element;
+        /**
+         * Benefits used
+         */
         usedMoney?: Money;
     }
     /**
@@ -9337,13 +9494,13 @@ declare module fhir.r4 {
      */
     interface CoverageEligibilityResponse extends DomainResource {
         /**
-         * Business Identifier
+         * Business Identifier for coverage eligiblity request
          */
         identifier?: Identifier[];
         /**
          * active | cancelled | draft | entered-in-error
          */
-        status?: code;
+        status: code;
         /**
          * Contains extended information for property 'status'.
          */
@@ -9357,11 +9514,11 @@ declare module fhir.r4 {
          */
         _purpose?: Element[];
         /**
-         * The subject of the Products and Services
+         * Intended recipient of products and services
          */
-        patient?: Reference;
+        patient: Reference;
         /**
-         * Estimated date or dates for inquiry
+         * Estimated date or dates of service
          */
         servicedDate?: date;
         /**
@@ -9369,29 +9526,29 @@ declare module fhir.r4 {
          */
         _servicedDate?: Element;
         /**
-         * Estimated date or dates for inquiry
+         * Estimated date or dates of service
          */
         servicedPeriod?: Period;
         /**
-         * Creation date
+         * Response creation date
          */
-        created?: dateTime;
+        created: dateTime;
         /**
          * Contains extended information for property 'created'.
          */
         _created?: Element;
         /**
-         * Responsible provider
+         * Party responsible for the request
          */
-        requestProvider?: Reference;
+        requestor?: Reference;
         /**
-         * Eligibility reference
+         * Eligibility request reference
          */
-        request?: Reference;
+        request: Reference;
         /**
          * queued | complete | error | partial
          */
-        outcome?: code;
+        outcome: code;
         /**
          * Contains extended information for property 'outcome'.
          */
@@ -9405,15 +9562,15 @@ declare module fhir.r4 {
          */
         _disposition?: Element;
         /**
-         * Insurer issuing the coverage
+         * Coverage issuer
          */
-        insurer?: Reference;
+        insurer: Reference;
         /**
-         * Details by insurance coverage
+         * Patient insurance information
          */
         insurance?: CoverageEligibilityResponseInsurance[];
         /**
-         * Pre-Authorization/Determination Reference
+         * Preauthorization reference
          */
         preAuthRef?: string;
         /**
@@ -9421,13 +9578,26 @@ declare module fhir.r4 {
          */
         _preAuthRef?: Element;
         /**
-         * Printed Form Identifier
+         * Printed form identifier
          */
         form?: CodeableConcept;
         /**
          * Processing errors
          */
         error?: CoverageEligibilityResponseError[];
+    }
+    /**
+     * Supporting evidence
+     */
+    interface DetectedIssueEvidence extends BackboneElement {
+        /**
+         * Manifestation
+         */
+        code?: CodeableConcept[];
+        /**
+         * Supporting information
+         */
+        detail?: Reference[];
     }
     /**
      * Step taken to address
@@ -9469,7 +9639,7 @@ declare module fhir.r4 {
         /**
          * Issue Category, e.g. drug-drug, duplicate therapy, etc.
          */
-        category?: CodeableConcept;
+        code?: CodeableConcept;
         /**
          * high | moderate | low
          */
@@ -9485,11 +9655,15 @@ declare module fhir.r4 {
         /**
          * When identified
          */
-        date?: dateTime;
+        identifiedDateTime?: dateTime;
         /**
-         * Contains extended information for property 'date'.
+         * Contains extended information for property 'identifiedDateTime'.
          */
-        _date?: Element;
+        _identifiedDateTime?: Element;
+        /**
+         * When identified
+         */
+        identifiedPeriod?: Period;
         /**
          * The provider or device that identified the issue
          */
@@ -9498,6 +9672,10 @@ declare module fhir.r4 {
          * Problem resource
          */
         implicated?: Reference[];
+        /**
+         * Supporting evidence
+         */
+        evidence?: DetectedIssueEvidence[];
         /**
          * Description and context
          */
@@ -9642,7 +9820,7 @@ declare module fhir.r4 {
         /**
          * Property value as a quantity
          */
-        valueQuanity?: Quantity[];
+        valueQuantity?: Quantity[];
         /**
          * Property value as a code, e.g., NTP4 (synced to NTP)
          */
@@ -9677,13 +9855,13 @@ declare module fhir.r4 {
          */
         statusReason?: CodeableConcept[];
         /**
-         * The distinct identification code for a biological product regulated as a device
+         * The distinct identification string
          */
-        distinctIdentificationCode?: string;
+        distinctIdentifier?: string;
         /**
-         * Contains extended information for property 'distinctIdentificationCode'.
+         * Contains extended information for property 'distinctIdentifier'.
          */
-        _distinctIdentificationCode?: Element;
+        _distinctIdentifier?: Element;
         /**
          * Name of device manufacturer
          */
@@ -9974,7 +10152,7 @@ declare module fhir.r4 {
         /**
          * Property value as a quantity
          */
-        valueQuanity?: Quantity[];
+        valueQuantity?: Quantity[];
         /**
          * Property value as a code, e.g., NTP4 (synced to NTP)
          */
@@ -10050,7 +10228,7 @@ declare module fhir.r4 {
          */
         specialization?: DeviceDefinitionSpecialization[];
         /**
-         * The actual design of the device or software version running on the device
+         * Available versions
          */
         version?: string[];
         /**
@@ -10314,9 +10492,9 @@ declare module fhir.r4 {
          */
         subject: Reference;
         /**
-         * Encounter or Episode motivating request
+         * Encounter motivating request
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * Desired time or schedule for use
          */
@@ -10495,7 +10673,7 @@ declare module fhir.r4 {
         /**
          * Service category
          */
-        category?: CodeableConcept;
+        category?: CodeableConcept[];
         /**
          * Name/Code for this diagnostic report
          */
@@ -10507,7 +10685,7 @@ declare module fhir.r4 {
         /**
          * Health care event when test ordered
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * Clinically relevant time/time-period for report
          */
@@ -10570,19 +10748,6 @@ declare module fhir.r4 {
         presentedForm?: Attachment[];
     }
     /**
-     * Agent involved
-     */
-    interface DocumentManifestAgent extends BackboneElement {
-        /**
-         * How agent participated
-         */
-        type?: CodeableConcept;
-        /**
-         * Who and/or what had an agent participation
-         */
-        who: Reference;
-    }
-    /**
      * Related things
      */
     interface DocumentManifestRelated extends BackboneElement {
@@ -10632,9 +10797,9 @@ declare module fhir.r4 {
          */
         _created?: Element;
         /**
-         * Agent involved
+         * Who and/or what authored the DocumentManifest
          */
-        agent?: DocumentManifestAgent[];
+        author?: Reference[];
         /**
          * Intended to get notified about this set of documents
          */
@@ -10663,19 +10828,6 @@ declare module fhir.r4 {
          * Related things
          */
         related?: DocumentManifestRelated[];
-    }
-    /**
-     * Agent involved
-     */
-    interface DocumentReferenceAgent extends BackboneElement {
-        /**
-         * How agent participated
-         */
-        type?: CodeableConcept;
-        /**
-         * Who and/or what authored the document
-         */
-        who: Reference;
     }
     /**
      * Relationships to other documents
@@ -10789,9 +10941,9 @@ declare module fhir.r4 {
          */
         _date?: Element;
         /**
-         * Agent involved
+         * Who and/or what authored the document
          */
-        agent?: DocumentReferenceAgent[];
+        author?: Reference[];
         /**
          * Who/what authenticated the document
          */
@@ -10824,6 +10976,349 @@ declare module fhir.r4 {
          * Clinical context of document
          */
         context?: DocumentReferenceContext;
+    }
+    /**
+     * What sample size was involved?
+     */
+    interface EffectEvidenceSynthesisSampleSize extends BackboneElement {
+        /**
+         * Description of sample size
+         */
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * How many studies?
+         */
+        numberOfStudies?: integer;
+        /**
+         * Contains extended information for property 'numberOfStudies'.
+         */
+        _numberOfStudies?: Element;
+        /**
+         * How many participants?
+         */
+        numberOfParticipants?: integer;
+        /**
+         * Contains extended information for property 'numberOfParticipants'.
+         */
+        _numberOfParticipants?: Element;
+    }
+    /**
+     * What was the result per exposure?
+     */
+    interface EffectEvidenceSynthesisResultsByExposure extends BackboneElement {
+        /**
+         * Description of results by exposure
+         */
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * exposure | exposure-alternative
+         */
+        exposureState?: code;
+        /**
+         * Contains extended information for property 'exposureState'.
+         */
+        _exposureState?: Element;
+        /**
+         * Variant exposure states
+         */
+        variantState?: CodeableConcept;
+        /**
+         * Risk evidence synthesis
+         */
+        riskEvidenceSynthesis: Reference;
+    }
+    /**
+     * What was the estimated effect
+     */
+    interface EffectEvidenceSynthesisEffectEstimate extends BackboneElement {
+        /**
+         * Description of effect estimate
+         */
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Type of efffect estimate
+         */
+        type?: CodeableConcept;
+        /**
+         * Variant exposure states
+         */
+        variantState?: CodeableConcept;
+        /**
+         * Point estimate
+         */
+        value?: decimal;
+        /**
+         * Contains extended information for property 'value'.
+         */
+        _value?: Element;
+        /**
+         * What unit is the outcome described in?
+         */
+        unitOfMeasure?: CodeableConcept;
+        /**
+         * How precise the estimate is
+         */
+        precisionEstimate?: EffectEvidenceSynthesisEffectEstimatePrecisionEstimate[];
+    }
+    /**
+     * How precise the estimate is
+     */
+    interface EffectEvidenceSynthesisEffectEstimatePrecisionEstimate extends BackboneElement {
+        /**
+         * Type of precision estimate
+         */
+        type?: CodeableConcept;
+        /**
+         * Level of confidence interval
+         */
+        level?: decimal;
+        /**
+         * Contains extended information for property 'level'.
+         */
+        _level?: Element;
+        /**
+         * Lower bound
+         */
+        from?: decimal;
+        /**
+         * Contains extended information for property 'from'.
+         */
+        _from?: Element;
+        /**
+         * Upper bound
+         */
+        to?: decimal;
+        /**
+         * Contains extended information for property 'to'.
+         */
+        _to?: Element;
+    }
+    /**
+     * How certain is the effect
+     */
+    interface EffectEvidenceSynthesisCertainty extends BackboneElement {
+        /**
+         * Certainty rating
+         */
+        rating?: CodeableConcept[];
+        /**
+         * Used for footnotes or explanatory notes
+         */
+        note?: Annotation[];
+        /**
+         * A component that contributes to the overall certainty
+         */
+        certaintySubcomponent?: EffectEvidenceSynthesisCertaintyCertaintySubcomponent[];
+    }
+    /**
+     * A component that contributes to the overall certainty
+     */
+    interface EffectEvidenceSynthesisCertaintyCertaintySubcomponent extends BackboneElement {
+        /**
+         * Type of subcomponent of certainty rating
+         */
+        type?: CodeableConcept;
+        /**
+         * Subcomponent certainty rating
+         */
+        rating?: CodeableConcept[];
+        /**
+         * Used for footnotes or explanatory notes
+         */
+        note?: Annotation[];
+    }
+    /**
+     * A quantified estimate of effect based on a body of evidence
+     */
+    interface EffectEvidenceSynthesis extends DomainResource {
+        /**
+         * Canonical identifier for this effect evidence synthesis, represented as a URI (globally unique)
+         */
+        url?: uri;
+        /**
+         * Contains extended information for property 'url'.
+         */
+        _url?: Element;
+        /**
+         * Additional identifier for the effect evidence synthesis
+         */
+        identifier?: Identifier[];
+        /**
+         * Business version of the effect evidence synthesis
+         */
+        version?: string;
+        /**
+         * Contains extended information for property 'version'.
+         */
+        _version?: Element;
+        /**
+         * Name for this effect evidence synthesis (computer friendly)
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Name for this effect evidence synthesis (human friendly)
+         */
+        title?: string;
+        /**
+         * Contains extended information for property 'title'.
+         */
+        _title?: Element;
+        /**
+         * draft | active | retired | unknown
+         */
+        status: code;
+        /**
+         * Contains extended information for property 'status'.
+         */
+        _status?: Element;
+        /**
+         * Date last changed
+         */
+        date?: dateTime;
+        /**
+         * Contains extended information for property 'date'.
+         */
+        _date?: Element;
+        /**
+         * Name of the publisher (organization or individual)
+         */
+        publisher?: string;
+        /**
+         * Contains extended information for property 'publisher'.
+         */
+        _publisher?: Element;
+        /**
+         * Contact details for the publisher
+         */
+        contact?: ContactDetail[];
+        /**
+         * Natural language description of the effect evidence synthesis
+         */
+        description?: markdown;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Used for footnotes or explanatory notes
+         */
+        note?: Annotation[];
+        /**
+         * The context that the content is intended to support
+         */
+        useContext?: UsageContext[];
+        /**
+         * Intended jurisdiction for effect evidence synthesis (if applicable)
+         */
+        jurisdiction?: CodeableConcept[];
+        /**
+         * Use and/or publishing restrictions
+         */
+        copyright?: markdown;
+        /**
+         * Contains extended information for property 'copyright'.
+         */
+        _copyright?: Element;
+        /**
+         * When the effect evidence synthesis was approved by publisher
+         */
+        approvalDate?: date;
+        /**
+         * Contains extended information for property 'approvalDate'.
+         */
+        _approvalDate?: Element;
+        /**
+         * When the effect evidence synthesis was last reviewed
+         */
+        lastReviewDate?: date;
+        /**
+         * Contains extended information for property 'lastReviewDate'.
+         */
+        _lastReviewDate?: Element;
+        /**
+         * When the effect evidence synthesis is expected to be used
+         */
+        effectivePeriod?: Period;
+        /**
+         * The category of the EffectEvidenceSynthesis, such as Education, Treatment, Assessment, etc.
+         */
+        topic?: CodeableConcept[];
+        /**
+         * Who authored the content
+         */
+        author?: ContactDetail[];
+        /**
+         * Who edited the content
+         */
+        editor?: ContactDetail[];
+        /**
+         * Who reviewed the content
+         */
+        reviewer?: ContactDetail[];
+        /**
+         * Who endorsed the content
+         */
+        endorser?: ContactDetail[];
+        /**
+         * Additional documentation, citations, etc.
+         */
+        relatedArtifact?: RelatedArtifact[];
+        /**
+         * Type of synthesis
+         */
+        synthesisType?: CodeableConcept;
+        /**
+         * Type of study
+         */
+        studyType?: CodeableConcept;
+        /**
+         * What population?
+         */
+        population: Reference;
+        /**
+         * What exposure?
+         */
+        exposure: Reference;
+        /**
+         * What comparison exposure?
+         */
+        exposureAlternative: Reference;
+        /**
+         * What outcome?
+         */
+        outcome: Reference;
+        /**
+         * What sample size was involved?
+         */
+        sampleSize?: EffectEvidenceSynthesisSampleSize;
+        /**
+         * What was the result per exposure?
+         */
+        resultsByExposure?: EffectEvidenceSynthesisResultsByExposure[];
+        /**
+         * What was the estimated effect
+         */
+        effectEstimate?: EffectEvidenceSynthesisEffectEstimate[];
+        /**
+         * How certain is the effect
+         */
+        certainty?: EffectEvidenceSynthesisCertainty[];
     }
     /**
      * List of past encounter statuses
@@ -10877,13 +11372,13 @@ declare module fhir.r4 {
      */
     interface EncounterDiagnosis extends BackboneElement {
         /**
-         * Reason the encounter takes place (resource)
+         * The diagnosis or procedure relevant to the encounter
          */
         condition: Reference;
         /**
          * Role that this diagnosis has within the encounter (e.g. admission, billing, discharge …)
          */
-        role?: CodeableConcept;
+        use?: CodeableConcept;
         /**
          * Ranking of the diagnosis (for each role type)
          */
@@ -10951,6 +11446,10 @@ declare module fhir.r4 {
          */
         _status?: Element;
         /**
+         * The physical type of the location (usually the level in the location hierachy - bed room ward etc.)
+         */
+        physicalType?: CodeableConcept;
+        /**
          * Time period during which the patient was present at the location
          */
         period?: Period;
@@ -11014,7 +11513,7 @@ declare module fhir.r4 {
         /**
          * The appointment that scheduled this encounter
          */
-        appointment?: Reference;
+        appointment?: Reference[];
         /**
          * The start and end time of the encounter
          */
@@ -11024,9 +11523,13 @@ declare module fhir.r4 {
          */
         length?: Duration;
         /**
-         * Reason the encounter takes place (code)
+         * Coded reason the encounter takes place
          */
-        reason?: CodeableConcept[];
+        reasonCode?: CodeableConcept[];
+        /**
+         * Reason the encounter takes place (reference)
+         */
+        reasonReference?: Reference[];
         /**
          * The list of diagnosis relevant to this encounter
          */
@@ -11122,7 +11625,7 @@ declare module fhir.r4 {
         _header?: Element[];
     }
     /**
-     * Enrol in coverage
+     * Enroll in coverage
      */
     interface EnrollmentRequest extends DomainResource {
         /**
@@ -11214,88 +11717,6 @@ declare module fhir.r4 {
          * Responsible practitioner
          */
         requestProvider?: Reference;
-    }
-    /**
-     * An item that this catalog entry is related to
-     */
-    interface EntryDefinitionRelatedEntry extends BackboneElement {
-        /**
-         * has-input | has-output | uses | triggers | is-replaced-by
-         */
-        relationtype: code;
-        /**
-         * Contains extended information for property 'relationtype'.
-         */
-        _relationtype?: Element;
-        /**
-         * The reference to the related item
-         */
-        item: Reference;
-    }
-    /**
-     * An entry in a catalog
-     */
-    interface EntryDefinition extends DomainResource {
-        /**
-         * Unique identifier of the catalog item
-         */
-        identifier?: Identifier[];
-        /**
-         * The type of item - medication, device, service, protocol or other
-         */
-        type?: CodeableConcept;
-        /**
-         * Whether the entry represents an orderable item
-         */
-        orderable: boolean;
-        /**
-         * Contains extended information for property 'orderable'.
-         */
-        _orderable?: Element;
-        /**
-         * The item that is being defined
-         */
-        referencedItem: Reference;
-        /**
-         * Any additional identifier(s) for the catalog item, in the same granularity or concept
-         */
-        additionalIdentifier?: Identifier[];
-        /**
-         * Classification (category or class) of the item entry
-         */
-        classification?: CodeableConcept[];
-        /**
-         * draft | active | retired | unknown
-         */
-        status?: code;
-        /**
-         * Contains extended information for property 'status'.
-         */
-        _status?: Element;
-        /**
-         * The time period in which this catalog entry is expected to be active
-         */
-        validityPeriod?: Period;
-        /**
-         * When was this catalog last updated
-         */
-        lastUpdated?: dateTime;
-        /**
-         * Contains extended information for property 'lastUpdated'.
-         */
-        _lastUpdated?: Element;
-        /**
-         * Additional characteristics of the catalog entry
-         */
-        additionalCharacteristic?: CodeableConcept[];
-        /**
-         * Additional classification of the catalog entry
-         */
-        additionalClassification?: CodeableConcept[];
-        /**
-         * An item that this catalog entry is related to
-         */
-        relatedEntry?: EntryDefinitionRelatedEntry[];
     }
     /**
      * Past list of status codes (the current status may be included to cover the start date of the status)
@@ -11569,9 +11990,432 @@ declare module fhir.r4 {
          */
         relatedArtifact?: RelatedArtifact[];
         /**
-         * "when" the event occurs
+         * "when" the event occurs (multiple = 'or')
          */
-        trigger: TriggerDefinition;
+        trigger: TriggerDefinition[];
+    }
+    /**
+     * A research context or question
+     */
+    interface Evidence extends DomainResource {
+        /**
+         * Canonical identifier for this evidence, represented as a URI (globally unique)
+         */
+        url?: uri;
+        /**
+         * Contains extended information for property 'url'.
+         */
+        _url?: Element;
+        /**
+         * Additional identifier for the evidence
+         */
+        identifier?: Identifier[];
+        /**
+         * Business version of the evidence
+         */
+        version?: string;
+        /**
+         * Contains extended information for property 'version'.
+         */
+        _version?: Element;
+        /**
+         * Name for this evidence (computer friendly)
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Name for this evidence (human friendly)
+         */
+        title?: string;
+        /**
+         * Contains extended information for property 'title'.
+         */
+        _title?: Element;
+        /**
+         * Title for use in informal contexts
+         */
+        shortTitle?: string;
+        /**
+         * Contains extended information for property 'shortTitle'.
+         */
+        _shortTitle?: Element;
+        /**
+         * Subordinate title of the Evidence
+         */
+        subtitle?: string;
+        /**
+         * Contains extended information for property 'subtitle'.
+         */
+        _subtitle?: Element;
+        /**
+         * draft | active | retired | unknown
+         */
+        status: code;
+        /**
+         * Contains extended information for property 'status'.
+         */
+        _status?: Element;
+        /**
+         * Date last changed
+         */
+        date?: dateTime;
+        /**
+         * Contains extended information for property 'date'.
+         */
+        _date?: Element;
+        /**
+         * Name of the publisher (organization or individual)
+         */
+        publisher?: string;
+        /**
+         * Contains extended information for property 'publisher'.
+         */
+        _publisher?: Element;
+        /**
+         * Contact details for the publisher
+         */
+        contact?: ContactDetail[];
+        /**
+         * Natural language description of the evidence
+         */
+        description?: markdown;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Used for footnotes or explanatory notes
+         */
+        note?: Annotation[];
+        /**
+         * The context that the content is intended to support
+         */
+        useContext?: UsageContext[];
+        /**
+         * Intended jurisdiction for evidence (if applicable)
+         */
+        jurisdiction?: CodeableConcept[];
+        /**
+         * Use and/or publishing restrictions
+         */
+        copyright?: markdown;
+        /**
+         * Contains extended information for property 'copyright'.
+         */
+        _copyright?: Element;
+        /**
+         * When the evidence was approved by publisher
+         */
+        approvalDate?: date;
+        /**
+         * Contains extended information for property 'approvalDate'.
+         */
+        _approvalDate?: Element;
+        /**
+         * When the evidence was last reviewed
+         */
+        lastReviewDate?: date;
+        /**
+         * Contains extended information for property 'lastReviewDate'.
+         */
+        _lastReviewDate?: Element;
+        /**
+         * When the evidence is expected to be used
+         */
+        effectivePeriod?: Period;
+        /**
+         * The category of the Evidence, such as Education, Treatment, Assessment, etc.
+         */
+        topic?: CodeableConcept[];
+        /**
+         * Who authored the content
+         */
+        author?: ContactDetail[];
+        /**
+         * Who edited the content
+         */
+        editor?: ContactDetail[];
+        /**
+         * Who reviewed the content
+         */
+        reviewer?: ContactDetail[];
+        /**
+         * Who endorsed the content
+         */
+        endorser?: ContactDetail[];
+        /**
+         * Additional documentation, citations, etc.
+         */
+        relatedArtifact?: RelatedArtifact[];
+        /**
+         * What population?
+         */
+        exposureBackground: Reference;
+        /**
+         * What exposure?
+         */
+        exposureVariant?: Reference[];
+        /**
+         * What outcome?
+         */
+        outcome?: Reference[];
+    }
+    /**
+     * What defines the members of the evidence element
+     */
+    interface EvidenceVariableCharacteristic extends BackboneElement {
+        /**
+         * Natural language description of the characteristic
+         */
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * What code or expression defines members?
+         */
+        definitionReference?: Reference;
+        /**
+         * What code or expression defines members?
+         */
+        definitionCanonical?: canonical;
+        /**
+         * Contains extended information for property 'definitionCanonical'.
+         */
+        _definitionCanonical?: Element;
+        /**
+         * What code or expression defines members?
+         */
+        definitionCodeableConcept?: CodeableConcept;
+        /**
+         * What code or expression defines members?
+         */
+        definitionExpression?: Expression;
+        /**
+         * What code or expression defines members?
+         */
+        definitionDataRequirement?: DataRequirement;
+        /**
+         * What code or expression defines members?
+         */
+        definitionTriggerDefinition?: TriggerDefinition;
+        /**
+         * What code/value pairs define members?
+         */
+        usageContext?: UsageContext[];
+        /**
+         * Whether the characteristic includes or excludes members
+         */
+        exclude?: boolean;
+        /**
+         * Contains extended information for property 'exclude'.
+         */
+        _exclude?: Element;
+        /**
+         * What time period do participants cover
+         */
+        participantEffectiveDateTime?: dateTime;
+        /**
+         * Contains extended information for property 'participantEffectiveDateTime'.
+         */
+        _participantEffectiveDateTime?: Element;
+        /**
+         * What time period do participants cover
+         */
+        participantEffectivePeriod?: Period;
+        /**
+         * What time period do participants cover
+         */
+        participantEffectiveDuration?: Duration;
+        /**
+         * What time period do participants cover
+         */
+        participantEffectiveTiming?: Timing;
+        /**
+         * Observation time from study start
+         */
+        timeFromStart?: Duration;
+        /**
+         * mean | median | mean-of-mean | mean-of-median | median-of-mean | median-of-median
+         */
+        groupMeasure?: code;
+        /**
+         * Contains extended information for property 'groupMeasure'.
+         */
+        _groupMeasure?: Element;
+    }
+    /**
+     * A population, intervention, or exposure definition
+     */
+    interface EvidenceVariable extends DomainResource {
+        /**
+         * Canonical identifier for this evidence variable, represented as a URI (globally unique)
+         */
+        url?: uri;
+        /**
+         * Contains extended information for property 'url'.
+         */
+        _url?: Element;
+        /**
+         * Additional identifier for the evidence variable
+         */
+        identifier?: Identifier[];
+        /**
+         * Business version of the evidence variable
+         */
+        version?: string;
+        /**
+         * Contains extended information for property 'version'.
+         */
+        _version?: Element;
+        /**
+         * Name for this evidence variable (computer friendly)
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Name for this evidence variable (human friendly)
+         */
+        title?: string;
+        /**
+         * Contains extended information for property 'title'.
+         */
+        _title?: Element;
+        /**
+         * Title for use in informal contexts
+         */
+        shortTitle?: string;
+        /**
+         * Contains extended information for property 'shortTitle'.
+         */
+        _shortTitle?: Element;
+        /**
+         * Subordinate title of the EvidenceVariable
+         */
+        subtitle?: string;
+        /**
+         * Contains extended information for property 'subtitle'.
+         */
+        _subtitle?: Element;
+        /**
+         * draft | active | retired | unknown
+         */
+        status: code;
+        /**
+         * Contains extended information for property 'status'.
+         */
+        _status?: Element;
+        /**
+         * Date last changed
+         */
+        date?: dateTime;
+        /**
+         * Contains extended information for property 'date'.
+         */
+        _date?: Element;
+        /**
+         * Name of the publisher (organization or individual)
+         */
+        publisher?: string;
+        /**
+         * Contains extended information for property 'publisher'.
+         */
+        _publisher?: Element;
+        /**
+         * Contact details for the publisher
+         */
+        contact?: ContactDetail[];
+        /**
+         * Natural language description of the evidence variable
+         */
+        description?: markdown;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Used for footnotes or explanatory notes
+         */
+        note?: Annotation[];
+        /**
+         * The context that the content is intended to support
+         */
+        useContext?: UsageContext[];
+        /**
+         * Intended jurisdiction for evidence variable (if applicable)
+         */
+        jurisdiction?: CodeableConcept[];
+        /**
+         * Use and/or publishing restrictions
+         */
+        copyright?: markdown;
+        /**
+         * Contains extended information for property 'copyright'.
+         */
+        _copyright?: Element;
+        /**
+         * When the evidence variable was approved by publisher
+         */
+        approvalDate?: date;
+        /**
+         * Contains extended information for property 'approvalDate'.
+         */
+        _approvalDate?: Element;
+        /**
+         * When the evidence variable was last reviewed
+         */
+        lastReviewDate?: date;
+        /**
+         * Contains extended information for property 'lastReviewDate'.
+         */
+        _lastReviewDate?: Element;
+        /**
+         * When the evidence variable is expected to be used
+         */
+        effectivePeriod?: Period;
+        /**
+         * The category of the EvidenceVariable, such as Education, Treatment, Assessment, etc.
+         */
+        topic?: CodeableConcept[];
+        /**
+         * Who authored the content
+         */
+        author?: ContactDetail[];
+        /**
+         * Who edited the content
+         */
+        editor?: ContactDetail[];
+        /**
+         * Who reviewed the content
+         */
+        reviewer?: ContactDetail[];
+        /**
+         * Who endorsed the content
+         */
+        endorser?: ContactDetail[];
+        /**
+         * Additional documentation, citations, etc.
+         */
+        relatedArtifact?: RelatedArtifact[];
+        /**
+         * dichotomous | continuous | descriptive
+         */
+        type?: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+        /**
+         * What defines the members of the evidence element
+         */
+        characteristic: EvidenceVariableCharacteristic[];
     }
     /**
      * Actor participating in the resource
@@ -11759,9 +12603,9 @@ declare module fhir.r4 {
          */
         operation?: ExampleScenarioProcessStepOperation;
         /**
-         * Each interaction in the process
+         * Alternate non-typical step action
          */
-        alternative?: ExampleScenarioProcessStepAlternative;
+        alternative?: ExampleScenarioProcessStepAlternative[];
     }
     /**
      * Each interaction or action
@@ -11841,30 +12685,21 @@ declare module fhir.r4 {
         response?: ExampleScenarioInstanceContainedInstance;
     }
     /**
-     * Each interaction in the process
+     * Alternate non-typical step action
      */
     interface ExampleScenarioProcessStepAlternative extends BackboneElement {
         /**
-         * The name of each alternative
+         * Label for alternative
          */
-        name?: string;
+        title: string;
         /**
-         * Contains extended information for property 'name'.
+         * Contains extended information for property 'title'.
          */
-        _name?: Element;
-        /**
-         * Each of the possible options in an alternative
-         */
-        option: ExampleScenarioProcessStepAlternativeOption[];
-    }
-    /**
-     * Each of the possible options in an alternative
-     */
-    interface ExampleScenarioProcessStepAlternativeOption extends BackboneElement {
+        _title?: Element;
         /**
          * A human-readable description of each option
          */
-        description: markdown;
+        description?: markdown;
         /**
          * Contains extended information for property 'description'.
          */
@@ -11873,14 +12708,6 @@ declare module fhir.r4 {
          * What happens in each alternative option
          */
         step?: ExampleScenarioProcessStep[];
-        /**
-         * If there is a pause in the flow
-         */
-        pause?: boolean[];
-        /**
-         * Contains extended information for property 'pause'.
-         */
-        _pause?: Element[];
     }
     /**
      * Example of workflow instance
@@ -11996,7 +12823,7 @@ declare module fhir.r4 {
         _workflow?: Element[];
     }
     /**
-     * Related Claims which may be revelant to processing this claim
+     * Prior or corollary claims
      */
     interface ExplanationOfBenefitRelated extends BackboneElement {
         /**
@@ -12008,31 +12835,60 @@ declare module fhir.r4 {
          */
         relationship?: CodeableConcept;
         /**
-         * Related file or case reference
+         * File or case reference
          */
         reference?: Identifier;
     }
     /**
-     * Party to be paid any benefits payable
+     * Recipient of benefits payable
      */
     interface ExplanationOfBenefitPayee extends BackboneElement {
         /**
-         * Type of party: Subscriber, Provider, other
+         * Category of recipient
          */
         type?: CodeableConcept;
         /**
-         * organization | patient | practitioner | relatedperson
-         */
-        resource?: Coding;
-        /**
-         * Party to receive the payable
+         * Recipient reference
          */
         party?: Reference;
     }
     /**
-     * Exceptions, special considerations, the condition, situation, prior or concurrent issues
+     * Care Team members
      */
-    interface ExplanationOfBenefitInformation extends BackboneElement {
+    interface ExplanationOfBenefitCareTeam extends BackboneElement {
+        /**
+         * Order of care team
+         */
+        sequence: positiveInt;
+        /**
+         * Contains extended information for property 'sequence'.
+         */
+        _sequence?: Element;
+        /**
+         * Practitioner or organization
+         */
+        provider: Reference;
+        /**
+         * Indicator of the lead practitioner
+         */
+        responsible?: boolean;
+        /**
+         * Contains extended information for property 'responsible'.
+         */
+        _responsible?: Element;
+        /**
+         * Function within the team
+         */
+        role?: CodeableConcept;
+        /**
+         * Practitioner credential or specialization
+         */
+        qualification?: CodeableConcept;
+    }
+    /**
+     * Supporting information
+     */
+    interface ExplanationOfBenefitSupportingInfo extends BackboneElement {
         /**
          * Information instance identifier
          */
@@ -12042,7 +12898,7 @@ declare module fhir.r4 {
          */
         _sequence?: Element;
         /**
-         * General class of information
+         * Classification of the supplied information
          */
         category: CodeableConcept;
         /**
@@ -12062,7 +12918,7 @@ declare module fhir.r4 {
          */
         timingPeriod?: Period;
         /**
-         * Additional Data or supporting information
+         * Data to be provided
          */
         valueBoolean?: boolean;
         /**
@@ -12070,7 +12926,7 @@ declare module fhir.r4 {
          */
         _valueBoolean?: Element;
         /**
-         * Additional Data or supporting information
+         * Data to be provided
          */
         valueString?: string;
         /**
@@ -12078,61 +12934,28 @@ declare module fhir.r4 {
          */
         _valueString?: Element;
         /**
-         * Additional Data or supporting information
+         * Data to be provided
          */
         valueQuantity?: Quantity;
         /**
-         * Additional Data or supporting information
+         * Data to be provided
          */
         valueAttachment?: Attachment;
         /**
-         * Additional Data or supporting information
+         * Data to be provided
          */
         valueReference?: Reference;
         /**
-         * Reason associated with the information
+         * Explanation for the information
          */
         reason?: Coding;
     }
     /**
-     * Care Team members
-     */
-    interface ExplanationOfBenefitCareTeam extends BackboneElement {
-        /**
-         * Number to convey order of careteam
-         */
-        sequence: positiveInt;
-        /**
-         * Contains extended information for property 'sequence'.
-         */
-        _sequence?: Element;
-        /**
-         * Member of the Care Team
-         */
-        provider: Reference;
-        /**
-         * Billing practitioner
-         */
-        responsible?: boolean;
-        /**
-         * Contains extended information for property 'responsible'.
-         */
-        _responsible?: Element;
-        /**
-         * Role on the team
-         */
-        role?: CodeableConcept;
-        /**
-         * Type, classification or Specialization
-         */
-        qualification?: CodeableConcept;
-    }
-    /**
-     * List of Diagnosis
+     * Pertinent diagnosis information
      */
     interface ExplanationOfBenefitDiagnosis extends BackboneElement {
         /**
-         * Number to convey order of diagnosis
+         * Diagnosis instance identifier
          */
         sequence: positiveInt;
         /**
@@ -12140,11 +12963,11 @@ declare module fhir.r4 {
          */
         _sequence?: Element;
         /**
-         * Patient's diagnosis
+         * Nature of illness or problem
          */
         diagnosisCodeableConcept?: CodeableConcept;
         /**
-         * Patient's diagnosis
+         * Nature of illness or problem
          */
         diagnosisReference?: Reference;
         /**
@@ -12161,17 +12984,21 @@ declare module fhir.r4 {
         packageCode?: CodeableConcept;
     }
     /**
-     * Procedures performed
+     * Clinical procedures performed
      */
     interface ExplanationOfBenefitProcedure extends BackboneElement {
         /**
-         * Procedure sequence for reference
+         * Procedure instance identifier
          */
         sequence: positiveInt;
         /**
          * Contains extended information for property 'sequence'.
          */
         _sequence?: Element;
+        /**
+         * Category of Procedure
+         */
+        type?: CodeableConcept[];
         /**
          * When the procedure was performed
          */
@@ -12181,20 +13008,24 @@ declare module fhir.r4 {
          */
         _date?: Element;
         /**
-         * Patient's list of procedures performed
+         * Specific clinical procedure
          */
         procedureCodeableConcept?: CodeableConcept;
         /**
-         * Patient's list of procedures performed
+         * Specific clinical procedure
          */
         procedureReference?: Reference;
+        /**
+         * Unique device identifier
+         */
+        udi?: Reference[];
     }
     /**
-     * Insurance or medical plan
+     * Patient insurance information
      */
     interface ExplanationOfBenefitInsurance extends BackboneElement {
         /**
-         * Is the focal Coverage
+         * Coverage to be used for adjudication
          */
         focal: boolean;
         /**
@@ -12205,13 +13036,21 @@ declare module fhir.r4 {
          * Insurance information
          */
         coverage: Reference;
+        /**
+         * Prior authorization reference number
+         */
+        preAuthRef?: string[];
+        /**
+         * Contains extended information for property 'preAuthRef'.
+         */
+        _preAuthRef?: Element[];
     }
     /**
-     * Details of an accident
+     * Details of the event
      */
     interface ExplanationOfBenefitAccident extends BackboneElement {
         /**
-         * When the accident occurred
+         * When the incident occurred
          */
         date?: date;
         /**
@@ -12223,20 +13062,20 @@ declare module fhir.r4 {
          */
         type?: CodeableConcept;
         /**
-         * Accident Place
+         * Where the event occurred
          */
         locationAddress?: Address;
         /**
-         * Accident Place
+         * Where the event occurred
          */
         locationReference?: Reference;
     }
     /**
-     * Goods and Services
+     * Product or service provided
      */
     interface ExplanationOfBenefitItem extends BackboneElement {
         /**
-         * Service instance
+         * Item instance identifier
          */
         sequence: positiveInt;
         /**
@@ -12244,7 +13083,7 @@ declare module fhir.r4 {
          */
         _sequence?: Element;
         /**
-         * Applicable careteam members
+         * Applicable care team members
          */
         careTeamSequence?: positiveInt[];
         /**
@@ -12280,23 +13119,23 @@ declare module fhir.r4 {
          */
         revenue?: CodeableConcept;
         /**
-         * Type of service or product
+         * Benefit classification
          */
         category?: CodeableConcept;
         /**
-         * Billing Code
+         * Billing, service, product, or drug code
          */
-        billcode?: CodeableConcept;
+        productOrService: CodeableConcept;
         /**
-         * Service/Product billing modifiers
+         * Product or service billing modifiers
          */
         modifier?: CodeableConcept[];
         /**
-         * Program specific reason for item inclusion
+         * Program the product or service is provided under
          */
         programCode?: CodeableConcept[];
         /**
-         * Date or dates of Service
+         * Date or dates of service or product delivery
          */
         servicedDate?: date;
         /**
@@ -12304,27 +13143,27 @@ declare module fhir.r4 {
          */
         _servicedDate?: Element;
         /**
-         * Date or dates of Service
+         * Date or dates of service or product delivery
          */
         servicedPeriod?: Period;
         /**
-         * Place of service
+         * Place of service or where product was supplied
          */
         locationCodeableConcept?: CodeableConcept;
         /**
-         * Place of service
+         * Place of service or where product was supplied
          */
         locationAddress?: Address;
         /**
-         * Place of service
+         * Place of service or where product was supplied
          */
         locationReference?: Reference;
         /**
-         * Count of Products or Services
+         * Count of products or services
          */
         quantity?: Quantity;
         /**
-         * Fee, charge or cost per point
+         * Fee, charge or cost per item
          */
         unitPrice?: Money;
         /**
@@ -12340,15 +13179,15 @@ declare module fhir.r4 {
          */
         net?: Money;
         /**
-         * Unique Device Identifier
+         * Unique device identifier
          */
         udi?: Reference[];
         /**
-         * Service Location
+         * Anatomical location
          */
         bodySite?: CodeableConcept;
         /**
-         * Service Sub-location
+         * Anatomical sub-location
          */
         subSite?: CodeableConcept[];
         /**
@@ -12356,7 +13195,7 @@ declare module fhir.r4 {
          */
         encounter?: Reference[];
         /**
-         * List of note numbers which apply
+         * Applicable note numbers
          */
         noteNumber?: positiveInt[];
         /**
@@ -12377,11 +13216,11 @@ declare module fhir.r4 {
      */
     interface ExplanationOfBenefitItemAdjudication extends BackboneElement {
         /**
-         * Adjudication category such as co-pay, eligible, benefit, etc.
+         * Type of adjudication information
          */
         category: CodeableConcept;
         /**
-         * Explanation of Adjudication outcome
+         * Explanation of adjudication outcome
          */
         reason?: CodeableConcept;
         /**
@@ -12389,7 +13228,7 @@ declare module fhir.r4 {
          */
         amount?: Money;
         /**
-         * Non-monitory value
+         * Non-monitary value
          */
         value?: decimal;
         /**
@@ -12402,7 +13241,7 @@ declare module fhir.r4 {
      */
     interface ExplanationOfBenefitItemDetail extends BackboneElement {
         /**
-         * Service instance
+         * Product or service provided
          */
         sequence: positiveInt;
         /**
@@ -12414,27 +13253,27 @@ declare module fhir.r4 {
          */
         revenue?: CodeableConcept;
         /**
-         * Type of service or product
+         * Benefit classification
          */
         category?: CodeableConcept;
         /**
-         * Billing Code
+         * Billing, service, product, or drug code
          */
-        billcode?: CodeableConcept;
+        productOrService: CodeableConcept;
         /**
          * Service/Product billing modifiers
          */
         modifier?: CodeableConcept[];
         /**
-         * Program specific reason for item inclusion
+         * Program the product or service is provided under
          */
         programCode?: CodeableConcept[];
         /**
-         * Count of Products or Services
+         * Count of products or services
          */
         quantity?: Quantity;
         /**
-         * Fee, charge or cost per point
+         * Fee, charge or cost per item
          */
         unitPrice?: Money;
         /**
@@ -12446,15 +13285,15 @@ declare module fhir.r4 {
          */
         _factor?: Element;
         /**
-         * Total additional item cost
+         * Total item cost
          */
         net?: Money;
         /**
-         * Unique Device Identifier
+         * Unique device identifier
          */
         udi?: Reference[];
         /**
-         * List of note numbers which apply
+         * Applicable note numbers
          */
         noteNumber?: positiveInt[];
         /**
@@ -12475,7 +13314,7 @@ declare module fhir.r4 {
      */
     interface ExplanationOfBenefitItemDetailSubDetail extends BackboneElement {
         /**
-         * Service instance
+         * Product or service provided
          */
         sequence: positiveInt;
         /**
@@ -12487,27 +13326,27 @@ declare module fhir.r4 {
          */
         revenue?: CodeableConcept;
         /**
-         * Type of service or product
+         * Benefit classification
          */
         category?: CodeableConcept;
         /**
-         * Billing Code
+         * Billing, service, product, or drug code
          */
-        billcode?: CodeableConcept;
+        productOrService: CodeableConcept;
         /**
          * Service/Product billing modifiers
          */
         modifier?: CodeableConcept[];
         /**
-         * Program specific reason for item inclusion
+         * Program the product or service is provided under
          */
         programCode?: CodeableConcept[];
         /**
-         * Count of Products or Services
+         * Count of products or services
          */
         quantity?: Quantity;
         /**
-         * Fee, charge or cost per point
+         * Fee, charge or cost per item
          */
         unitPrice?: Money;
         /**
@@ -12519,15 +13358,15 @@ declare module fhir.r4 {
          */
         _factor?: Element;
         /**
-         * Net additional item cost
+         * Total item cost
          */
         net?: Money;
         /**
-         * Unique Device Identifier
+         * Unique device identifier
          */
         udi?: Reference[];
         /**
-         * List of note numbers which apply
+         * Applicable note numbers
          */
         noteNumber?: positiveInt[];
         /**
@@ -12535,7 +13374,7 @@ declare module fhir.r4 {
          */
         _noteNumber?: Element[];
         /**
-         * Language if different from the resource
+         * Subdetail level adjudication details
          */
         adjudication?: ExplanationOfBenefitItemAdjudication[];
     }
@@ -12544,7 +13383,7 @@ declare module fhir.r4 {
      */
     interface ExplanationOfBenefitAddItem extends BackboneElement {
         /**
-         * Service instances
+         * Item sequence number
          */
         itemSequence?: positiveInt[];
         /**
@@ -12572,19 +13411,19 @@ declare module fhir.r4 {
          */
         provider?: Reference[];
         /**
-         * Billing Code
+         * Billing, service, product, or drug code
          */
-        billcode?: CodeableConcept;
+        productOrService: CodeableConcept;
         /**
          * Service/Product billing modifiers
          */
         modifier?: CodeableConcept[];
         /**
-         * Program specific reason for item inclusion
+         * Program the product or service is provided under
          */
         programCode?: CodeableConcept[];
         /**
-         * Date or dates of Service
+         * Date or dates of service or product delivery
          */
         servicedDate?: date;
         /**
@@ -12592,27 +13431,27 @@ declare module fhir.r4 {
          */
         _servicedDate?: Element;
         /**
-         * Date or dates of Service
+         * Date or dates of service or product delivery
          */
         servicedPeriod?: Period;
         /**
-         * Place of service
+         * Place of service or where product was supplied
          */
         locationCodeableConcept?: CodeableConcept;
         /**
-         * Place of service
+         * Place of service or where product was supplied
          */
         locationAddress?: Address;
         /**
-         * Place of service
+         * Place of service or where product was supplied
          */
         locationReference?: Reference;
         /**
-         * Count of Products or Services
+         * Count of products or services
          */
         quantity?: Quantity;
         /**
-         * Fee, charge or cost per point
+         * Fee, charge or cost per item
          */
         unitPrice?: Money;
         /**
@@ -12628,15 +13467,15 @@ declare module fhir.r4 {
          */
         net?: Money;
         /**
-         * Service Location
+         * Anatomical location
          */
         bodySite?: CodeableConcept;
         /**
-         * Service Sub-location
+         * Anatomical sub-location
          */
         subSite?: CodeableConcept[];
         /**
-         * List of note numbers which apply
+         * Applicable note numbers
          */
         noteNumber?: positiveInt[];
         /**
@@ -12657,19 +13496,19 @@ declare module fhir.r4 {
      */
     interface ExplanationOfBenefitAddItemDetail extends BackboneElement {
         /**
-         * Billing Code
+         * Billing, service, product, or drug code
          */
-        billcode?: CodeableConcept;
+        productOrService: CodeableConcept;
         /**
          * Service/Product billing modifiers
          */
         modifier?: CodeableConcept[];
         /**
-         * Count of Products or Services
+         * Count of products or services
          */
         quantity?: Quantity;
         /**
-         * Fee, charge or cost per point
+         * Fee, charge or cost per item
          */
         unitPrice?: Money;
         /**
@@ -12685,7 +13524,7 @@ declare module fhir.r4 {
          */
         net?: Money;
         /**
-         * List of note numbers which apply
+         * Applicable note numbers
          */
         noteNumber?: positiveInt[];
         /**
@@ -12706,19 +13545,19 @@ declare module fhir.r4 {
      */
     interface ExplanationOfBenefitAddItemDetailSubDetail extends BackboneElement {
         /**
-         * Billing Code
+         * Billing, service, product, or drug code
          */
-        billcode?: CodeableConcept;
+        productOrService: CodeableConcept;
         /**
          * Service/Product billing modifiers
          */
         modifier?: CodeableConcept[];
         /**
-         * Count of Products or Services
+         * Count of products or services
          */
         quantity?: Quantity;
         /**
-         * Fee, charge or cost per point
+         * Fee, charge or cost per item
          */
         unitPrice?: Money;
         /**
@@ -12734,7 +13573,7 @@ declare module fhir.r4 {
          */
         net?: Money;
         /**
-         * List of note numbers which apply
+         * Applicable note numbers
          */
         noteNumber?: positiveInt[];
         /**
@@ -12751,11 +13590,11 @@ declare module fhir.r4 {
      */
     interface ExplanationOfBenefitTotal extends BackboneElement {
         /**
-         * Adjudication category such as submitted, co-pay, eligible, benefit, etc.
+         * Type of adjudication information
          */
         category: CodeableConcept;
         /**
-         * Monetary amount
+         * Financial total for the category
          */
         amount: Money;
     }
@@ -12764,19 +13603,19 @@ declare module fhir.r4 {
      */
     interface ExplanationOfBenefitPayment extends BackboneElement {
         /**
-         * Partial or Complete
+         * Partial or complete payment
          */
         type?: CodeableConcept;
         /**
-         * Payment adjustment for non-Claim issues
+         * Payment adjustment for non-claim issues
          */
         adjustment?: Money;
         /**
-         * Explanation for the non-claim adjustment
+         * Explanation for the variance
          */
         adjustmentReason?: CodeableConcept;
         /**
-         * Expected date of Payment
+         * Expected date of payment
          */
         date?: date;
         /**
@@ -12788,16 +13627,16 @@ declare module fhir.r4 {
          */
         amount?: Money;
         /**
-         * Identifier of the payment instrument
+         * Business identifier for the payment
          */
         identifier?: Identifier;
     }
     /**
-     * Processing notes
+     * Note concerning adjudication
      */
     interface ExplanationOfBenefitProcessNote extends BackboneElement {
         /**
-         * Sequence number for this note
+         * Note instance identifier
          */
         number?: positiveInt;
         /**
@@ -12813,7 +13652,7 @@ declare module fhir.r4 {
          */
         _type?: Element;
         /**
-         * Note explanitory text
+         * Note explanatory text
          */
         text?: string;
         /**
@@ -12821,7 +13660,7 @@ declare module fhir.r4 {
          */
         _text?: Element;
         /**
-         * Language if different from the resource
+         * Language of the text
          */
         language?: CodeableConcept;
     }
@@ -12830,7 +13669,7 @@ declare module fhir.r4 {
      */
     interface ExplanationOfBenefitBenefitBalance extends BackboneElement {
         /**
-         * Type of services covered
+         * Benefit classification
          */
         category: CodeableConcept;
         /**
@@ -12879,7 +13718,7 @@ declare module fhir.r4 {
      */
     interface ExplanationOfBenefitBenefitBalanceFinancial extends BackboneElement {
         /**
-         * Deductable, visits, benefit amount
+         * Benefit classification
          */
         type: CodeableConcept;
         /**
@@ -12920,61 +13759,89 @@ declare module fhir.r4 {
      */
     interface ExplanationOfBenefit extends DomainResource {
         /**
-         * Business Identifier
+         * Business Identifier for the resource
          */
         identifier?: Identifier[];
         /**
          * active | cancelled | draft | entered-in-error
          */
-        status?: code;
+        status: code;
         /**
          * Contains extended information for property 'status'.
          */
         _status?: Element;
         /**
-         * Type or discipline
+         * Category or discipline
          */
-        type?: CodeableConcept;
+        type: CodeableConcept;
         /**
-         * Finer grained claim type information
+         * More granular claim type
          */
         subType?: CodeableConcept;
         /**
          * claim | preauthorization | predetermination
          */
-        use?: code;
+        use: code;
         /**
          * Contains extended information for property 'use'.
          */
         _use?: Element;
         /**
-         * The subject of the Products and Services
+         * The recipient of the products and services
          */
-        patient?: Reference;
+        patient: Reference;
         /**
-         * Period for charge submission
+         * Relevant time frame for the claim
          */
         billablePeriod?: Period;
         /**
-         * Creation date
+         * Response creation date
          */
-        created?: dateTime;
+        created: dateTime;
         /**
          * Contains extended information for property 'created'.
          */
         _created?: Element;
         /**
-         * Author
+         * Author of the claim
          */
         enterer?: Reference;
         /**
-         * Insurer responsible for the EOB
+         * Party responsible for reimbursement
          */
-        insurer?: Reference;
+        insurer: Reference;
         /**
-         * Responsible provider for the claim
+         * Party responsible for the claim
          */
-        provider?: Reference;
+        provider: Reference;
+        /**
+         * Desired processing urgency
+         */
+        priority?: CodeableConcept;
+        /**
+         * For whom to reserve funds
+         */
+        fundsReserveRequested?: CodeableConcept;
+        /**
+         * Funds reserved status
+         */
+        fundsReserve?: CodeableConcept;
+        /**
+         * Prior or corollary claims
+         */
+        related?: ExplanationOfBenefitRelated[];
+        /**
+         * Prescription authorizing services or products
+         */
+        prescription?: Reference;
+        /**
+         * Original prescription if superceded by fulfiller
+         */
+        originalPrescription?: Reference;
+        /**
+         * Recipient of benefits payable
+         */
+        payee?: ExplanationOfBenefitPayee;
         /**
          * Treatment Referral
          */
@@ -12994,7 +13861,7 @@ declare module fhir.r4 {
         /**
          * queued | complete | error | partial
          */
-        outcome?: code;
+        outcome: code;
         /**
          * Contains extended information for property 'outcome'.
          */
@@ -13008,35 +13875,31 @@ declare module fhir.r4 {
          */
         _disposition?: Element;
         /**
-         * Related Claims which may be revelant to processing this claim
+         * Preauthorization reference
          */
-        related?: ExplanationOfBenefitRelated[];
+        preAuthRef?: string[];
         /**
-         * Prescription authorizing services or products
+         * Contains extended information for property 'preAuthRef'.
          */
-        prescription?: Reference;
+        _preAuthRef?: Element[];
         /**
-         * Original prescription if superceded by fulfiller
+         * Preauthorization in-effect period
          */
-        originalPrescription?: Reference;
-        /**
-         * Party to be paid any benefits payable
-         */
-        payee?: ExplanationOfBenefitPayee;
-        /**
-         * Exceptions, special considerations, the condition, situation, prior or concurrent issues
-         */
-        information?: ExplanationOfBenefitInformation[];
+        preAuthRefPeriod?: Period[];
         /**
          * Care Team members
          */
         careTeam?: ExplanationOfBenefitCareTeam[];
         /**
-         * List of Diagnosis
+         * Supporting information
+         */
+        supportingInfo?: ExplanationOfBenefitSupportingInfo[];
+        /**
+         * Pertinent diagnosis information
          */
         diagnosis?: ExplanationOfBenefitDiagnosis[];
         /**
-         * Procedures performed
+         * Clinical procedures performed
          */
         procedure?: ExplanationOfBenefitProcedure[];
         /**
@@ -13048,21 +13911,25 @@ declare module fhir.r4 {
          */
         _precedence?: Element;
         /**
-         * Insurance or medical plan
+         * Patient insurance information
          */
-        insurance?: ExplanationOfBenefitInsurance[];
+        insurance: ExplanationOfBenefitInsurance[];
         /**
-         * Details of an accident
+         * Details of the event
          */
         accident?: ExplanationOfBenefitAccident;
         /**
-         * Goods and Services
+         * Product or service provided
          */
         item?: ExplanationOfBenefitItem[];
         /**
          * Insurer added line items
          */
         addItem?: ExplanationOfBenefitAddItem[];
+        /**
+         * Header-level adjudication
+         */
+        adjudication?: ExplanationOfBenefitItemAdjudication[];
         /**
          * Adjudication totals
          */
@@ -13072,13 +13939,21 @@ declare module fhir.r4 {
          */
         payment?: ExplanationOfBenefitPayment;
         /**
-         * Printed Form Identifier
+         * Printed form identifier
          */
-        form?: CodeableConcept;
+        formCode?: CodeableConcept;
         /**
-         * Processing notes
+         * Printed reference or actual form
+         */
+        form?: Attachment;
+        /**
+         * Note concerning adjudication
          */
         processNote?: ExplanationOfBenefitProcessNote[];
+        /**
+         * When the benefits are applicable
+         */
+        benefitPeriod?: Period;
         /**
          * Balance by Benefit Category
          */
@@ -13096,6 +13971,14 @@ declare module fhir.r4 {
          * deceased | permanent disability | etc.
          */
         outcome?: CodeableConcept;
+        /**
+         * Whether the condition contributed to the cause of death
+         */
+        contributedToDeath?: boolean;
+        /**
+         * Contains extended information for property 'contributedToDeath'.
+         */
+        _contributedToDeath?: Element;
         /**
          * When condition first manifested
          */
@@ -13182,9 +14065,9 @@ declare module fhir.r4 {
          */
         relationship: CodeableConcept;
         /**
-         * male | female | unknown
+         * male | female | other | unknown
          */
-        gender?: CodeableConcept;
+        sex?: CodeableConcept;
         /**
          * (approximate) date of birth
          */
@@ -13340,6 +14223,34 @@ declare module fhir.r4 {
          */
         detailCodeableConcept?: CodeableConcept;
         /**
+         * The target value to be achieved
+         */
+        detailString?: string;
+        /**
+         * Contains extended information for property 'detailString'.
+         */
+        _detailString?: Element;
+        /**
+         * The target value to be achieved
+         */
+        detailBoolean?: boolean;
+        /**
+         * Contains extended information for property 'detailBoolean'.
+         */
+        _detailBoolean?: Element;
+        /**
+         * The target value to be achieved
+         */
+        detailInteger?: integer;
+        /**
+         * Contains extended information for property 'detailInteger'.
+         */
+        _detailInteger?: Element;
+        /**
+         * The target value to be achieved
+         */
+        detailRatio?: Ratio;
+        /**
          * Reach goal on or before
          */
         dueDate?: date;
@@ -13361,13 +14272,17 @@ declare module fhir.r4 {
          */
         identifier?: Identifier[];
         /**
-         * proposed | accepted | planned | in-progress | on-target | ahead-of-target | behind-target | sustaining | achieved | on-hold | cancelled | entered-in-error | rejected
+         * proposed | planned | accepted | active | on-hold | completed | cancelled | entered-in-error | rejected
          */
-        status: code;
+        lifecycleStatus: code;
         /**
-         * Contains extended information for property 'status'.
+         * Contains extended information for property 'lifecycleStatus'.
          */
-        _status?: Element;
+        _lifecycleStatus?: Element;
+        /**
+         * in-progress | improving | worsening | no-change | achieved | sustaining | not-achieved | no-progress | not-attainable
+         */
+        achievementStatus?: CodeableConcept;
         /**
          * E.g. Treatment, dietary, behavioral, etc.
          */
@@ -13399,7 +14314,7 @@ declare module fhir.r4 {
         /**
          * Target outcome for the goal
          */
-        target?: GoalTarget;
+        target?: GoalTarget[];
         /**
          * When goal status took effect
          */
@@ -13706,6 +14621,10 @@ declare module fhir.r4 {
          */
         valueRange?: Range;
         /**
+         * Value held by characteristic
+         */
+        valueReference?: Reference;
+        /**
          * Group includes or excludes
          */
         exclude: boolean;
@@ -13792,6 +14711,10 @@ declare module fhir.r4 {
          */
         _quantity?: Element;
         /**
+         * Entity that is the custodian of the Group's definition
+         */
+        managingEntity?: Reference;
+        /**
          * Include / Exclude group members by Trait
          */
         characteristic?: GroupCharacteristic[];
@@ -13845,9 +14768,9 @@ declare module fhir.r4 {
          */
         subject?: Reference;
         /**
-         * Encounter or Episode during which the response was returned
+         * Encounter during which the response was returned
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * When the guidance response was processed
          */
@@ -13888,6 +14811,23 @@ declare module fhir.r4 {
          * Additional required data
          */
         dataRequirement?: DataRequirement[];
+    }
+    /**
+     * Specific eligibility requirements required to use the service
+     */
+    interface HealthcareServiceEligibility extends BackboneElement {
+        /**
+         * Coded value for the eligibility
+         */
+        code?: CodeableConcept;
+        /**
+         * Describes the eligibility conditions for the service
+         */
+        comment?: markdown;
+        /**
+         * Contains extended information for property 'comment'.
+         */
+        _comment?: Element;
     }
     /**
      * Times the Service Site is available
@@ -13998,7 +14938,7 @@ declare module fhir.r4 {
         /**
          * Extra details about the service that can't be placed in the other fields
          */
-        extraDetails?: string;
+        extraDetails?: markdown;
         /**
          * Contains extended information for property 'extraDetails'.
          */
@@ -14022,27 +14962,19 @@ declare module fhir.r4 {
         /**
          * Specific eligibility requirements required to use the service
          */
-        eligibility?: CodeableConcept;
+        eligibility?: HealthcareServiceEligibility[];
         /**
-         * Describes the eligibility conditions for the service
+         * Programs that this service is applicable to
          */
-        eligibilityNote?: string;
-        /**
-         * Contains extended information for property 'eligibilityNote'.
-         */
-        _eligibilityNote?: Element;
-        /**
-         * Program Names that categorize the service
-         */
-        programName?: string[];
-        /**
-         * Contains extended information for property 'programName'.
-         */
-        _programName?: Element[];
+        program?: CodeableConcept[];
         /**
          * Collection of characteristics (attributes)
          */
         characteristic?: CodeableConcept[];
+        /**
+         * The language that this service is offered in
+         */
+        communication?: CodeableConcept[];
         /**
          * Ways that the service accepts referrals
          */
@@ -14072,7 +15004,7 @@ declare module fhir.r4 {
          */
         _availabilityExceptions?: Element;
         /**
-         * Technical endpoints providing access to services operated for the location
+         * Technical endpoints providing access to electronic services operated for the healthcare service
          */
         endpoint?: Reference[];
     }
@@ -14081,9 +15013,13 @@ declare module fhir.r4 {
      */
     interface ImagingStudySeries extends BackboneElement {
         /**
-         * Formal DICOM identifier for this series
+         * DICOM Series Instance UID for the series
          */
-        identifier: Identifier;
+        uid: id;
+        /**
+         * Contains extended information for property 'uid'.
+         */
+        _uid?: Element;
         /**
          * Numeric identifier of this series
          */
@@ -14163,9 +15099,17 @@ declare module fhir.r4 {
      */
     interface ImagingStudySeriesInstance extends BackboneElement {
         /**
-         * Formal DICOM identifier for this instance
+         * DICOM SOP Instance UID
          */
-        identifier: Identifier;
+        uid: id;
+        /**
+         * Contains extended information for property 'uid'.
+         */
+        _uid?: Element;
+        /**
+         * DICOM class type
+         */
+        sopClass: Coding;
         /**
          * The number of this instance in the series
          */
@@ -14174,10 +15118,6 @@ declare module fhir.r4 {
          * Contains extended information for property 'number'.
          */
         _number?: Element;
-        /**
-         * DICOM class type
-         */
-        sopClass: Coding;
         /**
          * Description of instance
          */
@@ -14212,9 +15152,9 @@ declare module fhir.r4 {
          */
         subject: Reference;
         /**
-         * Originating context
+         * Encounter with which this imaging study is associated
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * When the study was started
          */
@@ -14343,6 +15283,31 @@ declare module fhir.r4 {
         _presentationDate?: Element;
     }
     /**
+     * Details of a reaction that follows immunization
+     */
+    interface ImmunizationReaction extends BackboneElement {
+        /**
+         * When reaction started
+         */
+        date?: dateTime;
+        /**
+         * Contains extended information for property 'date'.
+         */
+        _date?: Element;
+        /**
+         * Additional information on reaction
+         */
+        detail?: Reference;
+        /**
+         * Indicates self-reported reaction
+         */
+        reported?: boolean;
+        /**
+         * Contains extended information for property 'reported'.
+         */
+        _reported?: Element;
+    }
+    /**
      * Protocol followed by the provider
      */
     interface ImmunizationProtocolApplied extends BackboneElement {
@@ -14361,7 +15326,7 @@ declare module fhir.r4 {
         /**
          * Vaccine preventatable disease being targetted
          */
-        targetDisease: CodeableConcept;
+        targetDisease?: CodeableConcept[];
         /**
          * Dose number within series
          */
@@ -14378,6 +15343,22 @@ declare module fhir.r4 {
          * Contains extended information for property 'doseNumberString'.
          */
         _doseNumberString?: Element;
+        /**
+         * Recommended number of doses for immunity
+         */
+        seriesDosesPositiveInt?: positiveInt;
+        /**
+         * Contains extended information for property 'seriesDosesPositiveInt'.
+         */
+        _seriesDosesPositiveInt?: Element;
+        /**
+         * Recommended number of doses for immunity
+         */
+        seriesDosesString?: string;
+        /**
+         * Contains extended information for property 'seriesDosesString'.
+         */
+        _seriesDosesString?: Element;
     }
     /**
      * Immunization event information
@@ -14523,6 +15504,10 @@ declare module fhir.r4 {
          * Funding source for the vaccine
          */
         fundingSource?: CodeableConcept;
+        /**
+         * Details of a reaction that follows immunization
+         */
+        reaction?: ImmunizationReaction[];
         /**
          * Protocol followed by the provider
          */
@@ -14813,7 +15798,7 @@ declare module fhir.r4 {
         /**
          * Grouping used to present related resources in the IG
          */
-        package?: ImplementationGuideDefinitionPackage[];
+        grouping?: ImplementationGuideDefinitionGrouping[];
         /**
          * Resource in the implementation guide
          */
@@ -14834,7 +15819,7 @@ declare module fhir.r4 {
     /**
      * Grouping used to present related resources in the IG
      */
-    interface ImplementationGuideDefinitionPackage extends BackboneElement {
+    interface ImplementationGuideDefinitionGrouping extends BackboneElement {
         /**
          * Descriptive name for the package
          */
@@ -14860,6 +15845,14 @@ declare module fhir.r4 {
          * Location of the resource
          */
         reference: Reference;
+        /**
+         * Versions this applies to (if different to IG)
+         */
+        fhirVersion?: code[];
+        /**
+         * Contains extended information for property 'fhirVersion'.
+         */
+        _fhirVersion?: Element[];
         /**
          * Human Name for the resource
          */
@@ -14893,13 +15886,13 @@ declare module fhir.r4 {
          */
         _exampleCanonical?: Element;
         /**
-         * Pack this is part of
+         * Grouping this is part of
          */
-        package?: id;
+        groupingId?: id;
         /**
-         * Contains extended information for property 'package'.
+         * Contains extended information for property 'groupingId'.
          */
-        _package?: Element;
+        _groupingId?: Element;
     }
     /**
      * Page/Section in the Guide
@@ -14943,7 +15936,7 @@ declare module fhir.r4 {
      */
     interface ImplementationGuideDefinitionParameter extends BackboneElement {
         /**
-         * apply-business-version | apply-jurisdiction | path-resource | path-pages | path-tx-cache | expansion-parameter | rule-broken-links | generate-xml | generate-json | generate-turtle | html-template
+         * apply | path-resource | path-pages | path-tx-cache | expansion-parameter | rule-broken-links | generate-xml | generate-json | generate-turtle | html-template
          */
         code: code;
         /**
@@ -15186,7 +16179,7 @@ declare module fhir.r4 {
         /**
          * NPM Package name for IG
          */
-        packageId?: id;
+        packageId: id;
         /**
          * Contains extended information for property 'packageId'.
          */
@@ -15200,13 +16193,13 @@ declare module fhir.r4 {
          */
         _license?: Element;
         /**
-         * FHIR Version this Implementation Guide targets
+         * FHIR Version(s) this Implementation Guide targets
          */
-        fhirVersion?: id;
+        fhirVersion: code[];
         /**
          * Contains extended information for property 'fhirVersion'.
          */
-        _fhirVersion?: Element;
+        _fhirVersion?: Element[];
         /**
          * Another Implementation guide this depends on
          */
@@ -15479,7 +16472,7 @@ declare module fhir.r4 {
      */
     interface InvoiceParticipant extends BackboneElement {
         /**
-         * Type of involevent in creation of this Invoice
+         * Type of involvement in creation of this Invoice
          */
         role?: CodeableConcept;
         /**
@@ -15625,83 +16618,6 @@ declare module fhir.r4 {
          * Comments made about the invoice
          */
         note?: Annotation[];
-    }
-    /**
-     * A physical instance of an item
-     */
-    interface ItemInstance extends DomainResource {
-        /**
-         * The count of items
-         */
-        count: integer;
-        /**
-         * Contains extended information for property 'count'.
-         */
-        _count?: Element;
-        /**
-         * The physical location of the item
-         */
-        location?: Reference;
-        /**
-         * The patient that the item is affixed to
-         */
-        subject?: Reference;
-        /**
-         * The manufacture or preparation date and time
-         */
-        manufactureDate?: dateTime;
-        /**
-         * Contains extended information for property 'manufactureDate'.
-         */
-        _manufactureDate?: Element;
-        /**
-         * The expiry or preparation date and time
-         */
-        expiryDate?: dateTime;
-        /**
-         * Contains extended information for property 'expiryDate'.
-         */
-        _expiryDate?: Element;
-        /**
-         * The Software version associated with the device
-         */
-        currentSWVersion?: string;
-        /**
-         * Contains extended information for property 'currentSWVersion'.
-         */
-        _currentSWVersion?: Element;
-        /**
-         * The lot or batch number
-         */
-        lotNumber?: string;
-        /**
-         * Contains extended information for property 'lotNumber'.
-         */
-        _lotNumber?: Element;
-        /**
-         * The serial number if available
-         */
-        serialNumber?: string;
-        /**
-         * Contains extended information for property 'serialNumber'.
-         */
-        _serialNumber?: Element;
-        /**
-         * The machine-readable AIDC string in base64 encoding
-         */
-        carrierAIDC?: string;
-        /**
-         * Contains extended information for property 'carrierAIDC'.
-         */
-        _carrierAIDC?: Element;
-        /**
-         * The human-readable barcode string
-         */
-        carrierHRF?: string;
-        /**
-         * Contains extended information for property 'carrierHRF'.
-         */
-        _carrierHRF?: Element;
     }
     /**
      * Represents a library of quality improvement components
@@ -15964,7 +16880,7 @@ declare module fhir.r4 {
         item: Reference;
     }
     /**
-     * Information summarized from a list of other resources
+     * A list is a curated collection of resources
      */
     interface List extends DomainResource {
         /**
@@ -16119,7 +17035,7 @@ declare module fhir.r4 {
          */
         _status?: Element;
         /**
-         * The Operational status of the location (typically only for a bed/room)
+         * The operational status of the location (typically only for a bed/room)
          */
         operationalStatus?: Coding;
         /**
@@ -16131,7 +17047,7 @@ declare module fhir.r4 {
          */
         _name?: Element;
         /**
-         * A list of alternate names that the location is known as or was known as in the past
+         * A list of alternate names that the location is known as, or was known as, in the past
          */
         alias?: string[];
         /**
@@ -16179,7 +17095,7 @@ declare module fhir.r4 {
          */
         managingOrganization?: Reference;
         /**
-         * Another Location this one is physically part of
+         * Another Location this one is physically a part of
          */
         partOf?: Reference;
         /**
@@ -16263,6 +17179,31 @@ declare module fhir.r4 {
         _description?: Element;
         /**
          * How the measure should be stratified
+         */
+        criteria?: Expression;
+        /**
+         * Stratifier criteria component for the measure
+         */
+        component?: MeasureGroupStratifierComponent[];
+    }
+    /**
+     * Stratifier criteria component for the measure
+     */
+    interface MeasureGroupStratifierComponent extends BackboneElement {
+        /**
+         * Meaning of the stratifier component
+         */
+        code?: CodeableConcept;
+        /**
+         * The human readable description of this stratifier component
+         */
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Component of how the measure should be stratified
          */
         criteria: Expression;
     }
@@ -16530,11 +17471,7 @@ declare module fhir.r4 {
         /**
          * increase | decrease
          */
-        improvementNotation?: code;
-        /**
-         * Contains extended information for property 'improvementNotation'.
-         */
-        _improvementNotation?: Element;
+        improvementNotation?: CodeableConcept;
         /**
          * Defined terms used in the measure documentation
          */
@@ -16609,20 +17546,24 @@ declare module fhir.r4 {
         /**
          * What stratifier of the group
          */
-        code?: CodeableConcept;
+        code?: CodeableConcept[];
         /**
-         * Stratum results, one for each unique value in the stratifier
+         * Stratum results, one for each unique value, or set of values, in the stratifier, or stratifier components
          */
         stratum?: MeasureReportGroupStratifierStratum[];
     }
     /**
-     * Stratum results, one for each unique value in the stratifier
+     * Stratum results, one for each unique value, or set of values, in the stratifier, or stratifier components
      */
     interface MeasureReportGroupStratifierStratum extends BackboneElement {
         /**
          * The stratum value, e.g. male
          */
-        value: CodeableConcept;
+        value?: CodeableConcept;
+        /**
+         * Stratifier component values
+         */
+        component?: MeasureReportGroupStratifierStratumComponent[];
         /**
          * Population results in this stratum
          */
@@ -16631,6 +17572,19 @@ declare module fhir.r4 {
          * What score this stratum achieved
          */
         measureScore?: Quantity;
+    }
+    /**
+     * Stratifier component values
+     */
+    interface MeasureReportGroupStratifierStratumComponent extends BackboneElement {
+        /**
+         * What stratifier component of the group
+         */
+        code: CodeableConcept;
+        /**
+         * The stratum component value, e.g. male
+         */
+        value: CodeableConcept;
     }
     /**
      * Population results in this stratum
@@ -16708,11 +17662,7 @@ declare module fhir.r4 {
         /**
          * increase | decrease
          */
-        improvementNotation?: code;
-        /**
-         * Contains extended information for property 'improvementNotation'.
-         */
-        _improvementNotation?: Element;
+        improvementNotation?: CodeableConcept;
         /**
          * Measure results for each group
          */
@@ -16763,9 +17713,9 @@ declare module fhir.r4 {
          */
         subject?: Reference;
         /**
-         * Encounter / Episode associated with media
+         * Encounter associated with media
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * When Media was collected
          */
@@ -16874,7 +17824,7 @@ declare module fhir.r4 {
         /**
          * Quantity of ingredient present
          */
-        amount?: Ratio;
+        strength?: Ratio;
     }
     /**
      * Details about packaged medications
@@ -16896,19 +17846,15 @@ declare module fhir.r4 {
          * Contains extended information for property 'expirationDate'.
          */
         _expirationDate?: Element;
-        /**
-         * Identifier assigned to a drug at the time of manufacture
-         */
-        serialNumber?: string;
-        /**
-         * Contains extended information for property 'serialNumber'.
-         */
-        _serialNumber?: Element;
     }
     /**
      * Definition of a Medication
      */
     interface Medication extends DomainResource {
+        /**
+         * Business identifier for this medication
+         */
+        identifier?: Identifier[];
         /**
          * Codes that identify this medication
          */
@@ -16932,7 +17878,7 @@ declare module fhir.r4 {
         /**
          * Amount of drug in package
          */
-        amount?: Quantity;
+        amount?: Ratio;
         /**
          * Active or inactive ingredient
          */
@@ -17021,6 +17967,10 @@ declare module fhir.r4 {
          */
         _status?: Element;
         /**
+         * Reason administration not performed
+         */
+        statusReason?: CodeableConcept[];
+        /**
          * Type of medication usage
          */
         category?: CodeableConcept;
@@ -17060,10 +18010,6 @@ declare module fhir.r4 {
          * Who performed the medication administration and what they did
          */
         performer?: MedicationAdministrationPerformer[];
-        /**
-         * Reason administration not performed
-         */
-        statusReason?: CodeableConcept[];
         /**
          * Reason administration performed
          */
@@ -17152,6 +18098,14 @@ declare module fhir.r4 {
          */
         _status?: Element;
         /**
+         * Why a dispense was not performed
+         */
+        statusReasonCodeableConcept?: CodeableConcept;
+        /**
+         * Why a dispense was not performed
+         */
+        statusReasonReference?: Reference;
+        /**
          * Type of medication dispense
          */
         category?: CodeableConcept;
@@ -17239,14 +18193,6 @@ declare module fhir.r4 {
          * Clinical issue with action
          */
         detectedIssue?: Reference[];
-        /**
-         * Why a dispense was not performed
-         */
-        statusReasonCodeableConcept?: CodeableConcept;
-        /**
-         * Why a dispense was not performed
-         */
-        statusReasonReference?: Reference;
         /**
          * A list of relevant lifecycle events
          */
@@ -17342,7 +18288,7 @@ declare module fhir.r4 {
         _name?: Element;
     }
     /**
-     * Gudelines for administration of the medication
+     * Guidelines for administration of the medication
      */
     interface MedicationKnowledgeAdministrationGuidelines extends BackboneElement {
         /**
@@ -17472,7 +18418,7 @@ declare module fhir.r4 {
          */
         schedule?: MedicationKnowledgeRegulatorySchedule[];
         /**
-         * The maximum number of units of the medicaton that can be dispensed in a period
+         * The maximum number of units of the medication that can be dispensed in a period
          */
         maxDispense?: MedicationKnowledgeRegulatoryMaxDispense;
     }
@@ -17503,11 +18449,11 @@ declare module fhir.r4 {
         schedule: CodeableConcept;
     }
     /**
-     * The maximum number of units of the medicaton that can be dispensed in a period
+     * The maximum number of units of the medication that can be dispensed in a period
      */
     interface MedicationKnowledgeRegulatoryMaxDispense extends BackboneElement {
         /**
-         * The maximum number of units of the medicaton that can be dispensed
+         * The maximum number of units of the medication that can be dispensed
          */
         quantity: Quantity;
         /**
@@ -17609,7 +18555,7 @@ declare module fhir.r4 {
          */
         monitoringProgram?: MedicationKnowledgeMonitoringProgram[];
         /**
-         * Gudelines for administration of the medication
+         * Guidelines for administration of the medication
          */
         administrationGuidelines?: MedicationKnowledgeAdministrationGuidelines[];
         /**
@@ -17694,11 +18640,15 @@ declare module fhir.r4 {
         /**
          * Whether substitution is allowed or not
          */
-        allowed: boolean;
+        allowedBoolean?: boolean;
         /**
-         * Contains extended information for property 'allowed'.
+         * Contains extended information for property 'allowedBoolean'.
          */
-        _allowed?: Element;
+        _allowedBoolean?: Element;
+        /**
+         * Whether substitution is allowed or not
+         */
+        allowedCodeableConcept?: CodeableConcept;
         /**
          * Why should (not) substitution be made
          */
@@ -17720,6 +18670,10 @@ declare module fhir.r4 {
          * Contains extended information for property 'status'.
          */
         _status?: Element;
+        /**
+         * Reason for current status
+         */
+        statusReason?: CodeableConcept;
         /**
          * proposal | plan | order | original-order | instance-order | option
          */
@@ -17749,6 +18703,18 @@ declare module fhir.r4 {
          */
         _doNotPerform?: Element;
         /**
+         * Reported rather than primary record
+         */
+        reportedBoolean?: boolean;
+        /**
+         * Contains extended information for property 'reportedBoolean'.
+         */
+        _reportedBoolean?: Element;
+        /**
+         * Reported rather than primary record
+         */
+        reportedReference?: Reference;
+        /**
          * Medication to be taken
          */
         medicationCodeableConcept?: CodeableConcept;
@@ -17761,9 +18727,9 @@ declare module fhir.r4 {
          */
         subject: Reference;
         /**
-         * Created during encounter/admission/stay
+         * Encounter created as part of encounter/admission/stay
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * Information to support ordering of the medication
          */
@@ -17801,13 +18767,21 @@ declare module fhir.r4 {
          */
         reasonReference?: Reference[];
         /**
-         * Instantiates protocol or definition
+         * Instantiates FHIR protocol or definition
          */
-        instantiates?: uri[];
+        instantiatesCanonical?: canonical[];
         /**
-         * Contains extended information for property 'instantiates'.
+         * Contains extended information for property 'instantiatesCanonical'.
          */
-        _instantiates?: Element[];
+        _instantiatesCanonical?: Element[];
+        /**
+         * Instantiates external protocol or definition
+         */
+        instantiatesUri?: uri[];
+        /**
+         * Contains extended information for property 'instantiatesUri'.
+         */
+        _instantiatesUri?: Element[];
         /**
          * What request fulfills
          */
@@ -17816,10 +18790,6 @@ declare module fhir.r4 {
          * Composite request this is part of
          */
         groupIdentifier?: Identifier;
-        /**
-         * Reason for current status
-         */
-        statusReason?: CodeableConcept;
         /**
          * Overall pattern of medication administration
          */
@@ -17906,7 +18876,7 @@ declare module fhir.r4 {
          */
         context?: Reference;
         /**
-         * The date/time or interval when the medication is/was/will taken
+         * The date/time or interval when the medication is/was/will be taken
          */
         effectiveDateTime?: dateTime;
         /**
@@ -17914,7 +18884,7 @@ declare module fhir.r4 {
          */
         _effectiveDateTime?: Element;
         /**
-         * The date/time or interval when the medication is/was/will taken
+         * The date/time or interval when the medication is/was/will be taken
          */
         effectivePeriod?: Period;
         /**
@@ -18076,13 +19046,21 @@ declare module fhir.r4 {
          */
         identifier?: Identifier[];
         /**
+         * The type of special designation, e.g. orphan drug, minor use
+         */
+        type?: CodeableConcept;
+        /**
          * The intended use of the product, e.g. prevention, treatment
          */
         intendedUse?: CodeableConcept;
         /**
          * Condition for which the medicinal use applies
          */
-        indication?: CodeableConcept;
+        indicationCodeableConcept?: CodeableConcept;
+        /**
+         * Condition for which the medicinal use applies
+         */
+        indicationReference?: Reference;
         /**
          * For example granted, pending, expired or withdrawn
          */
@@ -18105,7 +19083,7 @@ declare module fhir.r4 {
      */
     interface MedicinalProduct extends DomainResource {
         /**
-         * Business idenfifier for this product. Could be an MPID
+         * Business identifier for this product. Could be an MPID
          */
         identifier?: Identifier[];
         /**
@@ -18120,6 +19098,10 @@ declare module fhir.r4 {
          * The dose form for a single part product, or combined form of a multiple part product
          */
         combinedPharmaceuticalDoseForm?: CodeableConcept;
+        /**
+         * The legal status of supply of the medicinal product as classified by the regulator
+         */
+        legalStatusOfSupply?: CodeableConcept;
         /**
          * Whether the Medicinal Product is subject to additional monitoring for regulatory reasons
          */
@@ -18145,33 +19127,13 @@ declare module fhir.r4 {
          */
         marketingStatus?: MarketingStatus[];
         /**
-         * Product regulatory authorization
-         */
-        marketingAuthorization?: Reference;
-        /**
-         * Package representation for the product
-         */
-        packagedMedicinalProduct?: Reference[];
-        /**
          * Pharmaceutical aspects of product
          */
         pharmaceuticalProduct?: Reference[];
         /**
-         * Clinical contraindications, reasons for not giving this
+         * Package representation for the product
          */
-        contraindication?: Reference[];
-        /**
-         * Clinical interactions with other medications or substances
-         */
-        interaction?: Reference[];
-        /**
-         * Clinical reason for use
-         */
-        therapeuticIndication?: Reference[];
-        /**
-         * Potential clinical unwanted effects of use
-         */
-        undesirableEffect?: Reference[];
+        packagedMedicinalProduct?: Reference[];
         /**
          * Supporting documentation, typically for regulatory submission
          */
@@ -18280,10 +19242,6 @@ declare module fhir.r4 {
          */
         jurisdiction?: CodeableConcept[];
         /**
-         * The legal status of supply of the medicinal product as classified by the regulator
-         */
-        legalStatusOfSupply?: CodeableConcept;
-        /**
          * The status of the marketing authorization
          */
         status?: CodeableConcept;
@@ -18349,189 +19307,6 @@ declare module fhir.r4 {
         procedure?: MedicinalProductAuthorizationProcedure;
     }
     /**
-     * Describe the undesirable effects of the medicinal product
-     */
-    interface MedicinalProductClinicalsUndesirableEffects extends BackboneElement {
-        /**
-         * The symptom, condition or undesirable effect
-         */
-        symptomConditionEffect?: CodeableConcept;
-        /**
-         * Classification of the effect
-         */
-        classification?: CodeableConcept;
-        /**
-         * The frequency of occurrence of the effect
-         */
-        frequencyOfOccurrence?: CodeableConcept;
-        /**
-         * The population group to which this applies
-         */
-        population?: MedicinalProductClinicalsUndesirableEffectsPopulation[];
-    }
-    /**
-     * The population group to which this applies
-     */
-    interface MedicinalProductClinicalsUndesirableEffectsPopulation extends BackboneElement {
-        /**
-         * The age of the specific population
-         */
-        ageRange?: Range;
-        /**
-         * The age of the specific population
-         */
-        ageCodeableConcept?: CodeableConcept;
-        /**
-         * The gender of the specific population
-         */
-        gender?: CodeableConcept;
-        /**
-         * Race of the specific population
-         */
-        race?: CodeableConcept;
-        /**
-         * The existing physiological conditions of the specific population to which this applies
-         */
-        physiologicalCondition?: CodeableConcept;
-    }
-    /**
-     * Indication for the Medicinal Product
-     */
-    interface MedicinalProductClinicalsTherapeuticIndication extends BackboneElement {
-        /**
-         * The disease, symptom or procedure that is the indication for treatment
-         */
-        diseaseSymptomProcedure?: CodeableConcept;
-        /**
-         * The status of the disease or symptom for which the indication applies
-         */
-        diseaseStatus?: CodeableConcept;
-        /**
-         * Comorbidity (concurrent condition) or co-infection as part of the indication
-         */
-        comorbidity?: CodeableConcept[];
-        /**
-         * The intended effect, aim or strategy to be achieved by the indication
-         */
-        intendedEffect?: CodeableConcept;
-        /**
-         * Timing or duration information as part of the indication
-         */
-        duration?: Quantity;
-        /**
-         * Information about the use of the medicinal product in relation to other therapies as part of the indication
-         */
-        undesirableEffects?: MedicinalProductClinicalsUndesirableEffects[];
-        /**
-         * Information about the use of the medicinal product in relation to other therapies described as part of the indication
-         */
-        otherTherapy?: MedicinalProductClinicalsTherapeuticIndicationOtherTherapy[];
-        /**
-         * The population group to which this applies
-         */
-        population?: MedicinalProductClinicalsUndesirableEffectsPopulation[];
-    }
-    /**
-     * Information about the use of the medicinal product in relation to other therapies described as part of the indication
-     */
-    interface MedicinalProductClinicalsTherapeuticIndicationOtherTherapy extends BackboneElement {
-        /**
-         * The type of relationship between the medicinal product indication or contraindication and another therapy
-         */
-        therapyRelationshipType: CodeableConcept;
-        /**
-         * Reference to a specific medication (active substance, medicinal product or class of products) as part of an indication or contraindication
-         */
-        medicationCodeableConcept?: CodeableConcept;
-        /**
-         * Reference to a specific medication (active substance, medicinal product or class of products) as part of an indication or contraindication
-         */
-        medicationReference?: Reference;
-    }
-    /**
-     * Contraindication for the medicinal product
-     */
-    interface MedicinalProductClinicalsContraindication extends BackboneElement {
-        /**
-         * The disease, symptom or procedure for the contraindication
-         */
-        disease?: CodeableConcept;
-        /**
-         * The status of the disease or symptom for the contraindication
-         */
-        diseaseStatus?: CodeableConcept;
-        /**
-         * A comorbidity (concurrent condition) or coinfection
-         */
-        comorbidity?: CodeableConcept[];
-        /**
-         * Information about the use of the medicinal product in relation to other therapies as part of the indication
-         */
-        therapeuticIndication?: MedicinalProductClinicalsTherapeuticIndication[];
-        /**
-         * Information about the use of the medicinal product in relation to other therapies described as part of the contraindication
-         */
-        otherTherapy?: MedicinalProductClinicalsTherapeuticIndicationOtherTherapy[];
-        /**
-         * The population group to which this applies
-         */
-        population?: MedicinalProductClinicalsUndesirableEffectsPopulation[];
-    }
-    /**
-     * The interactions of the medicinal product with other medicinal products, or other forms of interactions
-     */
-    interface MedicinalProductClinicalsInteractions extends BackboneElement {
-        /**
-         * The interaction described
-         */
-        interaction?: string;
-        /**
-         * Contains extended information for property 'interaction'.
-         */
-        _interaction?: Element;
-        /**
-         * The specific medication, food or laboratory test that interacts
-         */
-        interactant?: CodeableConcept[];
-        /**
-         * The type of the interaction
-         */
-        type?: CodeableConcept;
-        /**
-         * The effect of the interaction
-         */
-        effect?: CodeableConcept;
-        /**
-         * The incidence of the interaction
-         */
-        incidence?: CodeableConcept;
-        /**
-         * Actions for managing the interaction
-         */
-        management?: CodeableConcept;
-    }
-    /**
-     * MedicinalProductClinicals
-     */
-    interface MedicinalProductClinicals extends DomainResource {
-        /**
-         * Describe the undesirable effects of the medicinal product
-         */
-        undesirableEffects?: MedicinalProductClinicalsUndesirableEffects[];
-        /**
-         * Indication for the Medicinal Product
-         */
-        therapeuticIndication: MedicinalProductClinicalsTherapeuticIndication[];
-        /**
-         * Contraindication for the medicinal product
-         */
-        contraindication?: MedicinalProductClinicalsContraindication[];
-        /**
-         * The interactions of the medicinal product with other medicinal products, or other forms of interactions
-         */
-        interactions?: MedicinalProductClinicalsInteractions[];
-    }
-    /**
      * Information about the use of the medicinal product in relation to other therapies described as part of the indication
      */
     interface MedicinalProductContraindicationOtherTherapy extends BackboneElement {
@@ -18549,9 +19324,9 @@ declare module fhir.r4 {
         medicationReference?: Reference;
     }
     /**
-     * The population group to which this applies
+     * A definition of a set of people that apply to some clinically related context, for example people contraindicated for a certain medication
      */
-    interface MedicinalProductContraindicationPopulation extends BackboneElement {
+    interface Population extends BackboneElement {
         /**
          * The age of the specific population
          */
@@ -18604,113 +19379,7 @@ declare module fhir.r4 {
         /**
          * The population group to which this applies
          */
-        population?: MedicinalProductContraindicationPopulation[];
-    }
-    /**
-     * A substance used to create the material(s) of which the device is made
-     */
-    interface MedicinalProductDeviceSpecMaterial extends BackboneElement {
-        /**
-         * The substance
-         */
-        substance: CodeableConcept;
-        /**
-         * Indicates an alternative material of the device
-         */
-        alternate?: boolean;
-        /**
-         * Contains extended information for property 'alternate'.
-         */
-        _alternate?: Element;
-        /**
-         * Whether the substance is a known or suspected allergen
-         */
-        allergenicIndicator?: boolean;
-        /**
-         * Contains extended information for property 'allergenicIndicator'.
-         */
-        _allergenicIndicator?: Element;
-    }
-    /**
-     * A detailed description of a device, typically as part of a regulated medicinal product. It is not intended to replace the Device resource, which covers use of device instances
-     */
-    interface MedicinalProductDeviceSpec extends DomainResource {
-        /**
-         * Business identifier
-         */
-        identifier?: Identifier;
-        /**
-         * The type of device
-         */
-        type: CodeableConcept;
-        /**
-         * Trade name of the device, where applicable
-         */
-        tradeName?: string;
-        /**
-         * Contains extended information for property 'tradeName'.
-         */
-        _tradeName?: Element;
-        /**
-         * The quantity of the device present in the packaging of a medicinal product
-         */
-        quantity?: Quantity;
-        /**
-         * Device listing number
-         */
-        listingNumber?: string;
-        /**
-         * Contains extended information for property 'listingNumber'.
-         */
-        _listingNumber?: Element;
-        /**
-         * Device model or reference number
-         */
-        modelNumber?: string;
-        /**
-         * Contains extended information for property 'modelNumber'.
-         */
-        _modelNumber?: Element;
-        /**
-         * Whether the device is supplied as sterile
-         */
-        sterilityIndicator?: CodeableConcept;
-        /**
-         * Whether the device must be sterilised before use
-         */
-        sterilisationRequirement?: CodeableConcept;
-        /**
-         * Usage pattern including the number of times that the device may be used
-         */
-        usage?: CodeableConcept;
-        /**
-         * A nomenclature term for the device
-         */
-        nomenclature?: CodeableConcept[];
-        /**
-         * Shelf Life and storage information
-         */
-        shelfLifeStorage?: ProductShelfLife[];
-        /**
-         * Dimensions, color etc.
-         */
-        physicalCharacteristics?: ProdCharacteristic;
-        /**
-         * Other codeable characteristics
-         */
-        otherCharacteristics?: CodeableConcept[];
-        /**
-         * Batch number or expiry date of a device
-         */
-        batchIdentifier?: Identifier[];
-        /**
-         * Manufacturer of this Device
-         */
-        manufacturer?: Reference[];
-        /**
-         * A substance used to create the material(s) of which the device is made
-         */
-        material?: MedicinalProductDeviceSpecMaterial[];
+        population?: Population[];
     }
     /**
      * Information about the use of the medicinal product in relation to other therapies described as part of the indication
@@ -18728,31 +19397,6 @@ declare module fhir.r4 {
          * Reference to a specific medication (active substance, medicinal product or class of products) as part of an indication or contraindication
          */
         medicationReference?: Reference;
-    }
-    /**
-     * The population group to which this applies
-     */
-    interface MedicinalProductIndicationPopulation extends BackboneElement {
-        /**
-         * The age of the specific population
-         */
-        ageRange?: Range;
-        /**
-         * The age of the specific population
-         */
-        ageCodeableConcept?: CodeableConcept;
-        /**
-         * The gender of the specific population
-         */
-        gender?: CodeableConcept;
-        /**
-         * Race of the specific population
-         */
-        race?: CodeableConcept;
-        /**
-         * The existing physiological conditions of the specific population to which this applies
-         */
-        physiologicalCondition?: CodeableConcept;
     }
     /**
      * MedicinalProductIndication
@@ -18793,7 +19437,7 @@ declare module fhir.r4 {
         /**
          * The population group to which this applies
          */
-        population?: MedicinalProductIndicationPopulation[];
+        population?: Population[];
     }
     /**
      * A specified substance that comprises this ingredient
@@ -18858,13 +19502,17 @@ declare module fhir.r4 {
      */
     interface MedicinalProductIngredientSpecifiedSubstanceStrengthReferenceStrength extends BackboneElement {
         /**
-         * Relevent refrerence substance
+         * Relevant reference substance
          */
         substance?: CodeableConcept;
         /**
          * Strength expressed in terms of a reference substance
          */
         strength: Ratio;
+        /**
+         * Strength expressed in terms of a reference substance
+         */
+        strengthLowLimit?: Ratio;
         /**
          * For when strength is measured at a particular point or distance
          */
@@ -18925,35 +19573,48 @@ declare module fhir.r4 {
         substance?: MedicinalProductIngredientSubstance;
     }
     /**
+     * The specific medication, food or laboratory test that interacts
+     */
+    interface MedicinalProductInteractionInteractant extends BackboneElement {
+        /**
+         * The specific medication, food or laboratory test that interacts
+         */
+        itemReference?: Reference;
+        /**
+         * The specific medication, food or laboratory test that interacts
+         */
+        itemCodeableConcept?: CodeableConcept;
+    }
+    /**
      * MedicinalProductInteraction
      */
     interface MedicinalProductInteraction extends DomainResource {
         /**
-         * The medication for which this is an indication
+         * The medication for which this is a described interaction
          */
         subject?: Reference[];
         /**
          * The interaction described
          */
-        interaction?: string;
+        description?: string;
         /**
-         * Contains extended information for property 'interaction'.
+         * Contains extended information for property 'description'.
          */
-        _interaction?: Element;
+        _description?: Element;
         /**
          * The specific medication, food or laboratory test that interacts
          */
-        interactant?: CodeableConcept[];
+        interactant?: MedicinalProductInteractionInteractant[];
         /**
-         * The type of the interaction
+         * The type of the interaction e.g. drug-drug interaction, drug-food interaction, drug-lab test interaction
          */
         type?: CodeableConcept;
         /**
-         * The effect of the interaction
+         * The effect of the interaction, for example "reduced gastric absorption of primary medication"
          */
         effect?: CodeableConcept;
         /**
-         * The incidence of the interaction
+         * The incidence of the interaction, e.g. theoretical, observed
          */
         incidence?: CodeableConcept;
         /**
@@ -19067,7 +19728,11 @@ declare module fhir.r4 {
         /**
          * Unique identifier
          */
-        identifier: Identifier;
+        identifier?: Identifier[];
+        /**
+         * The product with this is a pack for
+         */
+        subject?: Reference[];
         /**
          * Textual description
          */
@@ -19076,6 +19741,10 @@ declare module fhir.r4 {
          * Contains extended information for property 'description'.
          */
         _description?: Element;
+        /**
+         * The legal status of supply of the medicinal product as classified by the regulator
+         */
+        legalStatusOfSupply?: CodeableConcept;
         /**
          * Marketing information
          */
@@ -19211,31 +19880,6 @@ declare module fhir.r4 {
         routeOfAdministration: MedicinalProductPharmaceuticalRouteOfAdministration[];
     }
     /**
-     * The population group to which this applies
-     */
-    interface MedicinalProductUndesirableEffectPopulation extends BackboneElement {
-        /**
-         * The age of the specific population
-         */
-        ageRange?: Range;
-        /**
-         * The age of the specific population
-         */
-        ageCodeableConcept?: CodeableConcept;
-        /**
-         * The gender of the specific population
-         */
-        gender?: CodeableConcept;
-        /**
-         * Race of the specific population
-         */
-        race?: CodeableConcept;
-        /**
-         * The existing physiological conditions of the specific population to which this applies
-         */
-        physiologicalCondition?: CodeableConcept;
-    }
-    /**
      * MedicinalProductUndesirableEffect
      */
     interface MedicinalProductUndesirableEffect extends DomainResource {
@@ -19258,7 +19902,7 @@ declare module fhir.r4 {
         /**
          * The population group to which this applies
          */
-        population?: MedicinalProductUndesirableEffectPopulation[];
+        population?: Population[];
     }
     /**
      * Resource(s) that are the subject of the event
@@ -19487,7 +20131,7 @@ declare module fhir.r4 {
          */
         allowedResponse?: MessageDefinitionAllowedResponse[];
         /**
-         * Canonical URL for a GraphDefinition
+         * Canonical reference to a GraphDefinition
          */
         graph?: canonical[];
         /**
@@ -19650,6 +20294,503 @@ declare module fhir.r4 {
          * Contains extended information for property 'definition'.
          */
         _definition?: Element;
+    }
+    /**
+     * A sequence used as reference
+     */
+    interface MolecularSequenceReferenceSeq extends BackboneElement {
+        /**
+         * Chromosome containing genetic finding
+         */
+        chromosome?: CodeableConcept;
+        /**
+         * The Genome Build used for reference, following GRCh build versions e.g. 'GRCh 37'
+         */
+        genomeBuild?: string;
+        /**
+         * Contains extended information for property 'genomeBuild'.
+         */
+        _genomeBuild?: Element;
+        /**
+         * sense | antisense
+         */
+        orientation?: code;
+        /**
+         * Contains extended information for property 'orientation'.
+         */
+        _orientation?: Element;
+        /**
+         * Reference identifier
+         */
+        referenceSeqId?: CodeableConcept;
+        /**
+         * A pointer to another MolecularSequence entity as reference sequence
+         */
+        referenceSeqPointer?: Reference;
+        /**
+         * A string to represent reference sequence
+         */
+        referenceSeqString?: string;
+        /**
+         * Contains extended information for property 'referenceSeqString'.
+         */
+        _referenceSeqString?: Element;
+        /**
+         * watson | crick
+         */
+        strand?: code;
+        /**
+         * Contains extended information for property 'strand'.
+         */
+        _strand?: Element;
+        /**
+         * Start position of the window on the  reference sequence
+         */
+        windowStart?: integer;
+        /**
+         * Contains extended information for property 'windowStart'.
+         */
+        _windowStart?: Element;
+        /**
+         * End position of the window on the reference sequence
+         */
+        windowEnd?: integer;
+        /**
+         * Contains extended information for property 'windowEnd'.
+         */
+        _windowEnd?: Element;
+    }
+    /**
+     * Variant in sequence
+     */
+    interface MolecularSequenceVariant extends BackboneElement {
+        /**
+         * Start position of the variant on the  reference sequence
+         */
+        start?: integer;
+        /**
+         * Contains extended information for property 'start'.
+         */
+        _start?: Element;
+        /**
+         * End position of the variant on the reference sequence
+         */
+        end?: integer;
+        /**
+         * Contains extended information for property 'end'.
+         */
+        _end?: Element;
+        /**
+         * Allele that was observed
+         */
+        observedAllele?: string;
+        /**
+         * Contains extended information for property 'observedAllele'.
+         */
+        _observedAllele?: Element;
+        /**
+         * Allele in the reference sequence
+         */
+        referenceAllele?: string;
+        /**
+         * Contains extended information for property 'referenceAllele'.
+         */
+        _referenceAllele?: Element;
+        /**
+         * Extended CIGAR string for aligning the sequence with reference bases
+         */
+        cigar?: string;
+        /**
+         * Contains extended information for property 'cigar'.
+         */
+        _cigar?: Element;
+        /**
+         * Pointer to observed variant information
+         */
+        variantPointer?: Reference;
+    }
+    /**
+     * An set of value as quality of sequence
+     */
+    interface MolecularSequenceQuality extends BackboneElement {
+        /**
+         * indel | snp | unknown
+         */
+        type: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+        /**
+         * Standard sequence for comparison
+         */
+        standardSequence?: CodeableConcept;
+        /**
+         * Start position of the sequence
+         */
+        start?: integer;
+        /**
+         * Contains extended information for property 'start'.
+         */
+        _start?: Element;
+        /**
+         * End position of the sequence
+         */
+        end?: integer;
+        /**
+         * Contains extended information for property 'end'.
+         */
+        _end?: Element;
+        /**
+         * Quality score for the comparison
+         */
+        score?: Quantity;
+        /**
+         * Method to get quality
+         */
+        method?: CodeableConcept;
+        /**
+         * True positives from the perspective of the truth data
+         */
+        truthTP?: decimal;
+        /**
+         * Contains extended information for property 'truthTP'.
+         */
+        _truthTP?: Element;
+        /**
+         * True positives from the perspective of the query data
+         */
+        queryTP?: decimal;
+        /**
+         * Contains extended information for property 'queryTP'.
+         */
+        _queryTP?: Element;
+        /**
+         * False negatives
+         */
+        truthFN?: decimal;
+        /**
+         * Contains extended information for property 'truthFN'.
+         */
+        _truthFN?: Element;
+        /**
+         * False positives
+         */
+        queryFP?: decimal;
+        /**
+         * Contains extended information for property 'queryFP'.
+         */
+        _queryFP?: Element;
+        /**
+         * False positives where the non-REF alleles in the Truth and Query Call Sets match
+         */
+        gtFP?: decimal;
+        /**
+         * Contains extended information for property 'gtFP'.
+         */
+        _gtFP?: Element;
+        /**
+         * Precision of comparison
+         */
+        precision?: decimal;
+        /**
+         * Contains extended information for property 'precision'.
+         */
+        _precision?: Element;
+        /**
+         * Recall of comparison
+         */
+        recall?: decimal;
+        /**
+         * Contains extended information for property 'recall'.
+         */
+        _recall?: Element;
+        /**
+         * F-score
+         */
+        fScore?: decimal;
+        /**
+         * Contains extended information for property 'fScore'.
+         */
+        _fScore?: Element;
+        /**
+         * Receiver Operator Characteristic (ROC) Curve
+         */
+        roc?: MolecularSequenceQualityRoc;
+    }
+    /**
+     * Receiver Operator Characteristic (ROC) Curve
+     */
+    interface MolecularSequenceQualityRoc extends BackboneElement {
+        /**
+         * Genotype quality score
+         */
+        score?: integer[];
+        /**
+         * Contains extended information for property 'score'.
+         */
+        _score?: Element[];
+        /**
+         * Roc score true positive numbers
+         */
+        numTP?: integer[];
+        /**
+         * Contains extended information for property 'numTP'.
+         */
+        _numTP?: Element[];
+        /**
+         * Roc score false positive numbers
+         */
+        numFP?: integer[];
+        /**
+         * Contains extended information for property 'numFP'.
+         */
+        _numFP?: Element[];
+        /**
+         * Roc score false negative numbers
+         */
+        numFN?: integer[];
+        /**
+         * Contains extended information for property 'numFN'.
+         */
+        _numFN?: Element[];
+        /**
+         * Precision of the GQ score
+         */
+        precision?: decimal[];
+        /**
+         * Contains extended information for property 'precision'.
+         */
+        _precision?: Element[];
+        /**
+         * Sensitivity of the GQ score
+         */
+        sensitivity?: decimal[];
+        /**
+         * Contains extended information for property 'sensitivity'.
+         */
+        _sensitivity?: Element[];
+        /**
+         * FScore of the GQ score
+         */
+        fMeasure?: decimal[];
+        /**
+         * Contains extended information for property 'fMeasure'.
+         */
+        _fMeasure?: Element[];
+    }
+    /**
+     * External repository which contains detailed report related with observedSeq in this resource
+     */
+    interface MolecularSequenceRepository extends BackboneElement {
+        /**
+         * directlink | openapi | login | oauth | other
+         */
+        type: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+        /**
+         * URI of the repository
+         */
+        url?: uri;
+        /**
+         * Contains extended information for property 'url'.
+         */
+        _url?: Element;
+        /**
+         * Repository's name
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Id of the dataset that used to call for dataset in repository
+         */
+        datasetId?: string;
+        /**
+         * Contains extended information for property 'datasetId'.
+         */
+        _datasetId?: Element;
+        /**
+         * Id of the variantset that used to call for variantset in repository
+         */
+        variantsetId?: string;
+        /**
+         * Contains extended information for property 'variantsetId'.
+         */
+        _variantsetId?: Element;
+        /**
+         * Id of the read
+         */
+        readsetId?: string;
+        /**
+         * Contains extended information for property 'readsetId'.
+         */
+        _readsetId?: Element;
+    }
+    /**
+     * Structural variant
+     */
+    interface MolecularSequenceStructureVariant extends BackboneElement {
+        /**
+         * Structural variant change type
+         */
+        variantType?: CodeableConcept;
+        /**
+         * Does the structural variant have base pair resolution breakpoints?
+         */
+        exact?: boolean;
+        /**
+         * Contains extended information for property 'exact'.
+         */
+        _exact?: Element;
+        /**
+         * Structural variant length
+         */
+        length?: integer;
+        /**
+         * Contains extended information for property 'length'.
+         */
+        _length?: Element;
+        /**
+         * Structural variant outer
+         */
+        outer?: MolecularSequenceStructureVariantOuter;
+        /**
+         * Structural variant inner
+         */
+        inner?: MolecularSequenceStructureVariantInner;
+    }
+    /**
+     * Structural variant outer
+     */
+    interface MolecularSequenceStructureVariantOuter extends BackboneElement {
+        /**
+         * Structural variant outer start
+         */
+        start?: integer;
+        /**
+         * Contains extended information for property 'start'.
+         */
+        _start?: Element;
+        /**
+         * Structural variant outer end
+         */
+        end?: integer;
+        /**
+         * Contains extended information for property 'end'.
+         */
+        _end?: Element;
+    }
+    /**
+     * Structural variant inner
+     */
+    interface MolecularSequenceStructureVariantInner extends BackboneElement {
+        /**
+         * Structural variant inner start
+         */
+        start?: integer;
+        /**
+         * Contains extended information for property 'start'.
+         */
+        _start?: Element;
+        /**
+         * Structural variant inner end
+         */
+        end?: integer;
+        /**
+         * Contains extended information for property 'end'.
+         */
+        _end?: Element;
+    }
+    /**
+     * Information about a biological sequence
+     */
+    interface MolecularSequence extends DomainResource {
+        /**
+         * Unique ID for this particular sequence. This is a FHIR-defined id
+         */
+        identifier?: Identifier[];
+        /**
+         * aa | dna | rna
+         */
+        type?: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+        /**
+         * Base number of coordinate system (0 for 0-based numbering or coordinates, inclusive start, exclusive end, 1 for 1-based numbering, inclusive start, inclusive end)
+         */
+        coordinateSystem: integer;
+        /**
+         * Contains extended information for property 'coordinateSystem'.
+         */
+        _coordinateSystem?: Element;
+        /**
+         * Who and/or what this is about
+         */
+        patient?: Reference;
+        /**
+         * Specimen used for sequencing
+         */
+        specimen?: Reference;
+        /**
+         * The method for sequencing
+         */
+        device?: Reference;
+        /**
+         * Who should be responsible for test result
+         */
+        performer?: Reference;
+        /**
+         * The number of copies of the sequence of interest.  (RNASeq)
+         */
+        quantity?: Quantity;
+        /**
+         * A sequence used as reference
+         */
+        referenceSeq?: MolecularSequenceReferenceSeq;
+        /**
+         * Variant in sequence
+         */
+        variant?: MolecularSequenceVariant[];
+        /**
+         * Sequence that was observed
+         */
+        observedSeq?: string;
+        /**
+         * Contains extended information for property 'observedSeq'.
+         */
+        _observedSeq?: Element;
+        /**
+         * An set of value as quality of sequence
+         */
+        quality?: MolecularSequenceQuality[];
+        /**
+         * Average number of reads representing a given nucleotide in the reconstructed sequence
+         */
+        readCoverage?: integer;
+        /**
+         * Contains extended information for property 'readCoverage'.
+         */
+        _readCoverage?: Element;
+        /**
+         * External repository which contains detailed report related with observedSeq in this resource
+         */
+        repository?: MolecularSequenceRepository[];
+        /**
+         * Pointer to next atomic sequence
+         */
+        pointer?: Reference[];
+        /**
+         * Structural variant
+         */
+        structureVariant?: MolecularSequenceStructureVariant[];
     }
     /**
      * Unique identifiers used for system
@@ -20002,7 +21143,7 @@ declare module fhir.r4 {
         /**
          * The encounter associated with this nutrition order
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * Date and time the nutrition order was requested
          */
@@ -20315,13 +21456,9 @@ declare module fhir.r4 {
          */
         interpretation?: CodeableConcept[];
         /**
-         * Comments about the test result value
+         * Comments about the observation
          */
-        comment?: string;
-        /**
-         * Contains extended information for property 'comment'.
-         */
-        _comment?: Element;
+        note?: Annotation[];
         /**
          * Observed body part
          */
@@ -20362,11 +21499,11 @@ declare module fhir.r4 {
         /**
          * Customary unit for quantitative results
          */
-        customaryUnit?: Coding;
+        customaryUnit?: CodeableConcept;
         /**
          * SI unit for quantitative results
          */
-        unit?: Coding;
+        unit?: CodeableConcept;
         /**
          * SI to Customary unit conversion factor
          */
@@ -20385,25 +21522,37 @@ declare module fhir.r4 {
         _decimalPrecision?: Element;
     }
     /**
-     * Reference range for observation result
+     * Qualified range for continuous and ordinal observation results
      */
     interface ObservationDefinitionQualifiedInterval extends BackboneElement {
         /**
-         * The category or type of interval
+         * reference | critical | absolute
          */
-        category?: CodeableConcept;
+        category?: code;
         /**
-         * Low bound of reference range, if relevant
+         * Contains extended information for property 'category'.
+         */
+        _category?: Element;
+        /**
+         * The interval itself, for continuous or ordinal observations
          */
         range?: Range;
         /**
-         * Reference range qualifier
+         * Range context qualifier
          */
-        type?: CodeableConcept;
+        context?: CodeableConcept;
         /**
-         * Reference range population
+         * Targetted population of the range
          */
         appliesTo?: CodeableConcept[];
+        /**
+         * male | female | other | unknown
+         */
+        gender?: code;
+        /**
+         * Contains extended information for property 'gender'.
+         */
+        _gender?: Element;
         /**
          * Applicable age range, if relevant
          */
@@ -20428,15 +21577,23 @@ declare module fhir.r4 {
         /**
          * Category of observation
          */
-        category?: Coding;
+        category?: CodeableConcept[];
         /**
          * Type of observation (code / type)
          */
-        code: Coding;
+        code: CodeableConcept;
         /**
-         * Permitted data type for observation value
+         * Business identifier for this ObservationDefinition instance
          */
-        permittedDataType?: Coding[];
+        identifier?: Identifier[];
+        /**
+         * Quantity | CodeableConcept | string | boolean | integer | Range | Ratio | SampledData | time | dateTime | Period
+         */
+        permittedDataType?: code[];
+        /**
+         * Contains extended information for property 'permittedDataType'.
+         */
+        _permittedDataType?: Element[];
         /**
          * Multiple results allowed
          */
@@ -20446,7 +21603,7 @@ declare module fhir.r4 {
          */
         _multipleResultsAllowed?: Element;
         /**
-         * The method or technique used to perform the observation
+         * Method used to produce the observation
          */
         method?: CodeableConcept;
         /**
@@ -20462,41 +21619,25 @@ declare module fhir.r4 {
          */
         quantitativeDetails?: ObservationDefinitionQuantitativeDetails;
         /**
-         * Reference range for observation result
+         * Qualified range for continuous and ordinal observation results
          */
         qualifiedInterval?: ObservationDefinitionQualifiedInterval[];
         /**
-         * Value set of valid coded values for the observation
+         * Value set of valid coded values for the observations conforming to this ObservationDefinition
          */
-        validCodedValueSet?: uri;
+        validCodedValueSet?: Reference;
         /**
-         * Contains extended information for property 'validCodedValueSet'.
+         * Value set of normal coded values for the observations conforming to this ObservationDefinition
          */
-        _validCodedValueSet?: Element;
+        normalCodedValueSet?: Reference;
         /**
-         * Value set of normal coded values for the observation
+         * Value set of abnormal coded values for the observations conforming to this ObservationDefinition
          */
-        normalCodedValueSet?: uri;
+        abnormalCodedValueSet?: Reference;
         /**
-         * Contains extended information for property 'normalCodedValueSet'.
+         * Value set of critical coded values for the observations conforming to this ObservationDefinition
          */
-        _normalCodedValueSet?: Element;
-        /**
-         * Value set of abnormal coded values for the observation
-         */
-        abnormalCodedValueSet?: uri;
-        /**
-         * Contains extended information for property 'abnormalCodedValueSet'.
-         */
-        _abnormalCodedValueSet?: Element;
-        /**
-         * Value set of critical coded values for the observation
-         */
-        criticalCodedValueSet?: uri;
-        /**
-         * Contains extended information for property 'criticalCodedValueSet'.
-         */
-        _criticalCodedValueSet?: Element;
+        criticalCodedValueSet?: Reference;
     }
     /**
      * Parameters for the operation/query
@@ -21279,18 +22420,6 @@ declare module fhir.r4 {
         /**
          * If parameter is a data type
          */
-        valueParameterDefinition?: ParameterDefinition;
-        /**
-         * If parameter is a data type
-         */
-        valueDataRequirement?: DataRequirement;
-        /**
-         * If parameter is a data type
-         */
-        valueRelatedArtifact?: RelatedArtifact;
-        /**
-         * If parameter is a data type
-         */
         valueContactDetail?: ContactDetail;
         /**
          * If parameter is a data type
@@ -21299,11 +22428,23 @@ declare module fhir.r4 {
         /**
          * If parameter is a data type
          */
-        valueTriggerDefinition?: TriggerDefinition;
+        valueDataRequirement?: DataRequirement;
         /**
          * If parameter is a data type
          */
         valueExpression?: Expression;
+        /**
+         * If parameter is a data type
+         */
+        valueParameterDefinition?: ParameterDefinition;
+        /**
+         * If parameter is a data type
+         */
+        valueRelatedArtifact?: RelatedArtifact;
+        /**
+         * If parameter is a data type
+         */
+        valueTriggerDefinition?: TriggerDefinition;
         /**
          * If parameter is a data type
          */
@@ -21511,13 +22652,13 @@ declare module fhir.r4 {
      */
     interface PaymentNotice extends DomainResource {
         /**
-         * Business Identifier
+         * Business Identifier for the payment noctice
          */
         identifier?: Identifier[];
         /**
          * active | cancelled | draft | entered-in-error
          */
-        status?: code;
+        status: code;
         /**
          * Contains extended information for property 'status'.
          */
@@ -21531,60 +22672,76 @@ declare module fhir.r4 {
          */
         response?: Reference;
         /**
-         * Payment or clearing date
-         */
-        statusDate?: date;
-        /**
-         * Contains extended information for property 'statusDate'.
-         */
-        _statusDate?: Element;
-        /**
          * Creation date
          */
-        created?: dateTime;
+        created: dateTime;
         /**
          * Contains extended information for property 'created'.
          */
         _created?: Element;
         /**
-         * Insurer or Regulatory body
-         */
-        target?: Reference;
-        /**
          * Responsible practitioner
          */
         provider?: Reference;
         /**
-         * Whether payment has been sent or cleared
+         * Payment reference
+         */
+        payment: Reference;
+        /**
+         * Payment or clearing date
+         */
+        paymentDate?: date;
+        /**
+         * Contains extended information for property 'paymentDate'.
+         */
+        _paymentDate?: Element;
+        /**
+         * Party being paid
+         */
+        payee?: Reference;
+        /**
+         * Party being notified
+         */
+        recipient: Reference;
+        /**
+         * Monetary amount of the payment
+         */
+        amount: Money;
+        /**
+         * Issued or cleared Status of the payment
          */
         paymentStatus?: CodeableConcept;
     }
     /**
-     * List of settlements
+     * Settlement particulars
      */
     interface PaymentReconciliationDetail extends BackboneElement {
         /**
-         * Type code
+         * Business identifier of the payment detail
+         */
+        identifier?: Identifier;
+        /**
+         * Business identifier of the prior payment detail
+         */
+        predecessor?: Identifier;
+        /**
+         * Category of payment
          */
         type: CodeableConcept;
         /**
-         * Claim
+         * Request giving rise to the payment
          */
         request?: Reference;
         /**
-         * Claim Response
-         */
-        response?: Reference;
-        /**
-         * Organization which submitted the claim
+         * Submitter of the request
          */
         submitter?: Reference;
         /**
-         * Organization which is receiving the payment
+         * Response committing to a payment
          */
-        payee?: Reference;
+        response?: Reference;
         /**
-         * Invoice date
+         * Date of commitment to pay
          */
         date?: date;
         /**
@@ -21592,12 +22749,20 @@ declare module fhir.r4 {
          */
         _date?: Element;
         /**
-         * Amount being paid
+         * Contact for the response
+         */
+        responsible?: Reference;
+        /**
+         * Recipient of the payment
+         */
+        payee?: Reference;
+        /**
+         * Amount allocated to this payable
          */
         amount?: Money;
     }
     /**
-     * Processing comments
+     * Note concerning processing
      */
     interface PaymentReconciliationProcessNote extends BackboneElement {
         /**
@@ -21609,7 +22774,7 @@ declare module fhir.r4 {
          */
         _type?: Element;
         /**
-         * Comment on the processing
+         * Note explanatory text
          */
         text?: string;
         /**
@@ -21622,13 +22787,13 @@ declare module fhir.r4 {
      */
     interface PaymentReconciliation extends DomainResource {
         /**
-         * Business Identifier
+         * Business Identifier for a payment reconciliation
          */
         identifier?: Identifier[];
         /**
          * active | cancelled | draft | entered-in-error
          */
-        status?: code;
+        status: code;
         /**
          * Contains extended information for property 'status'.
          */
@@ -21640,19 +22805,23 @@ declare module fhir.r4 {
         /**
          * Creation date
          */
-        created?: dateTime;
+        created: dateTime;
         /**
          * Contains extended information for property 'created'.
          */
         _created?: Element;
         /**
-         * Insurer
+         * Party generating payment
          */
-        organization?: Reference;
+        paymentIssuer?: Reference;
         /**
-         * Claim reference
+         * Reference to requesting resource
          */
         request?: Reference;
+        /**
+         * Responsible practitioner
+         */
+        requestor?: Reference;
         /**
          * queued | complete | error | partial
          */
@@ -21662,7 +22831,7 @@ declare module fhir.r4 {
          */
         _outcome?: Element;
         /**
-         * Disposition Message
+         * Disposition message
          */
         disposition?: string;
         /**
@@ -21670,23 +22839,31 @@ declare module fhir.r4 {
          */
         _disposition?: Element;
         /**
-         * Responsible practitioner
+         * When payment issued
          */
-        requestProvider?: Reference;
+        paymentDate: date;
         /**
-         * List of settlements
+         * Contains extended information for property 'paymentDate'.
          */
-        detail?: PaymentReconciliationDetail[];
-        /**
-         * Printed Form Identifier
-         */
-        form?: CodeableConcept;
+        _paymentDate?: Element;
         /**
          * Total amount of Payment
          */
-        total?: Money;
+        paymentAmount: Money;
         /**
-         * Processing comments
+         * Business identifier for the payment
+         */
+        paymentIdentifier?: Identifier;
+        /**
+         * Settlement particulars
+         */
+        detail?: PaymentReconciliationDetail[];
+        /**
+         * Printed form identifier
+         */
+        formCode?: CodeableConcept;
+        /**
+         * Note concerning processing
          */
         processNote?: PaymentReconciliationProcessNote[];
     }
@@ -21887,6 +23064,14 @@ declare module fhir.r4 {
          */
         _goalId?: Element[];
         /**
+         * Type of individual the action is focused on
+         */
+        subjectCodeableConcept?: CodeableConcept;
+        /**
+         * Type of individual the action is focused on
+         */
+        subjectReference?: Reference;
+        /**
          * When the action should be triggered
          */
         trigger?: TriggerDefinition[];
@@ -21985,11 +23170,19 @@ declare module fhir.r4 {
         /**
          * Description of the activity to be performed
          */
-        definition?: canonical;
+        definitionCanonical?: canonical;
         /**
-         * Contains extended information for property 'definition'.
+         * Contains extended information for property 'definitionCanonical'.
          */
-        _definition?: Element;
+        _definitionCanonical?: Element;
+        /**
+         * Description of the activity to be performed
+         */
+        definitionUri?: uri;
+        /**
+         * Contains extended information for property 'definitionUri'.
+         */
+        _definitionUri?: Element;
         /**
          * Transform to apply the template
          */
@@ -22572,9 +23765,9 @@ declare module fhir.r4 {
          */
         subject: Reference;
         /**
-         * Encounter or episode associated with the procedure
+         * Encounter created as part of
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * When the procedure was performed
          */
@@ -22667,198 +23860,6 @@ declare module fhir.r4 {
          * Coded items used during the procedure
          */
         usedCode?: CodeableConcept[];
-    }
-    /**
-     * Items to re-adjudicate
-     */
-    interface ProcessRequestItem extends BackboneElement {
-        /**
-         * Service instance
-         */
-        sequenceLinkId: integer;
-        /**
-         * Contains extended information for property 'sequenceLinkId'.
-         */
-        _sequenceLinkId?: Element;
-    }
-    /**
-     * Request to perform some action on or in regard to an existing resource
-     */
-    interface ProcessRequest extends DomainResource {
-        /**
-         * Business Identifier
-         */
-        identifier?: Identifier[];
-        /**
-         * active | cancelled | draft | entered-in-error
-         */
-        status?: code;
-        /**
-         * Contains extended information for property 'status'.
-         */
-        _status?: Element;
-        /**
-         * cancel | poll | reprocess | status
-         */
-        action?: code;
-        /**
-         * Contains extended information for property 'action'.
-         */
-        _action?: Element;
-        /**
-         * Party which is the target of the request
-         */
-        target?: Reference;
-        /**
-         * Creation date
-         */
-        created?: dateTime;
-        /**
-         * Contains extended information for property 'created'.
-         */
-        _created?: Element;
-        /**
-         * Responsible practitioner
-         */
-        provider?: Reference;
-        /**
-         * Reference to the Request resource
-         */
-        request?: Reference;
-        /**
-         * Reference to the Response resource
-         */
-        response?: Reference;
-        /**
-         * Remove history
-         */
-        nullify?: boolean;
-        /**
-         * Contains extended information for property 'nullify'.
-         */
-        _nullify?: Element;
-        /**
-         * Reference number/string
-         */
-        reference?: string;
-        /**
-         * Contains extended information for property 'reference'.
-         */
-        _reference?: Element;
-        /**
-         * Items to re-adjudicate
-         */
-        item?: ProcessRequestItem[];
-        /**
-         * Resource type(s) to include
-         */
-        include?: string[];
-        /**
-         * Contains extended information for property 'include'.
-         */
-        _include?: Element[];
-        /**
-         * Resource type(s) to exclude
-         */
-        exclude?: string[];
-        /**
-         * Contains extended information for property 'exclude'.
-         */
-        _exclude?: Element[];
-        /**
-         * Selection period
-         */
-        period?: Period;
-    }
-    /**
-     * Processing comments or additional requirements
-     */
-    interface ProcessResponseProcessNote extends BackboneElement {
-        /**
-         * display | print | printoper
-         */
-        type?: code;
-        /**
-         * Contains extended information for property 'type'.
-         */
-        _type?: Element;
-        /**
-         * Comment on the processing
-         */
-        text?: string;
-        /**
-         * Contains extended information for property 'text'.
-         */
-        _text?: Element;
-    }
-    /**
-     * ProcessResponse resource
-     */
-    interface ProcessResponse extends DomainResource {
-        /**
-         * Business Identifier
-         */
-        identifier?: Identifier[];
-        /**
-         * active | cancelled | draft | entered-in-error
-         */
-        status?: code;
-        /**
-         * Contains extended information for property 'status'.
-         */
-        _status?: Element;
-        /**
-         * Creation date
-         */
-        created?: dateTime;
-        /**
-         * Contains extended information for property 'created'.
-         */
-        _created?: Element;
-        /**
-         * Authoring Organization
-         */
-        organization?: Reference;
-        /**
-         * Request reference
-         */
-        request?: Reference;
-        /**
-         * Processing outcome
-         */
-        outcome?: code;
-        /**
-         * Contains extended information for property 'outcome'.
-         */
-        _outcome?: Element;
-        /**
-         * Disposition Message
-         */
-        disposition?: string;
-        /**
-         * Contains extended information for property 'disposition'.
-         */
-        _disposition?: Element;
-        /**
-         * Responsible Practitioner
-         */
-        requestProvider?: Reference;
-        /**
-         * Printed Form Identifier
-         */
-        form?: CodeableConcept;
-        /**
-         * Processing comments or additional requirements
-         */
-        processNote?: ProcessResponseProcessNote[];
-        /**
-         * Error code
-         */
-        error?: CodeableConcept[];
-        /**
-         * Request for additional information
-         */
-        communicationRequest?: Reference[];
     }
     /**
      * Actor involved
@@ -23619,9 +24620,9 @@ declare module fhir.r4 {
          */
         subject?: Reference;
         /**
-         * Encounter or Episode during which questionnaire was completed
+         * Encounter created as part of
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * Date the answers were gathered
          */
@@ -23642,6 +24643,23 @@ declare module fhir.r4 {
          * Groups and questions
          */
         item?: QuestionnaireResponseItem[];
+    }
+    /**
+     * A language which may be used to communicate with about the patient's health
+     */
+    interface RelatedPersonCommunication extends BackboneElement {
+        /**
+         * The language which can be used to communicate with the patient about his or her health
+         */
+        language: CodeableConcept;
+        /**
+         * Language preference indicator
+         */
+        preferred?: boolean;
+        /**
+         * Contains extended information for property 'preferred'.
+         */
+        _preferred?: Element;
     }
     /**
      * A person that is related to a patient, but who is not a direct target of care
@@ -23703,6 +24721,10 @@ declare module fhir.r4 {
          * Period of time that this relationship is considered valid
          */
         period?: Period;
+        /**
+         * A language which may be used to communicate with about the patient's health
+         */
+        communication?: RelatedPersonCommunication[];
     }
     /**
      * Proposed actions, if any
@@ -23862,29 +24884,9 @@ declare module fhir.r4 {
          */
         _kind?: Element;
         /**
-         * Natural language description of the condition
-         */
-        description?: string;
-        /**
-         * Contains extended information for property 'description'.
-         */
-        _description?: Element;
-        /**
-         * Language of the expression
-         */
-        language?: string;
-        /**
-         * Contains extended information for property 'language'.
-         */
-        _language?: Element;
-        /**
          * Boolean-valued expression
          */
-        expression?: string;
-        /**
-         * Contains extended information for property 'expression'.
-         */
-        _expression?: Element;
+        expression?: Expression;
     }
     /**
      * Relationship to another action
@@ -23984,9 +24986,9 @@ declare module fhir.r4 {
          */
         subject?: Reference;
         /**
-         * Encounter or Episode for the request group
+         * Created as part of
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * When the request group was authored
          */
@@ -24015,6 +25017,565 @@ declare module fhir.r4 {
          * Proposed actions, if any
          */
         action?: RequestGroupAction[];
+    }
+    /**
+     * A research context or question
+     */
+    interface ResearchDefinition extends DomainResource {
+        /**
+         * Canonical identifier for this research definition, represented as a URI (globally unique)
+         */
+        url?: uri;
+        /**
+         * Contains extended information for property 'url'.
+         */
+        _url?: Element;
+        /**
+         * Additional identifier for the research definition
+         */
+        identifier?: Identifier[];
+        /**
+         * Business version of the research definition
+         */
+        version?: string;
+        /**
+         * Contains extended information for property 'version'.
+         */
+        _version?: Element;
+        /**
+         * Name for this research definition (computer friendly)
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Name for this research definition (human friendly)
+         */
+        title?: string;
+        /**
+         * Contains extended information for property 'title'.
+         */
+        _title?: Element;
+        /**
+         * Title for use in informal contexts
+         */
+        shortTitle?: string;
+        /**
+         * Contains extended information for property 'shortTitle'.
+         */
+        _shortTitle?: Element;
+        /**
+         * Subordinate title of the ResearchDefinition
+         */
+        subtitle?: string;
+        /**
+         * Contains extended information for property 'subtitle'.
+         */
+        _subtitle?: Element;
+        /**
+         * draft | active | retired | unknown
+         */
+        status: code;
+        /**
+         * Contains extended information for property 'status'.
+         */
+        _status?: Element;
+        /**
+         * For testing purposes, not real usage
+         */
+        experimental?: boolean;
+        /**
+         * Contains extended information for property 'experimental'.
+         */
+        _experimental?: Element;
+        /**
+         * E.g. Patient, Practitioner, RelatedPerson, Organization, Location, Device
+         */
+        subjectCodeableConcept?: CodeableConcept;
+        /**
+         * E.g. Patient, Practitioner, RelatedPerson, Organization, Location, Device
+         */
+        subjectReference?: Reference;
+        /**
+         * Date last changed
+         */
+        date?: dateTime;
+        /**
+         * Contains extended information for property 'date'.
+         */
+        _date?: Element;
+        /**
+         * Name of the publisher (organization or individual)
+         */
+        publisher?: string;
+        /**
+         * Contains extended information for property 'publisher'.
+         */
+        _publisher?: Element;
+        /**
+         * Contact details for the publisher
+         */
+        contact?: ContactDetail[];
+        /**
+         * Natural language description of the research definition
+         */
+        description?: markdown;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Used for footnotes or explanatory notes
+         */
+        comment?: string[];
+        /**
+         * Contains extended information for property 'comment'.
+         */
+        _comment?: Element[];
+        /**
+         * The context that the content is intended to support
+         */
+        useContext?: UsageContext[];
+        /**
+         * Intended jurisdiction for research definition (if applicable)
+         */
+        jurisdiction?: CodeableConcept[];
+        /**
+         * Why this research definition is defined
+         */
+        purpose?: markdown;
+        /**
+         * Contains extended information for property 'purpose'.
+         */
+        _purpose?: Element;
+        /**
+         * Describes the clinical usage of the ResearchDefinition
+         */
+        usage?: string;
+        /**
+         * Contains extended information for property 'usage'.
+         */
+        _usage?: Element;
+        /**
+         * Use and/or publishing restrictions
+         */
+        copyright?: markdown;
+        /**
+         * Contains extended information for property 'copyright'.
+         */
+        _copyright?: Element;
+        /**
+         * When the research definition was approved by publisher
+         */
+        approvalDate?: date;
+        /**
+         * Contains extended information for property 'approvalDate'.
+         */
+        _approvalDate?: Element;
+        /**
+         * When the research definition was last reviewed
+         */
+        lastReviewDate?: date;
+        /**
+         * Contains extended information for property 'lastReviewDate'.
+         */
+        _lastReviewDate?: Element;
+        /**
+         * When the research definition is expected to be used
+         */
+        effectivePeriod?: Period;
+        /**
+         * The category of the ResearchDefinition, such as Education, Treatment, Assessment, etc.
+         */
+        topic?: CodeableConcept[];
+        /**
+         * Who authored the content
+         */
+        author?: ContactDetail[];
+        /**
+         * Who edited the content
+         */
+        editor?: ContactDetail[];
+        /**
+         * Who reviewed the content
+         */
+        reviewer?: ContactDetail[];
+        /**
+         * Who endorsed the content
+         */
+        endorser?: ContactDetail[];
+        /**
+         * Additional documentation, citations, etc.
+         */
+        relatedArtifact?: RelatedArtifact[];
+        /**
+         * Logic used by the ResearchDefinition
+         */
+        library?: canonical[];
+        /**
+         * Contains extended information for property 'library'.
+         */
+        _library?: Element[];
+        /**
+         * What population?
+         */
+        population: Reference;
+        /**
+         * What exposure?
+         */
+        exposure?: Reference;
+        /**
+         * What alternative exposure state?
+         */
+        exposureAlternative?: Reference;
+        /**
+         * What outcome?
+         */
+        outcome?: Reference;
+    }
+    /**
+     * What defines the members of the research element
+     */
+    interface ResearchElementDefinitionCharacteristic extends BackboneElement {
+        /**
+         * What code or expression defines members?
+         */
+        definitionCodeableConcept?: CodeableConcept;
+        /**
+         * What code or expression defines members?
+         */
+        definitionCanonical?: canonical;
+        /**
+         * Contains extended information for property 'definitionCanonical'.
+         */
+        _definitionCanonical?: Element;
+        /**
+         * What code or expression defines members?
+         */
+        definitionExpression?: Expression;
+        /**
+         * What code or expression defines members?
+         */
+        definitionDataRequirement?: DataRequirement;
+        /**
+         * What code/value pairs define members?
+         */
+        usageContext?: UsageContext[];
+        /**
+         * Whether the characteristic includes or excludes members
+         */
+        exclude?: boolean;
+        /**
+         * Contains extended information for property 'exclude'.
+         */
+        _exclude?: Element;
+        /**
+         * What unit is the outcome described in?
+         */
+        unitOfMeasure?: CodeableConcept;
+        /**
+         * What time period does the study cover
+         */
+        studyEffectiveDescription?: string;
+        /**
+         * Contains extended information for property 'studyEffectiveDescription'.
+         */
+        _studyEffectiveDescription?: Element;
+        /**
+         * What time period does the study cover
+         */
+        studyEffectiveDateTime?: dateTime;
+        /**
+         * Contains extended information for property 'studyEffectiveDateTime'.
+         */
+        _studyEffectiveDateTime?: Element;
+        /**
+         * What time period does the study cover
+         */
+        studyEffectivePeriod?: Period;
+        /**
+         * What time period does the study cover
+         */
+        studyEffectiveDuration?: Duration;
+        /**
+         * What time period does the study cover
+         */
+        studyEffectiveTiming?: Timing;
+        /**
+         * Observation time from study start
+         */
+        studyEffectiveTimeFromStart?: Duration;
+        /**
+         * mean | median | mean-of-mean | mean-of-median | median-of-mean | median-of-median
+         */
+        studyEffectiveGroupMeasure?: code;
+        /**
+         * Contains extended information for property 'studyEffectiveGroupMeasure'.
+         */
+        _studyEffectiveGroupMeasure?: Element;
+        /**
+         * What time period do participants cover
+         */
+        participantEffectiveDescription?: string;
+        /**
+         * Contains extended information for property 'participantEffectiveDescription'.
+         */
+        _participantEffectiveDescription?: Element;
+        /**
+         * What time period do participants cover
+         */
+        participantEffectiveDateTime?: dateTime;
+        /**
+         * Contains extended information for property 'participantEffectiveDateTime'.
+         */
+        _participantEffectiveDateTime?: Element;
+        /**
+         * What time period do participants cover
+         */
+        participantEffectivePeriod?: Period;
+        /**
+         * What time period do participants cover
+         */
+        participantEffectiveDuration?: Duration;
+        /**
+         * What time period do participants cover
+         */
+        participantEffectiveTiming?: Timing;
+        /**
+         * Observation time from study start
+         */
+        participantEffectiveTimeFromStart?: Duration;
+        /**
+         * mean | median | mean-of-mean | mean-of-median | median-of-mean | median-of-median
+         */
+        participantEffectiveGroupMeasure?: code;
+        /**
+         * Contains extended information for property 'participantEffectiveGroupMeasure'.
+         */
+        _participantEffectiveGroupMeasure?: Element;
+    }
+    /**
+     * A population, intervention, or exposure definition
+     */
+    interface ResearchElementDefinition extends DomainResource {
+        /**
+         * Canonical identifier for this research element definition, represented as a URI (globally unique)
+         */
+        url?: uri;
+        /**
+         * Contains extended information for property 'url'.
+         */
+        _url?: Element;
+        /**
+         * Additional identifier for the research element definition
+         */
+        identifier?: Identifier[];
+        /**
+         * Business version of the research element definition
+         */
+        version?: string;
+        /**
+         * Contains extended information for property 'version'.
+         */
+        _version?: Element;
+        /**
+         * Name for this research element definition (computer friendly)
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Name for this research element definition (human friendly)
+         */
+        title?: string;
+        /**
+         * Contains extended information for property 'title'.
+         */
+        _title?: Element;
+        /**
+         * Title for use in informal contexts
+         */
+        shortTitle?: string;
+        /**
+         * Contains extended information for property 'shortTitle'.
+         */
+        _shortTitle?: Element;
+        /**
+         * Subordinate title of the ResearchElementDefinition
+         */
+        subtitle?: string;
+        /**
+         * Contains extended information for property 'subtitle'.
+         */
+        _subtitle?: Element;
+        /**
+         * draft | active | retired | unknown
+         */
+        status: code;
+        /**
+         * Contains extended information for property 'status'.
+         */
+        _status?: Element;
+        /**
+         * For testing purposes, not real usage
+         */
+        experimental?: boolean;
+        /**
+         * Contains extended information for property 'experimental'.
+         */
+        _experimental?: Element;
+        /**
+         * E.g. Patient, Practitioner, RelatedPerson, Organization, Location, Device
+         */
+        subjectCodeableConcept?: CodeableConcept;
+        /**
+         * E.g. Patient, Practitioner, RelatedPerson, Organization, Location, Device
+         */
+        subjectReference?: Reference;
+        /**
+         * Date last changed
+         */
+        date?: dateTime;
+        /**
+         * Contains extended information for property 'date'.
+         */
+        _date?: Element;
+        /**
+         * Name of the publisher (organization or individual)
+         */
+        publisher?: string;
+        /**
+         * Contains extended information for property 'publisher'.
+         */
+        _publisher?: Element;
+        /**
+         * Contact details for the publisher
+         */
+        contact?: ContactDetail[];
+        /**
+         * Natural language description of the research element definition
+         */
+        description?: markdown;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Used for footnotes or explanatory notes
+         */
+        comment?: string[];
+        /**
+         * Contains extended information for property 'comment'.
+         */
+        _comment?: Element[];
+        /**
+         * The context that the content is intended to support
+         */
+        useContext?: UsageContext[];
+        /**
+         * Intended jurisdiction for research element definition (if applicable)
+         */
+        jurisdiction?: CodeableConcept[];
+        /**
+         * Why this research element definition is defined
+         */
+        purpose?: markdown;
+        /**
+         * Contains extended information for property 'purpose'.
+         */
+        _purpose?: Element;
+        /**
+         * Describes the clinical usage of the ResearchElementDefinition
+         */
+        usage?: string;
+        /**
+         * Contains extended information for property 'usage'.
+         */
+        _usage?: Element;
+        /**
+         * Use and/or publishing restrictions
+         */
+        copyright?: markdown;
+        /**
+         * Contains extended information for property 'copyright'.
+         */
+        _copyright?: Element;
+        /**
+         * When the research element definition was approved by publisher
+         */
+        approvalDate?: date;
+        /**
+         * Contains extended information for property 'approvalDate'.
+         */
+        _approvalDate?: Element;
+        /**
+         * When the research element definition was last reviewed
+         */
+        lastReviewDate?: date;
+        /**
+         * Contains extended information for property 'lastReviewDate'.
+         */
+        _lastReviewDate?: Element;
+        /**
+         * When the research element definition is expected to be used
+         */
+        effectivePeriod?: Period;
+        /**
+         * The category of the ResearchElementDefinition, such as Education, Treatment, Assessment, etc.
+         */
+        topic?: CodeableConcept[];
+        /**
+         * Who authored the content
+         */
+        author?: ContactDetail[];
+        /**
+         * Who edited the content
+         */
+        editor?: ContactDetail[];
+        /**
+         * Who reviewed the content
+         */
+        reviewer?: ContactDetail[];
+        /**
+         * Who endorsed the content
+         */
+        endorser?: ContactDetail[];
+        /**
+         * Additional documentation, citations, etc.
+         */
+        relatedArtifact?: RelatedArtifact[];
+        /**
+         * Logic used by the ResearchElementDefinition
+         */
+        library?: canonical[];
+        /**
+         * Contains extended information for property 'library'.
+         */
+        _library?: Element[];
+        /**
+         * population | exposure | outcome
+         */
+        type: code;
+        /**
+         * Contains extended information for property 'type'.
+         */
+        _type?: Element;
+        /**
+         * dichotomous | continuous | descriptive
+         */
+        variableType?: code;
+        /**
+         * Contains extended information for property 'variableType'.
+         */
+        _variableType?: Element;
+        /**
+         * What defines the members of the research element
+         */
+        characteristic: ResearchElementDefinitionCharacteristic[];
     }
     /**
      * Defined path through the study for a subject
@@ -24308,7 +25869,7 @@ declare module fhir.r4 {
         /**
          * Where was assessment performed?
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * When was assessment made?
          */
@@ -24359,6 +25920,324 @@ declare module fhir.r4 {
         note?: Annotation[];
     }
     /**
+     * What sample size was involved?
+     */
+    interface RiskEvidenceSynthesisSampleSize extends BackboneElement {
+        /**
+         * Description of sample size
+         */
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * How many studies?
+         */
+        numberOfStudies?: integer;
+        /**
+         * Contains extended information for property 'numberOfStudies'.
+         */
+        _numberOfStudies?: Element;
+        /**
+         * How many participants?
+         */
+        numberOfParticipants?: integer;
+        /**
+         * Contains extended information for property 'numberOfParticipants'.
+         */
+        _numberOfParticipants?: Element;
+    }
+    /**
+     * What was the estimated risk
+     */
+    interface RiskEvidenceSynthesisRiskEstimate extends BackboneElement {
+        /**
+         * Description of risk estimate
+         */
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Type of risk estimate
+         */
+        type?: CodeableConcept;
+        /**
+         * Point estimate
+         */
+        value?: decimal;
+        /**
+         * Contains extended information for property 'value'.
+         */
+        _value?: Element;
+        /**
+         * What unit is the outcome described in?
+         */
+        unitOfMeasure?: CodeableConcept;
+        /**
+         * Sample size for group measured
+         */
+        denominatorCount?: integer;
+        /**
+         * Contains extended information for property 'denominatorCount'.
+         */
+        _denominatorCount?: Element;
+        /**
+         * Number with the outcome
+         */
+        numeratorCount?: integer;
+        /**
+         * Contains extended information for property 'numeratorCount'.
+         */
+        _numeratorCount?: Element;
+        /**
+         * How precise the estimate is
+         */
+        precisionEstimate?: RiskEvidenceSynthesisRiskEstimatePrecisionEstimate[];
+    }
+    /**
+     * How precise the estimate is
+     */
+    interface RiskEvidenceSynthesisRiskEstimatePrecisionEstimate extends BackboneElement {
+        /**
+         * Type of precision estimate
+         */
+        type?: CodeableConcept;
+        /**
+         * Level of confidence interval
+         */
+        level?: decimal;
+        /**
+         * Contains extended information for property 'level'.
+         */
+        _level?: Element;
+        /**
+         * Lower bound
+         */
+        from?: decimal;
+        /**
+         * Contains extended information for property 'from'.
+         */
+        _from?: Element;
+        /**
+         * Upper bound
+         */
+        to?: decimal;
+        /**
+         * Contains extended information for property 'to'.
+         */
+        _to?: Element;
+    }
+    /**
+     * How certain is the risk
+     */
+    interface RiskEvidenceSynthesisCertainty extends BackboneElement {
+        /**
+         * Certainty rating
+         */
+        rating?: CodeableConcept[];
+        /**
+         * Used for footnotes or explanatory notes
+         */
+        note?: Annotation[];
+        /**
+         * A component that contributes to the overall certainty
+         */
+        certaintySubcomponent?: RiskEvidenceSynthesisCertaintyCertaintySubcomponent[];
+    }
+    /**
+     * A component that contributes to the overall certainty
+     */
+    interface RiskEvidenceSynthesisCertaintyCertaintySubcomponent extends BackboneElement {
+        /**
+         * Type of subcomponent of certainty rating
+         */
+        type?: CodeableConcept;
+        /**
+         * Subcomponent certainty rating
+         */
+        rating?: CodeableConcept[];
+        /**
+         * Used for footnotes or explanatory notes
+         */
+        note?: Annotation[];
+    }
+    /**
+     * A quantified estimate of risk based on a body of evidence
+     */
+    interface RiskEvidenceSynthesis extends DomainResource {
+        /**
+         * Canonical identifier for this risk evidence synthesis, represented as a URI (globally unique)
+         */
+        url?: uri;
+        /**
+         * Contains extended information for property 'url'.
+         */
+        _url?: Element;
+        /**
+         * Additional identifier for the risk evidence synthesis
+         */
+        identifier?: Identifier[];
+        /**
+         * Business version of the risk evidence synthesis
+         */
+        version?: string;
+        /**
+         * Contains extended information for property 'version'.
+         */
+        _version?: Element;
+        /**
+         * Name for this risk evidence synthesis (computer friendly)
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Name for this risk evidence synthesis (human friendly)
+         */
+        title?: string;
+        /**
+         * Contains extended information for property 'title'.
+         */
+        _title?: Element;
+        /**
+         * draft | active | retired | unknown
+         */
+        status: code;
+        /**
+         * Contains extended information for property 'status'.
+         */
+        _status?: Element;
+        /**
+         * Date last changed
+         */
+        date?: dateTime;
+        /**
+         * Contains extended information for property 'date'.
+         */
+        _date?: Element;
+        /**
+         * Name of the publisher (organization or individual)
+         */
+        publisher?: string;
+        /**
+         * Contains extended information for property 'publisher'.
+         */
+        _publisher?: Element;
+        /**
+         * Contact details for the publisher
+         */
+        contact?: ContactDetail[];
+        /**
+         * Natural language description of the risk evidence synthesis
+         */
+        description?: markdown;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Used for footnotes or explanatory notes
+         */
+        note?: Annotation[];
+        /**
+         * The context that the content is intended to support
+         */
+        useContext?: UsageContext[];
+        /**
+         * Intended jurisdiction for risk evidence synthesis (if applicable)
+         */
+        jurisdiction?: CodeableConcept[];
+        /**
+         * Use and/or publishing restrictions
+         */
+        copyright?: markdown;
+        /**
+         * Contains extended information for property 'copyright'.
+         */
+        _copyright?: Element;
+        /**
+         * When the risk evidence synthesis was approved by publisher
+         */
+        approvalDate?: date;
+        /**
+         * Contains extended information for property 'approvalDate'.
+         */
+        _approvalDate?: Element;
+        /**
+         * When the risk evidence synthesis was last reviewed
+         */
+        lastReviewDate?: date;
+        /**
+         * Contains extended information for property 'lastReviewDate'.
+         */
+        _lastReviewDate?: Element;
+        /**
+         * When the risk evidence synthesis is expected to be used
+         */
+        effectivePeriod?: Period;
+        /**
+         * The category of the EffectEvidenceSynthesis, such as Education, Treatment, Assessment, etc.
+         */
+        topic?: CodeableConcept[];
+        /**
+         * Who authored the content
+         */
+        author?: ContactDetail[];
+        /**
+         * Who edited the content
+         */
+        editor?: ContactDetail[];
+        /**
+         * Who reviewed the content
+         */
+        reviewer?: ContactDetail[];
+        /**
+         * Who endorsed the content
+         */
+        endorser?: ContactDetail[];
+        /**
+         * Additional documentation, citations, etc.
+         */
+        relatedArtifact?: RelatedArtifact[];
+        /**
+         * Type of synthesis
+         */
+        synthesisType?: CodeableConcept;
+        /**
+         * Type of study
+         */
+        studyType?: CodeableConcept;
+        /**
+         * What population?
+         */
+        population: Reference;
+        /**
+         * What exposure?
+         */
+        exposure?: Reference;
+        /**
+         * What outcome?
+         */
+        outcome: Reference;
+        /**
+         * What sample size was involved?
+         */
+        sampleSize?: RiskEvidenceSynthesisSampleSize;
+        /**
+         * What was the estimated risk
+         */
+        riskEstimate?: RiskEvidenceSynthesisRiskEstimate;
+        /**
+         * How certain is the risk
+         */
+        certainty?: RiskEvidenceSynthesisCertainty[];
+    }
+    /**
      * A container for slots of time that may be available for booking appointments
      */
     interface Schedule extends DomainResource {
@@ -24387,7 +26266,7 @@ declare module fhir.r4 {
          */
         specialty?: CodeableConcept[];
         /**
-         * E.g. HealthCareService, Location, Practitioner, etc.
+         * Resource(s) that availability information is being provided for
          */
         actor: Reference[];
         /**
@@ -24622,507 +26501,6 @@ declare module fhir.r4 {
         component?: SearchParameterComponent[];
     }
     /**
-     * A sequence used as reference
-     */
-    interface SequenceReferenceSeq extends BackboneElement {
-        /**
-         * Chromosome containing genetic finding
-         */
-        chromosome?: CodeableConcept;
-        /**
-         * The Genome Build used for reference, following GRCh build versions e.g. 'GRCh 37'
-         */
-        genomeBuild?: string;
-        /**
-         * Contains extended information for property 'genomeBuild'.
-         */
-        _genomeBuild?: Element;
-        /**
-         * sense | antisense
-         */
-        orientation?: code;
-        /**
-         * Contains extended information for property 'orientation'.
-         */
-        _orientation?: Element;
-        /**
-         * Reference identifier
-         */
-        referenceSeqId?: CodeableConcept;
-        /**
-         * A Pointer to another Sequence entity as reference sequence
-         */
-        referenceSeqPointer?: Reference;
-        /**
-         * A string to represent reference sequence
-         */
-        referenceSeqString?: string;
-        /**
-         * Contains extended information for property 'referenceSeqString'.
-         */
-        _referenceSeqString?: Element;
-        /**
-         * watson | crick
-         */
-        strand?: code;
-        /**
-         * Contains extended information for property 'strand'.
-         */
-        _strand?: Element;
-        /**
-         * Start position of the window on the  reference sequence
-         */
-        windowStart: integer;
-        /**
-         * Contains extended information for property 'windowStart'.
-         */
-        _windowStart?: Element;
-        /**
-         * End position of the window on the reference sequence
-         */
-        windowEnd: integer;
-        /**
-         * Contains extended information for property 'windowEnd'.
-         */
-        _windowEnd?: Element;
-    }
-    /**
-     * Variant in sequence
-     */
-    interface SequenceVariant extends BackboneElement {
-        /**
-         * Start position of the variant on the  reference sequence
-         */
-        start?: integer;
-        /**
-         * Contains extended information for property 'start'.
-         */
-        _start?: Element;
-        /**
-         * End position of the variant on the reference sequence
-         */
-        end?: integer;
-        /**
-         * Contains extended information for property 'end'.
-         */
-        _end?: Element;
-        /**
-         * Allele that was observed
-         */
-        observedAllele?: string;
-        /**
-         * Contains extended information for property 'observedAllele'.
-         */
-        _observedAllele?: Element;
-        /**
-         * Allele in the reference sequence
-         */
-        referenceAllele?: string;
-        /**
-         * Contains extended information for property 'referenceAllele'.
-         */
-        _referenceAllele?: Element;
-        /**
-         * Extended CIGAR string for aligning the sequence with reference bases
-         */
-        cigar?: string;
-        /**
-         * Contains extended information for property 'cigar'.
-         */
-        _cigar?: Element;
-        /**
-         * Pointer to observed variant information
-         */
-        variantPointer?: Reference;
-    }
-    /**
-     * An set of value as quality of sequence
-     */
-    interface SequenceQuality extends BackboneElement {
-        /**
-         * indel | snp | unknown
-         */
-        type: code;
-        /**
-         * Contains extended information for property 'type'.
-         */
-        _type?: Element;
-        /**
-         * Standard sequence for comparison
-         */
-        standardSequence?: CodeableConcept;
-        /**
-         * Start position of the sequence
-         */
-        start?: integer;
-        /**
-         * Contains extended information for property 'start'.
-         */
-        _start?: Element;
-        /**
-         * End position of the sequence
-         */
-        end?: integer;
-        /**
-         * Contains extended information for property 'end'.
-         */
-        _end?: Element;
-        /**
-         * Quality score for the comparison
-         */
-        score?: Quantity;
-        /**
-         * Method to get quality
-         */
-        method?: CodeableConcept;
-        /**
-         * True positives from the perspective of the truth data
-         */
-        truthTP?: decimal;
-        /**
-         * Contains extended information for property 'truthTP'.
-         */
-        _truthTP?: Element;
-        /**
-         * True positives from the perspective of the query data
-         */
-        queryTP?: decimal;
-        /**
-         * Contains extended information for property 'queryTP'.
-         */
-        _queryTP?: Element;
-        /**
-         * False negatives
-         */
-        truthFN?: decimal;
-        /**
-         * Contains extended information for property 'truthFN'.
-         */
-        _truthFN?: Element;
-        /**
-         * False positives
-         */
-        queryFP?: decimal;
-        /**
-         * Contains extended information for property 'queryFP'.
-         */
-        _queryFP?: Element;
-        /**
-         * False positives where the non-REF alleles in the Truth and Query Call Sets match
-         */
-        gtFP?: decimal;
-        /**
-         * Contains extended information for property 'gtFP'.
-         */
-        _gtFP?: Element;
-        /**
-         * Precision of comparison
-         */
-        precision?: decimal;
-        /**
-         * Contains extended information for property 'precision'.
-         */
-        _precision?: Element;
-        /**
-         * Recall of comparison
-         */
-        recall?: decimal;
-        /**
-         * Contains extended information for property 'recall'.
-         */
-        _recall?: Element;
-        /**
-         * F-score
-         */
-        fScore?: decimal;
-        /**
-         * Contains extended information for property 'fScore'.
-         */
-        _fScore?: Element;
-        /**
-         * Receiver Operator Characteristic (ROC) Curve
-         */
-        roc?: SequenceQualityRoc;
-    }
-    /**
-     * Receiver Operator Characteristic (ROC) Curve
-     */
-    interface SequenceQualityRoc extends BackboneElement {
-        /**
-         * Genotype quality score
-         */
-        score?: integer[];
-        /**
-         * Contains extended information for property 'score'.
-         */
-        _score?: Element[];
-        /**
-         * Roc score true positive numbers
-         */
-        numTP?: integer[];
-        /**
-         * Contains extended information for property 'numTP'.
-         */
-        _numTP?: Element[];
-        /**
-         * Roc score false positive numbers
-         */
-        numFP?: integer[];
-        /**
-         * Contains extended information for property 'numFP'.
-         */
-        _numFP?: Element[];
-        /**
-         * Roc score false negative numbers
-         */
-        numFN?: integer[];
-        /**
-         * Contains extended information for property 'numFN'.
-         */
-        _numFN?: Element[];
-        /**
-         * Precision of the GQ score
-         */
-        precision?: decimal[];
-        /**
-         * Contains extended information for property 'precision'.
-         */
-        _precision?: Element[];
-        /**
-         * Sensitivity of the GQ score
-         */
-        sensitivity?: decimal[];
-        /**
-         * Contains extended information for property 'sensitivity'.
-         */
-        _sensitivity?: Element[];
-        /**
-         * FScore of the GQ score
-         */
-        fMeasure?: decimal[];
-        /**
-         * Contains extended information for property 'fMeasure'.
-         */
-        _fMeasure?: Element[];
-    }
-    /**
-     * External repository which contains detailed report related with observedSeq in this resource
-     */
-    interface SequenceRepository extends BackboneElement {
-        /**
-         * directlink | openapi | login | oauth | other
-         */
-        type: code;
-        /**
-         * Contains extended information for property 'type'.
-         */
-        _type?: Element;
-        /**
-         * URI of the repository
-         */
-        url?: uri;
-        /**
-         * Contains extended information for property 'url'.
-         */
-        _url?: Element;
-        /**
-         * Repository's name
-         */
-        name?: string;
-        /**
-         * Contains extended information for property 'name'.
-         */
-        _name?: Element;
-        /**
-         * Id of the dataset that used to call for dataset in repository
-         */
-        datasetId?: string;
-        /**
-         * Contains extended information for property 'datasetId'.
-         */
-        _datasetId?: Element;
-        /**
-         * Id of the variantset that used to call for variantset in repository
-         */
-        variantsetId?: string;
-        /**
-         * Contains extended information for property 'variantsetId'.
-         */
-        _variantsetId?: Element;
-        /**
-         * Id of the read
-         */
-        readsetId?: string;
-        /**
-         * Contains extended information for property 'readsetId'.
-         */
-        _readsetId?: Element;
-    }
-    /**
-     * Structural variant
-     */
-    interface SequenceStructureVariant extends BackboneElement {
-        /**
-         * Precision of boundaries
-         */
-        precision?: string;
-        /**
-         * Contains extended information for property 'precision'.
-         */
-        _precision?: Element;
-        /**
-         * Structural Variant reported aCGH ratio
-         */
-        reportedaCGHRatio?: decimal;
-        /**
-         * Contains extended information for property 'reportedaCGHRatio'.
-         */
-        _reportedaCGHRatio?: Element;
-        /**
-         * Structural Variant Length
-         */
-        length?: integer;
-        /**
-         * Contains extended information for property 'length'.
-         */
-        _length?: Element;
-        /**
-         * Structural variant outer
-         */
-        outer?: SequenceStructureVariantOuter;
-        /**
-         * Structural variant inner
-         */
-        inner?: SequenceStructureVariantInner;
-    }
-    /**
-     * Structural variant outer
-     */
-    interface SequenceStructureVariantOuter extends BackboneElement {
-        /**
-         * Structural Variant Outer Start
-         */
-        start?: integer;
-        /**
-         * Contains extended information for property 'start'.
-         */
-        _start?: Element;
-        /**
-         * Structural Variant Outer End
-         */
-        end?: integer;
-        /**
-         * Contains extended information for property 'end'.
-         */
-        _end?: Element;
-    }
-    /**
-     * Structural variant inner
-     */
-    interface SequenceStructureVariantInner extends BackboneElement {
-        /**
-         * Structural Variant Inner Start
-         */
-        start?: integer;
-        /**
-         * Contains extended information for property 'start'.
-         */
-        _start?: Element;
-        /**
-         * Structural Variant Inner End
-         */
-        end?: integer;
-        /**
-         * Contains extended information for property 'end'.
-         */
-        _end?: Element;
-    }
-    /**
-     * Information about a biological sequence
-     */
-    interface Sequence extends DomainResource {
-        /**
-         * Unique ID for this particular sequence. This is a FHIR-defined id
-         */
-        identifier?: Identifier[];
-        /**
-         * aa | dna | rna
-         */
-        type?: code;
-        /**
-         * Contains extended information for property 'type'.
-         */
-        _type?: Element;
-        /**
-         * Base number of coordinate system (0 for 0-based numbering or coordinates, inclusive start, exclusive end, 1 for 1-based numbering, inclusive start, inclusive end)
-         */
-        coordinateSystem: integer;
-        /**
-         * Contains extended information for property 'coordinateSystem'.
-         */
-        _coordinateSystem?: Element;
-        /**
-         * Who and/or what this is about
-         */
-        patient?: Reference;
-        /**
-         * Specimen used for sequencing
-         */
-        specimen?: Reference;
-        /**
-         * The method for sequencing
-         */
-        device?: Reference;
-        /**
-         * Who should be responsible for test result
-         */
-        performer?: Reference;
-        /**
-         * The number of copies of the seqeunce of interest.  (RNASeq)
-         */
-        quantity?: Quantity;
-        /**
-         * A sequence used as reference
-         */
-        referenceSeq?: SequenceReferenceSeq;
-        /**
-         * Variant in sequence
-         */
-        variant?: SequenceVariant[];
-        /**
-         * Sequence that was observed
-         */
-        observedSeq?: string;
-        /**
-         * Contains extended information for property 'observedSeq'.
-         */
-        _observedSeq?: Element;
-        /**
-         * An set of value as quality of sequence
-         */
-        quality?: SequenceQuality[];
-        /**
-         * Average number of reads representing a given nucleotide in the reconstructed sequence
-         */
-        readCoverage?: integer;
-        /**
-         * Contains extended information for property 'readCoverage'.
-         */
-        _readCoverage?: Element;
-        /**
-         * External repository which contains detailed report related with observedSeq in this resource
-         */
-        repository?: SequenceRepository[];
-        /**
-         * Pointer to next atomic sequence
-         */
-        pointer?: Reference[];
-        /**
-         * Structural variant
-         */
-        structureVariant?: SequenceStructureVariant[];
-    }
-    /**
      * A request for a service to be performed
      */
     interface ServiceRequest extends DomainResource {
@@ -25215,13 +26593,13 @@ declare module fhir.r4 {
          */
         quantityRange?: Range;
         /**
-         * Individual the service is ordered for
+         * Individual or Entity the service is ordered for
          */
         subject: Reference;
         /**
-         * Encounter or Episode during which request was created
+         * Encounter in which the request was created
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * When service should occur
          */
@@ -25528,7 +26906,7 @@ declare module fhir.r4 {
          */
         type?: CodeableConcept;
         /**
-         * Where the specimen came from. This may be from patient(s),from a location (e.g., the source of an environmental sample), or a sampling of a substance or a device
+         * Where the specimen came from. This may be from patient(s), from a location (e.g., the source of an environmental sample), or a sampling of a substance or a device
          */
         subject?: Reference;
         /**
@@ -25571,11 +26949,11 @@ declare module fhir.r4 {
     /**
      * Specimen in container intended for testing by lab
      */
-    interface SpecimenDefinitionSpecimenToLab extends BackboneElement {
+    interface SpecimenDefinitionTypeTested extends BackboneElement {
         /**
          * Primary or secondary specimen
          */
-        isDerived: boolean;
+        isDerived?: boolean;
         /**
          * Contains extended information for property 'isDerived'.
          */
@@ -25593,45 +26971,9 @@ declare module fhir.r4 {
          */
         _preference?: Element;
         /**
-         * Container material
+         * The specimen's container
          */
-        containerMaterial?: CodeableConcept;
-        /**
-         * Kind of container associated with the kind of specimen
-         */
-        containerType?: CodeableConcept;
-        /**
-         * Color of container cap
-         */
-        containerCap?: CodeableConcept;
-        /**
-         * Container description
-         */
-        containerDescription?: string;
-        /**
-         * Contains extended information for property 'containerDescription'.
-         */
-        _containerDescription?: Element;
-        /**
-         * Container capacity
-         */
-        containerCapacity?: Quantity;
-        /**
-         * Minimum volume
-         */
-        containerMinimumVolume?: Quantity;
-        /**
-         * Additive associated with container
-         */
-        containerAdditive?: SpecimenDefinitionSpecimenToLabContainerAdditive[];
-        /**
-         * Specimen container preparation
-         */
-        containerPreparation?: string;
-        /**
-         * Contains extended information for property 'containerPreparation'.
-         */
-        _containerPreparation?: Element;
+        container?: SpecimenDefinitionTypeTestedContainer;
         /**
          * Specimen requirements
          */
@@ -25651,12 +26993,65 @@ declare module fhir.r4 {
         /**
          * Specimen handling before testing
          */
-        handling?: SpecimenDefinitionSpecimenToLabHandling[];
+        handling?: SpecimenDefinitionTypeTestedHandling[];
+    }
+    /**
+     * The specimen's container
+     */
+    interface SpecimenDefinitionTypeTestedContainer extends BackboneElement {
+        /**
+         * Container material
+         */
+        material?: CodeableConcept;
+        /**
+         * Kind of container associated with the kind of specimen
+         */
+        type?: CodeableConcept;
+        /**
+         * Color of container cap
+         */
+        cap?: CodeableConcept;
+        /**
+         * Container description
+         */
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
+         * Container capacity
+         */
+        capacity?: Quantity;
+        /**
+         * Minimum volume
+         */
+        minimumVolumeQuantity?: Quantity;
+        /**
+         * Minimum volume
+         */
+        minimumVolumeString?: string;
+        /**
+         * Contains extended information for property 'minimumVolumeString'.
+         */
+        _minimumVolumeString?: Element;
+        /**
+         * Additive associated with container
+         */
+        additive?: SpecimenDefinitionTypeTestedContainerAdditive[];
+        /**
+         * Specimen container preparation
+         */
+        preparation?: string;
+        /**
+         * Contains extended information for property 'preparation'.
+         */
+        _preparation?: Element;
     }
     /**
      * Additive associated with container
      */
-    interface SpecimenDefinitionSpecimenToLabContainerAdditive extends BackboneElement {
+    interface SpecimenDefinitionTypeTestedContainerAdditive extends BackboneElement {
         /**
          * Additive associated with container
          */
@@ -25669,29 +27064,21 @@ declare module fhir.r4 {
     /**
      * Specimen handling before testing
      */
-    interface SpecimenDefinitionSpecimenToLabHandling extends BackboneElement {
+    interface SpecimenDefinitionTypeTestedHandling extends BackboneElement {
         /**
-         * Conservation condition set
+         * Temperature qualifier
          */
-        conditionSet?: CodeableConcept;
+        temperatureQualifier?: CodeableConcept;
         /**
          * Temperature range
          */
-        tempRange?: Range;
+        temperatureRange?: Range;
         /**
-         * Maximum conservation time
+         * Maximum preservation time
          */
         maxDuration?: Duration;
         /**
-         * Light exposure
-         */
-        lightExposure?: string;
-        /**
-         * Contains extended information for property 'lightExposure'.
-         */
-        _lightExposure?: Element;
-        /**
-         * Conservation instruction
+         * Preservation instruction
          */
         instruction?: string;
         /**
@@ -25714,11 +27101,7 @@ declare module fhir.r4 {
         /**
          * Patient preparation for collection
          */
-        patientPreparation?: string;
-        /**
-         * Contains extended information for property 'patientPreparation'.
-         */
-        _patientPreparation?: Element;
+        patientPreparation?: CodeableConcept[];
         /**
          * Time aspect for collection
          */
@@ -25734,7 +27117,7 @@ declare module fhir.r4 {
         /**
          * Specimen in container intended for testing by lab
          */
-        specimenToLab?: SpecimenDefinitionSpecimenToLab[];
+        typeTested?: SpecimenDefinitionTypeTested[];
     }
     /**
      * External specification that the content is mapped to
@@ -26182,18 +27565,6 @@ declare module fhir.r4 {
         /**
          * Value of Example (one of allowed types)
          */
-        valueParameterDefinition?: ParameterDefinition;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueDataRequirement?: DataRequirement;
-        /**
-         * Value of Example (one of allowed types)
-         */
-        valueRelatedArtifact?: RelatedArtifact;
-        /**
-         * Value of Example (one of allowed types)
-         */
         valueContactDetail?: ContactDetail;
         /**
          * Value of Example (one of allowed types)
@@ -26202,11 +27573,23 @@ declare module fhir.r4 {
         /**
          * Value of Example (one of allowed types)
          */
-        valueTriggerDefinition?: TriggerDefinition;
+        valueDataRequirement?: DataRequirement;
         /**
          * Value of Example (one of allowed types)
          */
         valueExpression?: Expression;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueParameterDefinition?: ParameterDefinition;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueRelatedArtifact?: RelatedArtifact;
+        /**
+         * Value of Example (one of allowed types)
+         */
+        valueTriggerDefinition?: TriggerDefinition;
         /**
          * Value of Example (one of allowed types)
          */
@@ -26706,18 +28089,6 @@ declare module fhir.r4 {
         /**
          * Specified value if missing from instance
          */
-        defaultValueParameterDefinition?: ParameterDefinition;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueDataRequirement?: DataRequirement;
-        /**
-         * Specified value if missing from instance
-         */
-        defaultValueRelatedArtifact?: RelatedArtifact;
-        /**
-         * Specified value if missing from instance
-         */
         defaultValueContactDetail?: ContactDetail;
         /**
          * Specified value if missing from instance
@@ -26726,11 +28097,23 @@ declare module fhir.r4 {
         /**
          * Specified value if missing from instance
          */
-        defaultValueTriggerDefinition?: TriggerDefinition;
+        defaultValueDataRequirement?: DataRequirement;
         /**
          * Specified value if missing from instance
          */
         defaultValueExpression?: Expression;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueParameterDefinition?: ParameterDefinition;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueRelatedArtifact?: RelatedArtifact;
+        /**
+         * Specified value if missing from instance
+         */
+        defaultValueTriggerDefinition?: TriggerDefinition;
         /**
          * Specified value if missing from instance
          */
@@ -26994,18 +28377,6 @@ declare module fhir.r4 {
         /**
          * Value must be exactly this
          */
-        fixedParameterDefinition?: ParameterDefinition;
-        /**
-         * Value must be exactly this
-         */
-        fixedDataRequirement?: DataRequirement;
-        /**
-         * Value must be exactly this
-         */
-        fixedRelatedArtifact?: RelatedArtifact;
-        /**
-         * Value must be exactly this
-         */
         fixedContactDetail?: ContactDetail;
         /**
          * Value must be exactly this
@@ -27014,11 +28385,23 @@ declare module fhir.r4 {
         /**
          * Value must be exactly this
          */
-        fixedTriggerDefinition?: TriggerDefinition;
+        fixedDataRequirement?: DataRequirement;
         /**
          * Value must be exactly this
          */
         fixedExpression?: Expression;
+        /**
+         * Value must be exactly this
+         */
+        fixedParameterDefinition?: ParameterDefinition;
+        /**
+         * Value must be exactly this
+         */
+        fixedRelatedArtifact?: RelatedArtifact;
+        /**
+         * Value must be exactly this
+         */
+        fixedTriggerDefinition?: TriggerDefinition;
         /**
          * Value must be exactly this
          */
@@ -27266,18 +28649,6 @@ declare module fhir.r4 {
         /**
          * Value must have at least these property values
          */
-        patternParameterDefinition?: ParameterDefinition;
-        /**
-         * Value must have at least these property values
-         */
-        patternDataRequirement?: DataRequirement;
-        /**
-         * Value must have at least these property values
-         */
-        patternRelatedArtifact?: RelatedArtifact;
-        /**
-         * Value must have at least these property values
-         */
         patternContactDetail?: ContactDetail;
         /**
          * Value must have at least these property values
@@ -27286,11 +28657,23 @@ declare module fhir.r4 {
         /**
          * Value must have at least these property values
          */
-        patternTriggerDefinition?: TriggerDefinition;
+        patternDataRequirement?: DataRequirement;
         /**
          * Value must have at least these property values
          */
         patternExpression?: Expression;
+        /**
+         * Value must have at least these property values
+         */
+        patternParameterDefinition?: ParameterDefinition;
+        /**
+         * Value must have at least these property values
+         */
+        patternRelatedArtifact?: RelatedArtifact;
+        /**
+         * Value must have at least these property values
+         */
+        patternTriggerDefinition?: TriggerDefinition;
         /**
          * Value must have at least these property values
          */
@@ -27624,7 +29007,7 @@ declare module fhir.r4 {
         /**
          * FHIR Version this StructureDefinition targets
          */
-        fhirVersion?: id;
+        fhirVersion?: code;
         /**
          * Contains extended information for property 'fhirVersion'.
          */
@@ -27699,7 +29082,7 @@ declare module fhir.r4 {
      */
     interface StructureMapStructure extends BackboneElement {
         /**
-         * Canonical URL for structure definition
+         * Canonical reference to structure definition
          */
         url: canonical;
         /**
@@ -28125,18 +29508,6 @@ declare module fhir.r4 {
         /**
          * Default value if no value exists
          */
-        defaultValueParameterDefinition?: ParameterDefinition;
-        /**
-         * Default value if no value exists
-         */
-        defaultValueDataRequirement?: DataRequirement;
-        /**
-         * Default value if no value exists
-         */
-        defaultValueRelatedArtifact?: RelatedArtifact;
-        /**
-         * Default value if no value exists
-         */
         defaultValueContactDetail?: ContactDetail;
         /**
          * Default value if no value exists
@@ -28145,11 +29516,23 @@ declare module fhir.r4 {
         /**
          * Default value if no value exists
          */
-        defaultValueTriggerDefinition?: TriggerDefinition;
+        defaultValueDataRequirement?: DataRequirement;
         /**
          * Default value if no value exists
          */
         defaultValueExpression?: Expression;
+        /**
+         * Default value if no value exists
+         */
+        defaultValueParameterDefinition?: ParameterDefinition;
+        /**
+         * Default value if no value exists
+         */
+        defaultValueRelatedArtifact?: RelatedArtifact;
+        /**
+         * Default value if no value exists
+         */
+        defaultValueTriggerDefinition?: TriggerDefinition;
         /**
          * Default value if no value exists
          */
@@ -28486,7 +29869,7 @@ declare module fhir.r4 {
         /**
          * MIME type to send, or omit for no payload
          */
-        payload?: string;
+        payload?: code;
         /**
          * Contains extended information for property 'payload'.
          */
@@ -28552,10 +29935,6 @@ declare module fhir.r4 {
          * The channel on which to report matches to the criteria
          */
         channel: SubscriptionChannel;
-        /**
-         * A tag to add to matching resources
-         */
-        tag?: Coding[];
     }
     /**
      * If this describes a specific package/container of the substance
@@ -28635,6 +30014,146 @@ declare module fhir.r4 {
          * Composition information about the substance
          */
         ingredient?: SubstanceIngredient[];
+    }
+    /**
+     * Subunits are listed in order of decreasing length; sequences of the same length will be ordered by molecular weight; subunits that have identical sequences will be repeated multiple times
+     */
+    interface SubstanceNucleicAcidSubunit extends BackboneElement {
+        /**
+         * Index of linear sequences of nucleic acids in order of decreasing length. Sequences of the same length will be ordered by molecular weight. Subunits that have identical sequences will be repeated and have sequential subscripts
+         */
+        subunit?: integer;
+        /**
+         * Contains extended information for property 'subunit'.
+         */
+        _subunit?: Element;
+        /**
+         * Actual nucleotide sequence notation from 5' to 3' end using standard single letter codes. In addition to the base sequence, sugar and type of phosphate or non-phosphate linkage should also be captured
+         */
+        sequence?: string;
+        /**
+         * Contains extended information for property 'sequence'.
+         */
+        _sequence?: Element;
+        /**
+         * The length of the sequence shall be captured
+         */
+        length?: integer;
+        /**
+         * Contains extended information for property 'length'.
+         */
+        _length?: Element;
+        /**
+         * (TBC)
+         */
+        sequenceAttachment?: Attachment;
+        /**
+         * The nucleotide present at the 5’ terminal shall be specified based on a controlled vocabulary. Since the sequence is represented from the 5' to the 3' end, the 5’ prime nucleotide is the letter at the first position in the sequence. A separate representation would be redundant
+         */
+        fivePrime?: CodeableConcept;
+        /**
+         * The nucleotide present at the 3’ terminal shall be specified based on a controlled vocabulary. Since the sequence is represented from the 5' to the 3' end, the 5’ prime nucleotide is the letter at the last position in the sequence. A separate representation would be redundant
+         */
+        threePrime?: CodeableConcept;
+        /**
+         * The linkages between sugar residues will also be captured
+         */
+        linkage?: SubstanceNucleicAcidSubunitLinkage[];
+        /**
+         * 5.3.6.8.1 Sugar ID (Mandatory)
+         */
+        sugar?: SubstanceNucleicAcidSubunitSugar[];
+    }
+    /**
+     * The linkages between sugar residues will also be captured
+     */
+    interface SubstanceNucleicAcidSubunitLinkage extends BackboneElement {
+        /**
+         * The entity that links the sugar residues together should also be captured for nearly all naturally occurring nucleic acid the linkage is a phosphate group. For many synthetic oligonucleotides phosphorothioate linkages are often seen. Linkage connectivity is assumed to be 3’-5’. If the linkage is either 3’-3’ or 5’-5’ this should be specified
+         */
+        connectivity?: string;
+        /**
+         * Contains extended information for property 'connectivity'.
+         */
+        _connectivity?: Element;
+        /**
+         * Each linkage will be registered as a fragment and have an ID
+         */
+        identifier?: Identifier;
+        /**
+         * Each linkage will be registered as a fragment and have at least one name. A single name shall be assigned to each linkage
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * Residues shall be captured as described in 5.3.6.8.3
+         */
+        residueSite?: string;
+        /**
+         * Contains extended information for property 'residueSite'.
+         */
+        _residueSite?: Element;
+    }
+    /**
+     * 5.3.6.8.1 Sugar ID (Mandatory)
+     */
+    interface SubstanceNucleicAcidSubunitSugar extends BackboneElement {
+        /**
+         * The Substance ID of the sugar or sugar-like component that make up the nucleotide
+         */
+        identifier?: Identifier;
+        /**
+         * The name of the sugar or sugar-like component that make up the nucleotide
+         */
+        name?: string;
+        /**
+         * Contains extended information for property 'name'.
+         */
+        _name?: Element;
+        /**
+         * The residues that contain a given sugar will be captured. The order of given residues will be captured in the 5‘-3‘direction consistent with the base sequences listed above
+         */
+        residueSite?: string;
+        /**
+         * Contains extended information for property 'residueSite'.
+         */
+        _residueSite?: Element;
+    }
+    /**
+     * Nucleic acids are defined by three distinct elements: the base, sugar and linkage. Individual substance/moiety IDs will be created for each of these elements. The nucleotide sequence will be always entered in the 5’-3’ direction
+     */
+    interface SubstanceNucleicAcid extends DomainResource {
+        /**
+         * The type of the sequence shall be specified based on a controlled vocabulary
+         */
+        sequenceType?: CodeableConcept;
+        /**
+         * The number of linear sequences of nucleotides linked through phosphodiester bonds shall be described. Subunits would be strands of nucleic acids that are tightly associated typically through Watson-Crick base pairing. NOTE: If not specified in the reference source, the assumption is that there is 1 subunit
+         */
+        numberOfSubunits?: integer;
+        /**
+         * Contains extended information for property 'numberOfSubunits'.
+         */
+        _numberOfSubunits?: Element;
+        /**
+         * The area of hybridisation shall be described if applicable for double stranded RNA or DNA. The number associated with the subunit followed by the number associated to the residue shall be specified in increasing order. The underscore “” shall be used as separator as follows: “Subunitnumber Residue”
+         */
+        areaOfHybridisation?: string;
+        /**
+         * Contains extended information for property 'areaOfHybridisation'.
+         */
+        _areaOfHybridisation?: Element;
+        /**
+         * (TBC)
+         */
+        oligoNucleotideType?: CodeableConcept;
+        /**
+         * Subunits are listed in order of decreasing length; sequences of the same length will be ordered by molecular weight; subunits that have identical sequences will be repeated multiple times
+         */
+        subunit?: SubstanceNucleicAcidSubunit[];
     }
     /**
      * Todo
@@ -28850,6 +30369,92 @@ declare module fhir.r4 {
         repeat?: SubstancePolymerRepeat[];
     }
     /**
+     * This subclause refers to the description of each subunit constituting the SubstanceProtein. A subunit is a linear sequence of amino acids linked through peptide bonds. The Subunit information shall be provided when the finished SubstanceProtein is a complex of multiple sequences; subunits are not used to delineate domains within a single sequence. Subunits are listed in order of decreasing length; sequences of the same length will be ordered by decreasing molecular weight; subunits that have identical sequences will be repeated multiple times
+     */
+    interface SubstanceProteinSubunit extends BackboneElement {
+        /**
+         * Index of primary sequences of amino acids linked through peptide bonds in order of decreasing length. Sequences of the same length will be ordered by molecular weight. Subunits that have identical sequences will be repeated and have sequential subscripts
+         */
+        subunit?: integer;
+        /**
+         * Contains extended information for property 'subunit'.
+         */
+        _subunit?: Element;
+        /**
+         * The sequence information shall be provided enumerating the amino acids from N- to C-terminal end using standard single-letter amino acid codes. Uppercase shall be used for L-amino acids and lowercase for D-amino acids. Transcribed SubstanceProteins will always be described using the translated sequence; for synthetic peptide containing amino acids that are not represented with a single letter code an X should be used within the sequence. The modified amino acids will be distinguished by their position in the sequence
+         */
+        sequence?: string;
+        /**
+         * Contains extended information for property 'sequence'.
+         */
+        _sequence?: Element;
+        /**
+         * Length of linear sequences of amino acids contained in the subunit
+         */
+        length?: integer;
+        /**
+         * Contains extended information for property 'length'.
+         */
+        _length?: Element;
+        /**
+         * The sequence information shall be provided enumerating the amino acids from N- to C-terminal end using standard single-letter amino acid codes. Uppercase shall be used for L-amino acids and lowercase for D-amino acids. Transcribed SubstanceProteins will always be described using the translated sequence; for synthetic peptide containing amino acids that are not represented with a single letter code an X should be used within the sequence. The modified amino acids will be distinguished by their position in the sequence
+         */
+        sequenceAttachment?: Attachment;
+        /**
+         * Unique identifier for molecular fragment modification based on the ISO 11238 Substance ID
+         */
+        nTerminalModificationId?: Identifier;
+        /**
+         * The name of the fragment modified at the N-terminal of the SubstanceProtein shall be specified
+         */
+        nTerminalModification?: string;
+        /**
+         * Contains extended information for property 'nTerminalModification'.
+         */
+        _nTerminalModification?: Element;
+        /**
+         * Unique identifier for molecular fragment modification based on the ISO 11238 Substance ID
+         */
+        cTerminalModificationId?: Identifier;
+        /**
+         * The modification at the C-terminal shall be specified
+         */
+        cTerminalModification?: string;
+        /**
+         * Contains extended information for property 'cTerminalModification'.
+         */
+        _cTerminalModification?: Element;
+    }
+    /**
+     * A SubstanceProtein is defined as a single unit of a linear amino acid sequence, or a combination of subunits that are either covalently linked or have a defined invariant stoichiometric relationship. This includes all synthetic, recombinant and purified SubstanceProteins of defined sequence, whether the use is therapeutic or prophylactic. This set of elements will be used to describe albumins, coagulation factors, cytokines, growth factors, peptide/SubstanceProtein hormones, enzymes, toxins, toxoids, recombinant vaccines, and immunomodulators
+     */
+    interface SubstanceProtein extends DomainResource {
+        /**
+         * The SubstanceProtein descriptive elements will only be used when a complete or partial amino acid sequence is available or derivable from a nucleic acid sequence
+         */
+        sequenceType?: CodeableConcept;
+        /**
+         * Number of linear sequences of amino acids linked through peptide bonds. The number of subunits constituting the SubstanceProtein shall be described. It is possible that the number of subunits can be variable
+         */
+        numberOfSubunits?: integer;
+        /**
+         * Contains extended information for property 'numberOfSubunits'.
+         */
+        _numberOfSubunits?: Element;
+        /**
+         * The disulphide bond between two cysteine residues either on the same subunit or on two different subunits shall be described. The position of the disulfide bonds in the SubstanceProtein shall be listed in increasing order of subunit number and position within subunit followed by the abbreviation of the amino acids involved. The disulfide linkage positions shall actually contain the amino acid Cysteine at the respective positions
+         */
+        disulfideLinkage?: string[];
+        /**
+         * Contains extended information for property 'disulfideLinkage'.
+         */
+        _disulfideLinkage?: Element[];
+        /**
+         * This subclause refers to the description of each subunit constituting the SubstanceProtein. A subunit is a linear sequence of amino acids linked through peptide bonds. The Subunit information shall be provided when the finished SubstanceProtein is a complex of multiple sequences; subunits are not used to delineate domains within a single sequence. Subunits are listed in order of decreasing length; sequences of the same length will be ordered by decreasing molecular weight; subunits that have identical sequences will be repeated multiple times
+         */
+        subunit?: SubstanceProteinSubunit[];
+    }
+    /**
      * Todo
      */
     interface SubstanceReferenceInformationGene extends BackboneElement {
@@ -28907,67 +30512,6 @@ declare module fhir.r4 {
     /**
      * Todo
      */
-    interface SubstanceReferenceInformationRelationship extends BackboneElement {
-        /**
-         * Todo
-         */
-        substanceReference?: Reference;
-        /**
-         * Todo
-         */
-        substanceCodeableConcept?: CodeableConcept;
-        /**
-         * Todo
-         */
-        relationship?: CodeableConcept;
-        /**
-         * Todo
-         */
-        interaction?: CodeableConcept;
-        /**
-         * Todo
-         */
-        isDefining?: boolean;
-        /**
-         * Contains extended information for property 'isDefining'.
-         */
-        _isDefining?: Element;
-        /**
-         * Todo
-         */
-        amountQuantity?: Quantity;
-        /**
-         * Todo
-         */
-        amountRange?: Range;
-        /**
-         * Todo
-         */
-        amountString?: string;
-        /**
-         * Contains extended information for property 'amountString'.
-         */
-        _amountString?: Element;
-        /**
-         * Todo
-         */
-        amountType?: CodeableConcept;
-        /**
-         * Todo
-         */
-        amountText?: string;
-        /**
-         * Contains extended information for property 'amountText'.
-         */
-        _amountText?: Element;
-        /**
-         * Todo
-         */
-        source?: Reference[];
-    }
-    /**
-     * Todo
-     */
     interface SubstanceReferenceInformationTarget extends BackboneElement {
         /**
          * Todo
@@ -28992,10 +30536,6 @@ declare module fhir.r4 {
         /**
          * Todo
          */
-        source?: Reference[];
-        /**
-         * Todo
-         */
         amountQuantity?: Quantity;
         /**
          * Todo
@@ -29013,6 +30553,10 @@ declare module fhir.r4 {
          * Todo
          */
         amountType?: CodeableConcept;
+        /**
+         * Todo
+         */
+        source?: Reference[];
     }
     /**
      * Todo
@@ -29041,11 +30585,226 @@ declare module fhir.r4 {
         /**
          * Todo
          */
-        relationship?: SubstanceReferenceInformationRelationship[];
-        /**
-         * Todo
-         */
         target?: SubstanceReferenceInformationTarget[];
+    }
+    /**
+     * Many complex materials are fractions of parts of plants, animals, or minerals. Fraction elements are often necessary to define both Substances and Specified Group 1 Substances. For substances derived from Plants, fraction information will be captured at the Substance information level ( . Oils, Juices and Exudates). Additional information for Extracts, such as extraction solvent composition, will be captured at the Specified Substance Group 1 information level. For plasma-derived products fraction information will be captured at the Substance and the Specified Substance Group 1 levels
+     */
+    interface SubstanceSourceMaterialFractionDescription extends BackboneElement {
+        /**
+         * This element is capturing information about the fraction of a plant part, or human plasma for fractionation
+         */
+        fraction?: string;
+        /**
+         * Contains extended information for property 'fraction'.
+         */
+        _fraction?: Element;
+        /**
+         * The specific type of the material constituting the component. For Herbal preparations the particulars of the extracts (liquid/dry) is described in Specified Substance Group 1
+         */
+        materialType?: CodeableConcept;
+    }
+    /**
+     * This subclause describes the organism which the substance is derived from. For vaccines, the parent organism shall be specified based on these subclause elements. As an example, full taxonomy will be described for the Substance Name: ., Leaf
+     */
+    interface SubstanceSourceMaterialOrganism extends BackboneElement {
+        /**
+         * The family of an organism shall be specified
+         */
+        family?: CodeableConcept;
+        /**
+         * The genus of an organism shall be specified; refers to the Latin epithet of the genus element of the plant/animal scientific name; it is present in names for genera, species and infraspecies
+         */
+        genus?: CodeableConcept;
+        /**
+         * The species of an organism shall be specified; refers to the Latin epithet of the species of the plant/animal; it is present in names for species and infraspecies
+         */
+        species?: CodeableConcept;
+        /**
+         * The Intraspecific type of an organism shall be specified
+         */
+        intraspecificType?: CodeableConcept;
+        /**
+         * The intraspecific description of an organism shall be specified based on a controlled vocabulary. For Influenza Vaccine, the intraspecific description shall contain the syntax of the antigen in line with the WHO convention
+         */
+        intraspecificDescription?: string;
+        /**
+         * Contains extended information for property 'intraspecificDescription'.
+         */
+        _intraspecificDescription?: Element;
+        /**
+         * 4.9.13.6.1 Author type (Conditional)
+         */
+        author?: SubstanceSourceMaterialOrganismAuthor[];
+        /**
+         * 4.9.13.8.1 Hybrid species maternal organism ID (Optional)
+         */
+        hybrid?: SubstanceSourceMaterialOrganismHybrid;
+        /**
+         * 4.9.13.7.1 Kingdom (Conditional)
+         */
+        organismGeneral?: SubstanceSourceMaterialOrganismOrganismGeneral;
+    }
+    /**
+     * 4.9.13.6.1 Author type (Conditional)
+     */
+    interface SubstanceSourceMaterialOrganismAuthor extends BackboneElement {
+        /**
+         * The type of author of an organism species shall be specified. The parenthetical author of an organism species refers to the first author who published the plant/animal name (of any rank). The primary author of an organism species refers to the first author(s), who validly published the plant/animal name
+         */
+        authorType?: CodeableConcept;
+        /**
+         * The author of an organism species shall be specified. The author year of an organism shall also be specified when applicable; refers to the year in which the first author(s) published the infraspecific plant/animal name (of any rank)
+         */
+        authorDescription?: string;
+        /**
+         * Contains extended information for property 'authorDescription'.
+         */
+        _authorDescription?: Element;
+    }
+    /**
+     * 4.9.13.8.1 Hybrid species maternal organism ID (Optional)
+     */
+    interface SubstanceSourceMaterialOrganismHybrid extends BackboneElement {
+        /**
+         * The identifier of the maternal species constituting the hybrid organism shall be specified based on a controlled vocabulary. For plants, the parents aren’t always known, and it is unlikely that it will be known which is maternal and which is paternal
+         */
+        maternalOrganismId?: string;
+        /**
+         * Contains extended information for property 'maternalOrganismId'.
+         */
+        _maternalOrganismId?: Element;
+        /**
+         * The name of the maternal species constituting the hybrid organism shall be specified. For plants, the parents aren’t always known, and it is unlikely that it will be known which is maternal and which is paternal
+         */
+        maternalOrganismName?: string;
+        /**
+         * Contains extended information for property 'maternalOrganismName'.
+         */
+        _maternalOrganismName?: Element;
+        /**
+         * The identifier of the paternal species constituting the hybrid organism shall be specified based on a controlled vocabulary
+         */
+        paternalOrganismId?: string;
+        /**
+         * Contains extended information for property 'paternalOrganismId'.
+         */
+        _paternalOrganismId?: Element;
+        /**
+         * The name of the paternal species constituting the hybrid organism shall be specified
+         */
+        paternalOrganismName?: string;
+        /**
+         * Contains extended information for property 'paternalOrganismName'.
+         */
+        _paternalOrganismName?: Element;
+        /**
+         * The hybrid type of an organism shall be specified
+         */
+        hybridType?: CodeableConcept;
+    }
+    /**
+     * 4.9.13.7.1 Kingdom (Conditional)
+     */
+    interface SubstanceSourceMaterialOrganismOrganismGeneral extends BackboneElement {
+        /**
+         * The kingdom of an organism shall be specified
+         */
+        kingdom?: CodeableConcept;
+        /**
+         * The phylum of an organism shall be specified
+         */
+        phylum?: CodeableConcept;
+        /**
+         * The class of an organism shall be specified
+         */
+        class?: CodeableConcept;
+        /**
+         * The order of an organism shall be specified,
+         */
+        order?: CodeableConcept;
+    }
+    /**
+     * To do
+     */
+    interface SubstanceSourceMaterialPartDescription extends BackboneElement {
+        /**
+         * Entity of anatomical origin of source material within an organism
+         */
+        part?: CodeableConcept;
+        /**
+         * The detailed anatomic location when the part can be extracted from different anatomical locations of the organism. Multiple alternative locations may apply
+         */
+        partLocation?: CodeableConcept;
+    }
+    /**
+     * Source material shall capture information on the taxonomic and anatomical origins as well as the fraction of a material that can result in or can be modified to form a substance. This set of data elements shall be used to define polymer substances isolated from biological matrices. Taxonomic and anatomical origins shall be described using a controlled vocabulary as required. This information is captured for naturally derived polymers ( . starch) and structurally diverse substances. For Organisms belonging to the Kingdom Plantae the Substance level defines the fresh material of a single species or infraspecies, the Herbal Drug and the Herbal preparation. For Herbal preparations, the fraction information will be captured at the Substance information level and additional information for herbal extracts will be captured at the Specified Substance Group 1 information level. See for further explanation the Substance Class: Structurally Diverse and the herbal annex
+     */
+    interface SubstanceSourceMaterial extends DomainResource {
+        /**
+         * General high level classification of the source material specific to the origin of the material
+         */
+        sourceMaterialClass?: CodeableConcept;
+        /**
+         * The type of the source material shall be specified based on a controlled vocabulary. For vaccines, this subclause refers to the class of infectious agent
+         */
+        sourceMaterialType?: CodeableConcept;
+        /**
+         * The state of the source material when extracted
+         */
+        sourceMaterialState?: CodeableConcept;
+        /**
+         * The unique identifier associated with the source material parent organism shall be specified
+         */
+        organismId?: Identifier;
+        /**
+         * The organism accepted Scientific name shall be provided based on the organism taxonomy
+         */
+        organismName?: string;
+        /**
+         * Contains extended information for property 'organismName'.
+         */
+        _organismName?: Element;
+        /**
+         * The parent of the herbal drug Ginkgo biloba, Leaf is the substance ID of the substance (fresh) of Ginkgo biloba L. or Ginkgo biloba L. (Whole plant)
+         */
+        parentSubstanceId?: Identifier[];
+        /**
+         * The parent substance of the Herbal Drug, or Herbal preparation
+         */
+        parentSubstanceName?: string[];
+        /**
+         * Contains extended information for property 'parentSubstanceName'.
+         */
+        _parentSubstanceName?: Element[];
+        /**
+         * The country where the plant material is harvested or the countries where the plasma is sourced from as laid down in accordance with the Plasma Master File. For “Plasma-derived substances” the attribute country of origin provides information about the countries used for the manufacturing of the Cryopoor plama or Crioprecipitate
+         */
+        countryOfOrigin?: CodeableConcept[];
+        /**
+         * The place/region where the plant is harvested or the places/regions where the animal source material has its habitat
+         */
+        geographicalLocation?: string[];
+        /**
+         * Contains extended information for property 'geographicalLocation'.
+         */
+        _geographicalLocation?: Element[];
+        /**
+         * Stage of life for animals, plants, insects and microorganisms. This information shall be provided only when the substance is significantly different in these stages (e.g. foetal bovine serum)
+         */
+        developmentStage?: CodeableConcept;
+        /**
+         * Many complex materials are fractions of parts of plants, animals, or minerals. Fraction elements are often necessary to define both Substances and Specified Group 1 Substances. For substances derived from Plants, fraction information will be captured at the Substance information level ( . Oils, Juices and Exudates). Additional information for Extracts, such as extraction solvent composition, will be captured at the Specified Substance Group 1 information level. For plasma-derived products fraction information will be captured at the Substance and the Specified Substance Group 1 levels
+         */
+        fractionDescription?: SubstanceSourceMaterialFractionDescription[];
+        /**
+         * This subclause describes the organism which the substance is derived from. For vaccines, the parent organism shall be specified based on these subclause elements. As an example, full taxonomy will be described for the Substance Name: ., Leaf
+         */
+        organism?: SubstanceSourceMaterialOrganism;
+        /**
+         * To do
+         */
+        partDescription?: SubstanceSourceMaterialPartDescription[];
     }
     /**
      * Moiety, for structural modifications
@@ -29086,26 +30845,30 @@ declare module fhir.r4 {
         /**
          * Quantitative value for this moiety
          */
-        amount?: string;
+        amountQuantity?: Quantity;
         /**
-         * Contains extended information for property 'amount'.
+         * Quantitative value for this moiety
          */
-        _amount?: Element;
+        amountString?: string;
+        /**
+         * Contains extended information for property 'amountString'.
+         */
+        _amountString?: Element;
     }
     /**
      * General specifications for this substance, including how it is related to other substances
      */
     interface SubstanceSpecificationProperty extends BackboneElement {
         /**
-         * Description todo
+         * A category for this property, e.g. Physical, Chemical, Enzymatic
          */
-        type?: CodeableConcept;
+        category?: CodeableConcept;
         /**
-         * Description todo
+         * Property type e.g. viscosity, pH, isoelectric point
          */
-        name?: CodeableConcept;
+        code?: CodeableConcept;
         /**
-         * A field that should be used to capture parameters that were used in the measurement of a property
+         * Parameters that were used in the measurement of a property (e.g. for viscosity: measured at 20C with a pH of 7.1)
          */
         parameters?: string;
         /**
@@ -29113,25 +30876,25 @@ declare module fhir.r4 {
          */
         _parameters?: Element;
         /**
-         * Identifier for a substance upon which a defining property depends
+         * A substance upon which a defining property depends (e.g. for solubility: in water, in alcohol)
          */
-        substanceId?: Identifier;
+        definingSubstanceReference?: Reference;
         /**
-         * Description todo
+         * A substance upon which a defining property depends (e.g. for solubility: in water, in alcohol)
          */
-        substanceName?: string;
-        /**
-         * Contains extended information for property 'substanceName'.
-         */
-        _substanceName?: Element;
+        definingSubstanceCodeableConcept?: CodeableConcept;
         /**
          * Quantitative value for this property
          */
-        amount?: string;
+        amountQuantity?: Quantity;
         /**
-         * Contains extended information for property 'amount'.
+         * Quantitative value for this property
          */
-        _amount?: Element;
+        amountString?: string;
+        /**
+         * Contains extended information for property 'amountString'.
+         */
+        _amountString?: Element;
     }
     /**
      * Structural information
@@ -29154,7 +30917,7 @@ declare module fhir.r4 {
          */
         _molecularFormula?: Element;
         /**
-         * Specified per moiety according to the Hill system, i.e. first C, then H, then alphabetical. and each moiety separated by a dot
+         * Specified per moiety according to the Hill system, i.e. first C, then H, then alphabetical, each moiety separated by a dot
          */
         molecularFormulaByMoiety?: string;
         /**
@@ -29172,11 +30935,11 @@ declare module fhir.r4 {
         /**
          * Supporting literature
          */
-        referenceSource?: Reference[];
+        source?: Reference[];
         /**
-         * Molectular structural representation
+         * Molecular structural representation
          */
-        structuralRepresentation?: SubstanceSpecificationStructureStructuralRepresentation[];
+        representation?: SubstanceSpecificationStructureRepresentation[];
     }
     /**
      * Applicable for single substances that contain a radionuclide or a non-natural isotopic ratio
@@ -29185,27 +30948,19 @@ declare module fhir.r4 {
         /**
          * Substance identifier for each non-natural or radioisotope
          */
-        nuclideId?: Identifier;
+        identifier?: Identifier;
         /**
          * Substance name for each non-natural or radioisotope
          */
-        nuclideName?: CodeableConcept;
+        name?: CodeableConcept;
         /**
          * The type of isotopic substitution present in a single substance
          */
-        substitutionType?: CodeableConcept;
+        substitution?: CodeableConcept;
         /**
          * Half life - for a non-natural nuclide
          */
-        nuclideHalfLife?: Quantity;
-        /**
-         * Quantitative values for this isotope
-         */
-        amount?: string;
-        /**
-         * Contains extended information for property 'amount'.
-         */
-        _amount?: Element;
+        halfLife?: Quantity;
         /**
          * The molecular weight or weight range (for proteins, polymers or nucleic acids)
          */
@@ -29226,16 +30981,12 @@ declare module fhir.r4 {
         /**
          * Used to capture quantitative values for a variety of elements. If only limits are given, the arithmetic mean would be the average. If only a single definite value for a given element is given, it would be captured in this field
          */
-        amount?: string;
-        /**
-         * Contains extended information for property 'amount'.
-         */
-        _amount?: Element;
+        amount?: Quantity;
     }
     /**
-     * Molectular structural representation
+     * Molecular structural representation
      */
-    interface SubstanceSpecificationStructureStructuralRepresentation extends BackboneElement {
+    interface SubstanceSpecificationStructureRepresentation extends BackboneElement {
         /**
          * The type of structure (e.g. Full, Partial, Representative)
          */
@@ -29256,7 +31007,7 @@ declare module fhir.r4 {
     /**
      * Codes associated with the substance
      */
-    interface SubstanceSpecificationSubstanceCode extends BackboneElement {
+    interface SubstanceSpecificationCode extends BackboneElement {
         /**
          * The specific code
          */
@@ -29284,20 +31035,16 @@ declare module fhir.r4 {
         /**
          * Supporting literature
          */
-        referenceSource?: string[];
-        /**
-         * Contains extended information for property 'referenceSource'.
-         */
-        _referenceSource?: Element[];
+        source?: Reference[];
     }
     /**
-     * Names applicable to this substence
+     * Names applicable to this substance
      */
-    interface SubstanceSpecificationSubstanceName extends BackboneElement {
+    interface SubstanceSpecificationName extends BackboneElement {
         /**
          * The actual name
          */
-        name?: string;
+        name: string;
         /**
          * Contains extended information for property 'name'.
          */
@@ -29306,6 +31053,18 @@ declare module fhir.r4 {
          * Name type
          */
         type?: CodeableConcept;
+        /**
+         * The status of the name
+         */
+        status?: CodeableConcept;
+        /**
+         * If this is the preferred name for this substance
+         */
+        preferred?: boolean;
+        /**
+         * Contains extended information for property 'preferred'.
+         */
+        _preferred?: Element;
         /**
          * Language of the name
          */
@@ -29319,22 +31078,34 @@ declare module fhir.r4 {
          */
         jurisdiction?: CodeableConcept[];
         /**
+         * A synonym of this name
+         */
+        synonym?: string;
+        /**
+         * Contains extended information for property 'synonym'.
+         */
+        _synonym?: Element;
+        /**
+         * A translation for this name
+         */
+        translation?: string;
+        /**
+         * Contains extended information for property 'translation'.
+         */
+        _translation?: Element;
+        /**
          * Details of the official nature of this name
          */
-        officialName?: SubstanceSpecificationSubstanceNameOfficialName[];
+        official?: SubstanceSpecificationNameOfficial[];
         /**
          * Supporting literature
          */
-        referenceSource?: string[];
-        /**
-         * Contains extended information for property 'referenceSource'.
-         */
-        _referenceSource?: Element[];
+        source?: Reference[];
     }
     /**
      * Details of the official nature of this name
      */
-    interface SubstanceSpecificationSubstanceNameOfficialName extends BackboneElement {
+    interface SubstanceSpecificationNameOfficial extends BackboneElement {
         /**
          * Which authority uses this official name
          */
@@ -29353,25 +31124,66 @@ declare module fhir.r4 {
         _date?: Element;
     }
     /**
+     * A link between this substance and another, with details of the relationship
+     */
+    interface SubstanceSpecificationRelationship extends BackboneElement {
+        /**
+         * A pointer to another substance, as a resource or just a representational code
+         */
+        substanceReference?: Reference;
+        /**
+         * A pointer to another substance, as a resource or just a representational code
+         */
+        substanceCodeableConcept?: CodeableConcept;
+        /**
+         * For example "salt to parent", "active moiety", "starting material"
+         */
+        relationship?: CodeableConcept;
+        /**
+         * For example where an enzyme strongly bonds with a particular substance, this is a defining relationship for that enzyme, out of several possible substance relationships
+         */
+        isDefining?: boolean;
+        /**
+         * Contains extended information for property 'isDefining'.
+         */
+        _isDefining?: Element;
+        /**
+         * A numeric factor for the relationship, for instance to express that the salt of a substance has some percentage of the active substance in relation to some other
+         */
+        amountQuantity?: Quantity;
+        /**
+         * A numeric factor for the relationship, for instance to express that the salt of a substance has some percentage of the active substance in relation to some other
+         */
+        amountRange?: Range;
+        /**
+         * A numeric factor for the relationship, for instance to express that the salt of a substance has some percentage of the active substance in relation to some other
+         */
+        amountRatio?: Ratio;
+        /**
+         * A numeric factor for the relationship, for instance to express that the salt of a substance has some percentage of the active substance in relation to some other
+         */
+        amountString?: string;
+        /**
+         * Contains extended information for property 'amountString'.
+         */
+        _amountString?: Element;
+        /**
+         * For use when the numeric
+         */
+        amountRatioLowLimit?: Ratio;
+        /**
+         * An operator for the amount, for example "average", "approximately", "less than"
+         */
+        amountType?: CodeableConcept;
+        /**
+         * Supporting literature
+         */
+        source?: Reference[];
+    }
+    /**
      * The detailed description of a substance, typically at a level beyond what is used for prescribing
      */
     interface SubstanceSpecification extends DomainResource {
-        /**
-         * Textual comment
-         */
-        comment?: string;
-        /**
-         * Contains extended information for property 'comment'.
-         */
-        _comment?: Element;
-        /**
-         * Chemicals may be stoichiometric or non-stoichiometric
-         */
-        stoichiometric?: boolean;
-        /**
-         * Contains extended information for property 'stoichiometric'.
-         */
-        _stoichiometric?: Element;
         /**
          * Identifier by which this substance is known
          */
@@ -29381,13 +31193,33 @@ declare module fhir.r4 {
          */
         type?: CodeableConcept;
         /**
+         * Status of substance within the catalogue e.g. approved
+         */
+        status?: CodeableConcept;
+        /**
+         * If the substance applies to only human or veterinary use
+         */
+        domain?: CodeableConcept;
+        /**
+         * Textual description of the substance
+         */
+        description?: string;
+        /**
+         * Contains extended information for property 'description'.
+         */
+        _description?: Element;
+        /**
          * Supporting literature
          */
-        referenceSource?: string[];
+        source?: Reference[];
         /**
-         * Contains extended information for property 'referenceSource'.
+         * Textual comment about this record of a substance
          */
-        _referenceSource?: Element[];
+        comment?: string;
+        /**
+         * Contains extended information for property 'comment'.
+         */
+        _comment?: Element;
         /**
          * Moiety, for structural modifications
          */
@@ -29407,19 +31239,35 @@ declare module fhir.r4 {
         /**
          * Codes associated with the substance
          */
-        substanceCode?: SubstanceSpecificationSubstanceCode[];
+        code?: SubstanceSpecificationCode[];
         /**
-         * Names applicable to this substence
+         * Names applicable to this substance
          */
-        substanceName?: SubstanceSpecificationSubstanceName[];
+        name?: SubstanceSpecificationName[];
         /**
          * The molecular weight or weight range (for proteins, polymers or nucleic acids)
          */
         molecularWeight?: SubstanceSpecificationStructureIsotopeMolecularWeight[];
         /**
+         * A link between this substance and another, with details of the relationship
+         */
+        relationship?: SubstanceSpecificationRelationship[];
+        /**
+         * Data items specific to nucleic acids
+         */
+        nucleicAcid?: Reference;
+        /**
          * Data items specific to polymers
          */
         polymer?: Reference;
+        /**
+         * Data items specific to proteins
+         */
+        protein?: Reference;
+        /**
+         * Material or taxonomic/anatomical source for the substance
+         */
+        sourceMaterial?: Reference;
     }
     /**
      * The item that is delivered or supplied
@@ -29537,9 +31385,9 @@ declare module fhir.r4 {
      */
     interface SupplyRequest extends DomainResource {
         /**
-         * Unique identifier
+         * Business Identifier for SupplyRequest
          */
-        identifier?: Identifier;
+        identifier?: Identifier[];
         /**
          * draft | active | suspended +
          */
@@ -29893,18 +31741,6 @@ declare module fhir.r4 {
         /**
          * Content to use in performing the task
          */
-        valueParameterDefinition?: ParameterDefinition;
-        /**
-         * Content to use in performing the task
-         */
-        valueDataRequirement?: DataRequirement;
-        /**
-         * Content to use in performing the task
-         */
-        valueRelatedArtifact?: RelatedArtifact;
-        /**
-         * Content to use in performing the task
-         */
         valueContactDetail?: ContactDetail;
         /**
          * Content to use in performing the task
@@ -29913,11 +31749,23 @@ declare module fhir.r4 {
         /**
          * Content to use in performing the task
          */
-        valueTriggerDefinition?: TriggerDefinition;
+        valueDataRequirement?: DataRequirement;
         /**
          * Content to use in performing the task
          */
         valueExpression?: Expression;
+        /**
+         * Content to use in performing the task
+         */
+        valueParameterDefinition?: ParameterDefinition;
+        /**
+         * Content to use in performing the task
+         */
+        valueRelatedArtifact?: RelatedArtifact;
+        /**
+         * Content to use in performing the task
+         */
+        valueTriggerDefinition?: TriggerDefinition;
         /**
          * Content to use in performing the task
          */
@@ -30174,18 +32022,6 @@ declare module fhir.r4 {
         /**
          * Result of output
          */
-        valueParameterDefinition?: ParameterDefinition;
-        /**
-         * Result of output
-         */
-        valueDataRequirement?: DataRequirement;
-        /**
-         * Result of output
-         */
-        valueRelatedArtifact?: RelatedArtifact;
-        /**
-         * Result of output
-         */
         valueContactDetail?: ContactDetail;
         /**
          * Result of output
@@ -30194,11 +32030,23 @@ declare module fhir.r4 {
         /**
          * Result of output
          */
-        valueTriggerDefinition?: TriggerDefinition;
+        valueDataRequirement?: DataRequirement;
         /**
          * Result of output
          */
         valueExpression?: Expression;
+        /**
+         * Result of output
+         */
+        valueParameterDefinition?: ParameterDefinition;
+        /**
+         * Result of output
+         */
+        valueRelatedArtifact?: RelatedArtifact;
+        /**
+         * Result of output
+         */
+        valueTriggerDefinition?: TriggerDefinition;
         /**
          * Result of output
          */
@@ -30299,7 +32147,7 @@ declare module fhir.r4 {
         /**
          * Healthcare event during which this task originated
          */
-        context?: Reference;
+        encounter?: Reference;
         /**
          * Start and end time of execution
          */
@@ -30325,7 +32173,7 @@ declare module fhir.r4 {
          */
         requester?: Reference;
         /**
-         * requester | dispatcher | scheduler | performer | monitor | manager | acquirer | reviewer
+         * Requested performer
          */
         performerType?: CodeableConcept[];
         /**
@@ -31230,91 +33078,6 @@ declare module fhir.r4 {
         _sourceId?: Element;
     }
     /**
-     * Assert rule used within the test script
-     */
-    interface TestScriptRule extends BackboneElement {
-        /**
-         * Assert rule resource reference
-         */
-        resource: Reference;
-        /**
-         * Rule parameter template
-         */
-        param?: TestScriptRuleParam[];
-    }
-    /**
-     * Rule parameter template
-     */
-    interface TestScriptRuleParam extends BackboneElement {
-        /**
-         * Parameter name matching external assert rule parameter
-         */
-        name: string;
-        /**
-         * Contains extended information for property 'name'.
-         */
-        _name?: Element;
-        /**
-         * Parameter value defined either explicitly or dynamically
-         */
-        value?: string;
-        /**
-         * Contains extended information for property 'value'.
-         */
-        _value?: Element;
-    }
-    /**
-     * Assert ruleset used within the test script
-     */
-    interface TestScriptRuleset extends BackboneElement {
-        /**
-         * Assert ruleset resource reference
-         */
-        resource: Reference;
-        /**
-         * The referenced rule within the ruleset
-         */
-        rule: TestScriptRulesetRule[];
-    }
-    /**
-     * The referenced rule within the ruleset
-     */
-    interface TestScriptRulesetRule extends BackboneElement {
-        /**
-         * Id of referenced rule within the ruleset
-         */
-        ruleId: id;
-        /**
-         * Contains extended information for property 'ruleId'.
-         */
-        _ruleId?: Element;
-        /**
-         * Ruleset rule parameter template
-         */
-        param?: TestScriptRulesetRuleParam[];
-    }
-    /**
-     * Ruleset rule parameter template
-     */
-    interface TestScriptRulesetRuleParam extends BackboneElement {
-        /**
-         * Parameter name matching external assert ruleset rule parameter
-         */
-        name: string;
-        /**
-         * Contains extended information for property 'name'.
-         */
-        _name?: Element;
-        /**
-         * Parameter value defined either explicitly or dynamically
-         */
-        value?: string;
-        /**
-         * Contains extended information for property 'value'.
-         */
-        _value?: Element;
-    }
-    /**
      * A series of required setup operations before tests are executed
      */
     interface TestScriptSetup extends BackboneElement {
@@ -31400,6 +33163,14 @@ declare module fhir.r4 {
          * Contains extended information for property 'encodeRequestUrl'.
          */
         _encodeRequestUrl?: Element;
+        /**
+         * delete | get | options | patch | post | put | head
+         */
+        method?: code;
+        /**
+         * Contains extended information for property 'method'.
+         */
+        _method?: Element;
         /**
          * Server initiating the request
          */
@@ -31591,7 +33362,7 @@ declare module fhir.r4 {
          */
         _path?: Element;
         /**
-         * delete | get | options | patch | post | put
+         * delete | get | options | patch | post | put | head
          */
         requestMethod?: code;
         /**
@@ -31631,14 +33402,6 @@ declare module fhir.r4 {
          */
         _responseCode?: Element;
         /**
-         * The reference to a TestScript.rule
-         */
-        rule?: TestScriptSetupActionAssertRule;
-        /**
-         * The reference to a TestScript.ruleset
-         */
-        ruleset?: TestScriptSetupActionAssertRuleset;
-        /**
          * Fixture Id of source expression or headerField
          */
         sourceId?: id;
@@ -31670,99 +33433,6 @@ declare module fhir.r4 {
          * Contains extended information for property 'warningOnly'.
          */
         _warningOnly?: Element;
-    }
-    /**
-     * The reference to a TestScript.rule
-     */
-    interface TestScriptSetupActionAssertRule extends BackboneElement {
-        /**
-         * Id of the TestScript.rule
-         */
-        ruleId: id;
-        /**
-         * Contains extended information for property 'ruleId'.
-         */
-        _ruleId?: Element;
-        /**
-         * Rule parameter template
-         */
-        param?: TestScriptSetupActionAssertRuleParam[];
-    }
-    /**
-     * Rule parameter template
-     */
-    interface TestScriptSetupActionAssertRuleParam extends BackboneElement {
-        /**
-         * Parameter name matching external assert rule parameter
-         */
-        name: string;
-        /**
-         * Contains extended information for property 'name'.
-         */
-        _name?: Element;
-        /**
-         * Parameter value defined either explicitly or dynamically
-         */
-        value: string;
-        /**
-         * Contains extended information for property 'value'.
-         */
-        _value?: Element;
-    }
-    /**
-     * The reference to a TestScript.ruleset
-     */
-    interface TestScriptSetupActionAssertRuleset extends BackboneElement {
-        /**
-         * Id of the TestScript.ruleset
-         */
-        rulesetId: id;
-        /**
-         * Contains extended information for property 'rulesetId'.
-         */
-        _rulesetId?: Element;
-        /**
-         * The referenced rule within the ruleset
-         */
-        rule?: TestScriptSetupActionAssertRulesetRule[];
-    }
-    /**
-     * The referenced rule within the ruleset
-     */
-    interface TestScriptSetupActionAssertRulesetRule extends BackboneElement {
-        /**
-         * Id of referenced rule within the ruleset
-         */
-        ruleId: id;
-        /**
-         * Contains extended information for property 'ruleId'.
-         */
-        _ruleId?: Element;
-        /**
-         * Rule parameter template
-         */
-        param?: TestScriptSetupActionAssertRulesetRuleParam[];
-    }
-    /**
-     * Rule parameter template
-     */
-    interface TestScriptSetupActionAssertRulesetRuleParam extends BackboneElement {
-        /**
-         * Parameter name matching external assert ruleset rule parameter
-         */
-        name: string;
-        /**
-         * Contains extended information for property 'name'.
-         */
-        _name?: Element;
-        /**
-         * Parameter value defined either explicitly or dynamically
-         */
-        value: string;
-        /**
-         * Contains extended information for property 'value'.
-         */
-        _value?: Element;
     }
     /**
      * A test in this script
@@ -31953,14 +33623,6 @@ declare module fhir.r4 {
          */
         variable?: TestScriptVariable[];
         /**
-         * Assert rule used within the test script
-         */
-        rule?: TestScriptRule[];
-        /**
-         * Assert ruleset used within the test script
-         */
-        ruleset?: TestScriptRuleset[];
-        /**
          * A series of required setup operations before tests are executed
          */
         setup?: TestScriptSetup;
@@ -31972,93 +33634,6 @@ declare module fhir.r4 {
          * A series of required clean up steps
          */
         teardown?: TestScriptTeardown;
-    }
-    /**
-     * Status of the session
-     */
-    interface UserSessionStatus extends BackboneElement {
-        /**
-         * activating | active | suspended | closing | closed
-         */
-        code: code;
-        /**
-         * Contains extended information for property 'code'.
-         */
-        _code?: Element;
-        /**
-         * user | system
-         */
-        source: code;
-        /**
-         * Contains extended information for property 'source'.
-         */
-        _source?: Element;
-    }
-    /**
-     * Additional information about the session
-     */
-    interface UserSessionContext extends BackboneElement {
-        /**
-         * What type of context value
-         */
-        type: string;
-        /**
-         * Contains extended information for property 'type'.
-         */
-        _type?: Element;
-        /**
-         * Value of the context
-         */
-        valueCodeableConcept?: CodeableConcept;
-        /**
-         * Value of the context
-         */
-        valueQuantity?: Quantity;
-    }
-    /**
-     * Information about a user's current session
-     */
-    interface UserSession extends DomainResource {
-        /**
-         * Business identifier
-         */
-        identifier?: Identifier;
-        /**
-         * User engaged in the session
-         */
-        user: Reference;
-        /**
-         * Status of the session
-         */
-        status?: UserSessionStatus;
-        /**
-         * Where is the session
-         */
-        workstation?: Identifier;
-        /**
-         * What is the user's current focus
-         */
-        focus?: Reference[];
-        /**
-         * When was the session created
-         */
-        created?: instant;
-        /**
-         * Contains extended information for property 'created'.
-         */
-        _created?: Element;
-        /**
-         * When does the session expire
-         */
-        expires?: instant;
-        /**
-         * Contains extended information for property 'expires'.
-         */
-        _expires?: Element;
-        /**
-         * Additional information about the session
-         */
-        context?: UserSessionContext[];
     }
     /**
      * Content logical definition of the value set (CLD)
@@ -32181,7 +33756,7 @@ declare module fhir.r4 {
      */
     interface ValueSetComposeIncludeFilter extends BackboneElement {
         /**
-         * A property defined by the code system
+         * A property/filter defined by the code system
          */
         property: code;
         /**
@@ -32512,15 +34087,15 @@ declare module fhir.r4 {
         /**
          * Reference to the primary source
          */
-        organization?: Reference;
+        who?: Reference;
         /**
          * Type of primary source (License Board; Primary Education; Continuing Education; Postal Service; Relationship owner; Registration Authority; legal source; issuing source; authoritative source)
          */
         type?: CodeableConcept[];
         /**
-         * The process(es) by which the target is validated
+         * Method for exchanging information with the primary source
          */
-        validationProcess?: CodeableConcept[];
+        communicationMethod?: CodeableConcept[];
         /**
          * successful | failed | unknown
          */
@@ -32547,17 +34122,17 @@ declare module fhir.r4 {
      */
     interface VerificationResultAttestation extends BackboneElement {
         /**
-         * The individual attesting to information
+         * The individual or organization attesting to information
          */
-        source?: Reference;
+        who?: Reference;
         /**
-         * The organization attesting to information
+         * When the who is asserting on behalf of another (organization or individual)
          */
-        organization?: Reference;
+        onBehalfOf?: Reference;
         /**
-         * Who is providing the attested information (owner; authorized representative; authorized intermediary; non-authorized source)
+         * The method by which attested information was submitted/retrieved
          */
-        method?: CodeableConcept;
+        communicationMethod?: CodeableConcept;
         /**
          * The date the information was attested to
          */
@@ -32585,35 +34160,11 @@ declare module fhir.r4 {
         /**
          * Proxy signature
          */
-        signedProxyRightString?: string;
-        /**
-         * Contains extended information for property 'signedProxyRightString'.
-         */
-        _signedProxyRightString?: Element;
-        /**
-         * Proxy signature
-         */
-        signedProxyRightUri?: uri;
-        /**
-         * Contains extended information for property 'signedProxyRightUri'.
-         */
-        _signedProxyRightUri?: Element;
+        proxySignature?: Signature;
         /**
          * Attester signature
          */
-        signedSourceAttestationString?: string;
-        /**
-         * Contains extended information for property 'signedSourceAttestationString'.
-         */
-        _signedSourceAttestationString?: Element;
-        /**
-         * Attester signature
-         */
-        signedSourceAttestationUri?: uri;
-        /**
-         * Contains extended information for property 'signedSourceAttestationUri'.
-         */
-        _signedSourceAttestationUri?: Element;
+        sourceSignature?: Signature;
     }
     /**
      * Information about the entity validating information
@@ -32634,19 +34185,7 @@ declare module fhir.r4 {
         /**
          * Validator signature
          */
-        signedValidatorAttestationString?: string;
-        /**
-         * Contains extended information for property 'signedValidatorAttestationString'.
-         */
-        _signedValidatorAttestationString?: Element;
-        /**
-         * Validator signature
-         */
-        signedValidatorAttestationUri?: uri;
-        /**
-         * Contains extended information for property 'signedValidatorAttestationUri'.
-         */
-        _signedValidatorAttestationUri?: Element;
+        attestationSignature?: Signature;
     }
     /**
      * Describes validation requirements, source(s), status and dates for one or more elements
@@ -32697,7 +34236,7 @@ declare module fhir.r4 {
          */
         frequency?: Timing;
         /**
-         * The date/time validation was last completed (incl. failed validations)
+         * The date/time validation was last completed (including failed validations)
          */
         lastPerformed?: dateTime;
         /**
@@ -32730,23 +34269,23 @@ declare module fhir.r4 {
         validator?: VerificationResultValidator[];
     }
     /**
-     * Vision supply authorization
+     * Vision lens authorization
      */
-    interface VisionPrescriptionDispense extends BackboneElement {
+    interface VisionPrescriptionLensSpecification extends BackboneElement {
         /**
          * Product to be supplied
          */
-        product?: CodeableConcept;
+        product: CodeableConcept;
         /**
          * right | left
          */
-        eye?: code;
+        eye: code;
         /**
          * Contains extended information for property 'eye'.
          */
         _eye?: Element;
         /**
-         * Lens sphere
+         * Power of the lens
          */
         sphere?: decimal;
         /**
@@ -32754,7 +34293,7 @@ declare module fhir.r4 {
          */
         _sphere?: Element;
         /**
-         * Lens cylinder
+         * Lens power for astigmatism
          */
         cylinder?: decimal;
         /**
@@ -32762,7 +34301,7 @@ declare module fhir.r4 {
          */
         _cylinder?: Element;
         /**
-         * Lens axis
+         * Lens meridian which contain no power for astigmatism
          */
         axis?: integer;
         /**
@@ -32770,11 +34309,11 @@ declare module fhir.r4 {
          */
         _axis?: Element;
         /**
-         * Lens prism
+         * Eye alignment compensation
          */
-        prism?: VisionPrescriptionDispensePrism[];
+        prism?: VisionPrescriptionLensSpecificationPrism[];
         /**
-         * Lens add
+         * Added power for multifocal levels
          */
         add?: decimal;
         /**
@@ -32831,9 +34370,9 @@ declare module fhir.r4 {
         note?: Annotation[];
     }
     /**
-     * Lens prism
+     * Eye alignment compensation
      */
-    interface VisionPrescriptionDispensePrism extends BackboneElement {
+    interface VisionPrescriptionLensSpecificationPrism extends BackboneElement {
         /**
          * Amount of adjustment
          */
@@ -32856,21 +34395,29 @@ declare module fhir.r4 {
      */
     interface VisionPrescription extends DomainResource {
         /**
-         * Business identifier
+         * Business Identifier for vision prescription
          */
         identifier?: Identifier[];
         /**
          * active | cancelled | draft | entered-in-error
          */
-        status?: code;
+        status: code;
         /**
          * Contains extended information for property 'status'.
          */
         _status?: Element;
         /**
+         * Response creation date
+         */
+        created: dateTime;
+        /**
+         * Contains extended information for property 'created'.
+         */
+        _created?: Element;
+        /**
          * Who prescription is for
          */
-        patient?: Reference;
+        patient: Reference;
         /**
          * Created during encounter / admission / stay
          */
@@ -32878,30 +34425,22 @@ declare module fhir.r4 {
         /**
          * When prescription was authorized
          */
-        dateWritten?: dateTime;
+        dateWritten: dateTime;
         /**
          * Contains extended information for property 'dateWritten'.
          */
         _dateWritten?: Element;
         /**
-         * Who authorizes the vision product
+         * Who authorized the vision prescription
          */
-        prescriber?: Reference;
+        prescriber: Reference;
         /**
-         * Reason or indication for writing the prescription
+         * Vision lens authorization
          */
-        reasonCodeableConcept?: CodeableConcept;
-        /**
-         * Reason or indication for writing the prescription
-         */
-        reasonReference?: Reference;
-        /**
-         * Vision supply authorization
-         */
-        dispense?: VisionPrescriptionDispense[];
+        lensSpecification: VisionPrescriptionLensSpecification[];
     }
     /**
      * Reference to a sub-type of ResourceBase. This is needed for stricter object literal typing introduced in TypeScript 1.6.
      */
-    type Resource = (DomainResource|Account|ActivityDefinition|AdverseEvent|AllergyIntolerance|Appointment|AppointmentResponse|AuditEvent|Basic|BiologicallyDerivedProduct|BodyStructure|CapabilityStatement|CarePlan|CareTeam|ChargeItem|ChargeItemDefinition|Claim|ClaimResponse|ClinicalImpression|CodeSystem|Communication|CommunicationRequest|CompartmentDefinition|Composition|ConceptMap|Condition|Consent|Contract|Coverage|CoverageEligibilityRequest|CoverageEligibilityResponse|DetectedIssue|Device|DeviceDefinition|DeviceMetric|DeviceRequest|DeviceUseStatement|DiagnosticReport|DocumentManifest|DocumentReference|Encounter|Endpoint|EnrollmentRequest|EnrollmentResponse|EntryDefinition|EpisodeOfCare|EventDefinition|ExampleScenario|ExplanationOfBenefit|FamilyMemberHistory|Flag|Goal|GraphDefinition|Group|GuidanceResponse|HealthcareService|ImagingStudy|Immunization|ImmunizationEvaluation|ImmunizationRecommendation|ImplementationGuide|InsurancePlan|Invoice|ItemInstance|Library|Linkage|List|Location|Measure|MeasureReport|Media|Medication|MedicationAdministration|MedicationDispense|MedicationKnowledge|MedicationRequest|MedicationStatement|MedicinalProduct|MedicinalProductAuthorization|MedicinalProductClinicals|MedicinalProductContraindication|MedicinalProductDeviceSpec|MedicinalProductIndication|MedicinalProductIngredient|MedicinalProductInteraction|MedicinalProductManufactured|MedicinalProductPackaged|MedicinalProductPharmaceutical|MedicinalProductUndesirableEffect|MessageDefinition|MessageHeader|NamingSystem|NutritionOrder|Observation|ObservationDefinition|OperationDefinition|OperationOutcome|Organization|OrganizationAffiliation|Patient|PaymentNotice|PaymentReconciliation|Person|PlanDefinition|Practitioner|PractitionerRole|Procedure|ProcessRequest|ProcessResponse|Provenance|Questionnaire|QuestionnaireResponse|RelatedPerson|RequestGroup|ResearchStudy|ResearchSubject|RiskAssessment|Schedule|SearchParameter|Sequence|ServiceRequest|Slot|Specimen|SpecimenDefinition|StructureDefinition|StructureMap|Subscription|Substance|SubstancePolymer|SubstanceReferenceInformation|SubstanceSpecification|SupplyDelivery|SupplyRequest|Task|TerminologyCapabilities|TestReport|TestScript|UserSession|ValueSet|VerificationResult|VisionPrescription|Binary|Bundle|Parameters);
+    type Resource = (DomainResource|Account|ActivityDefinition|AdverseEvent|AllergyIntolerance|Appointment|AppointmentResponse|AuditEvent|Basic|BiologicallyDerivedProduct|BodyStructure|CapabilityStatement|CarePlan|CareTeam|CatalogEntry|ChargeItem|ChargeItemDefinition|Claim|ClaimResponse|ClinicalImpression|CodeSystem|Communication|CommunicationRequest|CompartmentDefinition|Composition|ConceptMap|Condition|Consent|Contract|Coverage|CoverageEligibilityRequest|CoverageEligibilityResponse|DetectedIssue|Device|DeviceDefinition|DeviceMetric|DeviceRequest|DeviceUseStatement|DiagnosticReport|DocumentManifest|DocumentReference|EffectEvidenceSynthesis|Encounter|Endpoint|EnrollmentRequest|EnrollmentResponse|EpisodeOfCare|EventDefinition|Evidence|EvidenceVariable|ExampleScenario|ExplanationOfBenefit|FamilyMemberHistory|Flag|Goal|GraphDefinition|Group|GuidanceResponse|HealthcareService|ImagingStudy|Immunization|ImmunizationEvaluation|ImmunizationRecommendation|ImplementationGuide|InsurancePlan|Invoice|Library|Linkage|List|Location|Measure|MeasureReport|Media|Medication|MedicationAdministration|MedicationDispense|MedicationKnowledge|MedicationRequest|MedicationStatement|MedicinalProduct|MedicinalProductAuthorization|MedicinalProductContraindication|MedicinalProductIndication|MedicinalProductIngredient|MedicinalProductInteraction|MedicinalProductManufactured|MedicinalProductPackaged|MedicinalProductPharmaceutical|MedicinalProductUndesirableEffect|MessageDefinition|MessageHeader|MolecularSequence|NamingSystem|NutritionOrder|Observation|ObservationDefinition|OperationDefinition|OperationOutcome|Organization|OrganizationAffiliation|Patient|PaymentNotice|PaymentReconciliation|Person|PlanDefinition|Practitioner|PractitionerRole|Procedure|Provenance|Questionnaire|QuestionnaireResponse|RelatedPerson|RequestGroup|ResearchDefinition|ResearchElementDefinition|ResearchStudy|ResearchSubject|RiskAssessment|RiskEvidenceSynthesis|Schedule|SearchParameter|ServiceRequest|Slot|Specimen|SpecimenDefinition|StructureDefinition|StructureMap|Subscription|Substance|SubstanceNucleicAcid|SubstancePolymer|SubstanceProtein|SubstanceReferenceInformation|SubstanceSourceMaterial|SubstanceSpecification|SupplyDelivery|SupplyRequest|Task|TerminologyCapabilities|TestReport|TestScript|ValueSet|VerificationResult|VisionPrescription|Binary|Bundle|Parameters);
 }
