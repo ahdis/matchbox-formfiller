@@ -3,13 +3,13 @@
   "id": "questionnaire-sdc-profile-example-loinc",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative with Details</b></p><p><b>url</b>: <b>http://hl7.org/fhir/uv/sdc/Questionnaire/questionnaire-sdc-profile-example-loinc</b></p><p><b>identifier</b>: 74080-3</p><p><b>version</b>: 3.5.0</p><p><b>title</b>: Medication or Other Substance</p><p><b>status</b>: ACTIVE</p><p><b>subjectType</b>: Patient</p><p><b>date</b>: 01/04/2012</p><p><b>publisher</b>: Agency for Healthcare Research and Quality (AHRQ)</p><blockquote><p><b>item</b></p><p><b>linkId</b>: Medication/header</p><p><b>type</b>: GROUP</p><h3>Items</h3><table class=\"grid\"><tr><td>-</td><td><b>Extension</b></td><td><b>LinkId</b></td><td><b>Text</b></td><td><b>Type</b></td><td><b>Required</b></td></tr><tr><td>*</td><td/><td>0</td><td>Form ID:</td><td>STRING</td><td>true</td></tr><tr><td>*</td><td/><td>74080-3/74081-1</td><td>Event ID:</td><td>STRING</td><td>true</td></tr><tr><td>*</td><td> </td><td>74080-3/30947-6</td><td>Initial Report Date (HERF Q1)</td><td>STRING</td><td>true</td></tr></table></blockquote><blockquote><p><b>item</b></p><p><b>linkId</b>: Medication/SEC00</p><p><b>text</b>: Medication or Other Substance</p><p><b>type</b>: GROUP</p><blockquote><p><b>item</b></p></blockquote><blockquote><p><b>item</b></p></blockquote><blockquote><p><b>item</b></p></blockquote><blockquote><p><b>item</b></p></blockquote><blockquote><p><b>item</b></p></blockquote></blockquote><blockquote><p><b>item</b></p><p><b>linkId</b>: Reporting</p><p><b>text</b>: Reporting information</p><p><b>type</b>: GROUP</p><h3>Items</h3><table class=\"grid\"><tr><td>-</td><td><b>LinkId</b></td><td><b>Text</b></td><td><b>Type</b></td></tr><tr><td>*</td><td>Reporting/who</td><td>Reported by:</td><td>STRING</td></tr><tr><td>*</td><td>Reporting/when</td><td>Reported date:</td><td>DATE</td></tr></table></blockquote><blockquote><p><b>item</b></p><p><b>linkId</b>: Medication/footer</p><p><b>type</b>: GROUP</p><h3>Items</h3><table class=\"grid\"><tr><td>-</td><td><b>LinkId</b></td><td><b>Text</b></td><td><b>Type</b></td></tr><tr><td>*</td><td>Medication/footer.0</td><td>AHRQ Common Formats - Hospital Version 1.2 - 2012 Medication or Other Substance</td><td>DISPLAY</td></tr></table></blockquote></div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative with Details</b></p><p><b>url</b>: <b>http://hl7.org/fhir/uv/sdc/Questionnaire/questionnaire-sdc-profile-example-loinc</b></p><p><b>identifier</b>: 74080-3</p><p><b>version</b>: 2012-04</p><p><b>title</b>: Medication or Other Substance</p><p><b>status</b>: ACTIVE</p><p><b>subjectType</b>: Patient</p><p><b>date</b>: Apr 1, 2012 12:00:00 AM</p><p><b>publisher</b>: Agency for Healthcare Research and Quality (AHRQ)</p><blockquote><p><b>item</b></p><p><b>linkId</b>: Medication/header</p><p><b>type</b>: GROUP</p><h3>Items</h3><table class=\"grid\"><tr><td>-</td><td><b>Extension</b></td><td><b>LinkId</b></td><td><b>Text</b></td><td><b>Type</b></td><td><b>Required</b></td></tr><tr><td>*</td><td/><td>0</td><td>Form ID:</td><td>STRING</td><td>true</td></tr><tr><td>*</td><td/><td>74080-3/74081-1</td><td>Event ID:</td><td>STRING</td><td>true</td></tr><tr><td>*</td><td> </td><td>74080-3/30947-6</td><td>Initial Report Date (HERF Q1)</td><td>STRING</td><td>true</td></tr></table></blockquote><blockquote><p><b>item</b></p><p><b>linkId</b>: Medication/SEC00</p><p><b>text</b>: Medication or Other Substance</p><p><b>type</b>: GROUP</p><blockquote><p><b>item</b></p></blockquote><blockquote><p><b>item</b></p></blockquote><blockquote><p><b>item</b></p></blockquote><blockquote><p><b>item</b></p></blockquote><blockquote><p><b>item</b></p></blockquote></blockquote><blockquote><p><b>item</b></p><p><b>linkId</b>: Reporting</p><p><b>text</b>: Reporting information</p><p><b>type</b>: GROUP</p><h3>Items</h3><table class=\"grid\"><tr><td>-</td><td><b>LinkId</b></td><td><b>Text</b></td><td><b>Type</b></td></tr><tr><td>*</td><td>Reporting/who</td><td>Reported by:</td><td>STRING</td></tr><tr><td>*</td><td>Reporting/when</td><td>Reported date:</td><td>DATE</td></tr></table></blockquote><blockquote><p><b>item</b></p><p><b>linkId</b>: Medication/footer</p><p><b>type</b>: GROUP</p><h3>Items</h3><table class=\"grid\"><tr><td>-</td><td><b>LinkId</b></td><td><b>Text</b></td><td><b>Type</b></td></tr><tr><td>*</td><td>Medication/footer.0</td><td>AHRQ Common Formats - Hospital Version 1.2 - 2012 Medication or Other Substance</td><td>DISPLAY</td></tr></table></blockquote></div>"
   },
   "contained": [
     {
       "resourceType": "ValueSet",
       "id": "ll2654-3",
-      "name": "AHRQ_Medication_Q1",
+      "title": "AHRQ_Medication_Q1",
       "status": "active",
       "description": "The answer list for question 1 on the AHRQ \"Medication or Other Substance\" form",
       "copyright": "This content from LOINC® is copyright © 1995 Regenstrief Institute, Inc. and the LOINC Committee, and available at no cost under the license at http://loinc.org/terms-of-use",
@@ -166,7 +166,7 @@
     {
       "resourceType": "ValueSet",
       "id": "ll2655-0",
-      "name": "AHRQ_Medication_Q2",
+      "title": "AHRQ_Medication_Q2",
       "status": "active",
       "description": "The answer list for question 2 on the AHRQ \"Medication or Other Substance\" form",
       "copyright": "This content from LOINC® is copyright © 1995 Regenstrief Institute, Inc. and the LOINC Committee, and available at no cost under the license at http://loinc.org/terms-of-use",
@@ -239,7 +239,7 @@
     {
       "resourceType": "ValueSet",
       "id": "ll2657-6",
-      "name": "AHRQ_Medication_Q4",
+      "title": "AHRQ_Medication_Q4",
       "status": "active",
       "description": "The answer list for question 4 on the AHRQ \"Medication or Other Substance\" form",
       "copyright": "This content from LOINC® is copyright © 1995 Regenstrief Institute, Inc. and the LOINC Committee, and available at no cost under the license at http://loinc.org/terms-of-use",
@@ -264,7 +264,7 @@
     {
       "resourceType": "ValueSet",
       "id": "ll2659-2",
-      "name": "AHRQ_Medication_Q6",
+      "title": "AHRQ_Medication_Q6",
       "status": "active",
       "description": "The answer list for question 6 on the AHRQ \"Medication or Other Substance\" form",
       "copyright": "This content from LOINC® is copyright © 1995 Regenstrief Institute, Inc. and the LOINC Committee, and available at no cost under the license at http://loinc.org/terms-of-use",
@@ -351,7 +351,7 @@
     {
       "resourceType": "ValueSet",
       "id": "ll2660-0",
-      "name": "AHRQ_Medication_Q7",
+      "title": "AHRQ_Medication_Q7",
       "status": "active",
       "description": "The answer list for question 7 on the AHRQ 'Medication or Other Substance' form",
       "copyright": "This content from LOINC® is copyright © 1995 Regenstrief Institute, Inc. and the LOINC Committee, and available at no cost under the license at http://loinc.org/terms-of-use",
@@ -400,7 +400,7 @@
     {
       "resourceType": "ValueSet",
       "id": "ll2661-8",
-      "name": "AHRQ_Medication_Q8",
+      "title": "AHRQ_Medication_Q8",
       "status": "active",
       "description": "The answer list for question 8 on the AHRQ 'Medication or Other Substance' form",
       "copyright": "This content from LOINC® is copyright © 1995 Regenstrief Institute, Inc. and the LOINC Committee, and available at no cost under the license at http://loinc.org/terms-of-use",
@@ -477,7 +477,7 @@
     {
       "resourceType": "ValueSet",
       "id": "ll2662-6",
-      "name": "AHRQ_Medication_Q9",
+      "title": "AHRQ_Medication_Q9",
       "status": "active",
       "description": "The answer list for question 9 on the AHRQ 'Medication or Other Substance' form",
       "copyright": "This content from LOINC® is copyright © 1995 Regenstrief Institute, Inc. and the LOINC Committee, and available at no cost under the license at http://loinc.org/terms-of-use",
@@ -514,7 +514,7 @@
     {
       "resourceType": "ValueSet",
       "id": "ll2663-4",
-      "name": "AHRQ_Medication_Q10",
+      "title": "AHRQ_Medication_Q10",
       "status": "active",
       "description": "The answer list for question 10 on the AHRQ 'Medication or Other Substance' form",
       "copyright": "This content from LOINC® is copyright © 1995 Regenstrief Institute, Inc. and the LOINC Committee, and available at no cost under the license at http://loinc.org/terms-of-use",
@@ -543,7 +543,7 @@
     {
       "resourceType": "ValueSet",
       "id": "ll2664-2",
-      "name": "AHRQ_Medication_Q11",
+      "title": "AHRQ_Medication_Q11",
       "status": "active",
       "description": "The answer list for question 11 on the AHRQ 'Medication or Other Substance' form",
       "copyright": "This content from LOINC® is copyright © 1995 Regenstrief Institute, Inc. and the LOINC Committee, and available at no cost under the license at http://loinc.org/terms-of-use",
@@ -572,7 +572,7 @@
     {
       "resourceType": "ValueSet",
       "id": "ll2665-9",
-      "name": "AHRQ_Medication_Q12",
+      "title": "AHRQ_Medication_Q12",
       "status": "active",
       "description": "The answer list for question 12 on the AHRQ 'Medication or Other Substance' form",
       "copyright": "This content from LOINC® is copyright © 1995 Regenstrief Institute, Inc. and the LOINC Committee, and available at no cost under the license at http://loinc.org/terms-of-use",
@@ -601,7 +601,7 @@
     {
       "resourceType": "ValueSet",
       "id": "ll2817-6",
-      "name": "AHRQ_Y/N/UNK",
+      "title": "AHRQ_Y/N/UNK",
       "status": "active",
       "description": "AHRQ Common Format Answer list for Yes (A15), No (A18), Unknown (UNK)",
       "copyright": "This content from LOINC® is copyright © 1995 Regenstrief Institute, Inc. and the LOINC Committee, and available at no cost under the license at http://loinc.org/terms-of-use",
@@ -630,7 +630,7 @@
     {
       "resourceType": "ValueSet",
       "id": "ll2668-3",
-      "name": "AHRQ_Medication_Q15",
+      "title": "AHRQ_Medication_Q15",
       "status": "active",
       "description": "The answer list for question 15 on the AHRQ 'Medication or Other Substance' form",
       "copyright": "This content from LOINC® is copyright © 1995 Regenstrief Institute, Inc. and the LOINC Committee, and available at no cost under the license at http://loinc.org/terms-of-use",
@@ -663,7 +663,7 @@
     {
       "resourceType": "ValueSet",
       "id": "ll2669-1",
-      "name": "AHRQ_Medication_Q16",
+      "title": "AHRQ_Medication_Q16",
       "status": "active",
       "description": "The answer list for question 16 on the AHRQ 'Medication or Other Substance' form",
       "copyright": "This content from LOINC® is copyright © 1995 Regenstrief Institute, Inc. and the LOINC Committee, and available at no cost under the license at http://loinc.org/terms-of-use",
@@ -720,7 +720,7 @@
     {
       "resourceType": "ValueSet",
       "id": "ll2828-3",
-      "name": "AHRQ_Y/N",
+      "title": "AHRQ_Y/N",
       "status": "active",
       "description": "AHRQ Common Format Answer list for Yes (A15) and No (A18)",
       "copyright": "This content from LOINC® is copyright © 1995 Regenstrief Institute, Inc. and the LOINC Committee, and available at no cost under the license at http://loinc.org/terms-of-use",
@@ -745,7 +745,7 @@
     {
       "resourceType": "ValueSet",
       "id": "ll2682-4",
-      "name": "AHRQ_Medication_Q28_Q29",
+      "title": "AHRQ_Medication_Q28_Q29",
       "status": "active",
       "description": "The answer list for questions 28 and 29 on the AHRQ 'Medication or Other Substance' form",
       "copyright": "This content from LOINC® is copyright © 1995 Regenstrief Institute, Inc. and the LOINC Committee, and available at no cost under the license at http://loinc.org/terms-of-use",
@@ -831,7 +831,7 @@
       "value": "74080-3"
     }
   ],
-  "version": "3.5.0",
+  "version": "2012-04",
   "title": "Medication or Other Substance",
   "_title": {
     "extension": [
@@ -845,7 +845,7 @@
   "subjectType": [
     "Patient"
   ],
-  "date": "2012-04-01",
+  "date": "2012-04-01T00:00:00+00:00",
   "publisher": "Agency for Healthcare Research and Quality (AHRQ)",
   "item": [
     {

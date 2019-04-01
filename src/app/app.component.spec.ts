@@ -10,9 +10,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhirjs';
 
 export const FHIR_JS_CONFIG: FhirConfig = {
-//  baseUrl: 'http://localhost:8080/baseDstu3',
-//  baseUrl: 'http://test.fhir.org/r3',
-  baseUrl: 'http://localhost:8080/baseDstu3',
+  baseUrl: 'http://localhost:8080/r4',
   credentials: 'same-origin'
 };
 
