@@ -1,5 +1,7 @@
 # NgFhirSample
 
+[![Build Status](https://travis-ci.com/ahdis/ng-fhir-sample.svg?branch=master)](https://travis-ci.com/ahdis/ng-fhir-sample)
+
 angular web applications which uses fhir for:
 
 - displaying Questionnaires (R4 with first SDC extension support)
