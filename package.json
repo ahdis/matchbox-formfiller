@@ -26,7 +26,7 @@
     "antlr4": "^4.7.2",
     "core-js": "^2.6.2",
     "hammerjs": "^2.0.8",
-    "ng-fhirjs": "file:../ng-fhirjs/dist/ng-fhirjs",
+    "ng-fhirjs": "^0.3.0",
     "rxjs": "^6.3.3",
     "stream": "0.0.2",
     "tsickle": "^0.34.0",
