@@ -1,7 +1,7 @@
 /// <reference path=".,/../../../fhir.r4/index.d.ts" />
 
 import { Component, OnInit } from '@angular/core';
-import { FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhirjs';
+import { FhirJsHttpService, FHIR_HTTP_CONFIG, QueryObj } from 'ng-fhirjs';
 import { MatTableDataSource, PageEvent } from '@angular/material';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -9,10 +9,9 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 @Component({
   selector: 'app-patients',
   templateUrl: './patients.component.html',
-  styleUrls: ['./patients.component.css']
+  styleUrls: ['./patients.component.css'],
 })
 export class PatientsComponent implements OnInit {
-
   searched = false;
   bundle: fhir.r4.Bundle;
   dataSource = new MatTableDataSource<fhir.r4.BundleEntry>();
@@ -28,14 +27,13 @@ export class PatientsComponent implements OnInit {
   selectedPatient: fhir.r4.Patient;
 
   constructor(private fhirHttpService: FhirJsHttpService) {
-
     const query = <QueryObj>{
       type: 'Patient',
       query: {
         _count: this.pageSize,
         _summary: 'true',
-        _sort: 'family'
-      }
+        _sort: 'family',
+      },
     };
     this.searchName = new FormControl();
     this.searchName.valueChanges
@@ -45,8 +43,8 @@ export class PatientsComponent implements OnInit {
       )
       .subscribe(term => {
         console.log('called with ' + term);
-        const queryName = {...query};
-        queryName.query = {...query.query};
+        const queryName = { ...query };
+        queryName.query = { ...query.query };
         if (term) {
           queryName.query.name = term;
         }
@@ -61,7 +59,7 @@ export class PatientsComponent implements OnInit {
   }
 
   getPatientFamilyName(entry: fhir.r4.BundleEntry): string {
-    const patient = (<fhir.r4.Patient>entry.resource);
+    const patient = <fhir.r4.Patient>entry.resource;
     if (patient.name && patient.name.length > 0 && patient.name[0].family) {
       return patient.name[0].family;
     }
@@ -69,7 +67,7 @@ export class PatientsComponent implements OnInit {
   }
 
   getPatientGivenNames(entry: fhir.r4.BundleEntry): string {
-    const patient = (<fhir.r4.Patient>entry.resource);
+    const patient = <fhir.r4.Patient>entry.resource;
     if (patient.name && patient.name.length > 0 && patient.name[0].given) {
       return (<fhir.r4.Patient>entry.resource).name[0].given.join(' ');
     }
@@ -77,7 +75,7 @@ export class PatientsComponent implements OnInit {
   }
 
   getPatientBirthDate(entry: fhir.r4.BundleEntry): string {
-    const patient = (<fhir.r4.Patient>entry.resource);
+    const patient = <fhir.r4.Patient>entry.resource;
     if (patient.birthDate) {
       return patient.birthDate;
     }
@@ -85,16 +83,24 @@ export class PatientsComponent implements OnInit {
   }
 
   getPatientAddressLines(entry: fhir.r4.BundleEntry): string {
-    const patient = (<fhir.r4.Patient>entry.resource);
-    if (patient.address && patient.address.length > 0 && patient.address[0].line) {
+    const patient = <fhir.r4.Patient>entry.resource;
+    if (
+      patient.address &&
+      patient.address.length > 0 &&
+      patient.address[0].line
+    ) {
       return patient.address[0].line.join(', ');
     }
     return '';
   }
 
   getPatientAddressCity(entry: fhir.r4.BundleEntry): string {
-    const patient = (<fhir.r4.Patient>entry.resource);
-    if (patient.address && patient.address.length > 0 && patient.address[0].city) {
+    const patient = <fhir.r4.Patient>entry.resource;
+    if (
+      patient.address &&
+      patient.address.length > 0 &&
+      patient.address[0].city
+    ) {
       return patient.address[0].city;
     }
     return '';
@@ -131,6 +137,5 @@ export class PatientsComponent implements OnInit {
     this.selectedPatient = undefined;
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 }

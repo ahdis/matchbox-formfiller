@@ -11,9 +11,7 @@
   "experimental": true,
   "date": "2018-10-01",
   "publisher": "ahdis",
-  "subjectType": [
-    "Patient"
-  ],
+  "subjectType": ["Patient"],
   "item": [
     {
       "extension": [

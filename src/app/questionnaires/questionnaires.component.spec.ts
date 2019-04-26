@@ -8,18 +8,17 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { QuestionnaireDetailComponent } from '../questionnaire-detail/questionnaire-detail.component';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhirjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FHIR_HTTP_CONFIG, FhirConfig, FhirJsHttpService } from 'ng-fhirjs';
 import { RouterTestingModule } from '@angular/router/testing';
-
 
 export const FHIR_JS_CONFIG: FhirConfig = {
   baseUrl: 'http://test.fhir.org/r3',
-  credentials: 'same-origin'
+  credentials: 'same-origin',
 };
 
 describe('QuestionnairesComponent', () => {
@@ -28,7 +27,7 @@ describe('QuestionnairesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ QuestionnairesComponent, QuestionnaireDetailComponent ],
+      declarations: [QuestionnairesComponent, QuestionnaireDetailComponent],
       imports: [
         MatCardModule,
         MatPaginatorModule,
@@ -42,11 +41,13 @@ describe('QuestionnairesComponent', () => {
         BrowserModule,
         BrowserAnimationsModule,
         HttpClientTestingModule,
-        RouterTestingModule
+        RouterTestingModule,
       ],
-      providers: [FhirJsHttpService, { provide: FHIR_HTTP_CONFIG, useValue: FHIR_JS_CONFIG }]
-    })
-    .compileComponents();
+      providers: [
+        FhirJsHttpService,
+        { provide: FHIR_HTTP_CONFIG, useValue: FHIR_JS_CONFIG },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

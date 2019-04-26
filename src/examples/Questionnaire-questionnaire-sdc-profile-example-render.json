@@ -44,9 +44,7 @@
     ]
   },
   "status": "draft",
-  "subjectType": [
-    "Patient"
-  ],
+  "subjectType": ["Patient"],
   "date": "2018-08",
   "item": [
     {

@@ -2,20 +2,25 @@ import { Injectable } from '@angular/core';
 import { FhirPathService } from 'ng-fhirjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class QuestionnaireFillerService {
-
   private questionnaire: fhir.r4.Questionnaire;
   private questionnaireResponse: fhir.r4.QuestionnaireResponse;
-  private mapResponseItems = new Map<string, fhir.r4.QuestionnaireResponseItem>();
+  private mapResponseItems = new Map<
+    string,
+    fhir.r4.QuestionnaireResponseItem
+  >();
 
-  constructor(private fhirPathService: FhirPathService) { }
+  constructor(private fhirPathService: FhirPathService) {}
 
   setQuestionnare(quest: fhir.r4.Questionnaire) {
     this.questionnaire = quest;
     this.questionnaireResponse = undefined;
-    this.mapResponseItems = new Map<string, fhir.r4.QuestionnaireResponseItem>();
+    this.mapResponseItems = new Map<
+      string,
+      fhir.r4.QuestionnaireResponseItem
+    >();
   }
 
   getQuestionniare(): fhir.r4.Questionnaire {
@@ -26,7 +31,9 @@ export class QuestionnaireFillerService {
     this.questionnaireResponse = quest;
   }
 
-  addQuestionnaireResponseItems(questItems: fhir.r4.QuestionnaireItem[]): fhir.r4.QuestionnaireResponseItem[] {
+  addQuestionnaireResponseItems(
+    questItems: fhir.r4.QuestionnaireItem[]
+  ): fhir.r4.QuestionnaireResponseItem[] {
     const responseItems: fhir.r4.QuestionnaireResponseItem[] = [];
     for (const questItem of questItems) {
       const responseItem = <fhir.r4.QuestionnaireResponseItem>{};
@@ -45,27 +52,39 @@ export class QuestionnaireFillerService {
     if (!this.questionnaireResponse) {
       this.questionnaireResponse = <fhir.r4.QuestionnaireResponse>{};
       this.questionnaireResponse.status = 'in-progress';
-      this.questionnaireResponse.item = this.addQuestionnaireResponseItems(this.questionnaire.item);
+      this.questionnaireResponse.item = this.addQuestionnaireResponseItems(
+        this.questionnaire.item
+      );
     }
     return this.questionnaireResponse;
   }
 
-  getQuestionnaireResponseItem(linkId): fhir.r4.QuestionnaireResponseItemAnswer {
+  getQuestionnaireResponseItem(
+    linkId
+  ): fhir.r4.QuestionnaireResponseItemAnswer {
     return this.mapResponseItems.get(linkId);
   }
 
   evaluateFhirPath(fhirPathExpression: string): string {
-    const fhirPathResult = this.fhirPathService.evaluate(this.questionnaireResponse, fhirPathExpression);
+    const fhirPathResult = this.fhirPathService.evaluate(
+      this.questionnaireResponse,
+      fhirPathExpression
+    );
     if (fhirPathResult) {
       return fhirPathResult[0];
     }
     return '';
   }
 
-  setQuestionnaireResponseItem(item: fhir.r4.QuestionnaireItem, value: string): boolean {
+  setQuestionnaireResponseItem(
+    item: fhir.r4.QuestionnaireItem,
+    value: string
+  ): boolean {
     const responseItem = this.mapResponseItems.get(item.linkId);
     responseItem.answer = [];
-    const questionnaireResponseItemAnswer = <fhir.r4.QuestionnaireResponseItemAnswer>{};
+    const questionnaireResponseItemAnswer = <
+      fhir.r4.QuestionnaireResponseItemAnswer
+    >{};
     switch (item.type) {
       case 'decimal':
         // decimal	Decimal	Question with is a real number answer (valueDecimal).
@@ -118,7 +137,8 @@ export class QuestionnaireFillerService {
             } else {
               if (answerOption.valueCoding) {
                 if (answerOption.valueCoding.code === value) {
-                  questionnaireResponseItemAnswer.valueCoding = answerOption.valueCoding;
+                  questionnaireResponseItemAnswer.valueCoding =
+                    answerOption.valueCoding;
                   found = true;
                   break;
                 }
@@ -127,7 +147,9 @@ export class QuestionnaireFillerService {
           }
         } else {
           if (item.answerValueSet) {
-            const valueSet = this.getAnswerValueSetComposeIncludeConcepts(item.answerValueSet);
+            const valueSet = this.getAnswerValueSetComposeIncludeConcepts(
+              item.answerValueSet
+            );
             for (const answerValue of valueSet) {
               if (answerValue.code) {
                 if (answerValue.code === value) {
@@ -157,9 +179,9 @@ export class QuestionnaireFillerService {
         // potentially with a comparator (<, >, etc.) as an answer.
         // (valueQuantity) There is an extension http://hl7.org/fhir/StructureDefinition/questionnaire-unit that can be used to define what
         // unit should be captured (or the a unit that has a ucum conversion from the provided unit).
-                //   url	Url	Question with a URL (website, FTP site, etc.) answer (valueUri).
+        //   url	Url	Question with a URL (website, FTP site, etc.) answer (valueUri).
         questionnaireResponseItemAnswer.valueQuantity.value = value;
-//        questionnaireResponseItemAnswer.valueQuantity.code = ;
+        //        questionnaireResponseItemAnswer.valueQuantity.code = ;
         break;
     }
     responseItem.answer.push(questionnaireResponseItemAnswer);
@@ -175,7 +197,9 @@ export class QuestionnaireFillerService {
         }
       }
     } else {
-      console.log('TODO: not yet implemented reference to canonical valueset' + canonical);
+      console.log(
+        'TODO: not yet implemented reference to canonical valueset' + canonical
+      );
     }
     return undefined;
   }
@@ -184,12 +208,17 @@ export class QuestionnaireFillerService {
    * returns the FIRST conecpt list in the include
    * @param canonical
    */
-  getAnswerValueSetComposeIncludeConcepts(canonical: string): fhir.r4.ValueSetComposeIncludeConcept[] {
+  getAnswerValueSetComposeIncludeConcepts(
+    canonical: string
+  ): fhir.r4.ValueSetComposeIncludeConcept[] {
     const valueSet = this.getValueSet(canonical);
     return valueSet.compose.include[0].concept;
   }
 
-  public getExtension(extensions: fhir.r4.Extension[], url: string): fhir.r4.Extension {
+  public getExtension(
+    extensions: fhir.r4.Extension[],
+    url: string
+  ): fhir.r4.Extension {
     if (extensions) {
       for (const extension of extensions) {
         if (extension.url === url) {
@@ -201,9 +230,9 @@ export class QuestionnaireFillerService {
   }
 
   /**
-  * NgStyle needs JSON object, style doesn't work because angular security blocks it, exampel for styleExtension: "color:green;"
-  * @param styleExtension
-  */
+   * NgStyle needs JSON object, style doesn't work because angular security blocks it, exampel for styleExtension: "color:green;"
+   * @param styleExtension
+   */
   public getCss(styleExtension: fhir.r4.Extension): Object {
     const css = {};
     if (styleExtension) {
@@ -214,11 +243,4 @@ export class QuestionnaireFillerService {
     }
     return css;
   }
-
-
-
-
-
-
-
 }

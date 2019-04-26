@@ -1,22 +1,23 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FhirPathService } from 'ng-fhirjs';
-import { ReactiveFormsModule, FormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { QuestionnaireDemo } from '../home/questionnaire-demo';
-
 
 @Component({
   selector: 'app-fhir-path',
   templateUrl: './fhir-path.component.html',
-  styleUrls: ['./fhir-path.component.css']
+  styleUrls: ['./fhir-path.component.css'],
 })
 export class FhirPathComponent implements OnInit {
-
   public fhirPathExpression: FormControl;
   public fhirPathResult: any;
   public resource: any;
 
-  constructor(private fhirPathService: FhirPathService, private cd: ChangeDetectorRef) {
+  constructor(
+    private fhirPathService: FhirPathService,
+    private cd: ChangeDetectorRef
+  ) {
     this.resource = QuestionnaireDemo.getQuestionnaireEbida();
     this.fhirPathExpression = new FormControl();
     this.fhirPathExpression.valueChanges
@@ -28,7 +29,10 @@ export class FhirPathComponent implements OnInit {
         console.log('called with ' + term);
         if (term) {
           try {
-            this.fhirPathResult = this.fhirPathService.evaluate(this.resource, term);
+            this.fhirPathResult = this.fhirPathService.evaluate(
+              this.resource,
+              term
+            );
           } catch (e) {
             console.log(e);
             this.fhirPathResult = undefined;
@@ -37,7 +41,6 @@ export class FhirPathComponent implements OnInit {
           this.fhirPathResult = undefined;
         }
       });
-
   }
 
   fileChange(event) {
@@ -47,18 +50,12 @@ export class FhirPathComponent implements OnInit {
       const [file] = event.target.files;
       reader.readAsText(file);
       reader.onload = () => {
-        this.resource = JSON.parse(<string> reader.result);
+        this.resource = JSON.parse(<string>reader.result);
         // need to run CD since file load runs outside of zone
         this.cd.markForCheck();
       };
     }
   }
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }
-
-
-
-

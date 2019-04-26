@@ -3,12 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ItemLabelComponent } from './item-label/item-label.component';
 
 @NgModule({
-  imports: [
-    CommonModule
-  ],
-  exports: [
-    ItemLabelComponent
-  ],
-  declarations: [ItemLabelComponent]
+  imports: [CommonModule],
+  exports: [ItemLabelComponent],
+  declarations: [ItemLabelComponent],
 })
-export class QuestionnaireModule { }
+export class QuestionnaireModule {}

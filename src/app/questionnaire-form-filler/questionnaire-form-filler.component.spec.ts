@@ -11,31 +11,59 @@ import { QuestionnaireFillerService } from '../questionnaire-filler.service';
 import { QuestionnaireFormFillerComponent } from './questionnaire-form-filler.component';
 import { QuestionnaireItemComponent } from '../questionnaire-item/questionnaire-item.component';
 import { QuestionnaireDemo } from '../home/questionnaire-demo';
+import { ItemLabelComponent } from '../questionnaire/item-label/item-label.component';
+import {
+  MatAutocompleteModule,
+  MatDatepickerModule,
+  MatNativeDateModule,
+  MatRadioModule,
+  MatSelectModule,
+  MatSliderModule,
+} from '@angular/material';
 
 describe('QuestionnaireFormFillerComponent', () => {
   let component: QuestionnaireFormFillerComponent;
   let fixture: ComponentFixture<QuestionnaireFormFillerComponent>;
 
-  const questionnaireFillerServer: Partial<QuestionnaireFillerService> = new QuestionnaireFillerService();
-  questionnaireFillerServer.setQuestionnare(QuestionnaireDemo.getQuestionnaireEbida());
-
+  const questionnaireFillerServer: Partial<
+    QuestionnaireFillerService
+  > = new QuestionnaireFillerService({
+    evaluate() {},
+  });
+  questionnaireFillerServer.setQuestionnare(
+    QuestionnaireDemo.getQuestionnaireEbida()
+  );
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [QuestionnaireFormFillerComponent, QuestionnaireItemComponent],
+      declarations: [
+        QuestionnaireFormFillerComponent,
+        QuestionnaireItemComponent,
+        ItemLabelComponent,
+      ],
       imports: [
         MatCardModule,
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
+        MatRadioModule,
+        MatDatepickerModule,
+        MatSelectModule,
+        MatSliderModule,
+        MatAutocompleteModule,
+        MatNativeDateModule,
         FormsModule,
         ReactiveFormsModule,
         BrowserModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
       ],
-      providers: [{ provide: QuestionnaireFillerService, useValue: questionnaireFillerServer }]
-    })
-      .compileComponents();
+      providers: [
+        {
+          provide: QuestionnaireFillerService,
+          useValue: questionnaireFillerServer,
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

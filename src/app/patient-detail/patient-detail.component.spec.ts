@@ -10,13 +10,9 @@ describe('PatientDetailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PatientDetailComponent ],
-      imports: [
-        MatCardModule,
-        MatFormFieldModule
-       ]
-    })
-    .compileComponents();
+      declarations: [PatientDetailComponent],
+      imports: [MatCardModule, MatFormFieldModule],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

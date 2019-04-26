@@ -7,23 +7,29 @@ import { QuestionnaireFillerService } from '../../questionnaire-filler.service';
 @Component({
   selector: 'app-item-label',
   templateUrl: './item-label.component.html',
-  styleUrls: ['./item-label.component.css']
+  styleUrls: ['./item-label.component.css'],
 })
 export class ItemLabelComponent implements OnInit {
-
   @Input() item: fhir.r4.QuestionnaireItem;
 
-  constructor(private questionaireFillerServer: QuestionnaireFillerService, private sanitizer: DomSanitizer) { }
+  constructor(
+    private questionaireFillerServer: QuestionnaireFillerService,
+    private sanitizer: DomSanitizer
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   getPrefix(): string {
     if (this.item._prefix) {
-      const xhtmlExtension = this.questionaireFillerServer.getExtension(this.item._prefix.extension,
-        'http://hl7.org/fhir/StructureDefinition/rendering-xhtml');
+      const xhtmlExtension = this.questionaireFillerServer.getExtension(
+        this.item._prefix.extension,
+        'http://hl7.org/fhir/StructureDefinition/rendering-xhtml'
+      );
       if (xhtmlExtension) {
-        return this.sanitizer.sanitize(SecurityContext.HTML, xhtmlExtension.valueString);
+        return this.sanitizer.sanitize(
+          SecurityContext.HTML,
+          xhtmlExtension.valueString
+        );
       }
     }
     return this.item.prefix;
@@ -31,18 +37,27 @@ export class ItemLabelComponent implements OnInit {
 
   getPrefixStyles(): Object {
     if (this.item._prefix) {
-      return this.questionaireFillerServer.getCss(this.questionaireFillerServer.getExtension(this.item._prefix.extension,
-        'http://hl7.org/fhir/StructureDefinition/rendering-style'));
+      return this.questionaireFillerServer.getCss(
+        this.questionaireFillerServer.getExtension(
+          this.item._prefix.extension,
+          'http://hl7.org/fhir/StructureDefinition/rendering-style'
+        )
+      );
     }
     return {};
   }
 
   getText(): string {
     if (this.item._text) {
-      const xhtmlExtension = this.questionaireFillerServer.getExtension(this.item._text.extension,
-        'http://hl7.org/fhir/StructureDefinition/rendering-xhtml');
+      const xhtmlExtension = this.questionaireFillerServer.getExtension(
+        this.item._text.extension,
+        'http://hl7.org/fhir/StructureDefinition/rendering-xhtml'
+      );
       if (xhtmlExtension) {
-        return this.sanitizer.sanitize(SecurityContext.HTML, xhtmlExtension.valueString);
+        return this.sanitizer.sanitize(
+          SecurityContext.HTML,
+          xhtmlExtension.valueString
+        );
       }
     }
     return this.item.text;
@@ -50,11 +65,13 @@ export class ItemLabelComponent implements OnInit {
 
   getTextStyles(): Object {
     if (this.item._text) {
-      return this.questionaireFillerServer.getCss(this.questionaireFillerServer.getExtension(this.item._text.extension,
-        'http://hl7.org/fhir/StructureDefinition/rendering-style'));
+      return this.questionaireFillerServer.getCss(
+        this.questionaireFillerServer.getExtension(
+          this.item._text.extension,
+          'http://hl7.org/fhir/StructureDefinition/rendering-style'
+        )
+      );
     }
     return {};
   }
-
-
 }

@@ -6,19 +6,22 @@ import { MatCardModule } from '@angular/material/card';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhirjs';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
+import { FhirJsHttpService, FHIR_HTTP_CONFIG, FhirConfig } from 'ng-fhirjs';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export const FHIR_JS_CONFIG: FhirConfig = {
   baseUrl: 'http://test.fhir.org/r3',
-  credentials: 'same-origin'
+  credentials: 'same-origin',
 };
 
 describe('PatientsComponent', () => {
@@ -28,7 +31,8 @@ describe('PatientsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [PatientsComponent, PatientDetailComponent],
-      imports: [HttpClientTestingModule,
+      imports: [
+        HttpClientTestingModule,
         MatCardModule,
         MatPaginatorModule,
         MatSelectModule,
@@ -39,11 +43,13 @@ describe('PatientsComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         BrowserModule,
-        BrowserAnimationsModule
-       ],
-      providers: [FhirJsHttpService, { provide: FHIR_HTTP_CONFIG, useValue: FHIR_JS_CONFIG }]
-    })
-      .compileComponents();
+        BrowserAnimationsModule,
+      ],
+      providers: [
+        FhirJsHttpService,
+        { provide: FHIR_HTTP_CONFIG, useValue: FHIR_JS_CONFIG },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
