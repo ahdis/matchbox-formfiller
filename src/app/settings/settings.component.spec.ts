@@ -15,7 +15,7 @@ import {
 import { FhirJsHttpService, FHIR_HTTP_CONFIG, FhirConfig } from 'ng-fhirjs';
 
 export const FHIR_JS_CONFIG: FhirConfig = {
-  baseUrl: 'http://localhost:8080/fhir',
+  baseUrl: 'http://localhost:8080/r4',
   credentials: 'same-origin',
 };
 

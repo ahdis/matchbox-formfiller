@@ -25,6 +25,13 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/questionnaire-form-filler']);
   }
 
+  fillFormReferralMin() {
+    this.questionaireFillerServer.setQuestionnare(
+      QuestionnaireDemo.getQuestionnaireReferralMin()
+    );
+    this.router.navigate(['/questionnaire-form-filler']);
+  }
+
   fillFormSdcCap() {
     this.questionaireFillerServer.setQuestionnare(
       QuestionnaireDemo.getQuestionnaireSdcCap()

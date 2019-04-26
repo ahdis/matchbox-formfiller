@@ -3,13 +3,13 @@
   "id": "questionnaire-sdc-profile-example-cap",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative with Details</b></p><p><b>url</b>: <b>http://hl7.org/fhir/uv/sdc/Questionnaire/questionnaire-sdc-profile-example-cap</b></p><p><b>version</b>: 3.5.0</p><p><b>title</b>: (Ask Richard)</p><p><b>status</b>: ACTIVE</p><p><b>date</b>: 31/08/2018 4:04:55 PM</p><blockquote><p><b>item</b></p><p><b>linkId</b>: 1</p><p><b>text</b>: MARGINS</p><p><b>type</b>: GROUP</p><p><b>required</b>: true</p><blockquote><p><b>item</b></p></blockquote></blockquote><blockquote><p><b>item</b></p><p><b>linkId</b>: 2</p><p><b>text</b>: ACCESSORY FINDINGS</p><p><b>type</b>: GROUP</p><p><b>required</b>: true</p><blockquote><p><b>item</b></p></blockquote><blockquote><p><b>item</b></p></blockquote></blockquote></div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative with Details</b></p><p><b>url</b>: <b>http://hl7.org/fhir/uv/sdc/Questionnaire/questionnaire-sdc-profile-example-cap</b></p><p><b>title</b>: (Ask Richard)</p><p><b>status</b>: ACTIVE</p><blockquote><p><b>item</b></p><p><b>linkId</b>: 1</p><p><b>text</b>: MARGINS</p><p><b>type</b>: GROUP</p><p><b>required</b>: true</p><blockquote><p><b>item</b></p></blockquote></blockquote><blockquote><p><b>item</b></p><p><b>linkId</b>: 2</p><p><b>text</b>: ACCESSORY FINDINGS</p><p><b>type</b>: GROUP</p><p><b>required</b>: true</p><blockquote><p><b>item</b></p></blockquote><blockquote><p><b>item</b></p></blockquote></blockquote></div>"
   },
   "url": "http://hl7.org/fhir/uv/sdc/Questionnaire/questionnaire-sdc-profile-example-cap",
-  "version": "3.5.0",
+  "version": "2.8.0",
   "title": "(Ask Richard)",
   "status": "active",
-  "date": "2018-08-31T16:04:55+10:00",
+  "date": "2019-03-28T04:39:13+00:00",
   "item": [
     {
       "linkId": "1",
