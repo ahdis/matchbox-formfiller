@@ -15,4 +15,5 @@ deploy:
   target_branch: 'gh-pages'
   local_dir: 'dist'
   on:
-    branch: travis
+    tags: true
+    branch: master
