@@ -1,15 +1,18 @@
 <mat-card class="Patient">
   <mat-card-content>
-      <mat-form-field>
-          <mat-label>FHIRPath Expression</mat-label>
-          <input matInput [formControl]="fhirPathExpression" />
-        </mat-form-field>
-      <div>Result</div>
-      <pre>{{fhirPathResult | json}}</pre>
-      <div>Resource</div>
-      <input type="file" (change)="fileChange($event)" placeholder="Upload resource" accept=".json">
-      <pre>{{resource | json}}</pre>
-
-
-  </mat-card-content>    
+    <mat-form-field>
+      <mat-label>FHIRPath Expression</mat-label>
+      <input matInput [formControl]="fhirPathExpression" />
+    </mat-form-field>
+    <div>Result</div>
+    <pre>{{ fhirPathResult | json }}</pre>
+    <div>Resource</div>
+    <input
+      type="file"
+      (change)="fileChange($event)"
+      placeholder="Upload resource"
+      accept=".json"
+    />
+    <pre>{{ resource | json }}</pre>
+  </mat-card-content>
 </mat-card>

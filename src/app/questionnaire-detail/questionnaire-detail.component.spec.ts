@@ -11,14 +11,9 @@ describe('QuestionnaireDetailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ QuestionnaireDetailComponent ],
-      imports: [
-        MatCardModule,
-        MatFormFieldModule,
-        RouterTestingModule
-       ]
-    })
-    .compileComponents();
+      declarations: [QuestionnaireDetailComponent],
+      imports: [MatCardModule, MatFormFieldModule, RouterTestingModule],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

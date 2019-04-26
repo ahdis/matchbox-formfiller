@@ -40,9 +40,7 @@
     ]
   },
   "status": "draft",
-  "subjectType": [
-    "Patient"
-  ],
+  "subjectType": ["Patient"],
   "date": "2018-08-01T00:00:00+00:00",
   "item": [
     {

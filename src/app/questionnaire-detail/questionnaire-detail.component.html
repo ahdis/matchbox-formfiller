@@ -1,6 +1,8 @@
 <mat-card class="Questionnaire" *ngIf="questionnaire">
- <button mat-button color="primary" (click)="fillForm()">Fill out questionnaire ...</button>
+  <button mat-button color="primary" (click)="fillForm()">
+    Fill out questionnaire ...
+  </button>
   <mat-card-content>
-      <pre>{{questionnaire | json}}</pre>
-  </mat-card-content>    
+    <pre>{{ questionnaire | json }}</pre>
+  </mat-card-content>
 </mat-card>

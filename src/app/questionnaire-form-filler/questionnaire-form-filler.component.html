@@ -2,27 +2,41 @@
   <mat-card class="Questionnaire" *ngIf="getQuestionnaire()">
     <mat-card-content>
       <div>
-        <h1 [innerHtml]="getQuestionnaireTitle()" [ngStyle]="getQuestionnaireTitleStyles()"></h1>
+        <h1
+          [innerHtml]="getQuestionnaireTitle()"
+          [ngStyle]="getQuestionnaireTitleStyles()"
+        ></h1>
       </div>
       <div *ngFor="let item of getQuestionnaire().item">
-        <app-questionnaire-item [item]="item" level="0" [formGroup]="formGroup" [formParent]="formParent"></app-questionnaire-item>
+        <app-questionnaire-item
+          [item]="item"
+          level="0"
+          [formGroup]="formGroup"
+          [formParent]="formParent"
+        ></app-questionnaire-item>
       </div>
-      <div>
-      </div>
+      <div></div>
       <mat-card-actions>
-        <button mat-raised-button color="primary" type="submit" [disabled]="!formGroup">Save</button>
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="!formGroup"
+        >
+          Save
+        </button>
       </mat-card-actions>
       <mat-card-footer>
-          <h2>Form Status</h2>
-          <div>{{ formGroup.status }}</div>
-          <br />
-          <ng-container *ngIf="questionnaireResponse">
-              <h2>QuestionnaireResponse</h2>
-             <pre>{{questionnaireResponse | json}}</pre>
-            </ng-container>
-          </mat-card-footer>
-          <h2>Questionnaire</h2>
-        <pre>{{getQuestionnaire() | json}}</pre>
+        <h2>Form Status</h2>
+        <div>{{ formGroup.status }}</div>
+        <br />
+        <ng-container *ngIf="questionnaireResponse">
+          <h2>QuestionnaireResponse</h2>
+          <pre>{{ questionnaireResponse | json }}</pre>
+        </ng-container>
+      </mat-card-footer>
+      <h2>Questionnaire</h2>
+      <pre>{{ getQuestionnaire() | json }}</pre>
     </mat-card-content>
   </mat-card>
 </form>

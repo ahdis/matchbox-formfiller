@@ -8,14 +8,17 @@ describe('ItemLabelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ItemLabelComponent ]
-    })
-    .compileComponents();
+      declarations: [ItemLabelComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ItemLabelComponent);
     component = fixture.componentInstance;
+    component.item = {
+      linkId: '',
+      type: '',
+    };
     fixture.detectChanges();
   });
 

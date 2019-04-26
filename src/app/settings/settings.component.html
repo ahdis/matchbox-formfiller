@@ -2,9 +2,14 @@
   <mat-card-content>
     <form>
       <mat-form-field>
-        <mat-select placeholder="FHIR Server (ST3)" name="selectserver" [ngModel]="getSelectedValue()" (ngModelChange)="setSelectedValue($event)">
+        <mat-select
+          placeholder="FHIR Server (ST3)"
+          name="selectserver"
+          [ngModel]="getSelectedValue()"
+          (ngModelChange)="setSelectedValue($event)"
+        >
           <mat-option *ngFor="let fhir of fhirServers" [value]="fhir">
-            {{fhir}}
+            {{ fhir }}
           </mat-option>
         </mat-select>
       </mat-form-field>

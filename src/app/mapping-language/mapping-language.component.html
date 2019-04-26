@@ -1,18 +1,25 @@
 <mat-card class="Patient">
   <mat-card-content>
-      <mat-form-field style="width: 700px; height: 700px">
-          <mat-label>FHIR Mapping Language</mat-label>
-          <textarea 
-            matInput [formControl]="map"           
-            cdkAutosizeMinRows="10"
-            cdkAutosizeMaxRows="20"
-            rows="30" >
-          </textarea>        
-      </mat-form-field>
-      <div>Result</div>
-      <pre>{{mapResult | json}}</pre>
-      <div>Resource</div>
-      <input type="file" (change)="fileChange($event)" placeholder="Upload resource" accept=".json">
-      <pre>{{resource | json}}</pre>
-  </mat-card-content>    
+    <mat-form-field style="width: 700px; height: 700px">
+      <mat-label>FHIR Mapping Language</mat-label>
+      <textarea
+        matInput
+        [formControl]="map"
+        cdkAutosizeMinRows="10"
+        cdkAutosizeMaxRows="20"
+        rows="30"
+      >
+      </textarea>
+    </mat-form-field>
+    <div>Result</div>
+    <pre>{{ mapResult | json }}</pre>
+    <div>Resource</div>
+    <input
+      type="file"
+      (change)="fileChange($event)"
+      placeholder="Upload resource"
+      accept=".json"
+    />
+    <pre>{{ resource | json }}</pre>
+  </mat-card-content>
 </mat-card>

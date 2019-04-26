@@ -7,35 +7,31 @@ import * as questionnaireLhncbHeightWeight from '../../examples/weight-height-qu
 import * as questionnaireString from '../../examples/string.json';
 
 export class QuestionnaireDemo {
-
   static getQuestionnaireEbida(): fhir.r4.Questionnaire {
-    return <fhir.r4.Questionnaire> (<any> questionnaireEbida);
+    return <fhir.r4.Questionnaire>(<any>questionnaireEbida);
   }
 
   static getQuestionnaireReferralMin(): fhir.r4.Questionnaire {
-    return <fhir.r4.Questionnaire> (<any> questionnaireReferralMin);
+    return <fhir.r4.Questionnaire>(<any>questionnaireReferralMin);
   }
 
   static getQuestionnaireSdcCap(): fhir.r4.Questionnaire {
-    return <fhir.r4.Questionnaire> (<any> questionnaireSdcCap);
+    return <fhir.r4.Questionnaire>(<any>questionnaireSdcCap);
   }
 
   static getQuestionnaireSdcLoinc(): fhir.r4.Questionnaire {
-    return <fhir.r4.Questionnaire> (<any> questionnaireSdcLoinc);
+    return <fhir.r4.Questionnaire>(<any>questionnaireSdcLoinc);
   }
 
   static getQuestionnaireSdcRender(): fhir.r4.Questionnaire {
-    return <fhir.r4.Questionnaire> (<any> questionnaireSdcRender);
+    return <fhir.r4.Questionnaire>(<any>questionnaireSdcRender);
   }
 
   static getQuestionnaireLhncbHeightWeight(): fhir.r4.Questionnaire {
-    return <fhir.r4.Questionnaire> (<any> questionnaireLhncbHeightWeight);
+    return <fhir.r4.Questionnaire>(<any>questionnaireLhncbHeightWeight);
   }
 
   static getQuestionnaireString(): fhir.r4.Questionnaire {
-    return <fhir.r4.Questionnaire> (<any> questionnaireString);
+    return <fhir.r4.Questionnaire>(<any>questionnaireString);
   }
-
-
 }
-
