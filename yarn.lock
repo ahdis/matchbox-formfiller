@@ -4858,8 +4858,10 @@ neo-async@^2.5.0:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.0.tgz#b9d15e4d71c6762908654b5183ed38b753340835"
   integrity sha512-MFh0d/Wa7vkKO3Y3LlacqAEeHK0mckVqzDieUKTT+KGxi+zIpeVsFxymkIiRpbpDziHc290Xr9A1O4Om7otoRA==
 
-"ng-fhirjs@file:../ng-fhirjs/dist/ng-fhirjs":
+ng-fhirjs@^0.3.0:
   version "0.3.0"
+  resolved "https://registry.yarnpkg.com/ng-fhirjs/-/ng-fhirjs-0.3.0.tgz#bc26c748a9d73a9e4e110d16643cef56047b7d72"
+  integrity sha512-Tg7riwhEJCnta0ZPpKw4+XrKetTzCrCMHp2j5rbj2/ILx0Hi4xACBQsQSBhBX9tNoABoE7pAAiH+bamW6Ru/lw==
   dependencies:
     fhir.js "0.0.20"
     fhirpath "0.8.0"
