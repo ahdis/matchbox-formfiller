@@ -10,7 +10,7 @@
       <div class="form-container" *ngFor="let item of getQuestionnaire().item">
         <app-questionnaire-item-generic
           [item]="item"
-          level="0"
+          [level]="0"
           [formGroup]="formGroup"
           [formParent]="formParent"
         >
@@ -22,7 +22,7 @@
         mat-raised-button
         color="primary"
         type="submit"
-        [disabled]="!formGroup || formGroup.invalid"
+        [disabled]="formGroup?.invalid"
       >
         Save
       </button>

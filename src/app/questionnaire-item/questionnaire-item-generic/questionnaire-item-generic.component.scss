@@ -1,10 +1,35 @@
 .group {
   padding: 10px 0;
-  padding-left: 1rem;
+
+  &:not(.top-level) {
+    padding-left: 1rem;
+  }
 }
 
 .item {
   display: flex;
   flex-direction: column;
   padding-bottom: 10px;
+}
+
+.choice-radio-button-group {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+
+  &.horizontal {
+    flex-direction: row;
+    mat-radio-button:not(:first-child) {
+      margin-top: 0;
+    }
+  }
+
+  mat-radio-button {
+    margin-right: 1rem;
+
+    &:not(:first-child) {
+      margin-top: 0.5rem;
+    }
+  }
 }

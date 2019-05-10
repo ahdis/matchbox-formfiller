@@ -2,7 +2,7 @@
   <ng-container [ngSwitch]="item.type">
     <!--        0	group	Group	An item with no direct answer but should have at least one child item. -->
     <ng-container *ngSwitchCase="'group'">
-      <div class="group">
+      <div class="group" [ngClass]="{ 'top-level': level === 0 }">
         <h2>
           <app-item-label [item]="item"></app-item-label>
         </h2>
@@ -14,7 +14,7 @@
             [formParent]="formParent"
           ></app-questionnaire-item-generic>
         </ng-container>
-        <mat-divider *ngIf="level == 0"></mat-divider>
+        <mat-divider *ngIf="level === 0"></mat-divider>
       </div>
     </ng-container>
     <!--    0	display	Display	Text for display that will not capture an answer or have child items. -->
@@ -27,7 +27,7 @@
       <label>
         <app-item-label [item]="item"></app-item-label>
       </label>
-      <mat-radio-group [formControl]="formControl" [required]="this.isRequired">
+      <mat-radio-group [formControl]="formControl" [required]="isRequired">
         <mat-radio-button [value]="'yes'">yes&nbsp;</mat-radio-button>
         <mat-radio-button [value]="'no'"
           >no&nbsp;</mat-radio-button
@@ -75,34 +75,67 @@
       </mat-form-field>
     </ng-container>
     <!--    1	  choice	Choice	Question with a Coding drawn from a list of possible answers (specified in either the answerOption property, or via the valueset referenced in the answerValueSet property) as an answer (valueCoding). -->
-    <mat-form-field *ngSwitchCase="'choice'" appearance="outline">
-      <mat-label>
-        <app-item-label [item]="item"></app-item-label>
-      </mat-label>
-      <mat-select [formControl]="formControl" [required]="isRequired">
-        <ng-container *ngIf="item.answerOption">
-          <mat-option
-            *ngFor="let option of item.answerOption"
-            [value]="getAnswerOptionValue(option)"
+    <ng-container *ngSwitchCase="'choice'">
+      <ng-container [ngSwitch]="getItemControlCode()">
+        <ng-container *ngSwitchCase="'radio-button'">
+          <label class="mat-body-2">
+            <app-item-label [item]="item"></app-item-label>
+          </label>
+          <mat-radio-group
+            class="choice-radio-button-group"
+            [ngClass]="{ horizontal: getChoiceOrientation() === 'horizontal' }"
+            [formControl]="formControl"
+            [required]="isRequired"
           >
-            {{ getAnswerOptionDisplay(option) }}
-            <!-- viewValue -->
-          </mat-option>
+            <ng-container *ngIf="item.answerOption">
+              <mat-radio-button
+                *ngFor="let option of item.answerOption"
+                [value]="getAnswerOptionValue(option)"
+              >
+                {{ getAnswerOptionDisplay(option) }}
+                <!-- viewValue -->
+              </mat-radio-button>
+            </ng-container>
+            <ng-container *ngIf="item.answerValueSet">
+              <mat-radio-button
+                *ngFor="let concept of getAnswerValueSet()"
+                [value]="getAnswerValueSetValue(concept)"
+              >
+                {{ getAnswerValueSetDisplay(concept) }}
+              </mat-radio-button>
+            </ng-container>
+          </mat-radio-group>
         </ng-container>
-        <ng-container *ngIf="item.answerValueSet">
-          <mat-option
-            *ngFor="let concept of getAnswerValueSet()"
-            [value]="getAnswerValueSetValue(concept)"
-          >
-            {{ getAnswerValueSetDisplay(concept) }}
-          </mat-option>
-        </ng-container>
-      </mat-select>
-      <mat-error
-        *ngIf="formControl?.errors?.required"
-        translate="errors.required"
-      ></mat-error>
-    </mat-form-field>
+        <mat-form-field *ngSwitchDefault appearance="outline">
+          <mat-label>
+            <app-item-label [item]="item"></app-item-label>
+          </mat-label>
+          <mat-select [formControl]="formControl" [required]="isRequired">
+            <ng-container *ngIf="item.answerOption">
+              <mat-option
+                *ngFor="let option of item.answerOption"
+                [value]="getAnswerOptionValue(option)"
+              >
+                {{ getAnswerOptionDisplay(option) }}
+                <!-- viewValue -->
+              </mat-option>
+            </ng-container>
+            <ng-container *ngIf="item.answerValueSet">
+              <mat-option
+                *ngFor="let concept of getAnswerValueSet()"
+                [value]="getAnswerValueSetValue(concept)"
+              >
+                {{ getAnswerValueSetDisplay(concept) }}
+              </mat-option>
+            </ng-container>
+          </mat-select>
+          <mat-error
+            *ngIf="formControl?.errors?.required"
+            translate="errors.required"
+          ></mat-error>
+        </mat-form-field>
+      </ng-container>
+    </ng-container>
     <!-- 1	  text	Text	Question with a long (potentially multi-paragraph) free-text entry answer (valueString). -->
     <ng-container *ngSwitchCase="'text'">
       <mat-form-field appearance="outline">
@@ -144,6 +177,9 @@
     <!-- open-choice	Open Choice	Answer is a Coding drawn from a list of possible answers (as with the choice type) or a free-text entry in a string (valueCoding or valueString). -->
     <ng-container *ngSwitchCase="'open-choice'">
       <mat-form-field appearance="outline">
+        <mat-label>
+          <app-item-label [item]="item"></app-item-label>
+        </mat-label>
         <input
           type="text"
           matInput
