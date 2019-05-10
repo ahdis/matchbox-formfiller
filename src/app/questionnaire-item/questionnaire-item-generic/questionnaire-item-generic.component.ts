@@ -27,7 +27,14 @@ export class QuestionnaireItemGenericComponent implements OnInit {
   ngOnInit() {
     console.log('setting form for: ' + this.item.linkId);
     let initValue = '';
+    const validators = [];
     this.isRequired = !!this.item.required;
+    if (this.isRequired) {
+      validators.push(Validators.required);
+    }
+    if (typeof this.item.maxLength === 'number') {
+      validators.push(Validators.max(this.item.maxLength));
+    }
     if (this.item.initial) {
       let set = false;
       for (const itemInitial of this.item.initial) {
@@ -47,10 +54,7 @@ export class QuestionnaireItemGenericComponent implements OnInit {
     if (this.hasFhirPathExpression()) {
       this.formControl = new FormControl({ initValue, disabled: false });
     } else {
-      this.formControl = new FormControl(
-        initValue,
-        this.isRequired ? Validators.required : undefined
-      );
+      this.formControl = new FormControl(initValue, validators);
     }
     this.formControl.valueChanges
       .pipe(

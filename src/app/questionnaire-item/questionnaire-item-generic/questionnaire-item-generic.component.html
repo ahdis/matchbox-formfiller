@@ -39,14 +39,16 @@
         <mat-label>
           <app-item-label [item]="item"></app-item-label>
         </mat-label>
-        <input
-          matInput
-          [formControl]="formControl"
-          [required]="this.isRequired"
-        />
-        <mat-error *ngIf="formControl.invalid">{{
-          getErrorMessage()
-        }}</mat-error>
+        <input matInput [formControl]="formControl" [required]="isRequired" />
+        <mat-error
+          *ngIf="formControl?.errors?.required"
+          translate="errors.required"
+        ></mat-error>
+        <mat-error
+          *ngIf="formControl?.errors?.max"
+          translate="errors.maxLength"
+          [translateParams]="{ maxLength: item.maxLength }"
+        ></mat-error>
         <span matSuffix *ngIf="getUnit()">{{ getUnit() }}</span>
       </mat-form-field>
     </ng-container>
@@ -61,13 +63,14 @@
           [matDatepicker]="picker"
           placeholder="Choose a date"
           [formControl]="formControl"
-          [required]="this.isRequired"
+          [required]="isRequired"
         />
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
-        <mat-error *ngIf="formControl.invalid">{{
-          getErrorMessage()
-        }}</mat-error>
+        <mat-error
+          *ngIf="formControl?.errors?.required"
+          translate="errors.required"
+        ></mat-error>
       </mat-form-field>
     </ng-container>
     <!--    1	  choice	Choice	Question with a Coding drawn from a list of possible answers (specified in either the answerOption property, or via the valueset referenced in the answerValueSet property) as an answer (valueCoding). -->
@@ -75,7 +78,7 @@
       <mat-select
         placeholder="{{ item.text }}"
         [formControl]="formControl"
-        [required]="this.isRequired"
+        [required]="isRequired"
       >
         <ng-container *ngIf="item.answerOption">
           <mat-option
@@ -95,7 +98,10 @@
           </mat-option>
         </ng-container>
       </mat-select>
-      <mat-error *ngIf="formControl.invalid">{{ getErrorMessage() }}</mat-error>
+      <mat-error
+        *ngIf="formControl?.errors?.required"
+        translate="errors.required"
+      ></mat-error>
     </mat-form-field>
     <!-- 1	  text	Text	Question with a long (potentially multi-paragraph) free-text entry answer (valueString). -->
     <ng-container *ngSwitchCase="'text'">
@@ -106,11 +112,12 @@
         <textarea
           matInput
           [formControl]="formControl"
-          [required]="this.isRequired"
+          [required]="isRequired"
         ></textarea>
-        <mat-error *ngIf="formControl.invalid">{{
-          getErrorMessage()
-        }}</mat-error>
+        <mat-error
+          *ngIf="formControl?.errors?.required"
+          translate="errors.required"
+        ></mat-error>
       </mat-form-field>
     </ng-container>
 
@@ -124,12 +131,13 @@
           type="number"
           matInput
           [formControl]="formControl"
-          [required]="this.isRequired"
+          [required]="isRequired"
         />
         <span matSuffix *ngIf="getUnit()">{{ getUnit() }}</span>
-        <mat-error *ngIf="formControl.invalid">{{
-          getErrorMessage()
-        }}</mat-error>
+        <mat-error
+          *ngIf="formControl?.errors?.required"
+          translate="errors.required"
+        ></mat-error>
       </mat-form-field>
     </ng-container>
 
@@ -141,7 +149,7 @@
           matInput
           [formControl]="formControl"
           [matAutocomplete]="auto"
-          [required]="this.isRequired"
+          [required]="isRequired"
         />
         <mat-autocomplete #auto="matAutocomplete">
           <ng-container *ngIf="item.answerOption">
@@ -161,9 +169,10 @@
             </mat-option>
           </ng-container>
         </mat-autocomplete>
-        <mat-error *ngIf="formControl.invalid">{{
-          getErrorMessage()
-        }}</mat-error>
+        <mat-error
+          *ngIf="formControl?.errors?.required"
+          translate="errors.required"
+        ></mat-error>
       </mat-form-field>
     </ng-container>
 
@@ -176,11 +185,12 @@
           type="number"
           matInput
           [formControl]="formControl"
-          [required]="this.isRequired"
+          [required]="isRequired"
         />
-        <mat-error *ngIf="formControl.invalid">{{
-          getErrorMessage()
-        }}</mat-error>
+        <mat-error
+          *ngIf="formControl?.errors?.required"
+          translate="errors.required"
+        ></mat-error>
       </mat-form-field>
       <div *ngIf="showAsSlider()">
         <mat-label>
