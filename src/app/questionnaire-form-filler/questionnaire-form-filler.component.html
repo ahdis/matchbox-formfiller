@@ -8,12 +8,12 @@
         ></h1>
       </div>
       <div *ngFor="let item of getQuestionnaire().item">
-        <app-questionnaire-item
+        <app-questionnaire-item-generic
           [item]="item"
           level="0"
           [formGroup]="formGroup"
           [formParent]="formParent"
-        ></app-questionnaire-item>
+        ></app-questionnaire-item-generic>
       </div>
       <div></div>
       <mat-card-actions>
@@ -21,7 +21,7 @@
           mat-raised-button
           color="primary"
           type="submit"
-          [disabled]="!formGroup"
+          [disabled]="!formGroup || formGroup.invalid"
         >
           Save
         </button>

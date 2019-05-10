@@ -7,12 +7,12 @@
           <app-item-label [item]="item"></app-item-label>
         </h2>
         <ng-container *ngFor="let nestedItem of item.item">
-          <app-questionnaire-item
+          <app-questionnaire-item-generic
             [item]="nestedItem"
             level="{{ level + 1 }}"
             [formGroup]="formGroup"
             [formParent]="formParent"
-          ></app-questionnaire-item>
+          ></app-questionnaire-item-generic>
         </ng-container>
       </div>
     </ng-container>
@@ -26,7 +26,7 @@
       <label>
         <app-item-label [item]="item"></app-item-label>
       </label>
-      <mat-radio-group [formControl]="formControl">
+      <mat-radio-group [formControl]="formControl" [required]="this.isRequired">
         <mat-radio-button [value]="'yes'">yes&nbsp;</mat-radio-button>
         <mat-radio-button [value]="'no'"
           >no&nbsp;</mat-radio-button
@@ -39,7 +39,11 @@
         <mat-label>
           <app-item-label [item]="item"></app-item-label>
         </mat-label>
-        <input matInput [formControl]="formControl" />
+        <input
+          matInput
+          [formControl]="formControl"
+          [required]="this.isRequired"
+        />
         <mat-error *ngIf="formControl.invalid">{{
           getErrorMessage()
         }}</mat-error>
@@ -57,6 +61,7 @@
           [matDatepicker]="picker"
           placeholder="Choose a date"
           [formControl]="formControl"
+          [required]="this.isRequired"
         />
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
@@ -67,7 +72,11 @@
     </ng-container>
     <!--    1	  choice	Choice	Question with a Coding drawn from a list of possible answers (specified in either the answerOption property, or via the valueset referenced in the answerValueSet property) as an answer (valueCoding). -->
     <mat-form-field *ngSwitchCase="'choice'">
-      <mat-select placeholder="{{ item.text }}" [formControl]="formControl">
+      <mat-select
+        placeholder="{{ item.text }}"
+        [formControl]="formControl"
+        [required]="this.isRequired"
+      >
         <ng-container *ngIf="item.answerOption">
           <mat-option
             *ngFor="let option of item.answerOption"
@@ -94,9 +103,15 @@
         <mat-label>
           <app-item-label [item]="item"></app-item-label>
         </mat-label>
-        <textarea matInput [formControl]="formControl"></textarea>
+        <textarea
+          matInput
+          [formControl]="formControl"
+          [required]="this.isRequired"
+        ></textarea>
+        <mat-error *ngIf="formControl.invalid">{{
+          getErrorMessage()
+        }}</mat-error>
       </mat-form-field>
-      <mat-error *ngIf="formControl.invalid">{{ getErrorMessage() }}</mat-error>
     </ng-container>
 
     <!-- 1	  decimal	Decimal	Question with is a real number answer (valueDecimal). -->
@@ -105,7 +120,12 @@
         <mat-label>
           <app-item-label [item]="item"></app-item-label>
         </mat-label>
-        <input type="number" matInput [formControl]="formControl" />
+        <input
+          type="number"
+          matInput
+          [formControl]="formControl"
+          [required]="this.isRequired"
+        />
         <span matSuffix *ngIf="getUnit()">{{ getUnit() }}</span>
         <mat-error *ngIf="formControl.invalid">{{
           getErrorMessage()
@@ -121,6 +141,7 @@
           matInput
           [formControl]="formControl"
           [matAutocomplete]="auto"
+          [required]="this.isRequired"
         />
         <mat-autocomplete #auto="matAutocomplete">
           <ng-container *ngIf="item.answerOption">
@@ -151,7 +172,12 @@
         <mat-label>
           <app-item-label [item]="item"></app-item-label>
         </mat-label>
-        <input type="number" matInput [formControl]="formControl" />
+        <input
+          type="number"
+          matInput
+          [formControl]="formControl"
+          [required]="this.isRequired"
+        />
         <mat-error *ngIf="formControl.invalid">{{
           getErrorMessage()
         }}</mat-error>
@@ -185,12 +211,12 @@
   <!--    [LinkId {{item.linkId}}] -->
   <ng-container *ngIf="item.item && !getItemTypeIsGroup()">
     <ng-container *ngFor="let nestedItem of item.item">
-      <app-questionnaire-item
+      <app-questionnaire-item-generic
         [item]="nestedItem"
         level="{{ level + 1 }}"
         [formGroup]="formGroup"
         [formParent]="formParent"
-      ></app-questionnaire-item>
+      ></app-questionnaire-item-generic>
     </ng-container>
   </ng-container>
 </div>

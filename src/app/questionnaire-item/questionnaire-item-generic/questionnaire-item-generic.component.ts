@@ -1,22 +1,23 @@
-/// <reference path=".,/../../../fhir.r4/index.d.ts" />
+/// <reference path="../../../fhir.r4/index.d.ts" />
 
 import { DomSanitizer } from '@angular/platform-browser';
 import { Component, OnInit, Input } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { QuestionnaireFillerService } from '../questionnaire-filler.service';
+import { QuestionnaireFillerService } from '../../questionnaire-filler.service';
 
 @Component({
-  selector: 'app-questionnaire-item',
-  templateUrl: './questionnaire-item.component.html',
-  styleUrls: ['./questionnaire-item.component.css'],
+  selector: 'app-questionnaire-item-generic',
+  templateUrl: './questionnaire-item-generic.component.html',
+  styleUrls: ['./questionnaire-item-generic.component.css'],
 })
-export class QuestionnaireItemComponent implements OnInit {
+export class QuestionnaireItemGenericComponent implements OnInit {
   @Input() item: fhir.r4.QuestionnaireItem;
   @Input() level: number;
   @Input() formGroup: FormGroup;
   @Input() formParent: FormGroup;
   formControl: FormControl;
+  isRequired: boolean;
 
   constructor(
     private questionaireFillerServer: QuestionnaireFillerService,
@@ -25,11 +26,8 @@ export class QuestionnaireItemComponent implements OnInit {
 
   ngOnInit() {
     console.log('setting form for: ' + this.item.linkId);
-    let isRequired = false;
     let initValue = '';
-    if (this.item.required) {
-      isRequired = true;
-    }
+    this.isRequired = !!this.item.required;
     if (this.item.initial) {
       let set = false;
       for (const itemInitial of this.item.initial) {
@@ -51,7 +49,7 @@ export class QuestionnaireItemComponent implements OnInit {
     } else {
       this.formControl = new FormControl(
         initValue,
-        isRequired ? Validators.required : undefined
+        this.isRequired ? Validators.required : undefined
       );
     }
     this.formControl.valueChanges
@@ -254,6 +252,6 @@ export class QuestionnaireItemComponent implements OnInit {
   }
 
   getErrorMessage(): string {
-    return 'Is required (or or other error';
+    return 'Is required (or other error)';
   }
 }

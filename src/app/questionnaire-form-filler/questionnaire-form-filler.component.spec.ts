@@ -9,7 +9,7 @@ import { MatCardModule } from '@angular/material/card';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { QuestionnaireFillerService } from '../questionnaire-filler.service';
 import { QuestionnaireFormFillerComponent } from './questionnaire-form-filler.component';
-import { QuestionnaireItemComponent } from '../questionnaire-item/questionnaire-item.component';
+import { QuestionnaireItemGenericComponent } from '../questionnaire-item/questionnaire-item-generic/questionnaire-item-generic.component';
 import { QuestionnaireDemo } from '../home/questionnaire-demo';
 import { ItemLabelComponent } from '../questionnaire/item-label/item-label.component';
 import {
@@ -38,7 +38,7 @@ describe('QuestionnaireFormFillerComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         QuestionnaireFormFillerComponent,
-        QuestionnaireItemComponent,
+        QuestionnaireItemGenericComponent,
         ItemLabelComponent,
       ],
       imports: [
