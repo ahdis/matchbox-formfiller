@@ -1,19 +1,10 @@
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { QuestionnaireItemGenericComponent } from './questionnaire-item-generic.component';
-import { ItemLabelComponent } from '../../questionnaire/item-label/item-label.component';
-import {
-  MatAutocompleteModule,
-  MatButtonModule,
-  MatDatepickerModule,
-  MatFormFieldModule,
-  MatInputModule,
-  MatRadioModule,
-  MatSelectModule,
-  MatSliderModule,
-} from '@angular/material';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ItemLabelComponent } from '../../questionnaire/item-label/item-label.component';
+import { QuestionnaireItemGenericComponent } from './questionnaire-item-generic.component';
+import { MatAutocompleteModule } from '@angular/material';
 
 describe('QuestionnaireItemGenericComponent', () => {
   let component: QuestionnaireItemGenericComponent;
@@ -23,17 +14,11 @@ describe('QuestionnaireItemGenericComponent', () => {
     TestBed.configureTestingModule({
       declarations: [QuestionnaireItemGenericComponent, ItemLabelComponent],
       imports: [
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatRadioModule,
-        MatDatepickerModule,
-        MatSelectModule,
         MatAutocompleteModule,
-        MatSliderModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
       ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   }));
 

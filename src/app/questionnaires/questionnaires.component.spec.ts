@@ -1,20 +1,13 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { QuestionnairesComponent } from './questionnaires.component';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatCardModule } from '@angular/material/card';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { QuestionnaireDetailComponent } from '../questionnaire-detail/questionnaire-detail.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { FHIR_HTTP_CONFIG, FhirConfig, FhirJsHttpService } from 'ng-fhirjs';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { FhirConfig, FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhirjs';
+import { QuestionnaireDetailComponent } from '../questionnaire-detail/questionnaire-detail.component';
+import { QuestionnairesComponent } from './questionnaires.component';
+import { MatTableModule } from '@angular/material';
 
 export const FHIR_JS_CONFIG: FhirConfig = {
   baseUrl: 'http://test.fhir.org/r3',
@@ -29,17 +22,10 @@ describe('QuestionnairesComponent', () => {
     TestBed.configureTestingModule({
       declarations: [QuestionnairesComponent, QuestionnaireDetailComponent],
       imports: [
-        MatCardModule,
-        MatPaginatorModule,
-        MatSelectModule,
         MatTableModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
         FormsModule,
         ReactiveFormsModule,
-        BrowserModule,
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         HttpClientTestingModule,
         RouterTestingModule,
       ],
@@ -47,6 +33,7 @@ describe('QuestionnairesComponent', () => {
         FhirJsHttpService,
         { provide: FHIR_HTTP_CONFIG, useValue: FHIR_JS_CONFIG },
       ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   }));
 

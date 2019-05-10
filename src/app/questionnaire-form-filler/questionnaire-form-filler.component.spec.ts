@@ -1,25 +1,24 @@
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
-import { MatCardModule } from '@angular/material/card';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { QuestionnaireFillerService } from '../questionnaire-filler.service';
-import { QuestionnaireFormFillerComponent } from './questionnaire-form-filler.component';
-import { QuestionnaireItemGenericComponent } from '../questionnaire-item/questionnaire-item-generic/questionnaire-item-generic.component';
-import { QuestionnaireDemo } from '../home/questionnaire-demo';
-import { ItemLabelComponent } from '../questionnaire/item-label/item-label.component';
 import {
   MatAutocompleteModule,
-  MatDatepickerModule,
-  MatNativeDateModule,
-  MatRadioModule,
   MatSelectModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatCardModule,
+  MatButtonModule,
+  MatRadioModule,
+  MatDatepickerModule,
   MatSliderModule,
+  MatNativeDateModule,
 } from '@angular/material';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { QuestionnaireDemo } from '../home/questionnaire-demo';
+import { QuestionnaireFillerService } from '../questionnaire-filler.service';
+import { QuestionnaireItemGenericComponent } from '../questionnaire-item/questionnaire-item-generic/questionnaire-item-generic.component';
+import { ItemLabelComponent } from '../questionnaire/item-label/item-label.component';
+import { QuestionnaireFormFillerComponent } from './questionnaire-form-filler.component';
 
 describe('QuestionnaireFormFillerComponent', () => {
   let component: QuestionnaireFormFillerComponent;
@@ -42,10 +41,7 @@ describe('QuestionnaireFormFillerComponent', () => {
         ItemLabelComponent,
       ],
       imports: [
-        MatCardModule,
-        MatFormFieldModule,
         MatInputModule,
-        MatButtonModule,
         MatRadioModule,
         MatDatepickerModule,
         MatSelectModule,
@@ -54,8 +50,7 @@ describe('QuestionnaireFormFillerComponent', () => {
         MatNativeDateModule,
         FormsModule,
         ReactiveFormsModule,
-        BrowserModule,
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
       ],
       providers: [
         {
@@ -63,6 +58,7 @@ describe('QuestionnaireFormFillerComponent', () => {
           useValue: questionnaireFillerServer,
         },
       ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   }));
 

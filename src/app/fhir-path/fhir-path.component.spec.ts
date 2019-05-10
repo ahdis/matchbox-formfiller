@@ -1,13 +1,8 @@
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { FhirPathComponent } from './fhir-path.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import {
-  MatCardModule,
-  MatFormFieldModule,
-  MatInputModule,
-} from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { FhirPathComponent } from './fhir-path.component';
 
 describe('FhirPathComponent', () => {
   let component: FhirPathComponent;
@@ -16,13 +11,8 @@ describe('FhirPathComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [FhirPathComponent],
-      imports: [
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatCardModule,
-        NoopAnimationsModule,
-      ],
+      imports: [ReactiveFormsModule, NoopAnimationsModule],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   }));
 

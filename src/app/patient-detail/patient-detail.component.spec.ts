@@ -1,7 +1,5 @@
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { PatientDetailComponent } from './patient-detail.component';
 
 describe('PatientDetailComponent', () => {
@@ -11,7 +9,7 @@ describe('PatientDetailComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [PatientDetailComponent],
-      imports: [MatCardModule, MatFormFieldModule],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   }));
 

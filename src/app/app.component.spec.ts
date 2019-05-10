@@ -1,12 +1,11 @@
-import { async, TestBed } from '@angular/core/testing';
-import { AppComponent } from './app.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { async, TestBed } from '@angular/core/testing';
 import { RouterModule, Routes } from '@angular/router';
-
-import { FHIR_HTTP_CONFIG, FhirConfig, FhirJsHttpService } from 'ng-fhirjs';
+import { FhirConfig, FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhirjs';
+import { AppComponent } from './app.component';
+import { MatMenuModule } from '@angular/material';
+import { TranslateModule } from '@ngx-translate/core';
 
 export const FHIR_JS_CONFIG: FhirConfig = {
   baseUrl: 'http://localhost:8080/r4',
@@ -20,16 +19,16 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       declarations: [AppComponent],
       imports: [
-        HttpClientTestingModule,
-        MatIconModule,
         MatMenuModule,
-        MatToolbarModule,
+        TranslateModule.forRoot(),
+        HttpClientTestingModule,
         RouterModule.forRoot(routes, { useHash: true }),
       ],
       providers: [
         FhirJsHttpService,
         { provide: FHIR_HTTP_CONFIG, useValue: FHIR_JS_CONFIG },
       ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   }));
   it('should create the app', async(() => {
