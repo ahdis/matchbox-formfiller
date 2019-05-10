@@ -4,7 +4,7 @@ import { FhirJsHttpService, IResource } from 'ng-fhirjs';
 @Component({
   selector: 'app-capability-statement',
   templateUrl: './capability-statement.component.html',
-  styleUrls: ['./capability-statement.component.css'],
+  styleUrls: ['./capability-statement.component.scss'],
 })
 export class CapabilityStatementComponent implements OnInit {
   bundle: IResource;

@@ -1,16 +1,15 @@
 /// <reference path=".,/../../../fhir.r4/index.d.ts" />
 
 import { Component, OnInit } from '@angular/core';
-import { FhirJsHttpService, FHIR_HTTP_CONFIG, QueryObj } from 'ng-fhirjs';
+import { FormControl } from '@angular/forms';
 import { MatTableDataSource, PageEvent } from '@angular/material';
-import { ReactiveFormsModule, FormControl } from '@angular/forms';
+import { FhirJsHttpService, QueryObj } from 'ng-fhirjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { query } from '@angular/animations';
 
 @Component({
   selector: 'app-questionnaires',
   templateUrl: './questionnaires.component.html',
-  styleUrls: ['./questionnaires.component.css'],
+  styleUrls: ['./questionnaires.component.scss'],
 })
 export class QuestionnairesComponent implements OnInit {
   searched = false;

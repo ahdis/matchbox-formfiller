@@ -7,7 +7,7 @@ import { QuestionnaireDemo } from '../home/questionnaire-demo';
 @Component({
   selector: 'app-fhir-path',
   templateUrl: './fhir-path.component.html',
-  styleUrls: ['./fhir-path.component.css'],
+  styleUrls: ['./fhir-path.component.scss'],
 })
 export class FhirPathComponent implements OnInit {
   public fhirPathExpression: FormControl;

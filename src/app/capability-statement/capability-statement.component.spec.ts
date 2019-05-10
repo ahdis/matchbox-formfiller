@@ -1,13 +1,8 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { FhirConfig, FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhirjs';
 import { CapabilityStatementComponent } from './capability-statement.component';
-import { MatCardModule } from '@angular/material/card';
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-} from '@angular/common/http/testing';
-
-import { FhirJsHttpService, FHIR_HTTP_CONFIG, FhirConfig } from 'ng-fhirjs';
 
 export const FHIR_JS_CONFIG: FhirConfig = {
   baseUrl: 'http://test.fhir.org/r3',
@@ -21,11 +16,12 @@ describe('CapabilityStatementComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [CapabilityStatementComponent],
-      imports: [HttpClientTestingModule, MatCardModule],
+      imports: [HttpClientTestingModule],
       providers: [
         FhirJsHttpService,
         { provide: FHIR_HTTP_CONFIG, useValue: FHIR_JS_CONFIG },
       ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   }));
 

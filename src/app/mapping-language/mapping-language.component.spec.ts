@@ -8,6 +8,7 @@ import {
 } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('MappingLanguageComponent', () => {
   let component: MappingLanguageComponent;
@@ -16,13 +17,8 @@ describe('MappingLanguageComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [MappingLanguageComponent],
-      imports: [
-        MatCardModule,
-        MatFormFieldModule,
-        MatInputModule,
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-      ],
+      imports: [ReactiveFormsModule, NoopAnimationsModule],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   }));
 

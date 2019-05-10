@@ -11,7 +11,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 @Component({
   selector: 'app-questionnaire-form-filler',
   templateUrl: './questionnaire-form-filler.component.html',
-  styleUrls: ['./questionnaire-form-filler.component.css'],
+  styleUrls: ['./questionnaire-form-filler.component.scss'],
 })
 export class QuestionnaireFormFillerComponent implements OnInit {
   formGroup: FormGroup;

@@ -1,34 +1,11 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
-import { Routes, RouterModule } from '@angular/router';
-
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import {
-  MatRadioModule,
-  MatNativeDateModule,
-  MatDividerModule,
-  MatSliderModule,
-  MatSlideToggleModule,
-} from '@angular/material';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { RouterModule, Routes } from '@angular/router';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppComponent } from './app.component';
-import { NgFhirjsModule } from 'ng-fhirjs';
-import { FHIR_HTTP_CONFIG } from 'ng-fhirjs';
+import { FHIR_HTTP_CONFIG, NgFhirjsModule } from 'ng-fhirjs';
 import { HomeComponent } from './home/home.component';
 import { PatientsComponent } from './patients/patients.component';
 import { CapabilityStatementComponent } from './capability-statement/capability-statement.component';
@@ -40,11 +17,12 @@ import { PatientDetailComponent } from './patient-detail/patient-detail.componen
 import { QuestionnairesComponent } from './questionnaires/questionnaires.component';
 import { QuestionnaireDetailComponent } from './questionnaire-detail/questionnaire-detail.component';
 import { QuestionnaireFormFillerComponent } from './questionnaire-form-filler/questionnaire-form-filler.component';
-import { QuestionnaireItemComponent } from './questionnaire-item/questionnaire-item.component';
 
 import { QuestionnaireModule } from './questionnaire/questionnaire.module';
 import { FhirPathComponent } from './fhir-path/fhir-path.component';
 import { MappingLanguageComponent } from './mapping-language/mapping-language.component';
+import { SharedModule } from './shared/shared.module';
+import { QuestionnaireItemModule } from './questionnaire-item/questionnaire-item.module';
 
 const routes: Routes = [
   {
@@ -81,6 +59,10 @@ const routes: Routes = [
   },
 ];
 
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -92,37 +74,23 @@ const routes: Routes = [
     QuestionnairesComponent,
     QuestionnaireDetailComponent,
     QuestionnaireFormFillerComponent,
-    QuestionnaireItemComponent,
     FhirPathComponent,
     MappingLanguageComponent,
   ],
   imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    FormsModule,
+    SharedModule,
     HttpClientModule,
     NgFhirjsModule,
-    MatAutocompleteModule,
-    MatButtonModule,
-    MatCardModule,
-    MatDividerModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatMenuModule,
-    MatPaginatorModule,
-    MatSelectModule,
-    MatSliderModule,
-    MatSlideToggleModule,
-    MatTableModule,
-    MatToolbarModule,
-    MatTabsModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatRadioModule,
-    ReactiveFormsModule,
     QuestionnaireModule,
+    QuestionnaireItemModule,
     RouterModule.forRoot(routes, { useHash: true }),
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: createTranslateLoader,
+        deps: [HttpClient],
+      },
+    }),
   ],
   providers: [{ provide: FHIR_HTTP_CONFIG, useValue: FHIR_JS_CONFIG }],
   bootstrap: [AppComponent],

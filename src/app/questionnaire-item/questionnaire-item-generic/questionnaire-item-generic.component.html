@@ -7,13 +7,14 @@
           <app-item-label [item]="item"></app-item-label>
         </h2>
         <ng-container *ngFor="let nestedItem of item.item">
-          <app-questionnaire-item
+          <app-questionnaire-item-generic
             [item]="nestedItem"
             level="{{ level + 1 }}"
             [formGroup]="formGroup"
             [formParent]="formParent"
-          ></app-questionnaire-item>
+          ></app-questionnaire-item-generic>
         </ng-container>
+        <mat-divider *ngIf="level == 0"></mat-divider>
       </div>
     </ng-container>
     <!--    0	display	Display	Text for display that will not capture an answer or have child items. -->
@@ -26,7 +27,7 @@
       <label>
         <app-item-label [item]="item"></app-item-label>
       </label>
-      <mat-radio-group [formControl]="formControl">
+      <mat-radio-group [formControl]="formControl" [required]="this.isRequired">
         <mat-radio-button [value]="'yes'">yes&nbsp;</mat-radio-button>
         <mat-radio-button [value]="'no'"
           >no&nbsp;</mat-radio-button
@@ -35,20 +36,26 @@
     </ng-container>
     <!--    1	  string	String	Question with a short (few words to short sentence) free-text entry answer (valueString). -->
     <ng-container *ngSwitchCase="'string'">
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>
           <app-item-label [item]="item"></app-item-label>
         </mat-label>
-        <input matInput [formControl]="formControl" />
-        <mat-error *ngIf="formControl.invalid">{{
-          getErrorMessage()
-        }}</mat-error>
+        <input matInput [formControl]="formControl" [required]="isRequired" />
+        <mat-error
+          *ngIf="formControl?.errors?.required"
+          translate="errors.required"
+        ></mat-error>
+        <mat-error
+          *ngIf="formControl?.errors?.maxlength"
+          translate="errors.maxLength"
+          [translateParams]="{ maxLength: item.maxLength }"
+        ></mat-error>
         <span matSuffix *ngIf="getUnit()">{{ getUnit() }}</span>
       </mat-form-field>
     </ng-container>
     <!--    1	  date	Date	Question with a date answer (valueDate). -->
     <ng-container *ngSwitchCase="'date'">
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>
           <app-item-label [item]="item"></app-item-label>
         </mat-label>
@@ -57,17 +64,22 @@
           [matDatepicker]="picker"
           placeholder="Choose a date"
           [formControl]="formControl"
+          [required]="isRequired"
         />
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
-        <mat-error *ngIf="formControl.invalid">{{
-          getErrorMessage()
-        }}</mat-error>
+        <mat-error
+          *ngIf="formControl?.errors?.required"
+          translate="errors.required"
+        ></mat-error>
       </mat-form-field>
     </ng-container>
     <!--    1	  choice	Choice	Question with a Coding drawn from a list of possible answers (specified in either the answerOption property, or via the valueset referenced in the answerValueSet property) as an answer (valueCoding). -->
-    <mat-form-field *ngSwitchCase="'choice'">
-      <mat-select placeholder="{{ item.text }}" [formControl]="formControl">
+    <mat-form-field *ngSwitchCase="'choice'" appearance="outline">
+      <mat-label>
+        <app-item-label [item]="item"></app-item-label>
+      </mat-label>
+      <mat-select [formControl]="formControl" [required]="isRequired">
         <ng-container *ngIf="item.answerOption">
           <mat-option
             *ngFor="let option of item.answerOption"
@@ -86,41 +98,58 @@
           </mat-option>
         </ng-container>
       </mat-select>
-      <mat-error *ngIf="formControl.invalid">{{ getErrorMessage() }}</mat-error>
+      <mat-error
+        *ngIf="formControl?.errors?.required"
+        translate="errors.required"
+      ></mat-error>
     </mat-form-field>
     <!-- 1	  text	Text	Question with a long (potentially multi-paragraph) free-text entry answer (valueString). -->
     <ng-container *ngSwitchCase="'text'">
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>
           <app-item-label [item]="item"></app-item-label>
         </mat-label>
-        <textarea matInput [formControl]="formControl"></textarea>
+        <textarea
+          matInput
+          [formControl]="formControl"
+          [required]="isRequired"
+        ></textarea>
+        <mat-error
+          *ngIf="formControl?.errors?.required"
+          translate="errors.required"
+        ></mat-error>
       </mat-form-field>
-      <mat-error *ngIf="formControl.invalid">{{ getErrorMessage() }}</mat-error>
     </ng-container>
 
     <!-- 1	  decimal	Decimal	Question with is a real number answer (valueDecimal). -->
     <ng-container *ngSwitchCase="'decimal'">
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>
           <app-item-label [item]="item"></app-item-label>
         </mat-label>
-        <input type="number" matInput [formControl]="formControl" />
+        <input
+          type="number"
+          matInput
+          [formControl]="formControl"
+          [required]="isRequired"
+        />
         <span matSuffix *ngIf="getUnit()">{{ getUnit() }}</span>
-        <mat-error *ngIf="formControl.invalid">{{
-          getErrorMessage()
-        }}</mat-error>
+        <mat-error
+          *ngIf="formControl?.errors?.required"
+          translate="errors.required"
+        ></mat-error>
       </mat-form-field>
     </ng-container>
 
     <!-- open-choice	Open Choice	Answer is a Coding drawn from a list of possible answers (as with the choice type) or a free-text entry in a string (valueCoding or valueString). -->
     <ng-container *ngSwitchCase="'open-choice'">
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <input
           type="text"
           matInput
           [formControl]="formControl"
           [matAutocomplete]="auto"
+          [required]="isRequired"
         />
         <mat-autocomplete #auto="matAutocomplete">
           <ng-container *ngIf="item.answerOption">
@@ -140,21 +169,28 @@
             </mat-option>
           </ng-container>
         </mat-autocomplete>
-        <mat-error *ngIf="formControl.invalid">{{
-          getErrorMessage()
-        }}</mat-error>
+        <mat-error
+          *ngIf="formControl?.errors?.required"
+          translate="errors.required"
+        ></mat-error>
       </mat-form-field>
     </ng-container>
 
     <ng-container *ngSwitchCase="'integer'">
-      <mat-form-field *ngIf="!showAsSlider()">
+      <mat-form-field *ngIf="!showAsSlider()" appearance="outline">
         <mat-label>
           <app-item-label [item]="item"></app-item-label>
         </mat-label>
-        <input type="number" matInput [formControl]="formControl" />
-        <mat-error *ngIf="formControl.invalid">{{
-          getErrorMessage()
-        }}</mat-error>
+        <input
+          type="number"
+          matInput
+          [formControl]="formControl"
+          [required]="isRequired"
+        />
+        <mat-error
+          *ngIf="formControl?.errors?.required"
+          translate="errors.required"
+        ></mat-error>
       </mat-form-field>
       <div *ngIf="showAsSlider()">
         <mat-label>
@@ -185,12 +221,12 @@
   <!--    [LinkId {{item.linkId}}] -->
   <ng-container *ngIf="item.item && !getItemTypeIsGroup()">
     <ng-container *ngFor="let nestedItem of item.item">
-      <app-questionnaire-item
+      <app-questionnaire-item-generic
         [item]="nestedItem"
         level="{{ level + 1 }}"
         [formGroup]="formGroup"
         [formParent]="formParent"
-      ></app-questionnaire-item>
+      ></app-questionnaire-item-generic>
     </ng-container>
   </ng-container>
 </div>

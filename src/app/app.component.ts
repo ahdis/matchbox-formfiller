@@ -1,19 +1,24 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhirjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'angular on fhir';
 
   constructor(
     private fhirHttpService: FhirJsHttpService,
-    private router: Router
-  ) {}
+    private router: Router,
+    translateService: TranslateService
+  ) {
+    translateService.setDefaultLang('de');
+    translateService.use(translateService.getBrowserLang());
+  }
 
   getTitle(): string {
     switch (this.router.url) {

@@ -1,22 +1,23 @@
-/// <reference path=".,/../../../fhir.r4/index.d.ts" />
+/// <reference path="../../../fhir.r4/index.d.ts" />
 
 import { DomSanitizer } from '@angular/platform-browser';
 import { Component, OnInit, Input } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { QuestionnaireFillerService } from '../questionnaire-filler.service';
+import { QuestionnaireFillerService } from '../../questionnaire-filler.service';
 
 @Component({
-  selector: 'app-questionnaire-item',
-  templateUrl: './questionnaire-item.component.html',
-  styleUrls: ['./questionnaire-item.component.css'],
+  selector: 'app-questionnaire-item-generic',
+  templateUrl: './questionnaire-item-generic.component.html',
+  styleUrls: ['./questionnaire-item-generic.component.scss'],
 })
-export class QuestionnaireItemComponent implements OnInit {
+export class QuestionnaireItemGenericComponent implements OnInit {
   @Input() item: fhir.r4.QuestionnaireItem;
   @Input() level: number;
   @Input() formGroup: FormGroup;
   @Input() formParent: FormGroup;
   formControl: FormControl;
+  isRequired: boolean;
 
   constructor(
     private questionaireFillerServer: QuestionnaireFillerService,
@@ -25,10 +26,14 @@ export class QuestionnaireItemComponent implements OnInit {
 
   ngOnInit() {
     console.log('setting form for: ' + this.item.linkId);
-    let isRequired = false;
     let initValue = '';
-    if (this.item.required) {
-      isRequired = true;
+    const validators = [];
+    this.isRequired = !!this.item.required;
+    if (this.isRequired) {
+      validators.push(Validators.required);
+    }
+    if (typeof this.item.maxLength === 'number') {
+      validators.push(Validators.maxLength(this.item.maxLength));
     }
     if (this.item.initial) {
       let set = false;
@@ -49,10 +54,7 @@ export class QuestionnaireItemComponent implements OnInit {
     if (this.hasFhirPathExpression()) {
       this.formControl = new FormControl({ initValue, disabled: false });
     } else {
-      this.formControl = new FormControl(
-        initValue,
-        isRequired ? Validators.required : undefined
-      );
+      this.formControl = new FormControl(initValue, validators);
     }
     this.formControl.valueChanges
       .pipe(
@@ -254,6 +256,6 @@ export class QuestionnaireItemComponent implements OnInit {
   }
 
   getErrorMessage(): string {
-    return 'Is required (or or other error';
+    return 'Is required (or other error)';
   }
 }
