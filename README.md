@@ -41,3 +41,6 @@ ng build --prod --base-href "http://github.ahdis.ch/ng-fhir-sample"
 angular-cli-ghpages
 
 note: communicatin via fhir servers is currently over http, therefore the https access has to be switched off in the github project
+
+## Contributing
+Have a look at [contributing](CONTRIBUTING.md).
