@@ -13,7 +13,7 @@ export const FHIR_JS_CONFIG: FhirConfig = {
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.css'],
+  styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent implements OnInit {
   fhirServers = ['http://localhost:8080/r4', 'http://test.fhir.org/r4'];

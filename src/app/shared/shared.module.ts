@@ -23,6 +23,7 @@ import {
   MatTabsModule,
   MatToolbarModule,
 } from '@angular/material';
+import { TranslateModule } from '@ngx-translate/core';
 
 const modulesToExport = [
   CommonModule,
@@ -30,6 +31,7 @@ const modulesToExport = [
   BrowserAnimationsModule,
   FormsModule,
   ReactiveFormsModule,
+  TranslateModule,
   MatAutocompleteModule,
   MatButtonModule,
   MatCardModule,

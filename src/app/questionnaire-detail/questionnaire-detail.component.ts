@@ -5,7 +5,7 @@ import { QuestionnaireFillerService } from '../questionnaire-filler.service';
 @Component({
   selector: 'app-questionnaire-detail',
   templateUrl: './questionnaire-detail.component.html',
-  styleUrls: ['./questionnaire-detail.component.css'],
+  styleUrls: ['./questionnaire-detail.component.scss'],
 })
 export class QuestionnaireDetailComponent implements OnInit {
   @Input() questionnaire: fhir.r4.Questionnaire;

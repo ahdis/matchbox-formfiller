@@ -9,7 +9,7 @@ import { QuestionnaireFillerService } from '../../questionnaire-filler.service';
 @Component({
   selector: 'app-questionnaire-item-generic',
   templateUrl: './questionnaire-item-generic.component.html',
-  styleUrls: ['./questionnaire-item-generic.component.css'],
+  styleUrls: ['./questionnaire-item-generic.component.scss'],
 })
 export class QuestionnaireItemGenericComponent implements OnInit {
   @Input() item: fhir.r4.QuestionnaireItem;
@@ -33,7 +33,7 @@ export class QuestionnaireItemGenericComponent implements OnInit {
       validators.push(Validators.required);
     }
     if (typeof this.item.maxLength === 'number') {
-      validators.push(Validators.max(this.item.maxLength));
+      validators.push(Validators.maxLength(this.item.maxLength));
     }
     if (this.item.initial) {
       let set = false;

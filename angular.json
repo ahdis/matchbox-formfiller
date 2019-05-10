@@ -22,7 +22,7 @@
               "src/examples",
               "src/CNAME"
             ],
-            "styles": ["src/styles.css"],
+            "styles": ["src/styles.scss"],
             "scripts": []
           },
           "configurations": {
@@ -70,7 +70,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [],
-            "styles": ["src/styles.css"],
+            "styles": ["src/styles.scss"],
             "assets": ["src/assets", "src/favicon.ico", "src/examples"]
           }
         },
@@ -109,7 +109,7 @@
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",
-      "styleext": "css"
+      "styleext": "scss"
     },
     "@schematics/angular:directive": {
       "prefix": "app"

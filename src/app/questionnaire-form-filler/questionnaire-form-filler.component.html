@@ -1,5 +1,5 @@
 <form (ngSubmit)="onSubmit()" [formGroup]="formGroup">
-  <mat-card class="Questionnaire" *ngIf="getQuestionnaire()">
+  <mat-card class="questionnaire" *ngIf="getQuestionnaire()">
     <mat-card-content>
       <div>
         <h1
@@ -7,36 +7,37 @@
           [ngStyle]="getQuestionnaireTitleStyles()"
         ></h1>
       </div>
-      <div *ngFor="let item of getQuestionnaire().item">
+      <div class="form-container" *ngFor="let item of getQuestionnaire().item">
         <app-questionnaire-item-generic
           [item]="item"
           level="0"
           [formGroup]="formGroup"
           [formParent]="formParent"
-        ></app-questionnaire-item-generic>
-      </div>
-      <div></div>
-      <mat-card-actions>
-        <button
-          mat-raised-button
-          color="primary"
-          type="submit"
-          [disabled]="!formGroup || formGroup.invalid"
         >
-          Save
-        </button>
-      </mat-card-actions>
-      <mat-card-footer>
-        <h2>Form Status</h2>
-        <div>{{ formGroup.status }}</div>
-        <br />
-        <ng-container *ngIf="questionnaireResponse">
-          <h2>QuestionnaireResponse</h2>
-          <pre>{{ questionnaireResponse | json }}</pre>
-        </ng-container>
-      </mat-card-footer>
+        </app-questionnaire-item-generic>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="!formGroup || formGroup.invalid"
+      >
+        Save
+      </button>
+    </mat-card-actions>
+    <mat-card-footer>
+      <h2>Form Status</h2>
+      <div>{{ formGroup.status }}</div>
+      <br />
+      <ng-container *ngIf="questionnaireResponse">
+        <h2>QuestionnaireResponse</h2>
+        <pre>{{ questionnaireResponse | json }}</pre>
+      </ng-container>
+      <div></div>
       <h2>Questionnaire</h2>
       <pre>{{ getQuestionnaire() | json }}</pre>
-    </mat-card-content>
+    </mat-card-footer>
   </mat-card>
 </form>

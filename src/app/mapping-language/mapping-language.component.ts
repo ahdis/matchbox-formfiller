@@ -7,7 +7,7 @@ import { Entry } from 'ng-fhirjs';
 @Component({
   selector: 'app-mapping-language',
   templateUrl: './mapping-language.component.html',
-  styleUrls: ['./mapping-language.component.css'],
+  styleUrls: ['./mapping-language.component.scss'],
 })
 export class MappingLanguageComponent implements OnInit {
   public map: FormControl;

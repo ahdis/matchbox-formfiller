@@ -7,7 +7,7 @@ import { QuestionnaireFillerService } from '../../questionnaire-filler.service';
 @Component({
   selector: 'app-item-label',
   templateUrl: './item-label.component.html',
-  styleUrls: ['./item-label.component.css'],
+  styleUrls: ['./item-label.component.scss'],
 })
 export class ItemLabelComponent implements OnInit {
   @Input() item: fhir.r4.QuestionnaireItem;

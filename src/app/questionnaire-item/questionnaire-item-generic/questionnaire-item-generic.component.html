@@ -14,6 +14,7 @@
             [formParent]="formParent"
           ></app-questionnaire-item-generic>
         </ng-container>
+        <mat-divider *ngIf="level == 0"></mat-divider>
       </div>
     </ng-container>
     <!--    0	display	Display	Text for display that will not capture an answer or have child items. -->
@@ -35,7 +36,7 @@
     </ng-container>
     <!--    1	  string	String	Question with a short (few words to short sentence) free-text entry answer (valueString). -->
     <ng-container *ngSwitchCase="'string'">
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>
           <app-item-label [item]="item"></app-item-label>
         </mat-label>
@@ -45,7 +46,7 @@
           translate="errors.required"
         ></mat-error>
         <mat-error
-          *ngIf="formControl?.errors?.max"
+          *ngIf="formControl?.errors?.maxlength"
           translate="errors.maxLength"
           [translateParams]="{ maxLength: item.maxLength }"
         ></mat-error>
@@ -54,7 +55,7 @@
     </ng-container>
     <!--    1	  date	Date	Question with a date answer (valueDate). -->
     <ng-container *ngSwitchCase="'date'">
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>
           <app-item-label [item]="item"></app-item-label>
         </mat-label>
@@ -74,12 +75,11 @@
       </mat-form-field>
     </ng-container>
     <!--    1	  choice	Choice	Question with a Coding drawn from a list of possible answers (specified in either the answerOption property, or via the valueset referenced in the answerValueSet property) as an answer (valueCoding). -->
-    <mat-form-field *ngSwitchCase="'choice'">
-      <mat-select
-        placeholder="{{ item.text }}"
-        [formControl]="formControl"
-        [required]="isRequired"
-      >
+    <mat-form-field *ngSwitchCase="'choice'" appearance="outline">
+      <mat-label>
+        <app-item-label [item]="item"></app-item-label>
+      </mat-label>
+      <mat-select [formControl]="formControl" [required]="isRequired">
         <ng-container *ngIf="item.answerOption">
           <mat-option
             *ngFor="let option of item.answerOption"
@@ -105,7 +105,7 @@
     </mat-form-field>
     <!-- 1	  text	Text	Question with a long (potentially multi-paragraph) free-text entry answer (valueString). -->
     <ng-container *ngSwitchCase="'text'">
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>
           <app-item-label [item]="item"></app-item-label>
         </mat-label>
@@ -123,7 +123,7 @@
 
     <!-- 1	  decimal	Decimal	Question with is a real number answer (valueDecimal). -->
     <ng-container *ngSwitchCase="'decimal'">
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>
           <app-item-label [item]="item"></app-item-label>
         </mat-label>
@@ -143,7 +143,7 @@
 
     <!-- open-choice	Open Choice	Answer is a Coding drawn from a list of possible answers (as with the choice type) or a free-text entry in a string (valueCoding or valueString). -->
     <ng-container *ngSwitchCase="'open-choice'">
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <input
           type="text"
           matInput
@@ -177,7 +177,7 @@
     </ng-container>
 
     <ng-container *ngSwitchCase="'integer'">
-      <mat-form-field *ngIf="!showAsSlider()">
+      <mat-form-field *ngIf="!showAsSlider()" appearance="outline">
         <mat-label>
           <app-item-label [item]="item"></app-item-label>
         </mat-label>
