@@ -3,14 +3,14 @@
   "configurations": [
     {
       "name": "ng serve",
-      "type": "chrome",
+      "type": "node",
       "request": "launch",
       "url": "http://localhost:4200/#",
       "webRoot": "${workspaceRoot}"
     },
     {
       "name": "ng test",
-      "type": "chrome",
+      "type": "node",
       "request": "launch",
       "url": "http://localhost:9876/debug.html",
       "webRoot": "${workspaceRoot}"
