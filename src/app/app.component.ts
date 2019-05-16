@@ -34,6 +34,8 @@ export class AppComponent {
         return this.title + ' - ' + 'CapabilityStatement';
       case '/settings':
         return this.title + ' - ' + 'Settings';
+      case '/smartonfhirpatientstandalone':
+        return this.title + ' - ' + 'SMARTonFHIR Patient standalone launch';
     }
     return this.title;
   }

@@ -1,0 +1,47 @@
+<mat-card>
+  <mat-card-content>
+    <strong>Status: {{ givenName ? 'logged in' : 'logged out' }} </strong>
+
+    <h1 *ngIf="!givenName">Welcome!</h1>
+    <h1 *ngIf="givenName">Welcome, {{ givenName }} {{ familyName }}!</h1>
+
+    <button mat-raised-button (click)="login()">Log in</button>
+    <button mat-raised-button (click)="logout()">Logout</button>
+    <button mat-raised-button *ngIf="access_token" (click)="loadUserProfile()">
+      Load User Profile
+    </button>
+
+    <div>
+      <b>id_token</b>
+      <div>
+        {{ id_token }}
+      </div>
+      <div>
+        id_token_expiration:
+        <p>{{ id_token_expiration }}</p>
+      </div>
+    </div>
+
+    <div>
+      <b>access_token</b>
+      <p>
+        {{ access_token }}
+      </p>
+      <div>
+        access_token_expiration:
+        <p>{{ access_token_expiration }}</p>
+      </div>
+      <div>
+        access_token_asjwt:
+        <p>{{ access_token_as_jwt | json }}</p>
+      </div>
+    </div>
+
+    <div *ngIf="userProfile">
+      <b>user profile:</b>
+      <pre>{{ userProfile | json }}</pre>
+    </div>
+
+    <app-patient-detail [patient]="selectedPatient"></app-patient-detail>
+  </mat-card-content>
+</mat-card>

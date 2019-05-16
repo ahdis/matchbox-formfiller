@@ -25,10 +25,10 @@ RUN rm -rf /opt/yarn-* \
     && apt-get -y install --no-install-recommends yarn
 
 # Install eslint
-RUN npm install -g eslint
+RUN yarn global add eslint
 
 # Install angular (added by oliver)
-RUN npm install -g @angular/cli
+RUN yarn global add @angular/cli
 
 # Clean up
 RUN apt-get autoremove -y \

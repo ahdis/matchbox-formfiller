@@ -23,6 +23,11 @@ import { FhirPathComponent } from './fhir-path/fhir-path.component';
 import { MappingLanguageComponent } from './mapping-language/mapping-language.component';
 import { SharedModule } from './shared/shared.module';
 import { QuestionnaireItemModule } from './questionnaire-item/questionnaire-item.module';
+import { SmartOnFhirPatientStandaloneComponent } from './smart-on-fhir-patient-standalone/smart-on-fhir-patient-standalone.component';
+import {
+  DefaultOAuthInterceptor,
+  OAuthModule,
+} from 'angular-oauth2-oidc-codeflow';
 
 const routes: Routes = [
   {
@@ -57,6 +62,15 @@ const routes: Routes = [
     path: 'settings',
     component: SettingsComponent,
   },
+  {
+    path: 'smartonfhirpatientstandalone',
+    component: SmartOnFhirPatientStandaloneComponent,
+  },
+  {
+    path: 'authorize',
+    redirectTo: '/smartonfhirpatientstandalone',
+    pathMatch: 'full',
+  },
 ];
 
 export function createTranslateLoader(http: HttpClient) {
@@ -76,6 +90,7 @@ export function createTranslateLoader(http: HttpClient) {
     QuestionnaireFormFillerComponent,
     FhirPathComponent,
     MappingLanguageComponent,
+    SmartOnFhirPatientStandaloneComponent,
   ],
   imports: [
     SharedModule,
@@ -83,7 +98,13 @@ export function createTranslateLoader(http: HttpClient) {
     NgFhirjsModule,
     QuestionnaireModule,
     QuestionnaireItemModule,
-    RouterModule.forRoot(routes, { useHash: true }),
+    RouterModule.forRoot(routes, { useHash: false }), // otherwise we hvave a problem with the redirect uri
+    OAuthModule.forRoot({
+      resourceServer: {
+        allowedUrls: ['https://launch.smarthealthit.org/v/r2/sim/'],
+        sendAccessToken: true,
+      },
+    }),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -92,7 +113,10 @@ export function createTranslateLoader(http: HttpClient) {
       },
     }),
   ],
-  providers: [{ provide: FHIR_HTTP_CONFIG, useValue: FHIR_JS_CONFIG }],
+  providers: [
+    DefaultOAuthInterceptor,
+    { provide: FHIR_HTTP_CONFIG, useValue: FHIR_JS_CONFIG },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

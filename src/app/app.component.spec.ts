@@ -22,7 +22,7 @@ describe('AppComponent', () => {
         MatMenuModule,
         TranslateModule.forRoot(),
         HttpClientTestingModule,
-        RouterModule.forRoot(routes, { useHash: true }),
+        RouterModule.forRoot(routes, { useHash: false }),
       ],
       providers: [
         FhirJsHttpService,
