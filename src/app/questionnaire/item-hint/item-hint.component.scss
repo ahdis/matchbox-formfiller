@@ -1,0 +1,13 @@
+.learn-more-container {
+  display: flex;
+  mat-icon {
+    margin-right: 0.2rem;
+  }
+  a {
+    margin-right: 0.2rem;
+    color: inherit;
+    &:hover {
+      color: black;
+    }
+  }
+}

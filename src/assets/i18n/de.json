@@ -2,5 +2,9 @@
   "errors": {
     "required": "Dieses Feld ist erforderlich.",
     "maxLength": "Dieses Feld darf maximal {{ maxLength }} Zeichen haben."
+  },
+  "hint": {
+    "learnMore": "Erfahre mehr",
+    "learnMoreSuffix": "über dieses Feld."
   }
 }
