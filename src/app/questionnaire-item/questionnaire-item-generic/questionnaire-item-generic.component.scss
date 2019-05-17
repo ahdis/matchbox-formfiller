@@ -1,8 +1,9 @@
 .group {
-  padding: 10px 0;
+  margin: 10px 0;
 
   &:not(.top-level) {
-    padding-left: 1rem;
+    padding-left: 1.8rem;
+    border-left: 5px solid rgba(0, 0, 0, 0.06);
   }
 }
 
