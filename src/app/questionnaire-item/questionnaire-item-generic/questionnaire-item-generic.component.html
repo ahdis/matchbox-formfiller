@@ -80,6 +80,7 @@
         <ng-container *ngSwitchCase="'radio-button'">
           <label class="mat-body-2">
             <app-item-label [item]="item"></app-item-label>
+            <span *ngIf="isRequired">&nbsp;*</span>
           </label>
           <mat-radio-group
             class="choice-radio-button-group"
