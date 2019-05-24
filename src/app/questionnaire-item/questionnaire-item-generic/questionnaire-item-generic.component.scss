@@ -19,6 +19,7 @@
   padding-bottom: 10px;
   &.item-type-boolean,
   &.item-type-choice,
+  &.item-type-open-choice,
   &.item-type-integer {
     label {
       display: flex;
@@ -29,7 +30,8 @@
     }
   }
   &.item-type-boolean,
-  &.item-type-choice {
+  &.item-type-choice,
+  &.item-type-open-choice {
     mat-radio-group {
       margin-top: 0.5em;
       mat-radio-button {

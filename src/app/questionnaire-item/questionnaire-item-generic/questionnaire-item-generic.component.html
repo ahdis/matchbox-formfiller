@@ -116,6 +116,7 @@
           <label class="mat-body-2">
             <app-item-label [item]="item"></app-item-label>
             <span *ngIf="isRequired">&nbsp;*</span>
+            <app-item-hint [item]="item"></app-item-hint>
           </label>
           <div
             class="check-box-group"
@@ -146,6 +147,9 @@
               {{ option.display }}
             </mat-option>
           </mat-select>
+          <mat-hint>
+            <app-item-hint [item]="item"></app-item-hint>
+          </mat-hint>
           <mat-error
             *ngIf="formControl?.errors?.required"
             translate="errors.required"
@@ -204,6 +208,7 @@
           <label class="mat-body-2">
             <app-item-label [item]="item"></app-item-label>
             <span *ngIf="isRequired">&nbsp;*</span>
+            <app-item-hint [item]="item"></app-item-hint>
           </label>
           <div
             class="check-box-group"

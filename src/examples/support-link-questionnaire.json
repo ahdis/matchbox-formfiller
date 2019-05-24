@@ -57,7 +57,7 @@
             }
           ],
           "linkId": "1.5",
-          "text": "support link choice",
+          "text": "support link choice with radio button",
           "type": "choice",
           "answerOption": [
             {
@@ -89,6 +89,31 @@
               "valueCoding": {
                 "code": "U",
                 "display": "Unknown"
+              }
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-supportLink",
+              "valueUri": "http://hl7.org/fhir/"
+            }
+          ],
+          "linkId": "choice.select",
+          "text": "support link choice",
+          "type": "choice",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "code": "M",
+                "display": "Male"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "O",
+                "display": "Other"
               }
             }
           ]
@@ -232,6 +257,91 @@
           "initial": [
             {
               "valueInteger": 50
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+              "valueCode": "horizontal"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "check-box",
+                    "display": "Check Box"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-supportLink",
+              "valueUri": "http://hl7.org/fhir/"
+            }
+          ],
+          "linkId": "choice.checkbox",
+          "text": "Support link choice with checkbox",
+          "type": "choice",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "code": "option1",
+                "display": "Option 1"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "option2",
+                "display": "Option 2"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "option3",
+                "display": "Option 3"
+              }
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "check-box",
+                    "display": "Check Box"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-supportLink",
+              "valueUri": "http://hl7.org/fhir/"
+            }
+          ],
+          "linkId": "choice.checkbox",
+          "text": "Support link open-choice with checkbox",
+          "type": "open-choice",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "code": "option1",
+                "display": "Option 1"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "option2",
+                "display": "Option 2"
+              }
             }
           ]
         }
