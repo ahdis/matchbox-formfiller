@@ -1,7 +1,14 @@
 .learn-more-container {
   display: flex;
+  align-items: center;
   mat-icon {
     margin-right: 0.2rem;
+    display: flex;
+    align-self: center;
+    flex: 0;
+    font-size: inherit;
+    width: initial;
+    height: initial;
   }
   a {
     margin-right: 0.2rem;

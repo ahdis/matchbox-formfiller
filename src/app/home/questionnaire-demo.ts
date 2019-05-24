@@ -5,6 +5,7 @@ import * as questionnaireSdcLoinc from '../../examples/Questionnaire-questionnai
 import * as questionnaireSdcRender from '../../examples/Questionnaire-questionnaire-sdc-profile-example-render.json';
 import * as questionnaireLhncbHeightWeight from '../../examples/weight-height-questionnaire.json';
 import * as questionnaireString from '../../examples/string.json';
+import * as questionnaireSupportLink from '../../examples/support-link-questionnaire.json';
 
 export class QuestionnaireDemo {
   static getQuestionnaireEbida(): fhir.r4.Questionnaire {
@@ -33,5 +34,9 @@ export class QuestionnaireDemo {
 
   static getQuestionnaireString(): fhir.r4.Questionnaire {
     return <fhir.r4.Questionnaire>(<any>questionnaireString);
+  }
+
+  static getQuestionnaireSupportLink(): fhir.r4.Questionnaire {
+    return <fhir.r4.Questionnaire>(<any>questionnaireSupportLink);
   }
 }
