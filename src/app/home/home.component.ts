@@ -66,4 +66,10 @@ export class HomeComponent implements OnInit {
     );
     this.router.navigate(['/questionnaire-form-filler']);
   }
+  fillFormSupportLink() {
+    this.questionaireFillerServer.setQuestionnare(
+      QuestionnaireDemo.getQuestionnaireSupportLink()
+    );
+    this.router.navigate(['/questionnaire-form-filler']);
+  }
 }

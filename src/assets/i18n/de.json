@@ -4,7 +4,6 @@
     "maxLength": "Dieses Feld darf maximal {{ maxLength }} Zeichen haben."
   },
   "hint": {
-    "learnMore": "Erfahre mehr",
-    "learnMoreSuffix": "über dieses Feld."
+    "supportLink": "Info"
   }
 }
