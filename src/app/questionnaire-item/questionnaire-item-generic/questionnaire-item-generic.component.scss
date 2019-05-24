@@ -13,20 +13,24 @@
   padding-bottom: 10px;
 }
 
-.choice-radio-button-group {
+.radio-button-group,
+.check-box-group {
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
   margin-top: 1rem;
   margin-bottom: 1rem;
 
   &.horizontal {
     flex-direction: row;
-    mat-radio-button:not(:first-child) {
+    mat-radio-button:not(:first-child),
+    mat-checkbox:not(:first-child) {
       margin-top: 0;
     }
   }
 
-  mat-radio-button {
+  mat-radio-button,
+  mat-checkbox {
     margin-right: 1rem;
 
     &:not(:first-child) {

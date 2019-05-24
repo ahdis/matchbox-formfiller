@@ -1,7 +1,13 @@
 /// <reference path="../../../fhir.r4/index.d.ts" />
 
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  Validators,
+  FormArray,
+  AbstractControl,
+} from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { QuestionnaireFillerService } from '../../questionnaire-filler.service';
 
@@ -13,18 +19,31 @@ import { QuestionnaireFillerService } from '../../questionnaire-filler.service';
 export class QuestionnaireItemGenericComponent implements OnInit {
   @Input() item: fhir.r4.QuestionnaireItem;
   @Input() level: number;
-  @Input() formGroup: FormGroup;
   @Input() formParent: FormGroup;
-  formControl: FormControl;
+
+  formControl: AbstractControl;
+
   isRequired: boolean;
+  isGroup: boolean;
+  itemControlCode?: string;
+  answerOptions: {
+    readonly value: string;
+    readonly display: string;
+    readonly initialSelected: boolean;
+  }[] = [];
 
   constructor(private questionaireFillerServer: QuestionnaireFillerService) {}
 
   ngOnInit() {
     console.log('setting form for: ' + this.item.linkId);
-    let initValue = '';
-    const validators = [];
     this.isRequired = !!this.item.required;
+    this.isGroup = this.item.type === 'group';
+    this.itemControlCode = this.getItemControlCode();
+    let initValue = '';
+    const canHaveMultipleAnswers = this.itemControlCode === 'check-box';
+    const hasAnswerOptions =
+      this.item.type === 'choice' || this.item.type === 'open-choice';
+    const validators = [];
     if (this.isRequired) {
       validators.push(Validators.required);
     }
@@ -47,25 +66,45 @@ export class QuestionnaireItemGenericComponent implements OnInit {
       }
     }
 
-    if (this.hasFhirPathExpression()) {
-      this.formControl = new FormControl({ initValue, disabled: false });
-    } else {
-      this.formControl = new FormControl(initValue, validators);
+    if (hasAnswerOptions) {
+      if (Array.isArray(this.item.answerOption)) {
+        this.answerOptions = this.item.answerOption.map(option => ({
+          value: this.getAnswerOptionValue(option),
+          display: this.getAnswerOptionDisplay(option),
+          initialSelected: !!option.initialSelected,
+        }));
+      } else if (Array.isArray(this.getAnswerValueSet())) {
+        this.answerOptions = this.getAnswerValueSet().map(concept => ({
+          value: this.getAnswerValueSetValue(concept),
+          display: this.getAnswerValueSetDisplay(concept),
+          initialSelected: false,
+        }));
+      }
     }
-    this.formControl.valueChanges
-      .pipe(
-        debounceTime(200),
-        distinctUntilChanged()
-      )
-      .subscribe(term => {
-        console.log('setting ' + this.item.linkId + ' to ' + term);
-        this.questionaireFillerServer.setQuestionnaireResponseItem(
-          this.item,
-          term
-        );
-      });
 
-    if (this.hasFhirPathExpression()) {
+    if (this.isGroup) {
+      this.formControl = new FormGroup({});
+    } else if (canHaveMultipleAnswers) {
+      const initialFormControls = hasAnswerOptions
+        ? this.answerOptions.map(
+            option => new FormControl(option.initialSelected)
+          )
+        : [];
+      this.formControl = new FormArray(
+        initialFormControls,
+        this.isRequired
+          ? [
+              (control: AbstractControl) =>
+                (Array.isArray(control.value) ? control.value : []).some(
+                  value => !!value
+                )
+                  ? null
+                  : { required: 'This field is required.' },
+            ]
+          : []
+      );
+    } else if (this.hasFhirPathExpression()) {
+      this.formControl = new FormControl({ initValue, disabled: false });
       this.formParent.valueChanges.pipe(debounceTime(300)).subscribe(term => {
         console.log('calculating' + this.item.linkId);
         const calculatedValue = this.questionaireFillerServer.evaluateFhirPath(
@@ -75,11 +114,36 @@ export class QuestionnaireItemGenericComponent implements OnInit {
           this.formControl.reset({ value: calculatedValue, disabled: true });
         }
       });
+    } else {
+      this.formControl = new FormControl(initValue, validators);
+    }
+
+    if (!this.isGroup) {
+      this.formControl.valueChanges
+        .pipe(
+          debounceTime(200),
+          distinctUntilChanged()
+        )
+        .subscribe(values => {
+          const answerValues = !canHaveMultipleAnswers
+            ? [values]
+            : hasAnswerOptions
+            ? this.answerOptions
+                .filter((_, index) => values[index])
+                .map(({ value }) => value)
+            : values;
+
+          console.log('setting ' + this.item.linkId + ' to ' + answerValues);
+          this.questionaireFillerServer.setQuestionnaireResponseItem(
+            this.item,
+            answerValues
+          );
+        });
     }
 
     // Add control asynchronous to prevent ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() =>
-      this.formGroup.addControl(this.item.linkId, this.formControl)
+      this.formParent.addControl(this.item.linkId, this.formControl)
     );
   }
 
@@ -144,7 +208,7 @@ export class QuestionnaireItemGenericComponent implements OnInit {
   }
 
   showAsSlider(): boolean {
-    return this.getItemControlCode() === 'slider';
+    return this.itemControlCode === 'slider';
   }
 
   getChoiceOrientation(): string {
@@ -260,7 +324,7 @@ export class QuestionnaireItemGenericComponent implements OnInit {
     return concept.display;
   }
 
-  getAnswerValueSet(): fhir.r4.ValueSetComposeInclude[] {
+  getAnswerValueSet(): fhir.r4.ValueSetComposeIncludeConcept[] {
     return this.questionaireFillerServer.getAnswerValueSetComposeIncludeConcepts(
       this.item.answerValueSet
     );

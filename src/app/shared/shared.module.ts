@@ -22,6 +22,7 @@ import {
   MatTableModule,
   MatTabsModule,
   MatToolbarModule,
+  MatCheckboxModule,
 } from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -35,6 +36,7 @@ const modulesToExport = [
   MatAutocompleteModule,
   MatButtonModule,
   MatCardModule,
+  MatCheckboxModule,
   MatDividerModule,
   MatFormFieldModule,
   MatIconModule,

@@ -142,42 +142,84 @@
           "linkId": "chemogramm",
           "text": "Chemogramm",
           "type": "open-choice",
-          "item": [
+          "answerOption": [
             {
-              "linkId": "lab",
-              "text": "Laborwerte",
-              "type": "string",
-              "answerOption": [
-                {
-                  "valueCoding": {
-                    "system": "http://loinc.org",
-                    "code": "27353-2",
-                    "display": "Glucose"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "system": "http://loinc.org",
-                    "code": "33898-8",
-                    "display": "Bilirubin"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "system": "http://loinc.org",
-                    "code": "3094-0",
-                    "display": "Harnstoff"
-                  }
-                }
-              ]
+              "valueCoding": {
+                "system": "http://loinc.org",
+                "code": "27353-2",
+                "display": "Glucose"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://loinc.org",
+                "code": "33898-8",
+                "display": "Bilirubin"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://loinc.org",
+                "code": "3094-0",
+                "display": "Harnstoff"
+              }
             }
           ]
+        },
+        {
+          "linkId": "lab",
+          "text": "Laborwerte",
+          "type": "string"
         },
         {
           "linkId": "examiniation.attachments",
           "text": "Beilage",
           "type": "attachment",
           "repeats": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+              "valueCode": "horizontal"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "check-box",
+                    "display": "Check Box"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "examination.done-examinations",
+          "text": "Getätigte Untersuchungen",
+          "type": "choice",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "code": "blood",
+                "display": "Blutuntersuchung"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "xray",
+                "display": "Röntgen"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "mri",
+                "display": "MRI"
+              }
+            }
+          ]
         }
       ]
     },
