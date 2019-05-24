@@ -31,7 +31,6 @@ describe('QuestionnaireItemGenericComponent', () => {
       text: 'Auftrags-Nummer',
       type: 'string',
     };
-    component.formGroup = new FormGroup({});
     component.formParent = new FormGroup({});
     fixture.detectChanges();
   });

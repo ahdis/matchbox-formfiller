@@ -15,7 +15,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class QuestionnaireFormFillerComponent implements OnInit {
   formGroup: FormGroup;
-  formParent: FormGroup;
 
   questionnaireResponse: fhir.r4.QuestionnaireResponse;
 
@@ -24,7 +23,6 @@ export class QuestionnaireFormFillerComponent implements OnInit {
     private sanitizer: DomSanitizer
   ) {
     this.formGroup = new FormGroup({});
-    this.formParent = this.formGroup;
     this.questionnaireResponse = this.questionaireFillerServer.getQuestionniareResponse();
   }
 
