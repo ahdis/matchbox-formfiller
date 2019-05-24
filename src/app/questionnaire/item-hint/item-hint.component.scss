@@ -6,7 +6,9 @@
   a {
     margin-right: 0.2rem;
     color: inherit;
-    &:hover {
+    &:hover,
+    &:active,
+    &:focus {
       color: black;
     }
   }

@@ -13,13 +13,12 @@ export class ItemHintComponent implements OnInit {
 
   ngOnInit() {}
 
-  getHintLink() {
+  getSupportLink() {
     if (this.item) {
       const xhtmlExtension = this.questionaireFillerServer.getExtension(
         this.item.extension,
         'http://hl7.org/fhir/StructureDefinition/questionnaire-supportLink'
       );
-      console.log(xhtmlExtension);
       if (xhtmlExtension) {
         return xhtmlExtension.valueUri;
       }
