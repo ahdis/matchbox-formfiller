@@ -1,10 +1,36 @@
 .group {
-  padding: 10px 0;
-  padding-left: 1rem;
+  margin: 10px 0;
+
+  &:not(.top-level) {
+    padding-left: 1.8rem;
+    border-left: 5px solid rgba(0, 0, 0, 0.06);
+  }
 }
 
 .item {
   display: flex;
   flex-direction: column;
   padding-bottom: 10px;
+}
+
+.choice-radio-button-group {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+
+  &.horizontal {
+    flex-direction: row;
+    mat-radio-button:not(:first-child) {
+      margin-top: 0;
+    }
+  }
+
+  mat-radio-button {
+    margin-right: 1rem;
+
+    &:not(:first-child) {
+      margin-top: 0.5rem;
+    }
+  }
 }
