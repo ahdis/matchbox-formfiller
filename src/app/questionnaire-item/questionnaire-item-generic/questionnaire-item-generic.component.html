@@ -1,4 +1,8 @@
-<div *ngIf="isEnabled()" [hidden]="isHidden()" class="item">
+<div
+  *ngIf="isEnabled()"
+  [hidden]="isHidden()"
+  [ngClass]="['item-type-' + item.type, 'item']"
+>
   <ng-container [ngSwitch]="item.type">
     <!--        0	group	Group	An item with no direct answer but should have at least one child item. -->
     <ng-container *ngSwitchCase="'group'">
@@ -6,6 +10,9 @@
         <h2>
           <app-item-label [item]="item"></app-item-label>
         </h2>
+        <div class="group-support-link">
+          <app-item-hint [item]="item"></app-item-hint>
+        </div>
         <ng-container *ngFor="let nestedItem of item.item">
           <app-questionnaire-item-generic
             [item]="nestedItem"
@@ -24,14 +31,13 @@
     <!--   0	question	Question	An item that defines a specific answer to be captured, and which may have child items. (the answer provided in the QuestionnaireResponse should be of the defined datatype). -->
     <!--   1	  boolean	Boolean	Question with a yes/no answer (valueBoolean). -->
     <ng-container *ngSwitchCase="'boolean'">
-      <label>
+      <label class="mat-body-2">
         <app-item-label [item]="item"></app-item-label>
+        <app-item-hint [item]="item"></app-item-hint>
       </label>
       <mat-radio-group [formControl]="formControl" [required]="isRequired">
-        <mat-radio-button [value]="'yes'">yes&nbsp;</mat-radio-button>
-        <mat-radio-button [value]="'no'"
-          >no&nbsp;</mat-radio-button
-        > </mat-radio-group
+        <mat-radio-button [value]="'yes'">Yes</mat-radio-button>
+        <mat-radio-button [value]="'no'">No</mat-radio-button> </mat-radio-group
       >&nbsp;
     </ng-container>
     <!--    1	  string	String	Question with a short (few words to short sentence) free-text entry answer (valueString). -->
@@ -69,6 +75,9 @@
           [formControl]="formControl"
           [required]="isRequired"
         />
+        <mat-hint>
+          <app-item-hint [item]="item"></app-item-hint>
+        </mat-hint>
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
         <mat-error
@@ -84,6 +93,7 @@
           <label class="mat-body-2">
             <app-item-label [item]="item"></app-item-label>
             <span *ngIf="isRequired">&nbsp;*</span>
+            <app-item-hint [item]="item"></app-item-hint>
           </label>
           <mat-radio-group
             class="choice-radio-button-group"
@@ -151,6 +161,9 @@
           [formControl]="formControl"
           [required]="isRequired"
         ></textarea>
+        <mat-hint>
+          <app-item-hint [item]="item"></app-item-hint>
+        </mat-hint>
         <mat-error
           *ngIf="formControl?.errors?.required"
           translate="errors.required"
@@ -170,6 +183,9 @@
           [formControl]="formControl"
           [required]="isRequired"
         />
+        <mat-hint>
+          <app-item-hint [item]="item"></app-item-hint>
+        </mat-hint>
         <span matSuffix *ngIf="getUnit()">{{ getUnit() }}</span>
         <mat-error
           *ngIf="formControl?.errors?.required"
@@ -209,6 +225,9 @@
             </mat-option>
           </ng-container>
         </mat-autocomplete>
+        <mat-hint>
+          <app-item-hint [item]="item"></app-item-hint>
+        </mat-hint>
         <mat-error
           *ngIf="formControl?.errors?.required"
           translate="errors.required"
@@ -227,15 +246,19 @@
           [formControl]="formControl"
           [required]="isRequired"
         />
+        <mat-hint>
+          <app-item-hint [item]="item"></app-item-hint>
+        </mat-hint>
         <mat-error
           *ngIf="formControl?.errors?.required"
           translate="errors.required"
         ></mat-error>
       </mat-form-field>
       <div *ngIf="showAsSlider()">
-        <mat-label>
+        <label class="mat-body-2">
           <app-item-label [item]="item"></app-item-label>
-        </mat-label>
+          <app-item-hint [item]="item"></app-item-hint>
+        </label>
         <mat-slider
           [min]="getMinValue()"
           [max]="getMaxValue()"

@@ -1,0 +1,241 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "referral-min",
+  "meta": {
+    "profile": [
+      "http://fhir.ch/ig/ch-orf/StructureDefinition/ch-orf-questionnaire"
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n            <pre>radio button für geschlecht horizontal, required Element, textbox für untersuchung, Checkboxen mit optional Textangaben, Angabe von mehreren Beilagen</pre>\n        </div>"
+  },
+  "url": "http://fhir.ch/ig/ch-orf/Questionnaire/referral-min",
+  "version": "0.9.1",
+  "name": "SupportLinkForm",
+  "title": "Support Link Form",
+  "status": "draft",
+  "experimental": true,
+  "subjectType": ["Patient"],
+  "date": "2019-05-24T00:00:00+01:00",
+  "publisher": "ahdis",
+  "item": [
+    {
+      "linkId": "1",
+      "text": "support link group",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-supportLink",
+          "valueUri": "http://hl7.org/fhir/"
+        }
+      ],
+      "type": "group",
+      "required": true,
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+              "valueCode": "horizontal"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "radio-button",
+                    "display": "Radio Button"
+                  }
+                ],
+                "text": "A control where choices are listed with a button beside them. The button can be toggled to select or de-select a given choice. Selecting one item deselects all others."
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-supportLink",
+              "valueUri": "http://hl7.org/fhir/"
+            }
+          ],
+          "linkId": "1.5",
+          "text": "support link choice",
+          "type": "choice",
+          "answerOption": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-optionPrefix",
+                  "valueString": "(a)"
+                }
+              ],
+              "valueCoding": {
+                "code": "F",
+                "display": "Female"
+              },
+              "initialSelected": true
+            },
+            {
+              "valueCoding": {
+                "code": "M",
+                "display": "Male"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "O",
+                "display": "Other"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "U",
+                "display": "Unknown"
+              }
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "slider",
+                    "display": "Slider"
+                  }
+                ],
+                "text": "A control where an axis is displayed between the high and low values and the control can be visually manipulated to select a value anywhere on the axis."
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-sliderStepValue",
+              "valueInteger": 10
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+              "valueInteger": 0
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+              "valueInteger": 100
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-supportLink",
+              "valueUri": "http://hl7.org/fhir/"
+            }
+          ],
+          "linkId": "3.1",
+          "text": "support link integer (slider)",
+          "type": "integer",
+          "initial": [
+            {
+              "valueInteger": 50
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-supportLink",
+              "valueUri": "http://hl7.org/fhir/"
+            }
+          ],
+          "linkId": "command.examiniation.reports",
+          "text": "Befundberichte",
+          "type": "boolean"
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-optionalDisplay",
+              "valueBoolean": true
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-supportLink",
+              "valueUri": "http://hl7.org/fhir/"
+            }
+          ],
+          "linkId": "1.1",
+          "text": "support link string",
+          "type": "string"
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-supportLink",
+              "valueUri": "http://hl7.org/fhir/"
+            }
+          ],
+          "linkId": "command.examiniation.duedate",
+          "text": "support link date",
+          "type": "date"
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-supportLink",
+              "valueUri": "http://hl7.org/fhir/"
+            }
+          ],
+          "linkId": "command.partner.info",
+          "text": "support link text",
+          "type": "text",
+          "initial": [
+            {
+              "valueString": "Bilder und Befunde können per Ebida bestellt werden ..."
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+              "valueDecimal": 0.01
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+              "valueDecimal": 1000
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces",
+              "valueInteger": 2
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-supportLink",
+              "valueUri": "http://hl7.org/fhir/"
+            }
+          ],
+          "linkId": "1.1.1.1.1.1",
+          "text": "support link decimal",
+          "type": "decimal",
+          "required": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+              "valueInteger": 0
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+              "valueInteger": 100
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-supportLink",
+              "valueUri": "http://hl7.org/fhir/"
+            }
+          ],
+          "linkId": "3.1",
+          "text": "support link integer",
+          "type": "integer",
+          "initial": [
+            {
+              "valueInteger": 50
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
