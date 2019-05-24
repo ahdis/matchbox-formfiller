@@ -7,7 +7,7 @@ To publish a new version to github pages follow these steps:
 git checkout master (can also be done via pull request)
 yarn version
 # enter the new version for example 0.3.1
-git push
+git push && git push --tags
 ````
 
 This will update the `package.json` of ng-fhir-sample and commit a git tag with the new version. 
