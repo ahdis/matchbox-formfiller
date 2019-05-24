@@ -41,6 +41,9 @@
           <app-item-label [item]="item"></app-item-label>
         </mat-label>
         <input matInput [formControl]="formControl" [required]="isRequired" />
+        <mat-hint>
+          <app-item-hint [item]="item"></app-item-hint>
+        </mat-hint>
         <mat-error
           *ngIf="formControl?.errors?.required"
           translate="errors.required"
