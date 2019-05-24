@@ -31,7 +31,7 @@
     <!--   0	question	Question	An item that defines a specific answer to be captured, and which may have child items. (the answer provided in the QuestionnaireResponse should be of the defined datatype). -->
     <!--   1	  boolean	Boolean	Question with a yes/no answer (valueBoolean). -->
     <ng-container *ngSwitchCase="'boolean'">
-      <label class="boolean-item-label">
+      <label class="mat-body-2">
         <app-item-label [item]="item"></app-item-label>
         <app-item-hint [item]="item"></app-item-hint>
       </label>
@@ -90,7 +90,7 @@
     <ng-container *ngSwitchCase="'choice'">
       <ng-container [ngSwitch]="getItemControlCode()">
         <ng-container *ngSwitchCase="'radio-button'">
-          <label>
+          <label class="mat-body-2">
             <app-item-label [item]="item"></app-item-label>
             <span *ngIf="isRequired">&nbsp;*</span>
             <app-item-hint [item]="item"></app-item-hint>
@@ -255,7 +255,7 @@
         ></mat-error>
       </mat-form-field>
       <div *ngIf="showAsSlider()">
-        <label>
+        <label class="mat-body-2">
           <app-item-label [item]="item"></app-item-label>
           <app-item-hint [item]="item"></app-item-hint>
         </label>

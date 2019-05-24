@@ -1,4 +1,4 @@
-# Contributing to ng-fihrjs
+# Contributing to ng-fhir-sample
 
 ## Publish a new version to github pages
 
