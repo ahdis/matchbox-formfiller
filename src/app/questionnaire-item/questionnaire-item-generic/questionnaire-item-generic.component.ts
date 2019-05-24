@@ -1,7 +1,6 @@
 /// <reference path="../../../fhir.r4/index.d.ts" />
 
-import { DomSanitizer } from '@angular/platform-browser';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { QuestionnaireFillerService } from '../../questionnaire-filler.service';
@@ -19,10 +18,7 @@ export class QuestionnaireItemGenericComponent implements OnInit {
   formControl: FormControl;
   isRequired: boolean;
 
-  constructor(
-    private questionaireFillerServer: QuestionnaireFillerService,
-    private sanitizer: DomSanitizer
-  ) {}
+  constructor(private questionaireFillerServer: QuestionnaireFillerService) {}
 
   ngOnInit() {
     console.log('setting form for: ' + this.item.linkId);
@@ -68,7 +64,6 @@ export class QuestionnaireItemGenericComponent implements OnInit {
           term
         );
       });
-    this.formGroup.addControl(this.item.linkId, this.formControl);
 
     if (this.hasFhirPathExpression()) {
       this.formParent.valueChanges.pipe(debounceTime(300)).subscribe(term => {
@@ -81,6 +76,11 @@ export class QuestionnaireItemGenericComponent implements OnInit {
         }
       });
     }
+
+    // Add control asynchronous to prevent ExpressionChangedAfterItHasBeenCheckedError
+    setTimeout(() =>
+      this.formGroup.addControl(this.item.linkId, this.formControl)
+    );
   }
 
   isEnabled(): boolean {
@@ -131,17 +131,28 @@ export class QuestionnaireItemGenericComponent implements OnInit {
     return xhtmlExtension && xhtmlExtension.valueBoolean;
   }
 
-  showAsSlider(): boolean {
-    const sliderExtension = this.questionaireFillerServer.getExtension(
+  getItemControlCode(): string {
+    const itemControlExtension = this.questionaireFillerServer.getExtension(
       this.item.extension,
       'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl'
     );
-    return (
-      sliderExtension &&
-      sliderExtension.valueCodeableConcept.coding[0].system ===
-        'http://hl7.org/fhir/questionnaire-item-control' &&
-      sliderExtension.valueCodeableConcept.coding[0].code === 'slider'
+    return itemControlExtension &&
+      itemControlExtension.valueCodeableConcept.coding[0].system ===
+        'http://hl7.org/fhir/questionnaire-item-control'
+      ? itemControlExtension.valueCodeableConcept.coding[0].code
+      : undefined;
+  }
+
+  showAsSlider(): boolean {
+    return this.getItemControlCode() === 'slider';
+  }
+
+  getChoiceOrientation(): string {
+    const choiceOrientationExtension = this.questionaireFillerServer.getExtension(
+      this.item.extension,
+      'http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation'
     );
+    return choiceOrientationExtension && choiceOrientationExtension.valueCode;
   }
 
   getSliderStepValue(): number {
@@ -253,9 +264,5 @@ export class QuestionnaireItemGenericComponent implements OnInit {
     return this.questionaireFillerServer.getAnswerValueSetComposeIncludeConcepts(
       this.item.answerValueSet
     );
-  }
-
-  getErrorMessage(): string {
-    return 'Is required (or other error)';
   }
 }

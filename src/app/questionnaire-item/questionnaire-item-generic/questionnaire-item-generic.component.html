@@ -6,7 +6,7 @@
   <ng-container [ngSwitch]="item.type">
     <!--        0	group	Group	An item with no direct answer but should have at least one child item. -->
     <ng-container *ngSwitchCase="'group'">
-      <div class="group">
+      <div class="group" [ngClass]="{ 'top-level': level === 0 }">
         <h2>
           <app-item-label [item]="item"></app-item-label>
         </h2>
@@ -21,7 +21,7 @@
             [formParent]="formParent"
           ></app-questionnaire-item-generic>
         </ng-container>
-        <mat-divider *ngIf="level == 0"></mat-divider>
+        <mat-divider *ngIf="level === 0"></mat-divider>
       </div>
     </ng-container>
     <!--    0	display	Display	Text for display that will not capture an answer or have child items. -->
