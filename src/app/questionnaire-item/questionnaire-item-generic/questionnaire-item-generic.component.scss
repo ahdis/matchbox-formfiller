@@ -66,3 +66,17 @@
     }
   }
 }
+
+.drop-zone {
+  background: rgba(0, 0, 0, 0.03);
+  height: 5rem;
+  line-height: 5rem;
+  text-align: center;
+  border: 5px solid rgba(0, 0, 0, 0.06);
+  margin-bottom: 1rem;
+
+  &.file-over {
+    background: rgba(0, 150, 0, 0.3);
+    border: 5px solid rgba(0, 150, 0, 0.6);
+  }
+}

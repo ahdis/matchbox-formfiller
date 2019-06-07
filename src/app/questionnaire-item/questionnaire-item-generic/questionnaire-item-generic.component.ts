@@ -32,6 +32,8 @@ export class QuestionnaireItemGenericComponent implements OnInit {
     readonly initialSelected: boolean;
   }[] = [];
 
+  isDraggingFileOverDropZone = false;
+
   constructor(private questionaireFillerServer: QuestionnaireFillerService) {}
 
   ngOnInit() {
@@ -328,5 +330,45 @@ export class QuestionnaireItemGenericComponent implements OnInit {
     return this.questionaireFillerServer.getAnswerValueSetComposeIncludeConcepts(
       this.item.answerValueSet
     );
+  }
+
+  onDrop(ev) {
+    console.log('File(s) dropped');
+
+    // Prevent default behavior (Prevent file from being opened)
+    ev.preventDefault();
+    this.isDraggingFileOverDropZone = false;
+
+    if (ev.dataTransfer.items) {
+      // Use DataTransferItemList interface to access the file(s)
+      for (var i = 0; i < ev.dataTransfer.items.length; i++) {
+        // If dropped items aren't files, reject them
+        if (ev.dataTransfer.items[i].kind === 'file') {
+          var file = ev.dataTransfer.items[i].getAsFile();
+          console.log('... file[' + i + '].name = ' + file.name);
+        }
+      }
+    } else {
+      // Use DataTransfer interface to access the file(s)
+      for (var i = 0; i < ev.dataTransfer.files.length; i++) {
+        console.log(
+          '... file[' + i + '].name = ' + ev.dataTransfer.files[i].name
+        );
+      }
+    }
+  }
+
+  onFileChange(ev) {}
+
+  onDragOver(ev) {
+    ev.preventDefault();
+  }
+
+  onDragEnter() {
+    this.isDraggingFileOverDropZone = true;
+  }
+
+  onDragLeave() {
+    this.isDraggingFileOverDropZone = false;
   }
 }

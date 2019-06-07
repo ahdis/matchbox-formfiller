@@ -291,6 +291,23 @@
       </div>
     </ng-container>
 
+    <ng-container *ngSwitchCase="'attachment'">
+      <div
+        class="drop-zone"
+        [class.file-over]="isDraggingFileOverDropZone"
+        (dragover)="onDragOver($event)"
+        (drop)="onDrop($event)"
+        (dragenter)="onDragEnter()"
+        (dragleave)="onDragLeave()"
+      >
+        Drop file here
+      </div>
+      <button mat-raised-button color="primary" (click)="fileInput.click()">
+        Add file
+      </button>
+      <input hidden type="file" #fileInput (change)="onDrop($event)" />
+    </ng-container>
+
     <!-- Lvl	Code	Display	Definition
 1	  decimal	Decimal	Question with is a real number answer (valueDecimal).
 1	  integer	Integer	Question with an integer answer (valueInteger).
