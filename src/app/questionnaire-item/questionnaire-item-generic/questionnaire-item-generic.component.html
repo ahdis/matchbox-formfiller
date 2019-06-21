@@ -292,19 +292,57 @@
     </ng-container>
 
     <ng-container *ngSwitchCase="'attachment'">
-      <div
-        class="drop-zone"
-        [class.file-over]="isDraggingFileOverDropZone"
-        (dragover)="onDragOver($event)"
-        (drop)="onDrop($event)"
-        (dragenter)="onDragEnter()"
-        (dragleave)="onDragLeave()"
-      >
-        Drop file here
+      <div class="attachment-field">
+        <div
+          *ngFor="let attachement of attachements; let i = index"
+          class="attachment-entry"
+        >
+          <!-- <div class="image-icon">
+            <mat-icon>home</mat-icon>
+          </div> -->
+          <div class="image-name">
+            {{ attachement.title }}
+          </div>
+          <div class="image-size">
+            {{ attachement.size | filesize }}
+          </div>
+          <div class="image-actions">
+            <button mat-icon-button (click)="removeAttachment(i)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div
+          class="drop-zone"
+          (dragover)="onDragOver($event)"
+          [class.file-over]="isDraggingFileOverDropZone"
+          (drop)="onDrop($event)"
+          (dragenter)="onDragEnter()"
+          (dragleave)="onDragLeave()"
+        >
+          <mat-icon
+            (dragover)="onDragOver($event)"
+            (dragenter)="onDragEnter()"
+            (dragleave)="onDragLeave()"
+            >attachment</mat-icon
+          >
+          <div
+            class="bold-text"
+            (dragenter)="onDragEnter()"
+            (dragleave)="onDragLeave()"
+          >
+            Drop file here
+          </div>
+          <div>or</div>
+          <button
+            mat-stroked-button
+            color="primary"
+            (click)="fileInput.click()"
+          >
+            Add file
+          </button>
+        </div>
       </div>
-      <button mat-raised-button color="primary" (click)="fileInput.click()">
-        Add file
-      </button>
       <input hidden type="file" #fileInput (change)="onDrop($event)" />
     </ng-container>
 

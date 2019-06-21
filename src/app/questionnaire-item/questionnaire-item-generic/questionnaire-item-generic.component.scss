@@ -66,17 +66,28 @@
     }
   }
 }
+.attachment-field {
+  border: 1px solid #dedede;
+  border-radius: 5px;
 
+  .attachment-entry {
+    border-bottom: 1px solid #dedede;
+    display: flex;
+    align-items: center;
+
+    .image-name {
+      flex: 1;
+      padding-left: 1em;
+    }
+  }
+}
 .drop-zone {
-  background: rgba(0, 0, 0, 0.03);
-  height: 5rem;
-  line-height: 5rem;
   text-align: center;
-  border: 5px solid rgba(0, 0, 0, 0.06);
-  margin-bottom: 1rem;
-
   &.file-over {
-    background: rgba(0, 150, 0, 0.3);
-    border: 5px solid rgba(0, 150, 0, 0.6);
+    background: #e2e2e2;
+  }
+
+  .bold-text {
+    font-weight: bold;
   }
 }

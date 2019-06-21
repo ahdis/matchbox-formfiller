@@ -2814,6 +2814,11 @@ fileset@^2.0.3:
     glob "^7.0.3"
     minimatch "^3.0.3"
 
+filesize@^4.0.0:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/filesize/-/filesize-4.1.2.tgz#fcd570af1353cea97897be64f56183adb995994b"
+  integrity sha512-iSWteWtfNcrWQTkQw8ble2bnonSl7YJImsn9OZKpE2E4IHhXI78eASpDYUljXZZdYj36QsEKjOs/CsiDqmKMJw==
+
 fill-range@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/fill-range/-/fill-range-4.0.0.tgz#d544811d428f98eb06a63dc402d2403c328c38f7"
@@ -4885,6 +4890,13 @@ ng-fhirjs@^0.3.0:
     fhir.js "0.0.20"
     fhirpath "0.8.0"
     tslib "^1.9.0"
+
+ngx-filesize@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/ngx-filesize/-/ngx-filesize-1.1.4.tgz#acd690ec20c7942254b3315fefabdcc65397645f"
+  integrity sha512-eqh9UCLX/lIsnc+IrdVL7bqmF945oBzEtaESM8jFHTriwZTD6dFd3gM53cdE4gFdARxNnHkzdE+eoxGehFP94A==
+  dependencies:
+    filesize "^4.0.0"
 
 nice-try@^1.0.4:
   version "1.0.5"

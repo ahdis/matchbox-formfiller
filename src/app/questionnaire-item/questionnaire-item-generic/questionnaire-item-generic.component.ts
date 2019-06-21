@@ -2,11 +2,11 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import {
+  AbstractControl,
+  FormArray,
   FormControl,
   FormGroup,
   Validators,
-  FormArray,
-  AbstractControl,
 } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { QuestionnaireFillerService } from '../../questionnaire-filler.service';
@@ -332,33 +332,69 @@ export class QuestionnaireItemGenericComponent implements OnInit {
     );
   }
 
-  onDrop(ev) {
-    console.log('File(s) dropped');
+  private attachements = [];
 
+  onDrop(ev) {
     // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
     this.isDraggingFileOverDropZone = false;
+    this.dragCounter = 0;
 
-    if (ev.dataTransfer.items) {
+    const files = ev.target.files || ev.dataTransfer.items;
+
+    if (files) {
       // Use DataTransferItemList interface to access the file(s)
-      for (var i = 0; i < ev.dataTransfer.items.length; i++) {
+      for (var i = 0; i < files.length; i++) {
         // If dropped items aren't files, reject them
-        if (ev.dataTransfer.items[i].kind === 'file') {
-          var file = ev.dataTransfer.items[i].getAsFile();
+        if (files[i].kind === undefined || files[i].kind === 'file') {
+          var file = files[i].getAsFile ? files[i].getAsFile() : files[i];
           console.log('... file[' + i + '].name = ' + file.name);
+          console.log(file);
+          const attachment: fhir.r4.Attachment = {
+            size: file.size,
+            title: file.name,
+            contentType: file.type,
+          };
+          this.getBase64(file).then((encodedData: string) => {
+            console.log(this.attachements);
+            attachment.data = encodedData;
+            this.attachements.push(attachment);
+            this.updateAttachments();
+          });
         }
       }
     } else {
       // Use DataTransfer interface to access the file(s)
-      for (var i = 0; i < ev.dataTransfer.files.length; i++) {
-        console.log(
-          '... file[' + i + '].name = ' + ev.dataTransfer.files[i].name
-        );
+      for (var i = 0; i < files.length; i++) {
+        console.log('... file[' + i + '].name = ' + files.files[i].name);
       }
     }
   }
 
+  private updateAttachments() {
+    this.questionaireFillerServer.setQuestionnaireResponseItem(
+      this.item,
+      this.attachements
+    );
+  }
+
+  removeAttachment(index) {
+    this.attachements.splice(index, 1);
+    this.updateAttachments();
+  }
+
+  private getBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
+
   onFileChange(ev) {}
+
+  private dragCounter = 0;
 
   onDragOver(ev) {
     ev.preventDefault();
@@ -366,9 +402,14 @@ export class QuestionnaireItemGenericComponent implements OnInit {
 
   onDragEnter() {
     this.isDraggingFileOverDropZone = true;
+    this.dragCounter++;
   }
 
-  onDragLeave() {
-    this.isDraggingFileOverDropZone = false;
+  onDragLeave(e) {
+    console.log(e);
+    this.dragCounter--;
+    if (this.dragCounter < 1) {
+      this.isDraggingFileOverDropZone = false;
+    }
   }
 }

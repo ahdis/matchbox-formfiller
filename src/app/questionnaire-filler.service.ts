@@ -78,7 +78,7 @@ export class QuestionnaireFillerService {
 
   setQuestionnaireResponseItem(
     item: fhir.r4.QuestionnaireItem,
-    values: string[]
+    values: any[]
   ): boolean {
     const responseItem = this.mapResponseItems.get(item.linkId);
     responseItem.answer = (values || []).map(value => {
@@ -168,6 +168,7 @@ export class QuestionnaireFillerService {
         case 'attachment':
           // Attachment	Question with binary content such as a image, PDF, etc. as an answer (valueAttachment).
           // TODO
+          questionnaireResponseItemAnswer.valueAttachment = value;
           break;
         case 'reference':
           // reference	Reference	Question with a reference to another resource (practitioner,
