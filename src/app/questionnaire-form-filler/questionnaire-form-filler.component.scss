@@ -1,4 +1,19 @@
+@import '~@angular/material/theming';
+@import '../../variables';
+
+$primary: map-get($theme, primary);
+
 mat-card {
+  .primary-card-header {
+    margin: -2rem -2rem 0 -2rem;
+    padding-top: 2rem;
+    @media screen and (min-width: 600px) {
+      margin-bottom: 1rem;
+      background-color: mat-color($primary);
+      color: white;
+      border-radius: 4px 4px 0 0;
+    }
+  }
   padding: 2rem;
 }
 

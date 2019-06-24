@@ -1,12 +1,14 @@
 <form (ngSubmit)="onSubmit()" [formGroup]="formGroup">
   <mat-card class="questionnaire" *ngIf="getQuestionnaire()">
-    <mat-card-content>
+    <mat-card-header class="primary-card-header">
       <div>
         <h1
           [innerHtml]="getQuestionnaireTitle()"
           [ngStyle]="getQuestionnaireTitleStyles()"
         ></h1>
       </div>
+    </mat-card-header>
+    <mat-card-content>
       <div class="form-container" *ngFor="let item of getQuestionnaire().item">
         <app-questionnaire-item-generic
           [item]="item"

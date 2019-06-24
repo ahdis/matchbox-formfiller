@@ -1,5 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+// @import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import '~@angular/material/theming';
+@import 'variables';
 
 body {
   background: rgba(0, 0, 0, 0.03);
@@ -12,3 +14,5 @@ body {
     font-family: Roboto, Arial, sans-serif;
   }
 }
+@include mat-core();
+@include angular-material-theme($theme);
