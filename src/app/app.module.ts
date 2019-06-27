@@ -1,28 +1,25 @@
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-
-import { AppComponent } from './app.component';
 import { FHIR_HTTP_CONFIG, NgFhirjsModule } from 'ng-fhirjs';
-import { HomeComponent } from './home/home.component';
-import { PatientsComponent } from './patients/patients.component';
+import { AppComponent } from './app.component';
 import { CapabilityStatementComponent } from './capability-statement/capability-statement.component';
+import { FhirPathComponent } from './fhir-path/fhir-path.component';
+import { HomeComponent } from './home/home.component';
+import { MappingLanguageComponent } from './mapping-language/mapping-language.component';
+import { PatientDetailComponent } from './patient-detail/patient-detail.component';
+import { PatientsComponent } from './patients/patients.component';
+import { QuestionnaireDetailComponent } from './questionnaire-detail/questionnaire-detail.component';
+import { QuestionnaireFormFillerComponent } from './questionnaire-form-filler/questionnaire-form-filler.component';
+import { QuestionnaireItemModule } from './questionnaire-item/questionnaire-item.module';
+import { QuestionnairesComponent } from './questionnaires/questionnaires.component';
 import {
   FHIR_JS_CONFIG,
   SettingsComponent,
 } from './settings/settings.component';
-import { PatientDetailComponent } from './patient-detail/patient-detail.component';
-import { QuestionnairesComponent } from './questionnaires/questionnaires.component';
-import { QuestionnaireDetailComponent } from './questionnaire-detail/questionnaire-detail.component';
-import { QuestionnaireFormFillerComponent } from './questionnaire-form-filler/questionnaire-form-filler.component';
-
-import { QuestionnaireModule } from './questionnaire/questionnaire.module';
-import { FhirPathComponent } from './fhir-path/fhir-path.component';
-import { MappingLanguageComponent } from './mapping-language/mapping-language.component';
 import { SharedModule } from './shared/shared.module';
-import { QuestionnaireItemModule } from './questionnaire-item/questionnaire-item.module';
 
 const routes: Routes = [
   {
@@ -46,7 +43,7 @@ const routes: Routes = [
     component: QuestionnairesComponent,
   },
   {
-    path: 'questionnaire-form-filler',
+    path: 'questionnaire/:id',
     component: QuestionnaireFormFillerComponent,
   },
   {
@@ -81,7 +78,6 @@ export function createTranslateLoader(http: HttpClient) {
     SharedModule,
     HttpClientModule,
     NgFhirjsModule,
-    QuestionnaireModule,
     QuestionnaireItemModule,
     RouterModule.forRoot(routes, { useHash: true }),
     TranslateModule.forRoot({

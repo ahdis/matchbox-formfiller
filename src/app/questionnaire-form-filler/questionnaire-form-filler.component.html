@@ -1,44 +1,11 @@
-<form (ngSubmit)="onSubmit()" [formGroup]="formGroup">
-  <mat-card class="questionnaire" *ngIf="getQuestionnaire()">
-    <mat-card-header class="primary-card-header">
-      <div>
-        <h1
-          [innerHtml]="getQuestionnaireTitle()"
-          [ngStyle]="getQuestionnaireTitleStyles()"
-        ></h1>
-      </div>
-    </mat-card-header>
-    <mat-card-content>
-      <div class="form-container" *ngFor="let item of getQuestionnaire().item">
-        <app-questionnaire-item-generic
-          [item]="item"
-          [level]="0"
-          [formParent]="formGroup"
-        >
-        </app-questionnaire-item-generic>
-      </div>
-    </mat-card-content>
-    <mat-card-actions>
-      <button
-        mat-raised-button
-        color="primary"
-        type="submit"
-        [disabled]="formGroup?.invalid"
-      >
-        Save
-      </button>
-    </mat-card-actions>
-    <mat-card-footer>
-      <h2>Form Status</h2>
-      <div>{{ formGroup.status }}</div>
-      <br />
-      <ng-container *ngIf="questionnaireResponse">
-        <h2>QuestionnaireResponse</h2>
-        <!-- <pre>{{ questionnaireResponse | json }}</pre> -->
-      </ng-container>
-      <div></div>
-      <h2>Questionnaire</h2>
-      <pre>{{ getQuestionnaire() | json }}</pre>
-    </mat-card-footer>
-  </mat-card>
-</form>
+<ng-container *ngIf="(questionnaire$ | async) as questionnaire; else notfound">
+  <app-questionnaire-form
+    [questionnaire]="questionnaire"
+    [questionnaireResponse]="{}"
+    (changeQuestionnaireResponse)="onChangeQuestionnaireResponse($event)"
+    (submitQuestionnaire)="onSubmit()"
+  ></app-questionnaire-form>
+</ng-container>
+<ng-template #notfound>
+  <p>Questionnaire not found</p>
+</ng-template>

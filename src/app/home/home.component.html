@@ -1,62 +1,58 @@
-<mat-card>
-  <mat-card-content>
-    <p>Simple DEMO app how to use fhir (R4) with angular.</p>
-    <br />
-
-    <div class="note">
-      THIS IS WORK IN PROGRESS AND NOT COMPLETE, DO NOT USE IT IN PRODUCTION AND
-      DO NOT USE REAL DATA
+<mat-card class="primary">
+  <mat-card-header class="primary-card-header">
+    <h1 class="mat-display-3">Questionnaires</h1>
+    <p class="mat-subheading-2">
+      Search for a questionnaire below and select it in order to fill out.
+    </p>
+    <div class="search-field mat-elevation-z8">
+      <mat-icon>search</mat-icon>
+      <input (keyup)="applyFilter($event.target.value)" placeholder="Search" />
     </div>
-
-    <button mat-button color="primary" (click)="fillForm()">
-      Fill out Ebida form ...
-    </button>
-
-    <button mat-button color="primary" (click)="fillFormReferralMin()">
-      Fill out Referral Min form ...
-    </button>
-
-    <button mat-button color="primary" (click)="fillFormSdcCap()">
-      Fill out SDC Cap form ...
-    </button>
-
-    <button mat-button color="primary" (click)="fillFormSdcLoinc()">
-      Fill out SDC Loinc form ...
-    </button>
-
-    <button mat-button color="primary" (click)="fillFormSdcRender()">
-      Fill out SDC Render form ...
-    </button>
-
-    <button mat-button color="primary" (click)="fillFormLhncbcHeightWeight()">
-      Fill out Height/Weight Render form ...
-    </button>
-
-    <button mat-button color="primary" (click)="fillFormString()">
-      Fill form String ...
-    </button>
-
-    <button mat-button color="primary" (click)="fillFormSupportLink()">
-      Fill form Support Link ...
-    </button>
-
-    <ul>
-      <li>built with <a href="https://angular.io/">angular</a></li>
-      <li>
-        using <a href="https://github.com/ahdis/ng-fhirjs">ng-fhirjs</a> as an
-        adapter for accessing a fhir server with
-        <a href="https://github.com/FHIR/fhir.js">fhir.js</a>
-      </li>
-      <li>
-        using <a href="https://material.angular.io/">angular material</a> for UI
-        components
-      </li>
-    </ul>
-    <p>use the menu top right for different functionalities</p>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="title">
+        <mat-header-cell *matHeaderCellDef class="title">Title</mat-header-cell>
+        <mat-cell *matCellDef="let entry" class="title"
+          ><div class="cell-content">{{ entry.title }}</div></mat-cell
+        >
+      </ng-container>
+      <ng-container matColumnDef="publisher">
+        <mat-header-cell *matHeaderCellDef>Publisher</mat-header-cell>
+        <mat-cell *matCellDef="let entry"
+          ><div class="cell-content">{{ entry.publisher }}</div></mat-cell
+        >
+      </ng-container>
+      <ng-container matColumnDef="version">
+        <mat-header-cell *matHeaderCellDef>Version</mat-header-cell>
+        <mat-cell *matCellDef="let entry"
+          ><div class="cell-content">{{ entry.version }}</div></mat-cell
+        >
+      </ng-container>
+      <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+        <mat-cell *matCellDef="let entry"
+          ><div class="cell-content">{{ entry.status }}</div></mat-cell
+        >
+      </ng-container>
+      <ng-container matColumnDef="date">
+        <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
+        <mat-cell *matCellDef="let entry"
+          ><div class="cell-content">{{ entry.date }}</div></mat-cell
+        >
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        [routerLink]="['questionnaire', row.id]"
+      ></mat-row>
+    </mat-table>
+  </mat-card-content>
+  <mat-card-footer>
     <p>
       HL7®, HEALTH LEVEL SEVEN®, FHIR® and the FHIR ® are trademarks owned by
       Health Level Seven International, registered with the United States Patent
       and Trademark Office.
     </p>
-  </mat-card-content>
+  </mat-card-footer>
 </mat-card>

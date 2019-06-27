@@ -1,0 +1,32 @@
+<form (ngSubmit)="submitQuestionnaire.next()">
+  <mat-card class="primary">
+    <mat-card-header class="primary-card-header">
+      <ng-container *ngIf="(titleWithExtension$ | async) as titleWithExtension">
+        <h1
+          *ngIf="titleWithExtension.renderingExtension.renderAsHtml"
+          [ngStyle]="titleWithExtension.renderingExtension.styles"
+          [innerHtml]="titleWithExtension.title"
+        ></h1>
+        <h1
+          *ngIf="!titleWithExtension.renderingExtension.renderAsHtml"
+          [ngStyle]="titleWithExtension.renderingExtension.styles"
+        >
+          {{ titleWithExtension.title }}
+        </h1>
+      </ng-container>
+    </mat-card-header>
+    <mat-card-content>
+      <app-questionnaire-form-item
+        *ngFor="let itemLinkIdPath of (itemLinkIdPaths$ | async)"
+        [store]="store$"
+        [dispatch]="dispatch"
+        [linkIdPath]="itemLinkIdPath"
+      ></app-questionnaire-form-item>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" type="submit">
+        Save
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</form>

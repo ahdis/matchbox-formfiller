@@ -1,0 +1,32 @@
+<ng-container [ngSwitch]="level">
+  <h2 *ngSwitchCase="1">
+    <app-questionnaire-form-item-label
+      [item]="formItem"
+    ></app-questionnaire-form-item-label>
+  </h2>
+  <h3 *ngSwitchCase="2">
+    <app-questionnaire-form-item-label
+      [item]="formItem"
+    ></app-questionnaire-form-item-label>
+  </h3>
+  <h4 *ngSwitchCase="3">
+    <app-questionnaire-form-item-label
+      [item]="formItem"
+    ></app-questionnaire-form-item-label>
+  </h4>
+  <h5 *ngSwitchCase="4">
+    <app-questionnaire-form-item-label
+      [item]="formItem"
+    ></app-questionnaire-form-item-label>
+  </h5>
+  <h6 *ngSwitchDefault>
+    <app-questionnaire-form-item-label
+      [item]="formItem"
+    ></app-questionnaire-form-item-label>
+  </h6>
+</ng-container>
+<div class="group-support-link">
+  <app-questionnaire-form-item-hint
+    [item]="formItem"
+  ></app-questionnaire-form-item-hint>
+</div>

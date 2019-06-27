@@ -1,3 +1,83 @@
-.note {
-  background-color: orange;
+@import '~@angular/material/theming';
+@import '../../variables';
+
+$primary: map-get($theme, primary);
+
+mat-card-header {
+  display: flex;
+  flex-direction: column;
+
+  .mat-subheading-2 {
+    margin: 1rem 0 0 0;
+  }
+
+  .search-field {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 2rem;
+    background-color: white;
+
+    mat-icon {
+      margin-left: 1rem;
+      color: mat-color($primary);
+    }
+
+    input {
+      flex: 1;
+      padding: 1rem;
+      border: none;
+      outline: none;
+      color: rgba(12, 38, 52, 0.87);
+      font-size: 14px;
+    }
+  }
+}
+
+.mat-card.primary mat-card-content {
+  padding-top: 0;
+}
+
+mat-card-footer {
+  padding: 0 1.5rem 1.5rem 1.5rem;
+
+  p {
+    padding-top: 1rem;
+    margin: 0;
+  }
+}
+
+.mat-table {
+  margin-left: -1.5rem;
+  margin-right: -1.5rem;
+
+  .mat-row {
+    cursor: pointer;
+  }
+
+  .mat-cell,
+  .mat-header-cell {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+
+    &.title {
+      flex: 3;
+    }
+
+    &:first-child {
+      padding-left: 1rem;
+    }
+
+    &:last-child {
+      padding-right: 1rem;
+    }
+
+    .cell-content {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
 }
