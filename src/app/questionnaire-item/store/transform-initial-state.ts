@@ -1,5 +1,4 @@
 import * as R from 'ramda';
-import { isArray, isObject, isString } from 'util';
 import {
   AnswerOption,
   AnswerOptionType,
@@ -11,7 +10,15 @@ import {
   QuestionnaireItemsIndexedByLinkId,
   QuestionnaireState,
 } from '../types';
-import { toArray, toBoolean, toNumber, toString, isNotNil } from './util';
+import {
+  toArray,
+  toBoolean,
+  toNumber,
+  toString,
+  isNotNil,
+  isObject,
+  isString,
+} from './util';
 
 const getExtensionOfElement = (extensionUrl: string) =>
   R.pipe(
@@ -179,7 +186,7 @@ const getOptionsFromValueSet: (
     R.ifElse(
       isCanonicalUriAFragmentReference,
       R.pipe(
-        R.tail,
+        R.tail as (s: string) => string,
         getContainedValueSet(questionnaire),
         R.pathOr([], ['compose', 'include', 0, 'concept']),
         toArray,
@@ -221,7 +228,7 @@ const getOptionsFromAnswerOptions: (
 );
 
 const getOptions = (questionnaire: any) => (item: any) =>
-  isArray(item && item.answerOption)
+  Array.isArray(item && item.answerOption)
     ? getOptionsFromAnswerOptions(item.answerOption)
     : getOptionsFromValueSet(questionnaire)(item);
 

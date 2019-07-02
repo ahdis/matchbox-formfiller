@@ -1,7 +1,6 @@
 import { evaluate } from 'fhirpath';
 import * as R from 'ramda';
 import { pipe } from 'rxjs';
-import { isString } from 'util';
 import {
   AnswerOptionType,
   FormItem,
@@ -13,10 +12,11 @@ import {
 } from '../types';
 import { getQuestionnaireResponse } from './transform-response';
 import {
-  getStatePathFromItemLinkIdPath,
-  toArray,
-  isNotNil,
   filterNotNil,
+  getStatePathFromItemLinkIdPath,
+  isNotNil,
+  isString,
+  toArray,
 } from './util';
 
 const getAnswersByFhirPathExpression = (
@@ -39,7 +39,7 @@ const getItemByLinkId = (
         R.values,
         R.map((item: QuestionnaireItem) => getItemByLinkId(linkId, item.items)),
         filterNotNil,
-        items => R.head(items)
+        R.head
       )(items);
 
 const isExistsOperatorSatisfied = (

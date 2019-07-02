@@ -7,12 +7,12 @@ import {
 import { FormArray, Validators } from '@angular/forms';
 import * as R from 'ramda';
 import { filter } from 'rxjs/operators';
-import { isNumber } from 'util';
 import {
   modifyFormArrayToMatchAnswerCount,
   processValuesIfChanged,
 } from '../impure-helpers';
 import { setAnswers } from '../store/action';
+import { isNumber } from '../store/util';
 import { Action, FormItem } from '../types';
 
 @Component({

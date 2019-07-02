@@ -1,5 +1,10 @@
 import * as R from 'ramda';
-import { AnswerOption, AnswerOptionType, QuestionnaireState } from '../types';
+import {
+  Action,
+  AnswerOption,
+  AnswerOptionType,
+  QuestionnaireState,
+} from '../types';
 import {
   ADD_ANSWER,
   ADD_ANSWER_OPTION,
@@ -13,7 +18,7 @@ import {
 
 export const rootReducer = (
   state: QuestionnaireState,
-  action: any
+  action: Action
 ): QuestionnaireState => {
   switch (action.type) {
     case ADD_ANSWER:

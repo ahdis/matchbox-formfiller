@@ -26,10 +26,10 @@ export class QuestionnaireFormItemAttachmentComponent {
     const files = ev.target.files || ev.dataTransfer.items;
 
     if (files) {
-      for (var i = 0; i < files.length; i++) {
+      for (let i = 0; i < files.length; i++) {
         // If dropped items aren't files, reject them
         if (files[i].kind === undefined || files[i].kind === 'file') {
-          var file = files[i].getAsFile ? files[i].getAsFile() : files[i];
+          const file = files[i].getAsFile ? files[i].getAsFile() : files[i];
           this.getBase64(file).then((encodedData: string) => {
             const attachment: fhir.r4.Attachment = {
               size: file.size,

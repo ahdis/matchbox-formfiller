@@ -1,8 +1,18 @@
 import * as R from 'ramda';
-import { isNumber, isString } from 'util';
 
 export const isNotNil = R.complement(R.isNil);
 export const filterNotNil = R.filter<any, 'array'>(R.complement(R.isNil));
+
+export const isDate = R.is(Date) as ((object: any) => object is Date);
+
+export const isNumber = (object: any): object is number =>
+  typeof object === 'number';
+
+export const isObject = (object: any): boolean =>
+  object !== null && typeof object === 'object';
+
+export const isString = (object: any): object is string =>
+  typeof object === 'string';
 
 export const toArray = (value: unknown): unknown[] =>
   Array.isArray(value) ? value : [];

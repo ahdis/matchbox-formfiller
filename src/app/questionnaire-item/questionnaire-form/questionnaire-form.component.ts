@@ -36,9 +36,6 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
   >();
   @Output() submitQuestionnaire = new EventEmitter<void>();
 
-  dispatch$: BehaviorSubject<Action>;
-  dispatch = (action: Action): void => this.dispatch$.next(action);
-
   store$: Observable<QuestionnaireState>;
   titleWithExtension$: Observable<{
     title: string;
@@ -47,6 +44,9 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
   itemLinkIdPaths$: Observable<string[][]>;
 
   private unsubscribe$ = new Subject<void>();
+
+  dispatch$: BehaviorSubject<Action>;
+  dispatch = (action: Action): void => this.dispatch$.next(action);
 
   ngOnChanges() {
     this.ngOnDestroy();
@@ -64,7 +64,7 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
     zip(
       this.dispatch$,
       this.store$.pipe(
-        startWith(undefined),
+        startWith(undefined as QuestionnaireState),
         pairwise()
       )
     ).subscribe(([action, [prevState, state]]) => {

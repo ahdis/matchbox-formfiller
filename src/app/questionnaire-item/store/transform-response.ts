@@ -1,12 +1,11 @@
 import * as R from 'ramda';
-import { isDate, isNumber, isObject, isString } from 'util';
 import {
   AnswerOption,
   AnswerOptionType,
   QuestionnaireItem,
   QuestionnaireState,
 } from '../types';
-import { filterNotNil } from './util';
+import { filterNotNil, isDate, isNumber, isObject, isString } from './util';
 
 const getReponseAnswers = ({
   type,

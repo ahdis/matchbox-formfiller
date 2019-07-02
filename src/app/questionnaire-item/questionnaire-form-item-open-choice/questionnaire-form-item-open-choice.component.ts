@@ -8,14 +8,13 @@ import { FormArray, Validators } from '@angular/forms';
 import * as R from 'ramda';
 import { Observable } from 'rxjs';
 import { filter, map, startWith } from 'rxjs/operators';
-import { isString } from 'util';
 import {
   modifyFormArrayToMatchAnswerCount,
   processValuesIfChanged,
 } from '../impure-helpers';
 import { addAnswerOption, setAnswers } from '../store/action';
+import { filterNotNil, isString } from '../store/util';
 import { Action, FormItem, FormItemAnswerOption } from '../types';
-import { isNotNil, filterNotNil } from '../store/util';
 
 @Component({
   selector: 'app-questionnaire-form-item-open-choice',
