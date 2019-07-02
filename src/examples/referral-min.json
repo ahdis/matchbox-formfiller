@@ -142,6 +142,7 @@
           "linkId": "chemogramm",
           "text": "Chemogramm",
           "type": "open-choice",
+          "repeats": true,
           "answerOption": [
             {
               "valueCoding": {
@@ -200,6 +201,7 @@
           "text": "Getätigte Untersuchungen",
           "type": "choice",
           "required": true,
+          "repeats": true,
           "answerOption": [
             {
               "valueCoding": {

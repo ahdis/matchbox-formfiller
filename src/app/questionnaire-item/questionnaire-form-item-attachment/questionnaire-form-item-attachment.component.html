@@ -1,0 +1,42 @@
+<div class="attachment-field">
+  <ng-container *ngFor="let attachment of item.answers; let i = index">
+    <div *ngIf="attachment" class="attachment-entry">
+      <div class="image-name">
+        {{ attachment.title }}
+      </div>
+      <div class="image-size">
+        {{ attachment.size | filesize }}
+      </div>
+      <button mat-icon-button (click)="removeAttachment(i)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </ng-container>
+  <div
+    class="drop-zone"
+    (dragover)="onDragOver($event)"
+    [class.file-over]="dragCounter > 0"
+    (drop)="onDrop($event)"
+    (dragenter)="onDragEnter()"
+    (dragleave)="onDragLeave()"
+  >
+    <mat-icon
+      (dragover)="onDragOver($event)"
+      (dragenter)="onDragEnter()"
+      (dragleave)="onDragLeave()"
+      >cloud_upload</mat-icon
+    >
+    <div
+      class="bold-text"
+      (dragenter)="onDragEnter()"
+      (dragleave)="onDragLeave()"
+    >
+      Drop file here
+    </div>
+    <div class="spacer">or</div>
+    <button mat-raised-button color="primary" (click)="fileInput.click()">
+      Add file
+    </button>
+  </div>
+</div>
+<input hidden type="file" #fileInput (change)="onDrop($event)" />

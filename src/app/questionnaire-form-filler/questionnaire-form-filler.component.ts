@@ -1,12 +1,8 @@
-import { Component, OnInit, SecurityContext } from '@angular/core';
-import { QuestionnaireFillerService } from '../questionnaire-filler.service';
-import {
-  FormControl,
-  FormGroup,
-  Validators,
-  FormBuilder,
-} from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { QuestionnaireDemo } from '../home/questionnaire-demo';
 
 @Component({
   selector: 'app-questionnaire-form-filler',
@@ -14,56 +10,41 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./questionnaire-form-filler.component.scss'],
 })
 export class QuestionnaireFormFillerComponent implements OnInit {
-  formGroup: FormGroup;
-
+  questionnaire$: Observable<fhir.r4.Questionnaire | undefined>;
   questionnaireResponse: fhir.r4.QuestionnaireResponse;
 
-  constructor(
-    private questionaireFillerServer: QuestionnaireFillerService,
-    private sanitizer: DomSanitizer
-  ) {
-    this.formGroup = new FormGroup({});
-    this.questionnaireResponse = this.questionaireFillerServer.getQuestionniareResponse();
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    this.questionnaire$ = this.route.paramMap.pipe(
+      map((params: ParamMap) => params.get('id')),
+      map(name =>
+        name === 'ebida'
+          ? QuestionnaireDemo.getQuestionnaireEbida()
+          : name === 'referral-min'
+          ? QuestionnaireDemo.getQuestionnaireReferralMin()
+          : name === 'sdc-cap'
+          ? QuestionnaireDemo.getQuestionnaireSdcCap()
+          : name === 'sdc-loinc'
+          ? QuestionnaireDemo.getQuestionnaireSdcLoinc()
+          : name === 'sdc-render'
+          ? QuestionnaireDemo.getQuestionnaireSdcRender()
+          : name === 'height-weight'
+          ? QuestionnaireDemo.getQuestionnaireLhncbHeightWeight()
+          : name === 'string'
+          ? QuestionnaireDemo.getQuestionnaireString()
+          : name === 'support-link'
+          ? QuestionnaireDemo.getQuestionnaireSupportLink()
+          : undefined
+      )
+    );
   }
 
-  ngOnInit() {}
-
-  getQuestionnaire(): fhir.r4.Questionnaire {
-    return this.questionaireFillerServer.getQuestionniare();
+  onChangeQuestionnaireResponse(response: fhir.r4.QuestionnaireResponse) {
+    this.questionnaireResponse = response;
   }
 
-  getQuestionnaireTitle(): string {
-    const questionnaire = this.getQuestionnaire();
-    if (questionnaire._title) {
-      const xhtmlExtension = this.questionaireFillerServer.getExtension(
-        questionnaire._title.extension,
-        'http://hl7.org/fhir/StructureDefinition/rendering-xhtml'
-      );
-      if (xhtmlExtension) {
-        return this.sanitizer.sanitize(
-          SecurityContext.HTML,
-          xhtmlExtension.valueString
-        );
-      }
-    }
-    return questionnaire.title;
-  }
-
-  getQuestionnaireTitleStyles(): Object {
-    const questionnaire = this.getQuestionnaire();
-    const css = {};
-    if (questionnaire._title) {
-      return this.questionaireFillerServer.getCss(
-        this.questionaireFillerServer.getExtension(
-          questionnaire._title.extension,
-          'http://hl7.org/fhir/StructureDefinition/rendering-style'
-        )
-      );
-    }
-    return css;
-  }
-
-  onSubmit(): void {
-    this.questionnaireResponse = this.questionaireFillerServer.getQuestionniareResponse();
+  onSubmit() {
+    console.log('submit questionnaire response', this.questionnaireResponse);
   }
 }

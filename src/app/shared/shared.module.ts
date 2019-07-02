@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
+import { FileSizeModule } from 'ngx-filesize';
 import {
   MatAutocompleteModule,
   MatButtonModule,
@@ -52,6 +53,7 @@ const modulesToExport = [
   MatDatepickerModule,
   MatNativeDateModule,
   MatRadioModule,
+  FileSizeModule,
 ];
 
 const components = [];
