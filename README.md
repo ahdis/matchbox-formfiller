@@ -13,7 +13,7 @@ built with:
 - integerated [fhirpath.js](https://github.com/lhncbc/fhirpath.js/)
 - using [angular material](https://material.angular.io/) for UI components
 
-see [on github pages](http://github.ahdis.ch/ng-fhir-sample)
+see [on github pages](https://ahdis.github.io/ng-fhir-sample)
 
 # development setup
 
