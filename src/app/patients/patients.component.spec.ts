@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FhirConfig, FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhirjs';
 import { PatientDetailComponent } from '../patient-detail/patient-detail.component';
 import { PatientsComponent } from './patients.component';
-import { MatTableModule } from '@angular/material';
+import { MatTableModule } from '@angular/material/table';
 
 export const FHIR_JS_CONFIG: FhirConfig = {
   baseUrl: 'http://test.fhir.org/r3',

@@ -4,7 +4,7 @@ import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterModule, Routes } from '@angular/router';
 import { FhirConfig, FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhirjs';
 import { AppComponent } from './app.component';
-import { MatMenuModule } from '@angular/material';
+import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
 
 export const FHIR_JS_CONFIG: FhirConfig = {

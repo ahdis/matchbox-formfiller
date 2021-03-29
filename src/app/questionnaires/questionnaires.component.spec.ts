@@ -7,7 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { FhirConfig, FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhirjs';
 import { QuestionnaireDetailComponent } from '../questionnaire-detail/questionnaire-detail.component';
 import { QuestionnairesComponent } from './questionnaires.component';
-import { MatTableModule } from '@angular/material';
+import { MatTableModule } from '@angular/material/table';
 
 export const FHIR_JS_CONFIG: FhirConfig = {
   baseUrl: 'http://test.fhir.org/r3',
