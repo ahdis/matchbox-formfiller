@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -18,24 +18,26 @@ describe('PatientsComponent', () => {
   let component: PatientsComponent;
   let fixture: ComponentFixture<PatientsComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [PatientsComponent, PatientDetailComponent],
-      imports: [
-        MatTableModule,
-        HttpClientTestingModule,
-        FormsModule,
-        ReactiveFormsModule,
-        BrowserModule,
-        BrowserAnimationsModule,
-      ],
-      providers: [
-        FhirJsHttpService,
-        { provide: FHIR_HTTP_CONFIG, useValue: FHIR_JS_CONFIG },
-      ],
-      schemas: [NO_ERRORS_SCHEMA],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [PatientsComponent, PatientDetailComponent],
+        imports: [
+          MatTableModule,
+          HttpClientTestingModule,
+          FormsModule,
+          ReactiveFormsModule,
+          BrowserModule,
+          BrowserAnimationsModule,
+        ],
+        providers: [
+          FhirJsHttpService,
+          { provide: FHIR_HTTP_CONFIG, useValue: FHIR_JS_CONFIG },
+        ],
+        schemas: [NO_ERRORS_SCHEMA],
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PatientsComponent);

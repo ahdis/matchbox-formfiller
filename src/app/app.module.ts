@@ -79,7 +79,10 @@ export function createTranslateLoader(http: HttpClient) {
     HttpClientModule,
     NgFhirjsModule,
     QuestionnaireItemModule,
-    RouterModule.forRoot(routes, { useHash: true }),
+    RouterModule.forRoot(routes, {
+      useHash: true,
+      relativeLinkResolution: 'legacy',
+    }),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
