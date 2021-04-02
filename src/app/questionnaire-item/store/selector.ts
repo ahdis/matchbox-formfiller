@@ -32,7 +32,7 @@ const getAnswersByFhirPathExpression = (
 const getItemByLinkId = (
   linkId: string,
   items: QuestionnaireItemsIndexedByLinkId
-): QuestionnaireItem | undefined =>
+) =>
   items[linkId]
     ? items[linkId]
     : R.pipe(

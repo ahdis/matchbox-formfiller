@@ -1,0 +1,53 @@
+{
+  "status": "in-progress",
+  "quesionnaire": "http://ahdis.ch/fhir/Questionnaire/test",
+  "item": [
+    {
+      "linkId": "order",
+      "item": [
+        {
+          "linkId": "order.number",
+          "answer": [
+            {
+              "valueString": "1234"
+            }
+          ]
+        },
+        {
+          "linkId": "order.date",
+          "answer": [
+            {
+              "valueDate": "2021-04-15"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "orderer",
+      "item": [
+        {
+          "linkId": "orderer.responsible",
+          "item": [
+            {
+              "linkId": "orderer.resp.lastname",
+              "answer": [
+                {
+                  "valueString": "Egger"
+                }
+              ]
+            },
+            {
+              "linkId": "orderer.resp.firstname",
+              "answer": [
+                {
+                  "valueString": "Oliver"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -21,6 +21,7 @@ import { rootReducer } from '../store/reducer';
 import { transformQuestionnaire } from '../store/transform-initial-state';
 import { getQuestionnaireResponse } from '../store/transform-response';
 import { Action, QuestionnaireState, RenderingExtension } from '../types';
+import { setAnswers } from '../store/action';
 
 @Component({
   selector: 'app-questionnaire-form',
@@ -53,6 +54,8 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
     this.unsubscribe$ = new Subject<void>();
     this.dispatch$ = new BehaviorSubject<Action>({ type: '@@INIT' });
 
+    console.log('questionnaire response init', this.questionnaireResponse);
+
     this.store$ = this.dispatch$.pipe(
       scan(
         rootReducer,
@@ -60,6 +63,9 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
       ),
       shareReplay()
     );
+
+    // FIXME how to dispatch an item for the questionnaireResponse with setAnswer? Idea would be that we repplay
+    // all the items in the questionnaire response to the questionnaire directly with Actions
 
     zip(
       this.dispatch$,

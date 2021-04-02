@@ -3,6 +3,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { QuestionnaireDemo } from '../home/questionnaire-demo';
+import { QuestionnaireFillerService } from '../questionnaire-filler.service';
 
 @Component({
   selector: 'app-questionnaire-form-filler',
@@ -11,9 +12,15 @@ import { QuestionnaireDemo } from '../home/questionnaire-demo';
 })
 export class QuestionnaireFormFillerComponent implements OnInit {
   questionnaire$: Observable<fhir.r4.Questionnaire | undefined>;
+  questionnaireResponseInitial$: Observable<
+    fhir.r4.QuestionnaireResponse | undefined
+  >;
   questionnaireResponse: fhir.r4.QuestionnaireResponse;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute,
+    private questionaireFillerServer: QuestionnaireFillerService
+  ) {}
 
   ngOnInit() {
     this.questionnaire$ = this.route.paramMap.pipe(
@@ -35,6 +42,16 @@ export class QuestionnaireFormFillerComponent implements OnInit {
           ? QuestionnaireDemo.getQuestionnaireString()
           : name === 'support-link'
           ? QuestionnaireDemo.getQuestionnaireSupportLink()
+          : name === '-1'
+          ? this.questionaireFillerServer.getQuestionniare()
+          : undefined
+      )
+    );
+    this.questionnaireResponseInitial$ = this.route.paramMap.pipe(
+      map((params: ParamMap) => params.get('id')),
+      map(name =>
+        name === 'ebida'
+          ? QuestionnaireDemo.getQuestionnaireEbidaQr()
           : undefined
       )
     );

@@ -2,7 +2,8 @@
 
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatTableDataSource, PageEvent } from '@angular/material';
+import { PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { FhirJsHttpService, QueryObj } from 'ng-fhirjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
