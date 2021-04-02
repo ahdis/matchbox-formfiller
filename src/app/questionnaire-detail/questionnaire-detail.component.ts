@@ -19,6 +19,6 @@ export class QuestionnaireDetailComponent implements OnInit {
 
   fillForm() {
     this.questionaireFillerServer.setQuestionnare(this.questionnaire);
-    this.router.navigate(['/questionnaire-form-filler']);
+    this.router.navigate(['questionnaire', '-1']);
   }
 }
