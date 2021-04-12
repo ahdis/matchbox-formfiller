@@ -16,6 +16,11 @@ const getReponseAnswers = ({
     filterNotNil,
     R.map((answer: any) => {
       switch (type) {
+        case 'boolean':
+          return {
+            valueBoolean:
+              typeof answer === 'boolean' ? answer : answer === 'true',
+          };
         case 'decimal':
           return {
             valueDecimal: isNumber(answer)
@@ -35,11 +40,9 @@ const getReponseAnswers = ({
         case 'date':
           return {
             valueDate: isDate(answer)
-              ? `${answer.getFullYear()}-${
-                  answer.getMonth() < 9 ? '0' : ''
-                }${answer.getMonth() + 1}-${
-                  answer.getDate() <= 9 ? '0' : ''
-                }${answer.getDate()}`
+              ? `${answer.getFullYear()}-${answer.getMonth() < 9 ? '0' : ''}${
+                  answer.getMonth() + 1
+                }-${answer.getDate() <= 9 ? '0' : ''}${answer.getDate()}`
               : isString(answer)
               ? answer
               : undefined,
@@ -79,7 +82,7 @@ const getReponseAnswers = ({
         case 'open-choice':
           return R.pipe(
             R.find<AnswerOption>(({ key }) => key === answer),
-            answerOption =>
+            (answerOption) =>
               answerOption
                 ? answerOption.type === AnswerOptionType.Coding
                   ? {
@@ -120,7 +123,7 @@ const getReponseAnswers = ({
 
 const getResponseItems: (
   items: QuestionnaireItem[]
-) => fhir.r4.QuestionnaireResponseItem[] = R.map(item => ({
+) => fhir.r4.QuestionnaireResponseItem[] = R.map((item) => ({
   linkId: item.linkId,
   text: item.text,
   answer: getReponseAnswers(item),

@@ -18,10 +18,12 @@ import {
   takeUntil,
 } from 'rxjs/operators';
 import { rootReducer } from '../store/reducer';
-import { transformQuestionnaire } from '../store/transform-initial-state';
+import {
+  getInitActions,
+  transformQuestionnaire,
+} from '../store/transform-initial-state';
 import { getQuestionnaireResponse } from '../store/transform-response';
 import { Action, QuestionnaireState, RenderingExtension } from '../types';
-import { getInitActions } from '../store/util';
 
 @Component({
   selector: 'app-questionnaire-form',

@@ -1,6 +1,4 @@
 import * as R from 'ramda';
-import { setAnswers } from './action';
-import { Action } from '../types';
 
 export const isNotNil = R.complement(R.isNil);
 export const filterNotNil = R.filter<any, 'array'>(R.complement(R.isNil));
@@ -40,20 +38,3 @@ export const getAnswersLensFromItemLinkIdPath = getPropertyLensFromItemLinkIdPat
 export const getAnswerOptionsLensFromItemLinkIdPath = getPropertyLensFromItemLinkIdPath(
   'answerOptions'
 );
-
-export const getInitActions = (path: string[]) => (item: any): Action[] => [
-  ...(Array.isArray(item?.answer)
-    ? [
-        setAnswers(
-          [...path, item.linkId],
-          R.map((answer) => answer?.valueString, item.answer)
-        ),
-      ]
-    : []),
-  ...(Array.isArray(item?.item)
-    ? R.chain(
-        getInitActions(item.linkId ? [...path, item.linkId] : []),
-        item.item
-      )
-    : []),
-];
