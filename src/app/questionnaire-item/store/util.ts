@@ -1,9 +1,11 @@
 import * as R from 'ramda';
+import { setAnswers } from './action';
+import { Action } from '../types';
 
 export const isNotNil = R.complement(R.isNil);
 export const filterNotNil = R.filter<any, 'array'>(R.complement(R.isNil));
 
-export const isDate = R.is(Date) as ((object: any) => object is Date);
+export const isDate = R.is(Date) as (object: any) => object is Date;
 
 export const isNumber = (object: any): object is number =>
   typeof object === 'number';
@@ -30,11 +32,7 @@ export const getStatePathFromItemLinkIdPath: (
 ) => string[] = R.reduce((path, linkId) => [...path, 'items', linkId], []);
 
 const getPropertyLensFromItemLinkIdPath = (propertyName: string) =>
-  R.pipe(
-    getStatePathFromItemLinkIdPath,
-    R.append(propertyName),
-    R.lensPath
-  );
+  R.pipe(getStatePathFromItemLinkIdPath, R.append(propertyName), R.lensPath);
 
 export const getAnswersLensFromItemLinkIdPath = getPropertyLensFromItemLinkIdPath(
   'answers'
@@ -42,3 +40,20 @@ export const getAnswersLensFromItemLinkIdPath = getPropertyLensFromItemLinkIdPat
 export const getAnswerOptionsLensFromItemLinkIdPath = getPropertyLensFromItemLinkIdPath(
   'answerOptions'
 );
+
+export const getInitActions = (path: string[]) => (item: any): Action[] => [
+  ...(Array.isArray(item?.answer)
+    ? [
+        setAnswers(
+          [...path, item.linkId],
+          R.map((answer) => answer?.valueString, item.answer)
+        ),
+      ]
+    : []),
+  ...(Array.isArray(item?.item)
+    ? R.chain(
+        getInitActions(item.linkId ? [...path, item.linkId] : []),
+        item.item
+      )
+    : []),
+];
