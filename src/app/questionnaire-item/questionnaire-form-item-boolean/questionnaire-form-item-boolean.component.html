@@ -8,7 +8,7 @@
     ></app-questionnaire-form-item-hint>
   </label>
   <mat-radio-group [formControl]="formControl" [required]="item.isRequired">
-    <mat-radio-button [value]="'yes'" color="primary">Yes</mat-radio-button>
-    <mat-radio-button [value]="'no'" color="primary">No</mat-radio-button>
+    <mat-radio-button [value]="true" color="primary">Yes</mat-radio-button>
+    <mat-radio-button [value]="false" color="primary">No</mat-radio-button>
   </mat-radio-group>
 </ng-container>

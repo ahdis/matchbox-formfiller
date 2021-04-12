@@ -3,7 +3,7 @@ import * as R from 'ramda';
 export const isNotNil = R.complement(R.isNil);
 export const filterNotNil = R.filter<any, 'array'>(R.complement(R.isNil));
 
-export const isDate = R.is(Date) as ((object: any) => object is Date);
+export const isDate = R.is(Date) as (object: any) => object is Date;
 
 export const isNumber = (object: any): object is number =>
   typeof object === 'number';
@@ -30,11 +30,7 @@ export const getStatePathFromItemLinkIdPath: (
 ) => string[] = R.reduce((path, linkId) => [...path, 'items', linkId], []);
 
 const getPropertyLensFromItemLinkIdPath = (propertyName: string) =>
-  R.pipe(
-    getStatePathFromItemLinkIdPath,
-    R.append(propertyName),
-    R.lensPath
-  );
+  R.pipe(getStatePathFromItemLinkIdPath, R.append(propertyName), R.lensPath);
 
 export const getAnswersLensFromItemLinkIdPath = getPropertyLensFromItemLinkIdPath(
   'answers'

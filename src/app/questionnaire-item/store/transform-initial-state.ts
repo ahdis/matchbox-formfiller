@@ -1,5 +1,6 @@
 import * as R from 'ramda';
 import {
+  Action,
   AnswerOption,
   AnswerOptionType,
   ChoiceOrientation,
@@ -11,26 +12,22 @@ import {
   QuestionnaireState,
 } from '../types';
 import {
+  isNotNil,
+  isObject,
+  isString,
   toArray,
   toBoolean,
   toNumber,
   toString,
-  isNotNil,
-  isObject,
-  isString,
 } from './util';
+import { setAnswers } from './action';
 
 const getExtensionOfElement = (extensionUrl: string) =>
   R.pipe(
     (item: unknown) => (isObject(item) ? item : {}),
     R.prop('extension'),
     toArray,
-    R.find(
-      R.pipe(
-        R.propOr(undefined, 'url'),
-        R.equals(extensionUrl)
-      )
-    )
+    R.find(R.pipe(R.propOr(undefined, 'url'), R.equals(extensionUrl)))
   );
 
 const getBooleanExtension = (extensionUrl: string) =>
@@ -77,7 +74,7 @@ const getItemControlExtension = R.pipe(
     )
   ),
   R.propOr(undefined, 'code'),
-  code =>
+  (code) =>
     code === 'radio-button'
       ? ItemControl.RadioButton
       : code === 'check-box'
@@ -120,10 +117,7 @@ const getRenderingXHtmlExtension = getStringExtension(
   'http://hl7.org/fhir/StructureDefinition/rendering-xhtml'
 );
 
-const getHasRenderXHtmlExtension = R.pipe(
-  getRenderingXHtmlExtension,
-  isNotNil
-);
+const getHasRenderXHtmlExtension = R.pipe(getRenderingXHtmlExtension, isNotNil);
 
 const getHtmlOrText = (text: string, extensionContainer: unknown) =>
   getHasRenderXHtmlExtension(extensionContainer)
@@ -134,20 +128,8 @@ const getRenderingStyleExtension = R.pipe(
   getStringExtension('http://hl7.org/fhir/StructureDefinition/rendering-style'),
   R.defaultTo(''),
   R.split(';'),
-  R.filter(
-    R.complement(
-      R.pipe(
-        R.trim,
-        R.isEmpty
-      )
-    )
-  ),
-  R.map(
-    R.pipe(
-      R.split(':'),
-      R.map(R.trim)
-    )
-  ),
+  R.filter(R.complement(R.pipe(R.trim, R.isEmpty))),
+  R.map(R.pipe(R.split(':'), R.map(R.trim))),
   R.fromPairs as (pairs: string[][]) => { [cssPropertyName: string]: string }
 );
 
@@ -180,7 +162,7 @@ const getContainedValueSet = (questionnaire: any) => (id: string) =>
 
 const getOptionsFromValueSet: (
   questionnaire: any
-) => (item: unknown) => AnswerOption[] = questionnaire =>
+) => (item: unknown) => AnswerOption[] = (questionnaire) =>
   R.pipe(
     R.propOr(undefined, 'answerValueSet'),
     R.ifElse(
@@ -207,23 +189,22 @@ const getOptionsFromAnswerOptions: (
   answerOptions: unknown[]
 ) => AnswerOption[] = R.pipe(
   toArray,
-  R.map(
-    (answerOption: any): AnswerOption | undefined =>
-      isString(answerOption.valueString)
-        ? {
-            type: AnswerOptionType.String,
-            value: toString(answerOption.valueString),
-            key: toString(answerOption.valueString),
-            display: toString(answerOption.valueString),
-          }
-        : isObject(answerOption.valueCoding)
-        ? {
-            type: AnswerOptionType.Coding,
-            value: answerOption.valueCoding,
-            key: toString(answerOption.valueCoding.code),
-            display: toString(answerOption.valueCoding.display),
-          }
-        : undefined
+  R.map((answerOption: any): AnswerOption | undefined =>
+    isString(answerOption.valueString)
+      ? {
+          type: AnswerOptionType.String,
+          value: toString(answerOption.valueString),
+          key: toString(answerOption.valueString),
+          display: toString(answerOption.valueString),
+        }
+      : isObject(answerOption.valueCoding)
+      ? {
+          type: AnswerOptionType.Coding,
+          value: answerOption.valueCoding,
+          key: toString(answerOption.valueCoding.code),
+          display: toString(answerOption.valueCoding.display),
+        }
+      : undefined
   )
 );
 
@@ -234,7 +215,7 @@ const getOptions = (questionnaire: any) => (item: any) =>
 
 const getExistingTypeProperty: (
   prefix: string
-) => (item: unknown) => unknown = prefix =>
+) => (item: unknown) => unknown = (prefix) =>
   R.cond([
     [R.has(`${prefix}Boolean`), R.prop(`${prefix}Boolean`)],
     [R.has(`${prefix}Decimal`), R.prop(`${prefix}Decimal`)],
@@ -269,7 +250,7 @@ const getEnabledConditions = R.pipe(
       }
   ),
   R.filter<IsEnabledCondition, 'array'>(
-    condition =>
+    (condition) =>
       isObject(condition) &&
       isString(condition.linkId) &&
       isString(condition.operator) &&
@@ -326,7 +307,7 @@ const transformItem = (questionnaire: any) => (
 
 const transformItems: (
   questionnaire: any
-) => (items: unknown) => QuestionnaireItemsIndexedByLinkId = questionnaire =>
+) => (items: unknown) => QuestionnaireItemsIndexedByLinkId = (questionnaire) =>
   R.pipe(
     toArray,
     R.filter(
@@ -350,3 +331,20 @@ export const transformQuestionnaire = (
     },
   },
 });
+
+export const getInitActions = (path: string[]) => (item: any): Action[] => [
+  ...(Array.isArray(item?.answer)
+    ? [
+        setAnswers(
+          [...path, item.linkId],
+          R.map(getExistingValueProperty, item.answer)
+        ),
+      ]
+    : []),
+  ...(Array.isArray(item?.item)
+    ? R.chain(
+        getInitActions(item.linkId ? [...path, item.linkId] : []),
+        item.item
+      )
+    : []),
+];
