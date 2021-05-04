@@ -39,7 +39,7 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 
 ## deploying to github pages
 
-ng build --prod --base-href "http://github.ahdis.ch/ng-fhir-sample"
+ng build --prod --base-href "https://ahdis.github.io/ng-fhir-sample"
 angular-cli-ghpages
 
 note: communicatin via fhir servers is currently over http, therefore the https access has to be switched off in the github project

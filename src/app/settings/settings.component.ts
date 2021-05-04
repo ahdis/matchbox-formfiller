@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FhirJsHttpService, FHIR_HTTP_CONFIG, FhirConfig } from 'ng-fhirjs';
 
 export const FHIR_JS_CONFIG: FhirConfig = {
-  baseUrl: 'http://hapi.fhir.org/baseR4',
+  baseUrl: 'http://test.ahdis.ch/r4',
   credentials: 'same-origin',
 };
 
@@ -17,6 +17,7 @@ export const FHIR_JS_CONFIG: FhirConfig = {
 })
 export class SettingsComponent implements OnInit {
   fhirServers = [
+    'http://test.ahdis.ch/r4',
     'http://localhost:8080/r4',
     'http://test.fhir.org/r4',
     'http://test.ahdis.ch/hapi-fhir-jpavalidator/fhir',
