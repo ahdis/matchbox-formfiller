@@ -17,6 +17,7 @@ import { QuestionnaireItemModule } from './questionnaire-item/questionnaire-item
 import { QuestionnairesComponent } from './questionnaires/questionnaires.component';
 import { SettingsComponent } from './settings/settings.component';
 import { SharedModule } from './shared/shared.module';
+import { IgsComponent } from './igs/igs.component';
 
 const routes: Routes = [
   {
@@ -48,6 +49,10 @@ const routes: Routes = [
     component: CapabilityStatementComponent,
   },
   {
+    path: 'igs',
+    component: IgsComponent,
+  },
+  {
     path: 'settings',
     component: SettingsComponent,
   },
@@ -70,6 +75,7 @@ export function createTranslateLoader(http: HttpClient) {
     QuestionnaireFormFillerComponent,
     FhirPathComponent,
     MappingLanguageComponent,
+    IgsComponent,
   ],
   imports: [
     SharedModule,

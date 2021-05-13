@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.com/ahdis/ng-fhir-sample.svg?branch=master)](https://travis-ci.com/ahdis/ng-fhir-sample)
 
+see deployed [version on github pages](https://ahdis.github.io/ng-fhir-sample/#/questionnaires)
+
 angular web applications which uses fhir for:
 
 - displaying Questionnaires (R4 with first SDC extension support)
@@ -10,14 +12,13 @@ angular web applications which uses fhir for:
 built with:
 
 - using [ng-fhirjs](https://github.com/ahdis/ng-fhirjs) as a wrapper for accessing a fhir server with [fhir.js](https://github.com/FHIR/fhir.js)
-
 - integerated [fhirpath.js](https://github.com/lhncbc/fhirpath.js/)
 - using [angular material](https://material.angular.io/) for UI components
 
 see [on github pages](https://ahdis.github.io/ng-fhir-sample)
 
 Note:
-Chrome on OSX has a CORS Problem and cannot exectute te $extract operation:
+Chrome on OSX has a CORS Problem and cannot exectute te $extract operation, this happens only to a http url, but not to a https url
 
 - Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
 - Looks like this could happen: For those struggling with this in the future, the problem was that the URL was returning a 302-Redirect, and even though the new location was presenting CORS headers with 200-OK, the initial 302 response was not.
@@ -46,8 +47,10 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 
 ## deploying to github pages
 
+ng add angular-cli-ghpages
+
 ng build --prod --base-href /ng-fhir-sample/
-angular-cli-ghpages
+ng deploy --base-href=/ng-fhir-sample/
 
 note: communicatin via fhir servers is currently over http, therefore the https access has to be switched off in the github project
 
@@ -70,3 +73,7 @@ enter in chrome console for debugging the following:
 localStorage.debug = 'fhir-kit-client:\*';
 
 localStorage.debug = 'fhir-kit-client:_,app:_';
+
+## travis ci setup
+
+https://www.travis-ci.com/github/ahdis/ng-fhir-sample

@@ -4124,13 +4124,10 @@ declare class Client {
    * @return {Promise<Object>} FHIR resources in a FHIR fhir.r4.Bundle structure.
    */
   transaction(params: {
-    body: fhir.r4.Bundle & { type: 'transaction' };
+    body: fhir.r4.Bundle;
     headers?: Headers;
     options?: Options;
-  }): Promise<
-    | fhir.r4.OperationOutcome
-    | (fhir.r4.Bundle & { type: 'transaction-response' })
-  >;
+  }): Promise<fhir.r4.OperationOutcome | fhir.r4.Bundle>;
 
   /**
    * Return the next page of results.

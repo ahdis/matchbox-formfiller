@@ -1,0 +1,57 @@
+<mat-card class="card-igs">
+  <mat-card-content>
+    <mat-card-header>
+      <mat-card-title>{{ client.baseUrl }}</mat-card-title>
+    </mat-card-header>
+    <mat-table #table [dataSource]="dataSource">
+      <ng-container matColumnDef="packageId">
+        <mat-header-cell *matHeaderCellDef>packageId</mat-header-cell>
+        <mat-cell *matCellDef="let entry">{{ getPackageId(entry) }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef>name</mat-header-cell>
+        <mat-cell *matCellDef="let entry">{{ getName(entry) }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="version">
+        <mat-header-cell *matHeaderCellDef>version</mat-header-cell>
+        <mat-cell *matCellDef="let entry">{{ getVersion(entry) }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="url">
+        <mat-header-cell *matHeaderCellDef>url</mat-header-cell>
+        <mat-cell *matCellDef="let entry">{{ getUrl(entry) }}</mat-cell>
+      </ng-container>
+      <mat-header-row
+        *matHeaderRowDef="['packageId', 'name', 'version', 'url']"
+      ></mat-header-row>
+      <mat-row
+        *matRowDef="let row; columns: ['packageId', 'name', 'version', 'url']"
+        (click)="selectRow(row)"
+      ></mat-row>
+    </mat-table>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="Search">
+  <mat-card-content>
+    <mat-form-field>
+      <mat-label>PackageId</mat-label>
+      <input matInput [formControl]="addPackageId" />
+    </mat-form-field>
+    &nbsp;
+    <mat-form-field>
+      <mat-label>Version</mat-label>
+      <input matInput [formControl]="addVersion" />
+    </mat-form-field>
+    <mat-card-actions>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        (click)="onSubmit()"
+      >
+        Upload
+      </button>
+    </mat-card-actions>
+    <div *ngIf="errMsg">{{ errMsg }}</div>
+  </mat-card-content>
+</mat-card>

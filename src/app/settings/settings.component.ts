@@ -14,10 +14,13 @@ import debug from 'debug';
 })
 export class SettingsComponent implements OnInit {
   fhirServers = [
+    'https://test.ahdis.ch/r4',
     'http://test.ahdis.ch/r4',
     'http://localhost:8080/r4',
     'http://test.fhir.org/r4',
+    'https://test.ahdis.ch/hapi-fhir-jpavalidator/fhir',
     'http://test.ahdis.ch/hapi-fhir-jpavalidator/fhir',
+    'https://hapi.fhir.org/baseR4',
     'http://hapi.fhir.org/baseR4',
   ];
 
