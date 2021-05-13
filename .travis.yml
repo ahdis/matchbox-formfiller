@@ -1,7 +1,10 @@
 language: node_js
 node_js: '10'
+
+before_install:
+  - cp ./index.d.ts ./node_modules/@types/fhir-kit-client/
+
 script:
-  - yarn lint
   - yarn build
   - yarn test-ci
 cache:
