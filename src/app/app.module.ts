@@ -18,6 +18,7 @@ import { QuestionnairesComponent } from './questionnaires/questionnaires.compone
 import { SettingsComponent } from './settings/settings.component';
 import { SharedModule } from './shared/shared.module';
 import { IgsComponent } from './igs/igs.component';
+import { ClientComponent } from './client/client.component';
 
 const routes: Routes = [
   {
@@ -53,6 +54,10 @@ const routes: Routes = [
     component: IgsComponent,
   },
   {
+    path: 'client',
+    component: ClientComponent,
+  },
+  {
     path: 'settings',
     component: SettingsComponent,
   },
@@ -76,6 +81,7 @@ export function createTranslateLoader(http: HttpClient) {
     FhirPathComponent,
     MappingLanguageComponent,
     IgsComponent,
+    ClientComponent,
   ],
   imports: [
     SharedModule,

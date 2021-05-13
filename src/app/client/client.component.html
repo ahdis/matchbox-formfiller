@@ -1,0 +1,34 @@
+<mat-card class="client">
+  <mat-card-content>
+    <mat-form-field style="width: 700px; height: 700px">
+      <mat-label>Resource</mat-label>
+      <textarea
+        matInput
+        [formControl]="map"
+        cdkAutosizeMinRows="10"
+        cdkAutosizeMaxRows="20"
+        rows="30"
+      >
+      </textarea>
+    </mat-form-field>
+
+    <mat-card-actions>
+      <input
+        type="file"
+        (change)="fileChange($event)"
+        placeholder="Upload resource"
+        accept=".json"
+      />
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        (click)="onSubmit()"
+      >
+        POST
+      </button>
+    </mat-card-actions>
+    <div *ngIf="errMsg">{{ errMsg }}</div>
+  </mat-card-content>
+</mat-card>
