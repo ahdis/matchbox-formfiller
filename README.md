@@ -16,6 +16,12 @@ built with:
 
 see [on github pages](https://ahdis.github.io/ng-fhir-sample)
 
+Note:
+Chrome on OSX has a CORS Problem and cannot exectute te $extract operation:
+
+- Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+- Looks like this could happen: For those struggling with this in the future, the problem was that the URL was returning a 302-Redirect, and even though the new location was presenting CORS headers with 200-OK, the initial 302 response was not.
+
 # development setup
 
 if you are not using the devcontainer from this project with [VS Code Remote Development](https://code.visualstudio.com/docs/remote/containers) extension you need to have angular cli and [yarn](https://yarnpkg.com/en/) installed:
@@ -62,3 +68,5 @@ yarn add @types/debug --dev
 see also https://github.com/visionmedia/debug/issues/305
 enter in chrome console for debugging the following:
 localStorage.debug = 'fhir-kit-client:\*';
+
+localStorage.debug = 'fhir-kit-client:_,app:_';

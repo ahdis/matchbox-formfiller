@@ -319,11 +319,12 @@ const transformItems: (
   );
 
 export const transformQuestionnaire = (
-  questionnaire: any,
+  questionnaire: fhir.r4.Questionnaire,
   questionnaireResponse: any
 ): QuestionnaireState => ({
   title: getHtmlOrText(toString(questionnaire.title), questionnaire._title),
   items: transformItems(questionnaire)(questionnaire.item),
+  url: questionnaire.url,
   extensions: {
     title: {
       renderAsHtml: getHasRenderXHtmlExtension(questionnaire._title),

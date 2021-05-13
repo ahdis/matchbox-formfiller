@@ -1,10 +1,11 @@
-<ng-container *ngIf="(questionnaire$ | async) as questionnaire; else notfound">
+<ng-container *ngIf="questionnaire$ | async as questionnaire; else notfound">
   <app-questionnaire-form
     [questionnaire]="questionnaire"
     [questionnaireResponse]="questionnaireResponseInitial$ | async"
     (changeQuestionnaireResponse)="onChangeQuestionnaireResponse($event)"
     (submitQuestionnaire)="onSubmit()"
   ></app-questionnaire-form>
+  <pre>{{ extracted | json }}</pre>
   <pre>{{ questionnaireResponse | json }}</pre>
 </ng-container>
 <ng-template #notfound>

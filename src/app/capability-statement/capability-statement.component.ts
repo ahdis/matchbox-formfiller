@@ -8,11 +8,11 @@ import debug from 'debug';
   styleUrls: ['./capability-statement.component.scss'],
 })
 export class CapabilityStatementComponent implements OnInit {
-  capabilitystatement: fhir.CapabilityStatement;
+  capabilitystatement: fhir.r4.CapabilityStatement;
 
   constructor(private data: FhirConfigService) {
     const client = data.getFhirClient();
-    client.capabilityStatement().then((data: fhir.CapabilityStatement) => {
+    client.capabilityStatement().then((data: fhir.r4.CapabilityStatement) => {
       this.capabilitystatement = data;
     });
   }

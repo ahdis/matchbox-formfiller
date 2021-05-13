@@ -18,14 +18,11 @@ export class FhirPathComponent implements OnInit {
     private fhirPathService: FhirPathService,
     private cd: ChangeDetectorRef
   ) {
-    this.resource = QuestionnaireDemo.getQuestionnaireEbida();
+    this.resource = QuestionnaireDemo.getQuestionnaireSdcExtract();
     this.fhirPathExpression = new FormControl();
     this.fhirPathExpression.valueChanges
-      .pipe(
-        debounceTime(400),
-        distinctUntilChanged()
-      )
-      .subscribe(term => {
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe((term) => {
         console.log('called with ' + term);
         if (term) {
           try {

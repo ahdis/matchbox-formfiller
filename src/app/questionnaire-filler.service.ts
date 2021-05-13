@@ -48,17 +48,6 @@ export class QuestionnaireFillerService {
     return responseItems;
   }
 
-  getQuestionniareResponse(): fhir.r4.QuestionnaireResponse {
-    if (!this.questionnaireResponse) {
-      this.questionnaireResponse = <fhir.r4.QuestionnaireResponse>{};
-      this.questionnaireResponse.status = 'in-progress';
-      this.questionnaireResponse.item = this.addQuestionnaireResponseItems(
-        this.questionnaire.item
-      );
-    }
-    return this.questionnaireResponse;
-  }
-
   getQuestionnaireResponseItem(
     linkId
   ): fhir.r4.QuestionnaireResponseItemAnswer {
@@ -81,7 +70,7 @@ export class QuestionnaireFillerService {
     values: any[]
   ): boolean {
     const responseItem = this.mapResponseItems.get(item.linkId);
-    responseItem.answer = (values || []).map(value => {
+    responseItem.answer = (values || []).map((value) => {
       const questionnaireResponseItemAnswer = <
         fhir.r4.QuestionnaireResponseItemAnswer
       >{};

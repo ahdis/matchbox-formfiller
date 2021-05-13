@@ -19,6 +19,7 @@ export type ChoiceOrientation = 'horizontal' | 'vertical';
 
 export interface QuestionnaireState {
   readonly title: string;
+  readonly url: string;
   readonly items: QuestionnaireItemsIndexedByLinkId;
   readonly extensions: {
     readonly title: RenderingExtension;

@@ -10,10 +10,10 @@ export class HomeComponent {
   displayedColumns = ['title', 'publisher', 'version', 'status', 'date'];
   dataSource = new MatTableDataSource([
     {
-      id: 'ebida',
-      title: 'Ebida Order Example',
+      id: 'sdc-extract',
+      title: 'SDC extraction Example',
       status: 'draft',
-      date: '2018-03-31',
+      date: '2021-05-31',
       publisher: 'ahdis',
       version: '1',
     },

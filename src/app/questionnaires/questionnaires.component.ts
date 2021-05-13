@@ -15,8 +15,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 })
 export class QuestionnairesComponent implements OnInit {
   searched = false;
-  bundle: fhir.Bundle;
-  dataSource = new MatTableDataSource<fhir.BundleEntry>();
+  bundle: fhir.r4.Bundle;
+  dataSource = new MatTableDataSource<fhir.r4.BundleEntry>();
 
   length = 100;
   pageSize = 10;
@@ -32,7 +32,7 @@ export class QuestionnairesComponent implements OnInit {
   public searchVersion: FormControl;
   public searchId: FormControl;
 
-  selected: fhir.Questionnaire;
+  selected: fhir.r4.Questionnaire;
 
   query = {
     _count: this.pageSize,
@@ -121,56 +121,56 @@ export class QuestionnairesComponent implements OnInit {
       .search({ resourceType: 'Questionnaire', searchParams: this.query })
       .then((response) => {
         this.pageIndex = 0;
-        this.setBundle(<fhir.Bundle>response);
+        this.setBundle(<fhir.r4.Bundle>response);
         return response;
       });
   }
 
-  getTitle(entry: fhir.BundleEntry): string {
-    const questionnaire = <fhir.Questionnaire>entry.resource;
+  getTitle(entry: fhir.r4.BundleEntry): string {
+    const questionnaire = <fhir.r4.Questionnaire>entry.resource;
     if (questionnaire.title && questionnaire.title.length) {
       return questionnaire.title;
     }
     return '';
   }
 
-  getPublisher(entry: fhir.BundleEntry): string {
-    const questionnaire = <fhir.Questionnaire>entry.resource;
+  getPublisher(entry: fhir.r4.BundleEntry): string {
+    const questionnaire = <fhir.r4.Questionnaire>entry.resource;
     if (questionnaire.publisher && questionnaire.publisher.length) {
       return questionnaire.publisher;
     }
     return '';
   }
 
-  getStatus(entry: fhir.BundleEntry): string {
-    const questionnaire = <fhir.Questionnaire>entry.resource;
+  getStatus(entry: fhir.r4.BundleEntry): string {
+    const questionnaire = <fhir.r4.Questionnaire>entry.resource;
     if (questionnaire.status && questionnaire.status) {
       return questionnaire.status;
     }
     return '';
   }
 
-  getDate(entry: fhir.BundleEntry): string {
-    const questionnaire = <fhir.Questionnaire>entry.resource;
+  getDate(entry: fhir.r4.BundleEntry): string {
+    const questionnaire = <fhir.r4.Questionnaire>entry.resource;
     if (questionnaire.date && questionnaire.date) {
       return questionnaire.date;
     }
     return '';
   }
 
-  getVersion(entry: fhir.BundleEntry): string {
-    const questionnaire = <fhir.Questionnaire>entry.resource;
+  getVersion(entry: fhir.r4.BundleEntry): string {
+    const questionnaire = <fhir.r4.Questionnaire>entry.resource;
     if (questionnaire.version && questionnaire.version) {
       return questionnaire.version;
     }
     return '';
   }
 
-  selectRow(row: fhir.BundleEntry) {
+  selectRow(row: fhir.r4.BundleEntry) {
     const selection = row.resource;
     const readObj = { resourceType: 'Questionnaire', id: selection.id };
     this.client.read(readObj).then((response) => {
-      this.selected = <fhir.Questionnaire>response;
+      this.selected = <fhir.r4.Questionnaire>response;
     });
   }
 
@@ -178,20 +178,20 @@ export class QuestionnairesComponent implements OnInit {
     if (event.pageIndex > this.pageIndex) {
       this.client.nextPage({ bundle: this.bundle }).then((response) => {
         this.pageIndex = event.pageIndex;
-        this.setBundle(<fhir.Bundle>response);
+        this.setBundle(<fhir.r4.Bundle>response);
         console.log('next page called ');
       });
     } else {
       this.client.prevPage({ bundle: this.bundle }).then((response) => {
         this.pageIndex = event.pageIndex;
-        this.setBundle(<fhir.Bundle>response);
+        this.setBundle(<fhir.r4.Bundle>response);
         console.log('previous page called ');
       });
     }
   }
 
-  setBundle(bundle: fhir.Bundle) {
-    this.bundle = <fhir.Bundle>bundle;
+  setBundle(bundle: fhir.r4.Bundle) {
+    this.bundle = <fhir.r4.Bundle>bundle;
     this.length = this.bundle.total;
     this.dataSource.data = this.bundle.entry;
     this.selected = undefined;

@@ -20,6 +20,7 @@ export class SettingsComponent implements OnInit {
     'http://test.ahdis.ch/hapi-fhir-jpavalidator/fhir',
     'http://hapi.fhir.org/baseR4',
   ];
+
   subscription: Subscription;
   baseUrl: string;
 
