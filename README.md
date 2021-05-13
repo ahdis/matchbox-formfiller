@@ -10,6 +10,7 @@ angular web applications which uses fhir for:
 built with:
 
 - using [ng-fhirjs](https://github.com/ahdis/ng-fhirjs) as a wrapper for accessing a fhir server with [fhir.js](https://github.com/FHIR/fhir.js)
+
 - integerated [fhirpath.js](https://github.com/lhncbc/fhirpath.js/)
 - using [angular material](https://material.angular.io/) for UI components
 
@@ -47,3 +48,17 @@ note: communicatin via fhir servers is currently over http, therefore the https 
 ## Contributing
 
 Have a look at [contributing](CONTRIBUTING.md).
+
+## setup fhir-kit-client
+
+```
+yarn add fhir-kit-client
+yarn add @types/fhir-kit-client --dev
+cp ./index.d.ts ./node_modules/@types/fhir-kit-client/
+yarn add debug
+yarn add @types/debug --dev
+```
+
+see also https://github.com/visionmedia/debug/issues/305
+enter in chrome console for debugging the following:
+localStorage.debug = 'fhir-kit-client:\*';

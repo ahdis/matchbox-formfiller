@@ -1,10 +1,11 @@
-/// <reference path=".,/../../../fhir.r4/index.d.ts" />
-
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { FhirJsHttpService, QueryObj } from 'ng-fhirjs';
+import FhirClient from 'fhir-kit-client';
+import SearchParams from 'fhir-kit-client';
+import { FhirConfigService } from '../fhirConfig.service';
+import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
@@ -14,12 +15,16 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 })
 export class QuestionnairesComponent implements OnInit {
   searched = false;
-  bundle: fhir.r4.Bundle;
-  dataSource = new MatTableDataSource<fhir.r4.BundleEntry>();
+  bundle: fhir.Bundle;
+  dataSource = new MatTableDataSource<fhir.BundleEntry>();
 
   length = 100;
   pageSize = 10;
   pageIndex = 0;
+
+  subscription: Subscription;
+  config = { baseUrl: 'https://test.ahdis.ch/r4' };
+  client: FhirClient;
 
   pageSizeOptions = [this.pageSize];
   public searchTitle: FormControl;
@@ -27,177 +32,166 @@ export class QuestionnairesComponent implements OnInit {
   public searchVersion: FormControl;
   public searchId: FormControl;
 
-  selected: fhir.r4.Questionnaire;
+  selected: fhir.Questionnaire;
 
-  query = <QueryObj>{
-    type: 'Questionnaire',
-    query: {
-      _count: this.pageSize,
-      _summary: 'true',
-      _sort: 'title',
-    },
+  query = {
+    _count: this.pageSize,
+    _summary: 'true',
+    _sort: 'title',
+    _id: 'title',
+    title: '',
+    'version:contains': '',
+    'publisher:contains': '',
   };
 
-  queryId = <QueryObj>{
-    type: 'Questionnaire',
-    query: {
-      _count: this.pageSize,
-      _summary: 'true',
-      _sort: 'title',
-    },
-  };
+  constructor(private data: FhirConfigService) {
+    this.config.baseUrl = data.getFhirMicroService();
+    this.client = new FhirClient(this.config);
+    delete this.query.title;
+    delete this.query._id;
+    delete this.query['publisher:contains'];
+    delete this.query['version:contains'];
 
-  constructor(private fhirHttpService: FhirJsHttpService) {
     this.searchTitle = new FormControl();
     this.searchTitle.valueChanges
-      .pipe(
-        debounceTime(400),
-        distinctUntilChanged()
-      )
-      .subscribe(term => {
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe((term) => {
         console.log('called with ' + term);
         if (term) {
-          this.query.query.title = term;
+          this.query = { ...this.query, title: term };
         } else {
-          if (this.query.query.title) {
-            delete this.query.query.title;
+          if (this.query.title) {
+            delete this.query.title;
           }
         }
-        this.queryQuerstionnaires();
+        this.queryQuestionnaires();
       });
 
     this.searchPublisher = new FormControl();
     this.searchPublisher.valueChanges
-      .pipe(
-        debounceTime(400),
-        distinctUntilChanged()
-      )
-      .subscribe(term => {
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe((term) => {
         console.log('called with ' + term);
         if (term) {
-          this.query.query.publisher = { $contains: term };
+          this.query = { ...this.query, 'publisher:contains': term };
         } else {
-          if (this.query.query.publisher) {
-            delete this.query.query.publisher;
+          if (this.query['publisher:contains']) {
+            delete this.query['publisher:contains'];
           }
         }
-        this.queryQuerstionnaires();
+        this.queryQuestionnaires();
       });
 
     this.searchVersion = new FormControl();
     this.searchVersion.valueChanges
-      .pipe(
-        debounceTime(400),
-        distinctUntilChanged()
-      )
-      .subscribe(term => {
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe((term) => {
         console.log('called with ' + term);
         if (term) {
-          this.query.query.version = { $contains: term };
+          this.query = { ...this.query, 'version:contains': term };
         } else {
-          if (this.query.query.version) {
-            delete this.query.query.version;
+          if (this.query['version:contains']) {
+            delete this.query['version:contains'];
           }
         }
-        this.queryQuerstionnaires();
+        this.queryQuestionnaires();
       });
 
     this.searchId = new FormControl();
     this.searchId.valueChanges
-      .pipe(
-        debounceTime(400),
-        distinctUntilChanged()
-      )
-      .subscribe(term => {
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe((term) => {
         console.log('called with ' + term);
         if (term) {
-          this.queryId.query._id = term;
-          this.fhirHttpService.search(this.queryId).then(response => {
-            this.pageIndex = 0;
-            this.setBundle(<fhir.r4.Bundle>response.data);
-          });
+          this.query = { ...this.query, _id: term };
         } else {
-          this.queryQuerstionnaires();
+          if (this.query._id) {
+            delete this.query._id;
+          }
         }
+        this.queryQuestionnaires();
       });
 
     // default search
-    this.queryQuerstionnaires();
+    this.queryQuestionnaires();
   }
 
-  queryQuerstionnaires() {
-    this.fhirHttpService.search(this.query).then(response => {
-      this.pageIndex = 0;
-      this.setBundle(<fhir.r4.Bundle>response.data);
-    });
+  queryQuestionnaires() {
+    this.client
+      .search({ resourceType: 'Questionnaire', searchParams: this.query })
+      .then((response) => {
+        this.pageIndex = 0;
+        this.setBundle(<fhir.Bundle>response);
+        return response;
+      });
   }
 
-  getTitle(entry: fhir.r4.BundleEntry): string {
-    const questionnaire = <fhir.r4.Questionnaire>entry.resource;
+  getTitle(entry: fhir.BundleEntry): string {
+    const questionnaire = <fhir.Questionnaire>entry.resource;
     if (questionnaire.title && questionnaire.title.length) {
       return questionnaire.title;
     }
     return '';
   }
 
-  getPublisher(entry: fhir.r4.BundleEntry): string {
-    const questionnaire = <fhir.r4.Questionnaire>entry.resource;
+  getPublisher(entry: fhir.BundleEntry): string {
+    const questionnaire = <fhir.Questionnaire>entry.resource;
     if (questionnaire.publisher && questionnaire.publisher.length) {
       return questionnaire.publisher;
     }
     return '';
   }
 
-  getStatus(entry: fhir.r4.BundleEntry): string {
-    const questionnaire = <fhir.r4.Questionnaire>entry.resource;
+  getStatus(entry: fhir.BundleEntry): string {
+    const questionnaire = <fhir.Questionnaire>entry.resource;
     if (questionnaire.status && questionnaire.status) {
       return questionnaire.status;
     }
     return '';
   }
 
-  getDate(entry: fhir.r4.BundleEntry): string {
-    const questionnaire = <fhir.r4.Questionnaire>entry.resource;
+  getDate(entry: fhir.BundleEntry): string {
+    const questionnaire = <fhir.Questionnaire>entry.resource;
     if (questionnaire.date && questionnaire.date) {
       return questionnaire.date;
     }
     return '';
   }
 
-  getVersion(entry: fhir.r4.BundleEntry): string {
-    const questionnaire = <fhir.r4.Questionnaire>entry.resource;
+  getVersion(entry: fhir.BundleEntry): string {
+    const questionnaire = <fhir.Questionnaire>entry.resource;
     if (questionnaire.version && questionnaire.version) {
       return questionnaire.version;
     }
     return '';
   }
 
-  selectRow(row: fhir.r4.BundleEntry) {
+  selectRow(row: fhir.BundleEntry) {
     const selection = row.resource;
-    const readObj = { type: 'Questionnaire', id: selection.id };
-    this.fhirHttpService.read(readObj).then(response => {
-      this.selected = <fhir.r4.Questionnaire>response.data;
+    const readObj = { resourceType: 'Questionnaire', id: selection.id };
+    this.client.read(readObj).then((response) => {
+      this.selected = <fhir.Questionnaire>response;
     });
   }
 
   goToPage(event: PageEvent) {
     if (event.pageIndex > this.pageIndex) {
-      this.fhirHttpService.nextPage({ bundle: this.bundle }).then(response => {
+      this.client.nextPage({ bundle: this.bundle }).then((response) => {
         this.pageIndex = event.pageIndex;
-        this.setBundle(<fhir.r4.Bundle>response.data);
+        this.setBundle(<fhir.Bundle>response);
         console.log('next page called ');
       });
     } else {
-      this.fhirHttpService.prevPage({ bundle: this.bundle }).then(response => {
+      this.client.prevPage({ bundle: this.bundle }).then((response) => {
         this.pageIndex = event.pageIndex;
-        this.setBundle(<fhir.r4.Bundle>response.data);
+        this.setBundle(<fhir.Bundle>response);
         console.log('previous page called ');
       });
     }
   }
 
-  setBundle(bundle: fhir.r4.Bundle) {
-    this.bundle = <fhir.r4.Bundle>bundle;
+  setBundle(bundle: fhir.Bundle) {
+    this.bundle = <fhir.Bundle>bundle;
     this.length = this.bundle.total;
     this.dataSource.data = this.bundle.entry;
     this.selected = undefined;

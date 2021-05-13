@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FhirJsHttpService, FHIR_HTTP_CONFIG, FhirConfig } from 'ng-fhirjs';
-
-export const FHIR_JS_CONFIG: FhirConfig = {
-  baseUrl: 'http://test.ahdis.ch/r4',
-  credentials: 'same-origin',
-};
+import { FhirConfigService } from '../fhirConfig.service';
+import { Subscription } from 'rxjs';
+import debug from 'debug';
 
 // currently R4 only 'http://localhost:8080/baseDstu3',
 // 'http://vonk.furore.com',
@@ -23,17 +20,23 @@ export class SettingsComponent implements OnInit {
     'http://test.ahdis.ch/hapi-fhir-jpavalidator/fhir',
     'http://hapi.fhir.org/baseR4',
   ];
+  subscription: Subscription;
+  baseUrl: string;
 
-  constructor(private fhirHttpService: FhirJsHttpService) {}
+  constructor(private data: FhirConfigService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.subscription = this.data.fhirMicroService.subscribe(
+      (url) => (this.baseUrl = url)
+    );
+  }
 
   getSelectedValue(): string {
-    return FHIR_JS_CONFIG.baseUrl;
+    return this.baseUrl;
   }
 
   setSelectedValue(value: string) {
-    FHIR_JS_CONFIG.baseUrl = value;
-    this.fhirHttpService.updateConfig(FHIR_JS_CONFIG);
+    debug('setting new server to ' + value);
+    this.data.changeFhirMicroService(value);
   }
 }

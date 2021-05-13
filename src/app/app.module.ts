@@ -15,10 +15,7 @@ import { QuestionnaireDetailComponent } from './questionnaire-detail/questionnai
 import { QuestionnaireFormFillerComponent } from './questionnaire-form-filler/questionnaire-form-filler.component';
 import { QuestionnaireItemModule } from './questionnaire-item/questionnaire-item.module';
 import { QuestionnairesComponent } from './questionnaires/questionnaires.component';
-import {
-  FHIR_JS_CONFIG,
-  SettingsComponent,
-} from './settings/settings.component';
+import { SettingsComponent } from './settings/settings.component';
 import { SharedModule } from './shared/shared.module';
 
 const routes: Routes = [
@@ -91,7 +88,6 @@ export function createTranslateLoader(http: HttpClient) {
       },
     }),
   ],
-  providers: [{ provide: FHIR_HTTP_CONFIG, useValue: FHIR_JS_CONFIG }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

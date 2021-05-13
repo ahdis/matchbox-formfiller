@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FhirJsHttpService, IResource } from 'ng-fhirjs';
+import { FhirConfigService } from '../fhirConfig.service';
+import debug from 'debug';
 
 @Component({
   selector: 'app-capability-statement',
@@ -7,14 +8,16 @@ import { FhirJsHttpService, IResource } from 'ng-fhirjs';
   styleUrls: ['./capability-statement.component.scss'],
 })
 export class CapabilityStatementComponent implements OnInit {
-  bundle: IResource;
+  capabilitystatement: fhir.CapabilityStatement;
 
-  constructor(private fhirHttpService: FhirJsHttpService) {
-    fhirHttpService.conformance({ debug: true }).then(response => {
-      this.bundle = response.data;
-      console.log('called ');
+  constructor(private data: FhirConfigService) {
+    const client = data.getFhirClient();
+    client.capabilityStatement().then((data: fhir.CapabilityStatement) => {
+      this.capabilitystatement = data;
     });
   }
 
   ngOnInit() {}
+
+  ngOnDestroy() {}
 }
