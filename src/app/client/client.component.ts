@@ -1,9 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FhirConfigService } from '../fhirConfig.service';
 import { FormControl } from '@angular/forms';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { QuestionnaireDemo } from '../home/questionnaire-demo';
-import { Entry } from 'ng-fhirjs';
 import FhirClient from 'fhir-kit-client';
 import debug from 'debug';
 
