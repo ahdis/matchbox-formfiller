@@ -1,5 +1,6 @@
 @import '~@angular/material/theming';
 @import 'variables';
+@import '~highlight.js/styles/github.css';
 
 @include mat-core();
 @include angular-material-theme($theme);

@@ -1,5 +1,8 @@
-<mat-card>
+<mat-card class="display">
   <mat-card-content>
-    <pre>{{ capabilitystatement | json }}</pre>
+    <mat-card-header>
+      <mat-card-title>{{ client.baseUrl }}</mat-card-title>
+    </mat-card-header>
+    <pre><code [highlight]="getJson()" [lineNumbers]="true"></code></pre>
   </mat-card-content>
 </mat-card>

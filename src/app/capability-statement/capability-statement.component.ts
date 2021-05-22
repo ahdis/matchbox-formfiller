@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FhirConfigService } from '../fhirConfig.service';
+import FhirClient from 'fhir-kit-client';
+
 import debug from 'debug';
 
 @Component({
@@ -9,12 +11,19 @@ import debug from 'debug';
 })
 export class CapabilityStatementComponent implements OnInit {
   capabilitystatement: fhir.r4.CapabilityStatement;
+  client: FhirClient;
 
   constructor(private data: FhirConfigService) {
-    const client = data.getFhirClient();
-    client.capabilityStatement().then((data: fhir.r4.CapabilityStatement) => {
-      this.capabilitystatement = data;
-    });
+    this.client = data.getFhirClient();
+    this.client
+      .capabilityStatement()
+      .then((data: fhir.r4.CapabilityStatement) => {
+        this.capabilitystatement = data;
+      });
+  }
+
+  getJson(): string {
+    return JSON.stringify(this.capabilitystatement, null, 2);
   }
 
   ngOnInit() {}

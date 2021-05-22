@@ -19,6 +19,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { SharedModule } from './shared/shared.module';
 import { IgsComponent } from './igs/igs.component';
 import { ClientComponent } from './client/client.component';
+import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 
 const routes: Routes = [
   {
@@ -86,6 +87,7 @@ export function createTranslateLoader(http: HttpClient) {
   imports: [
     SharedModule,
     HttpClientModule,
+    HighlightModule,
     NgFhirjsModule,
     QuestionnaireItemModule,
     RouterModule.forRoot(routes, {
@@ -99,6 +101,19 @@ export function createTranslateLoader(http: HttpClient) {
         deps: [HttpClient],
       },
     }),
+  ],
+  providers: [
+    {
+      provide: HIGHLIGHT_OPTIONS,
+      useValue: {
+        coreLibraryLoader: () => import('highlight.js/lib/core'),
+        lineNumbersLoader: () => import('highlightjs-line-numbers.js'), // Optional, only if you want the line numbers
+        languages: {
+          json: () => import('highlight.js/lib/languages/json'),
+          xml: () => import('highlight.js/lib/languages/xml'),
+        },
+      },
+    },
   ],
   bootstrap: [AppComponent],
 })
