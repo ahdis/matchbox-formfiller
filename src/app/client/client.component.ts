@@ -61,6 +61,24 @@ export class ClientComponent implements OnInit {
       });
   }
 
+  onDelete() {
+    ClientComponent.log('onDelete ');
+    let res: fhir.r4.Resource;
+    res = JSON.parse(this.map.value);
+
+    this.client
+      .delete({
+        resourceType: this.resourceType.value,
+        id: this.id.value,
+      })
+      .then((response) => {
+        this.map.setValue(JSON.stringify(response));
+      })
+      .catch((error) => {
+        this.errMsg = 'Error' + error;
+      });
+  }
+
   onPost() {
     ClientComponent.log('onSubmit ');
     let res: fhir.r4.Resource;
