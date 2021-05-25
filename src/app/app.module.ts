@@ -20,6 +20,8 @@ import { SharedModule } from './shared/shared.module';
 import { IgsComponent } from './igs/igs.component';
 import { ClientComponent } from './client/client.component';
 import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
+import { Cda2FhirComponent } from './cda2-fhir/cda2-fhir.component';
+import { Fhir2CdaComponent } from './fhir2-cda/fhir2-cda.component';
 
 const routes: Routes = [
   {
@@ -62,6 +64,14 @@ const routes: Routes = [
     path: 'settings',
     component: SettingsComponent,
   },
+  {
+    path: 'cda2fhir',
+    component: Cda2FhirComponent,
+  },
+  {
+    path: 'fhir2cda',
+    component: Fhir2CdaComponent,
+  },
 ];
 
 export function createTranslateLoader(http: HttpClient) {
@@ -83,6 +93,8 @@ export function createTranslateLoader(http: HttpClient) {
     MappingLanguageComponent,
     IgsComponent,
     ClientComponent,
+    Cda2FhirComponent,
+    Fhir2CdaComponent,
   ],
   imports: [
     SharedModule,

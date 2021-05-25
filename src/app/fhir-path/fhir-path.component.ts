@@ -54,5 +54,13 @@ export class FhirPathComponent implements OnInit {
     }
   }
 
+  getFhirPathResult(): string {
+    return JSON.stringify(this.fhirPathResult, null, 2);
+  }
+
+  getJson(): string {
+    return JSON.stringify(this.resource, null, 2);
+  }
+
   ngOnInit() {}
 }

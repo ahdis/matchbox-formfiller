@@ -66,6 +66,7 @@ yarn add @types/fhir-kit-client --dev
 cp ./index.d.ts ./node_modules/@types/fhir-kit-client/
 yarn add debug
 yarn add @types/debug --dev
+
 ```
 
 see also https://github.com/visionmedia/debug/issues/305
