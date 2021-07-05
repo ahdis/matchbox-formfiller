@@ -1,0 +1,31 @@
+<mat-card class="card-maps">
+  <mat-card-content>
+    <mat-card-header>
+      <mat-card-title>{{ client.baseUrl }}</mat-card-title>
+    </mat-card-header>
+    <div>Validate Resource</div>
+    <input
+      type="file"
+      (change)="fileChange($event)"
+      placeholder="Upload Resource"
+      accept=".json"
+    />
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="card-maps">
+  <mat-card-content>
+    <mat-card-header>
+      <mat-card-title>Outcome</mat-card-title>
+    </mat-card-header>
+    <div *ngIf="operationOutcome">
+      <ul>
+        <li *ngFor="let issue of operationOutcome.issue">
+          {{ issue.severity }} (L{{ issue.extension[0].valueInteger }}):
+          {{ issue.diagnostics }} {{ issue.location[0] }}
+        </li>
+      </ul>
+    </div>
+    <pre><code [highlight]="getJson()" [lineNumbers]="true"></code></pre>
+  </mat-card-content>
+</mat-card>

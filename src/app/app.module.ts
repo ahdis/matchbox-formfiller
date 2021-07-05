@@ -22,6 +22,7 @@ import { ClientComponent } from './client/client.component';
 import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { Cda2FhirComponent } from './cda2-fhir/cda2-fhir.component';
 import { Fhir2CdaComponent } from './fhir2-cda/fhir2-cda.component';
+import { ValidateComponent } from './validate/validate.component';
 
 const routes: Routes = [
   {
@@ -72,6 +73,10 @@ const routes: Routes = [
     path: 'fhir2cda',
     component: Fhir2CdaComponent,
   },
+  {
+    path: 'validate',
+    component: ValidateComponent,
+  },
 ];
 
 export function createTranslateLoader(http: HttpClient) {
@@ -95,6 +100,7 @@ export function createTranslateLoader(http: HttpClient) {
     ClientComponent,
     Cda2FhirComponent,
     Fhir2CdaComponent,
+    ValidateComponent,
   ],
   imports: [
     SharedModule,
