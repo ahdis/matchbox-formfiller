@@ -63,7 +63,6 @@ Have a look at [contributing](CONTRIBUTING.md).
 ```
 yarn add fhir-kit-client
 yarn add @types/fhir-kit-client --dev
-cp ./index.d.ts ./node_modules/@types/fhir-kit-client/
 yarn add debug
 yarn add @types/debug --dev
 

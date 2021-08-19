@@ -3,7 +3,6 @@ node_js: '10'
 
 before_install:
   - yarn install
-  - cp ./index.d.ts ./node_modules/@types/fhir-kit-client/
 
 script:
   - yarn build
