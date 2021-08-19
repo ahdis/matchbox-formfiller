@@ -33,7 +33,7 @@ export class PatientsComponent implements OnInit {
   public searchName: FormControl;
   public searchNameValue = '';
 
-  selectedPatient: fhir.Patient;
+  selectedPatient: fhir.r4.Patient;
 
   constructor(private data: FhirConfigService) {
     this.client = data.getFhirClient();
@@ -67,7 +67,7 @@ export class PatientsComponent implements OnInit {
   }
 
   getPatientFamilyName(entry: fhir.r4.BundleEntry): string {
-    const patient = <fhir.Patient>entry.resource;
+    const patient = <fhir.r4.Patient>entry.resource;
     if (patient.name && patient.name.length > 0 && patient.name[0].family) {
       return patient.name[0].family;
     }
@@ -75,15 +75,15 @@ export class PatientsComponent implements OnInit {
   }
 
   getPatientGivenNames(entry: fhir.r4.BundleEntry): string {
-    const patient = <fhir.Patient>entry.resource;
+    const patient = <fhir.r4.Patient>entry.resource;
     if (patient.name && patient.name.length > 0 && patient.name[0].given) {
-      return (<fhir.Patient>entry.resource).name[0].given.join(' ');
+      return (<fhir.r4.Patient>entry.resource).name[0].given.join(' ');
     }
     return '';
   }
 
   getPatientBirthDate(entry: fhir.r4.BundleEntry): string {
-    const patient = <fhir.Patient>entry.resource;
+    const patient = <fhir.r4.Patient>entry.resource;
     if (patient.birthDate) {
       return patient.birthDate;
     }
@@ -91,7 +91,7 @@ export class PatientsComponent implements OnInit {
   }
 
   getPatientAddressLines(entry: fhir.r4.BundleEntry): string {
-    const patient = <fhir.Patient>entry.resource;
+    const patient = <fhir.r4.Patient>entry.resource;
     if (
       patient.address &&
       patient.address.length > 0 &&
@@ -103,7 +103,7 @@ export class PatientsComponent implements OnInit {
   }
 
   getPatientAddressCity(entry: fhir.r4.BundleEntry): string {
-    const patient = <fhir.Patient>entry.resource;
+    const patient = <fhir.r4.Patient>entry.resource;
     if (
       patient.address &&
       patient.address.length > 0 &&
@@ -118,7 +118,7 @@ export class PatientsComponent implements OnInit {
     const selection = row.resource;
     const readObj = { resourceType: 'Patient', id: selection.id };
     this.client.read(readObj).then((response) => {
-      this.selectedPatient = <fhir.Patient>response;
+      this.selectedPatient = <fhir.r4.Patient>response;
     });
   }
 
