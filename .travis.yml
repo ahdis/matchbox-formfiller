@@ -13,8 +13,7 @@ cache:
 deploy:
   provider: pages
   skip_cleanup: true
-  github_token:
-    secure: F5gFhfs1rQrRIxbAt0sWQEnZYX7Hv2BKN3KeaKN8u06cpMqhy4eioj9jbNVqdIo2SX1HBQxI3w+QhuiaLUkdfXUNwxBBMr7rOHMTDy0cSywEd8BloKau+aK6mZfs6mp4z2RTgHnaKH21Jwr3va7OEOVdKduktmHNfyO5RJXH51Nk/1IrGt2ZFoWPSiNx2l0va8wETEO+h56Sqzg66QMskq/nD6pqlC6AIEat1C7Fti1s0245vGRVc3c+QB6tq/ddmf584aN5eecQBF871huDcAMWVOpOdOVt+QiOZArUJa+lNGzdXvHunW4dtZKQ+Lr/eK9+8pfaXBb1TvooQo1J4dFeGpm3B5UfyTTTa/JjmJV2B+AIr/bd12noCcKKBw60Y8vUhRsrZ5y4VTvHKtNu4g2OUCoI+N9OYkZ/yqz/kXogpcSXIadYPeCOPGyzRGrX7u5RflWOdqHH9sJXrGdip7MunAWUhGZTneSTRsLxrhrYBIFHJZlagnPD+OxCaqUI9K2r+XDvQGKywqYWATNs5EDlLjuyZgX2zpXb89e+3fjkwys96UsYJuw3Rubb0EbEJt/8Vjhuvna58k1D7JaPUrvQSE1s6tvD0SWCEJrA+ulLqP3j+ClDx1oKZC7IRJ68oA5+CNlztMRvu8uGfH32CSVE/ja5OTnPSAYAPqevSd0=
+  github_token: $GITHUB_TOKEN
   target_branch: 'gh-pages'
   local_dir: 'dist'
   on:
