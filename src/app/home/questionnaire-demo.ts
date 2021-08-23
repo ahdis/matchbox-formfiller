@@ -7,6 +7,7 @@ import * as questionnaireSdcRender from '../../examples/Questionnaire-questionna
 import * as questionnaireLhncbHeightWeight from '../../examples/weight-height-questionnaire.json';
 import * as questionnaireString from '../../examples/string.json';
 import * as questionnaireSupportLink from '../../examples/support-link-questionnaire.json';
+import * as questionnaireRadiologyOrder from '../../examples/radorder.json';
 
 export class QuestionnaireDemo {
   static getQuestionnaireSdcExtract(): fhir.r4.Questionnaire {
@@ -43,5 +44,9 @@ export class QuestionnaireDemo {
 
   static getQuestionnaireSupportLink(): fhir.r4.Questionnaire {
     return <fhir.r4.Questionnaire>(<any>questionnaireSupportLink);
+  }
+
+  static getQuestionnaireRadiologyOrder(): fhir.r4.Questionnaire {
+    return <fhir.r4.Questionnaire>(<any>questionnaireRadiologyOrder);
   }
 }
