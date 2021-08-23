@@ -49,6 +49,8 @@ export class QuestionnaireFormFillerComponent implements OnInit {
           ? QuestionnaireDemo.getQuestionnaireString()
           : name === 'support-link'
           ? QuestionnaireDemo.getQuestionnaireSupportLink()
+          : name === 'radiology-order'
+          ? QuestionnaireDemo.getQuestionnaireRadiologyOrder()
           : name === '-1'
           ? this.questionaireFillerServer.getQuestionniare()
           : undefined

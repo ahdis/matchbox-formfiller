@@ -73,6 +73,14 @@ export class HomeComponent {
       publisher: 'ahdis',
       version: '1',
     },
+    {
+      id: 'radiology-order',
+      title: 'Questionnaire Radiology Order',
+      status: 'active',
+      date: '2021-02-24',
+      publisher: 'HL7 Switzerland',
+      version: '0.1.0',
+    },
   ]);
 
   applyFilter(filterValue: string) {
