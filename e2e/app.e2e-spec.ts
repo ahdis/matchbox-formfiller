@@ -1,6 +1,6 @@
 import { AppPage } from './app.po';
 
-describe('ng-fhir-sample App', () => {
+describe('matchbox-formfiller App', () => {
   let page: AppPage;
 
   beforeEach(() => {

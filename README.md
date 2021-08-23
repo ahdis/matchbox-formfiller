@@ -1,8 +1,8 @@
-# NgFhirSample
+# matchbox-formfiller
 
-[![Build Status](https://travis-ci.com/ahdis/ng-fhir-sample.svg?branch=master)](https://travis-ci.com/ahdis/ng-fhir-sample)
+[![Build Status](https://travis-ci.com/ahdis/matchbox-formfiller.svg?branch=master)](https://travis-ci.com/ahdis/matchbox-formfiller)
 
-see deployed [version on github pages](https://ahdis.github.io/ng-fhir-sample/#/questionnaires)
+see deployed [version on github pages](https://ahdis.github.io/matchbox-formfiller/#/questionnaires)
 
 angular web applications which uses fhir for:
 
@@ -15,7 +15,7 @@ built with:
 - integerated [fhirpath.js](https://github.com/lhncbc/fhirpath.js/)
 - using [angular material](https://material.angular.io/) for UI components
 
-see [on github pages](https://ahdis.github.io/ng-fhir-sample)
+see [on github pages](https://ahdis.github.io/matchbox-formfiller)
 
 Note:
 Chrome on OSX has a CORS Problem and cannot exectute te $extract operation, this happens only to a http url, but not to a https url
@@ -49,8 +49,8 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 
 ng add angular-cli-ghpages
 
-ng build --prod --base-href /ng-fhir-sample/
-ng deploy --base-href=/ng-fhir-sample/
+ng build --prod --base-href /matchbox-formfiller/
+ng deploy --base-href=/matchbox-formfiller/
 
 note: communicatin via fhir servers is currently over http, therefore the https access has to be switched off in the github project
 
@@ -76,4 +76,4 @@ localStorage.debug = 'fhir-kit-client:_,app:_';
 
 ## travis ci setup
 
-https://www.travis-ci.com/github/ahdis/ng-fhir-sample
+https://www.travis-ci.com/github/ahdis/matchbox-formfiller

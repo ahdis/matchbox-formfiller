@@ -1,4 +1,4 @@
-# Contributing to ng-fhir-sample
+# Contributing to matchbox-formfiller
 
 ## Publish a new version to github pages
 
@@ -11,5 +11,5 @@ yarn version
 git push && git push --tags
 ```
 
-This will update the `package.json` of ng-fhir-sample and commit a git tag with the new version.
+This will update the `package.json` of matchbox-formfiller and commit a git tag with the new version.
 If a git tag on the master branch is pushed a build to publish the application to github pages is triggered.
