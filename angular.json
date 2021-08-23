@@ -6,7 +6,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ng-fhir-sample": {
+    "matchbox-formfiller": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -50,18 +50,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ng-fhir-sample:build"
+            "browserTarget": "matchbox-formfiller:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ng-fhir-sample:build:production"
+              "browserTarget": "matchbox-formfiller:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ng-fhir-sample:build"
+            "browserTarget": "matchbox-formfiller:build"
           }
         },
         "test": {
@@ -89,7 +89,7 @@
         }
       }
     },
-    "ng-fhir-sample-e2e": {
+    "matchbox-formfiller-e2e": {
       "root": "e2e",
       "sourceRoot": "e2e",
       "projectType": "application",
@@ -98,7 +98,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "ng-fhir-sample:serve"
+            "devServerTarget": "matchbox-formfiller:serve"
           }
         },
         "lint": {
@@ -111,7 +111,7 @@
       }
     }
   },
-  "defaultProject": "ng-fhir-sample",
+  "defaultProject": "matchbox-formfiller",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",
