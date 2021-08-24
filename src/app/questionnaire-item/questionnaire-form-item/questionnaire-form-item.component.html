@@ -1,4 +1,4 @@
-<ng-container *ngIf="(item$ | async) as item">
+<ng-container *ngIf="item$ | async as item">
   <div
     *ngIf="!item.extensions.isHidden && item.isEnabled"
     [ngClass]="['item-type-' + item.type, 'item', 'level-' + linkIdPath.length]"
@@ -99,6 +99,12 @@
         [linkIdPath]="linkIdPath"
         [dispatch]="dispatch"
       ></app-questionnaire-form-item-integer>
+      <app-questionnaire-form-item-quantity
+        *ngSwitchCase="'quantity'"
+        [formItem]="item"
+        [linkIdPath]="linkIdPath"
+        [dispatch]="dispatch"
+      ></app-questionnaire-form-item-quantity>
       <app-questionnaire-form-item-attachment
         *ngSwitchCase="'attachment'"
         [formItem]="item"
@@ -109,7 +115,7 @@
     </ng-container>
 
     <app-questionnaire-form-item
-      *ngFor="let linkIdPath of (itemLinkIdPaths$ | async)"
+      *ngFor="let linkIdPath of itemLinkIdPaths$ | async"
       [store]="store"
       [dispatch]="dispatch"
       [linkIdPath]="linkIdPath"

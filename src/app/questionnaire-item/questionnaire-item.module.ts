@@ -16,6 +16,7 @@ import { QuestionnaireFormItemStringComponent } from './questionnaire-form-item-
 import { QuestionnaireFormItemTextComponent } from './questionnaire-form-item-text/questionnaire-form-item-text.component';
 import { QuestionnaireFormItemComponent } from './questionnaire-form-item/questionnaire-form-item.component';
 import { QuestionnaireFormComponent } from './questionnaire-form/questionnaire-form.component';
+import { QuestionnaireFormItemQuantityComponent } from './questionnaire-form-item-quantity/questionnaire-form-item-quantity.component';
 
 const exportedComponents = [
   QuestionnaireFormComponent,
@@ -31,6 +32,7 @@ const exportedComponents = [
   QuestionnaireFormItemIntegerComponent,
   QuestionnaireFormItemChoiceComponent,
   QuestionnaireFormItemOpenChoiceComponent,
+  QuestionnaireFormItemQuantityComponent,
   QuestionnaireFormItemCheckBoxComponent,
   QuestionnaireFormItemRadioButtonComponent,
   QuestionnaireFormItemAttachmentComponent,
