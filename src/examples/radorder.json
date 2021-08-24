@@ -1438,7 +1438,7 @@
               "linkId": "previousResults.attachment.data",
               "definition": "http://fhir.ch/ig/ch-rad-order/StructureDefinition/ch-rad-order-media#Media.content.data",
               "text": "Daten",
-              "type": "string"
+              "type": "attachment"
             }
           ]
         }
