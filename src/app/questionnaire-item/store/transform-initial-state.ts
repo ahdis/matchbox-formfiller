@@ -230,7 +230,10 @@ const getExistingTypeProperty: (
       R.hasPath([`${prefix}Coding`, 'code']),
       R.path([`${prefix}Coding`, 'code']),
     ],
-    [R.has(`${prefix}Quantity`), R.prop(`${prefix}Quantity`)],
+    [
+      R.hasPath([`${prefix}Quantity`, 'value']),
+      R.path([`${prefix}Quantity`, 'value']),
+    ],
     [R.has(`${prefix}Reference`), R.prop(`${prefix}Reference`)],
     [R.T, R.always(undefined)],
   ]);
