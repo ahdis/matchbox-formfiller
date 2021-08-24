@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --prod",
+    "build": "ng build --prod --base-href /matchbox-formfiller/",
     "test": "ng test",
     "test-ci": "ng test --no-watch --no-progress --browsers=ChromeHeadlessNoSandbox --code-coverage",
     "lint": "ng lint",
