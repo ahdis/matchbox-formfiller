@@ -14,6 +14,7 @@ import debug from 'debug';
 })
 export class SettingsComponent implements OnInit {
   fhirServers = [
+    'https://test.ahdis.ch/matchbox-order/fhir',
     'https://test.ahdis.ch/r4',
     'http://test.ahdis.ch/r4',
     'http://localhost:8080/r4',
