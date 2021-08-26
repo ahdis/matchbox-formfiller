@@ -54,6 +54,9 @@ ng deploy --base-href=/matchbox-formfiller/
 
 note: communicatin via fhir servers is currently over http, therefore the https access has to be switched off in the github project
 
+## PoC 
+[development project board](https://github.com/ahdis/matchbox-formfiller/projects/1)
+
 ## Contributing
 
 Have a look at [contributing](CONTRIBUTING.md).
