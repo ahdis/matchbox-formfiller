@@ -1,9 +1,9 @@
 New questionnaire
 =================
 
-If a new questinnaire is selected, a QuestionnarieResponse for a default prefilling will be searched.
+If a new Questionnaire is selected, a QuestionnaireResponse for a default prefilling will be searched.
 
-Parameter for the search are the canonical url of the Questionnaire and the identifier:
+Parameters for the search are the canonical URL of the Questionnaire and the identifier:
 
 system = http://ahdis.ch/fhir/Questionnaire   
 value  = DEFAULT
