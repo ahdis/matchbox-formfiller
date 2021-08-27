@@ -1429,7 +1429,7 @@
           "repeats": true,
           "item": [
             {
-              "linkId": "previousResults.attachtment.title",
+              "linkId": "previousResults.attachment.title",
               "definition": "http://fhir.ch/ig/ch-rad-order/StructureDefinition/ch-rad-order-media#Media.content.title",
               "text": "Dateiname und -endung der angehängten Datei (z.B. \"shoulder_re_F_Muster_12021988.pdf\")",
               "type": "string"
