@@ -25,7 +25,6 @@ import {
 } from '../store/transform-initial-state';
 import { getQuestionnaireResponse } from '../store/transform-response';
 import { Action, QuestionnaireState, RenderingExtension } from '../types';
-import { fromPromise } from 'rxjs/internal/observable/fromPromise';
 import {
   extractContainedValueSets,
   extractExternalAnswerValueSetUrls,
@@ -122,15 +121,13 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
     return zip(
       ...R.map(
         (url) =>
-          fromPromise(
-            this.data
-              .getFhirClient()
-              .resourceSearch({
-                resourceType: 'ValueSet',
-                searchParams: { url },
-              })
-              .then((bundle) => bundle?.entry?.[0]?.resource)
-          ),
+          this.data
+            .getFhirClient()
+            .resourceSearch({
+              resourceType: 'ValueSet',
+              searchParams: { url },
+            })
+            .then((bundle) => bundle?.entry?.[0]?.resource),
         extractExternalAnswerValueSetUrls(this.questionnaire)
       )
     ).pipe(
