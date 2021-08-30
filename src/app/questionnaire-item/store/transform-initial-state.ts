@@ -148,40 +148,29 @@ const getCalculatedExpressionExtension = R.pipe(
 const isCanonicalUriAFragmentReference = (canonicalUri: string): boolean =>
   R.startsWith('#', toString(canonicalUri) || '');
 
-const getContainedValueSet = (questionnaire: any) => (id: string) =>
-  R.pipe(
-    (item: any) => (item && item.contained) || [],
-    toArray,
-    R.find(
-      (resource: any) =>
-        isObject(resource) &&
-        resource.id === id &&
-        resource.resourceType === 'ValueSet'
-    )
-  )(questionnaire);
-
 const getOptionsFromValueSet: (
-  questionnaire: any
-) => (item: unknown) => AnswerOption[] = (questionnaire) =>
+  valueSets: any[]
+) => (item: unknown) => AnswerOption[] = (valueSets) =>
   R.pipe(
     R.propOr(undefined, 'answerValueSet'),
-    R.ifElse(
-      isCanonicalUriAFragmentReference,
-      R.pipe(
-        R.tail as (s: string) => string,
-        getContainedValueSet(questionnaire),
-        R.pathOr([], ['compose', 'include', 0, 'concept']),
-        toArray,
-        R.map(
-          (concept: any): AnswerOption => ({
-            type: AnswerOptionType.Coding,
-            value: concept,
-            key: toString(concept.code),
-            display: toString(concept.display),
-          })
-        )
-      ),
-      R.always([])
+    (url: undefined | string) =>
+      url
+        ? R.find(
+            isCanonicalUriAFragmentReference(url)
+              ? R.propEq('id', R.tail(url))
+              : R.propEq('url', url),
+            valueSets
+          )
+        : undefined,
+    R.pathOr([], ['compose', 'include', 0, 'concept']),
+    toArray,
+    R.map(
+      (concept: any): AnswerOption => ({
+        type: AnswerOptionType.Coding,
+        value: concept,
+        key: toString(concept.code),
+        display: toString(concept.display),
+      })
     )
   );
 
@@ -208,10 +197,10 @@ const getOptionsFromAnswerOptions: (
   )
 );
 
-const getOptions = (questionnaire: any) => (item: any) =>
+const getOptions = (valueSets: any[]) => (item: any) =>
   Array.isArray(item && item.answerOption)
     ? getOptionsFromAnswerOptions(item.answerOption)
-    : getOptionsFromValueSet(questionnaire)(item);
+    : getOptionsFromValueSet(valueSets)(item);
 
 const getExistingTypeProperty: (
   prefix: string
@@ -268,9 +257,7 @@ const getInitialAnswers = R.pipe(
   R.when(R.isEmpty, R.always([undefined]))
 );
 
-const transformItem = (questionnaire: any) => (
-  item: any
-): QuestionnaireItem => ({
+const transformItem = (valueSets: any[]) => (item: any): QuestionnaireItem => ({
   linkId: item.linkId,
   type: item.type,
   isRequired: toBoolean(item.required),
@@ -279,7 +266,7 @@ const transformItem = (questionnaire: any) => (
   repeats: toBoolean(item.repeats),
   prefix: getHtmlOrText(toString(item.prefix), item._prefix),
   text: getHtmlOrText(toString(item.text), item._text) || '',
-  answerOptions: getOptions(questionnaire)(item),
+  answerOptions: getOptions(valueSets)(item),
   isEnabledWhen: getEnabledConditions(item),
   isEnabledBehavior:
     item.enableBehavior === 'all'
@@ -305,28 +292,28 @@ const transformItem = (questionnaire: any) => (
     unit: getUnitExtension(item),
     fhirPathExpression: getCalculatedExpressionExtension(item),
   },
-  items: transformItems(questionnaire)(item.item),
+  items: transformItems(valueSets)(item.item),
 });
 
 const transformItems: (
-  questionnaire: any
-) => (items: unknown) => QuestionnaireItemsIndexedByLinkId = (questionnaire) =>
+  valueSets: any[]
+) => (items: unknown) => QuestionnaireItemsIndexedByLinkId = (valueSets) =>
   R.pipe(
     toArray,
     R.filter(
       (item: any) =>
         isObject(item) && isString(item.linkId) && isString(item.type)
     ),
-    R.map(transformItem(questionnaire)),
+    R.map(transformItem(valueSets)),
     R.indexBy(R.prop('linkId'))
   );
 
 export const transformQuestionnaire = (
   questionnaire: fhir.r4.Questionnaire,
-  questionnaireResponse: any
+  valueSets: any[]
 ): QuestionnaireState => ({
   title: getHtmlOrText(toString(questionnaire.title), questionnaire._title),
-  items: transformItems(questionnaire)(questionnaire.item),
+  items: transformItems(valueSets)(questionnaire.item),
   url: questionnaire.url,
   extensions: {
     title: {

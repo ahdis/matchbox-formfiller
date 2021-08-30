@@ -15,6 +15,7 @@ import {
   scan,
   shareReplay,
   startWith,
+  switchMap,
   takeUntil,
 } from 'rxjs/operators';
 import { rootReducer } from '../store/reducer';
@@ -24,6 +25,11 @@ import {
 } from '../store/transform-initial-state';
 import { getQuestionnaireResponse } from '../store/transform-response';
 import { Action, QuestionnaireState, RenderingExtension } from '../types';
+import {
+  extractContainedValueSets,
+  extractExternalAnswerValueSetUrls,
+} from '../store/value-sets';
+import { FhirConfigService } from '../../fhirConfig.service';
 
 @Component({
   selector: 'app-questionnaire-form',
@@ -50,19 +56,23 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
   dispatch$: BehaviorSubject<Action>;
   dispatch = (action: Action): void => this.dispatch$.next(action);
 
+  constructor(private data: FhirConfigService) {}
+
   ngOnChanges() {
     this.ngOnDestroy();
     this.unsubscribe$ = new Subject<void>();
     this.dispatch$ = new BehaviorSubject<Action>({ type: '@@INIT' });
 
-    console.log('questionnaire response init', this.questionnaireResponse);
-
-    this.store$ = this.dispatch$.pipe(
-      scan(
-        rootReducer,
-        transformQuestionnaire(this.questionnaire, this.questionnaireResponse)
-      ),
-      shareReplay()
+    this.store$ = this.loadExternalValueSets().pipe(
+      switchMap((valueSets: any[]) =>
+        this.dispatch$.pipe(
+          scan(
+            rootReducer,
+            transformQuestionnaire(this.questionnaire, valueSets)
+          ),
+          shareReplay()
+        )
+      )
     );
 
     zip(
@@ -105,5 +115,29 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+  }
+
+  private loadExternalValueSets() {
+    return zip(
+      ...R.map(
+        (url) =>
+          this.data
+            .getFhirClient()
+            .resourceSearch({
+              resourceType: 'ValueSet',
+              searchParams: { url },
+            })
+            .then((bundle) => bundle?.entry?.[0]?.resource),
+        extractExternalAnswerValueSetUrls(this.questionnaire)
+      )
+    ).pipe(
+      map((valueSetsFromRequests: (undefined | fhir.r4.ValueSet)[]) => [
+        ...extractContainedValueSets(this.questionnaire),
+        ...R.filter(
+          (valueSet) => valueSet?.resourceType === 'ValueSet',
+          valueSetsFromRequests
+        ),
+      ])
+    );
   }
 }
