@@ -162,8 +162,9 @@ const getOptionsFromValueSet: (
             valueSets
           )
         : undefined,
-    R.pathOr([], ['compose', 'include', 0, 'concept']),
+    R.pathOr([], ['compose', 'include']),
     toArray,
+    R.chain(R.pipe(R.propOr([], 'concept'), toArray)),
     R.map(
       (concept: any): AnswerOption => ({
         type: AnswerOptionType.Coding,

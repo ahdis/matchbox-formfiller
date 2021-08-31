@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FhirConfigService } from '../fhirConfig.service';
 import { Subscription } from 'rxjs';
 import debug from 'debug';
+import * as questionnaireRadiologyOrderDefaultResponse from '../../examples/radorder-qr-default.json';
 
 // currently R4 only 'http://localhost:8080/baseDstu3',
 // 'http://vonk.furore.com',
@@ -45,5 +46,35 @@ export class SettingsComponent implements OnInit {
   setSelectedValue(value: string) {
     debug('setting new server to ' + value);
     this.data.changeFhirMicroService(value);
+  }
+
+  async createQuestionnaireResponse() {
+    const existingQuestionnaireResponseBundle = await this.data
+      .getFhirClient()
+      .resourceSearch({
+        resourceType: 'QuestionnaireResponse',
+        searchParams: {
+          questionnaire:
+            'http://fhir.ch/ig/ch-rad-order/Questionnaire/QuestionnaireRadiologyOrder',
+          identifier: 'http://ahdis.ch/fhir/Questionnaire|DEFAULT',
+        },
+      });
+
+    const id = existingQuestionnaireResponseBundle?.entry?.[0]?.resource?.id;
+    if (id) {
+      await this.data.getFhirClient().update({
+        id,
+        resourceType: 'QuestionnaireResponse',
+        body: {
+          ...questionnaireRadiologyOrderDefaultResponse,
+          id,
+        },
+      });
+    } else {
+      await this.data.getFhirClient().create({
+        resourceType: 'QuestionnaireResponse',
+        body: questionnaireRadiologyOrderDefaultResponse,
+      });
+    }
   }
 }
