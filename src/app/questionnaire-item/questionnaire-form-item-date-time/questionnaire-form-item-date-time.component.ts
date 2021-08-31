@@ -13,7 +13,7 @@ import {
 } from '../impure-helpers';
 import { setAnswers } from '../store/action';
 import { Action, FormItem } from '../types';
-import dateFormat from 'date-format';
+import { toLocaleTime } from '../store/util';
 
 @Component({
   selector: 'app-questionnaire-form-item-date-time',
@@ -39,7 +39,7 @@ export class QuestionnaireFormItemDateTimeComponent implements OnInit {
       item,
       item.isRequired ? [Validators.required] : []
     );
-    const dateToTime = (date?: Date) => date && dateFormat('hh:mm', date);
+    const dateToTime = (date?: Date) => date && toLocaleTime(date).slice(0, 5);
     processValuesIfChanged(
       this.formTimeArray,
       { ...item, answers: item.answers.map(dateToTime) },
