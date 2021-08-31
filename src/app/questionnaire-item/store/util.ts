@@ -45,7 +45,7 @@ export const toLocaleDate = (date: Date) =>
   `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 export const toLocaleTime = (date: Date) =>
   `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
-export function toLocaleDateTime(date) {
+export function toLocaleDateTime(date: Date) {
   const timeZoneOffset = -date.getTimezoneOffset();
   const sign = timeZoneOffset >= 0 ? '+' : '-';
   const timeZone = `${pad(timeZoneOffset / 60)}:${pad(timeZoneOffset % 60)}`;
