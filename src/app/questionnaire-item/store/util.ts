@@ -43,8 +43,10 @@ export const getAnswerOptionsLensFromItemLinkIdPath = getPropertyLensFromItemLin
 const pad = (num: number) => String(Math.floor(Math.abs(num))).padStart(2, '0');
 export const toLocaleDate = (date: Date) =>
   `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+export const toLocaleHHMM = (date: Date) =>
+  `${pad(date.getHours())}:${pad(date.getMinutes())}`;
 export const toLocaleTime = (date: Date) =>
-  `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+  `${toLocaleHHMM(date)}:${pad(date.getSeconds())}`;
 export function toLocaleDateTime(date: Date) {
   const timeZoneOffset = -date.getTimezoneOffset();
   const sign = timeZoneOffset >= 0 ? '+' : '-';

@@ -64,7 +64,6 @@ const getResponseAnswers = ({
               : undefined,
           };
         case 'time':
-          // TODO format time
           return {
             valueTime: isDate(answer)
               ? toLocaleTime(answer)
