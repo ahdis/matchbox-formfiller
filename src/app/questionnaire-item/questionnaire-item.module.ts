@@ -5,6 +5,7 @@ import { QuestionnaireFormItemBooleanComponent } from './questionnaire-form-item
 import { QuestionnaireFormItemCheckBoxComponent } from './questionnaire-form-item-check-box/questionnaire-form-item-check-box.component';
 import { QuestionnaireFormItemChoiceComponent } from './questionnaire-form-item-choice/questionnaire-form-item-choice.component';
 import { QuestionnaireFormItemDateComponent } from './questionnaire-form-item-date/questionnaire-form-item-date.component';
+import { QuestionnaireFormItemDateTimeComponent } from './questionnaire-form-item-date-time/questionnaire-form-item-date-time.component';
 import { QuestionnaireFormItemDecimalComponent } from './questionnaire-form-item-decimal/questionnaire-form-item-decimal.component';
 import { QuestionnaireFormItemGroupComponent } from './questionnaire-form-item-group/questionnaire-form-item-group.component';
 import { QuestionnaireFormItemHintComponent } from './questionnaire-form-item-hint/questionnaire-form-item-hint.component';
@@ -27,6 +28,7 @@ const exportedComponents = [
   QuestionnaireFormItemBooleanComponent,
   QuestionnaireFormItemStringComponent,
   QuestionnaireFormItemDateComponent,
+  QuestionnaireFormItemDateTimeComponent,
   QuestionnaireFormItemTextComponent,
   QuestionnaireFormItemDecimalComponent,
   QuestionnaireFormItemIntegerComponent,

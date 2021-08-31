@@ -1,0 +1,13 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+input {
+  width: 50%;
+
+  &[type='time']::-webkit-calendar-picker-indicator {
+    background: none;
+    display: none;
+  }
+}

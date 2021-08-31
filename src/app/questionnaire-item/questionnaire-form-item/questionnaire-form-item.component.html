@@ -31,6 +31,12 @@
         [linkIdPath]="linkIdPath"
         [dispatch]="dispatch"
       ></app-questionnaire-form-item-date>
+      <app-questionnaire-form-item-date-time
+        *ngSwitchCase="'dateTime'"
+        [formItem]="item"
+        [linkIdPath]="linkIdPath"
+        [dispatch]="dispatch"
+      ></app-questionnaire-form-item-date-time>
       <ng-container
         *ngSwitchCase="'choice'"
         [ngSwitch]="item.extensions.itemControl"
