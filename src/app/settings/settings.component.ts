@@ -48,7 +48,7 @@ export class SettingsComponent implements OnInit {
     this.data.changeFhirMicroService(value);
   }
 
-  async createQuestionnaireResponse() {
+  async setDefaultQuestionnaireResponseForRadOrder() {
     const existingQuestionnaireResponseBundle = await this.data
       .getFhirClient()
       .resourceSearch({
