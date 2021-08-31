@@ -26,7 +26,7 @@ const getAnswersByFhirPathExpression = (
   R.pipe(
     () => evaluate(getQuestionnaireResponse(state), fhirPathExpression),
     toArray,
-    result => (R.isEmpty(result) ? [undefined] : result)
+    (result) => (R.isEmpty(result) ? [undefined] : result)
   )();
 
 const getItemByLinkId = (
@@ -62,7 +62,7 @@ const getIsEnabledPredicate = ({
     (state: QuestionnaireState) => getItemByLinkId(linkId, state.items),
     R.propOr([], 'answers'),
     toArray,
-    answers =>
+    (answers) =>
       operator === 'exists'
         ? isExistsOperatorSatisfied(answer, answers)
         : operator === '='
@@ -70,7 +70,7 @@ const getIsEnabledPredicate = ({
         : true
   );
 
-const getIsEnabled = (state: QuestionnaireState) => (
+export const getIsEnabled = (state: QuestionnaireState) => (
   item: QuestionnaireItem
 ): boolean =>
   item.isEnabledWhen.length === 0 ||
@@ -82,7 +82,7 @@ export const getFormItemByLinkIdPath = (
   linkIdPath: string[]
 ): ((state: QuestionnaireState) => FormItem | undefined) =>
   pipe(
-    state => ({
+    (state) => ({
       item: R.path<QuestionnaireItem | undefined>(
         getStatePathFromItemLinkIdPath(linkIdPath),
         state
