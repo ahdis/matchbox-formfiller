@@ -17,5 +17,8 @@
       "*": ["node_modules/*", "src/types/*"]
     },
     "lib": ["es2017", "dom"]
+  },
+  "angularCompilerOptions": {
+    "enableIvy": true
   }
 }

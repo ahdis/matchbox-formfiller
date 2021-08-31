@@ -6,7 +6,16 @@ import {
   QuestionnaireItem,
   QuestionnaireState,
 } from '../types';
-import { filterNotNil, isDate, isNumber, isObject, isString } from './util';
+import {
+  filterNotNil,
+  isDate,
+  isNumber,
+  isObject,
+  isString,
+  toLocaleDate,
+  toLocaleDateTime,
+  toLocaleTime,
+} from './util';
 
 const getResponseAnswers = ({
   type,
@@ -41,18 +50,15 @@ const getResponseAnswers = ({
         case 'date':
           return {
             valueDate: isDate(answer)
-              ? `${answer.getFullYear()}-${answer.getMonth() < 9 ? '0' : ''}${
-                  answer.getMonth() + 1
-                }-${answer.getDate() <= 9 ? '0' : ''}${answer.getDate()}`
+              ? toLocaleDate(answer)
               : isString(answer)
               ? answer
               : undefined,
           };
         case 'dateTime':
-          // TODO format date time
           return {
             valueDateTime: isDate(answer)
-              ? answer.toString()
+              ? toLocaleDateTime(answer)
               : isString(answer)
               ? answer
               : undefined,
@@ -61,7 +67,7 @@ const getResponseAnswers = ({
           // TODO format time
           return {
             valueTime: isDate(answer)
-              ? answer.toString()
+              ? toLocaleTime(answer)
               : isString(answer)
               ? answer
               : undefined,
