@@ -2,11 +2,11 @@ import * as R from 'ramda';
 import {
   AnswerOption,
   AnswerOptionType,
-  ItemControl,
   QuestionnaireItem,
   QuestionnaireState,
 } from '../types';
 import { filterNotNil, isDate, isNumber, isObject, isString } from './util';
+import { getIsEnabled } from './selector';
 
 const getResponseAnswers = ({
   type,
@@ -123,29 +123,34 @@ const getResponseAnswers = ({
   )(answers);
 
 const getResponseItems: (
-  items: QuestionnaireItem[]
-) => fhir.r4.QuestionnaireResponseItem[] = R.map((item) => {
-  let responseItem: fhir.r4.QuestionnaireResponseItem = {
-    linkId: item.linkId,
-    text: item.text,
-  };
-  let responseAnswer = getResponseAnswers(item);
-  if (responseAnswer != null && responseAnswer.length > 0) {
-    responseItem.answer = responseAnswer;
-  }
-  let responseItems = getResponseItems(R.values(item.items));
-  if (responseItems != null && responseItems.length > 0) {
-    responseItem.item = responseItems;
-  }
-  return responseItem;
-});
+  getIsItemEnabled: (item: QuestionnaireItem) => boolean
+) => (items: QuestionnaireItem[]) => fhir.r4.QuestionnaireResponseItem[] = (
+  getIsItemEnabled
+) =>
+  R.map((item) => {
+    const isEnabled = getIsItemEnabled(item);
+    const responseItem: fhir.r4.QuestionnaireResponseItem = {
+      linkId: item.linkId,
+      text: item.text,
+    };
+    const responseAnswer = getResponseAnswers(item);
+    if (isEnabled && responseAnswer != null && responseAnswer.length > 0) {
+      responseItem.answer = responseAnswer;
+    }
+    const responseItems = getResponseItems(
+      isEnabled ? getIsItemEnabled : R.always(false)
+    )(R.values(item.items));
+    if (responseItems != null && responseItems.length > 0) {
+      responseItem.item = responseItems;
+    }
+    return responseItem;
+  });
 
-export const getQuestionnaireResponse = ({
-  url,
-  items,
-}: QuestionnaireState): fhir.r4.QuestionnaireResponse => ({
+export const getQuestionnaireResponse = (
+  state: QuestionnaireState
+): fhir.r4.QuestionnaireResponse => ({
   resourceType: 'QuestionnaireResponse',
-  questionnaire: url,
+  questionnaire: state.url,
   status: 'in-progress',
-  item: getResponseItems(R.values(items)),
+  item: getResponseItems(getIsEnabled(state))(R.values(state.items)),
 });
