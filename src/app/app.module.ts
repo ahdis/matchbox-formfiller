@@ -11,7 +11,6 @@ import { HomeComponent } from './home/home.component';
 import { MappingLanguageComponent } from './mapping-language/mapping-language.component';
 import { PatientDetailComponent } from './patient-detail/patient-detail.component';
 import { PatientsComponent } from './patients/patients.component';
-import { QuestionnaireDetailComponent } from './questionnaire-detail/questionnaire-detail.component';
 import { QuestionnaireFormFillerComponent } from './questionnaire-form-filler/questionnaire-form-filler.component';
 import { QuestionnaireItemModule } from './questionnaire-item/questionnaire-item.module';
 import { SettingsComponent } from './settings/settings.component';
@@ -88,7 +87,6 @@ export function createTranslateLoader(http: HttpClient) {
     HomeComponent,
     PatientDetailComponent,
     QuestionnairesTableComponent,
-    QuestionnaireDetailComponent,
     QuestionnaireFormFillerComponent,
     FhirPathComponent,
     MappingLanguageComponent,
