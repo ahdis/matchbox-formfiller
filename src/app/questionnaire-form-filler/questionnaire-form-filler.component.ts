@@ -25,44 +25,24 @@ export class QuestionnaireFormFillerComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private questionaireFillerServer: QuestionnaireFillerService,
+    private questionnaireFillerServer: QuestionnaireFillerService,
     private data: FhirConfigService
   ) {}
 
   ngOnInit() {
     this.questionnaire$ = this.route.paramMap.pipe(
       map((params: ParamMap) => params.get('id')),
-      map((name) =>
-        name === 'sdc-extract'
-          ? QuestionnaireDemo.getQuestionnaireSdcExtract()
-          : name === 'referral-min'
-          ? QuestionnaireDemo.getQuestionnaireReferralMin()
-          : name === 'sdc-cap'
-          ? QuestionnaireDemo.getQuestionnaireSdcCap()
-          : name === 'sdc-loinc'
-          ? QuestionnaireDemo.getQuestionnaireSdcLoinc()
-          : name === 'sdc-render'
-          ? QuestionnaireDemo.getQuestionnaireSdcRender()
-          : name === 'height-weight'
-          ? QuestionnaireDemo.getQuestionnaireLhncbHeightWeight()
-          : name === 'string'
-          ? QuestionnaireDemo.getQuestionnaireString()
-          : name === 'support-link'
-          ? QuestionnaireDemo.getQuestionnaireSupportLink()
-          : name === 'radiology-order'
+      map((id) =>
+        id === 'radiology-order'
           ? QuestionnaireDemo.getQuestionnaireRadiologyOrder()
-          : name === '-1'
-          ? this.questionaireFillerServer.getQuestionniare()
+          : id === '-1'
+          ? this.questionnaireFillerServer.getQuestionniare()
           : undefined
       )
     );
     this.questionnaireResponseInitial$ = this.route.paramMap.pipe(
       map((params: ParamMap) => params.get('id')),
-      map((name) =>
-        name === 'ebida'
-          ? QuestionnaireDemo.getQuestionnaireEbidaQr()
-          : undefined
-      )
+      map((id) => undefined)
     );
     this.questionnaire$.subscribe((term) => {
       this.questionnaire = term;
@@ -71,7 +51,7 @@ export class QuestionnaireFormFillerComponent implements OnInit {
 
   onChangeQuestionnaireResponse(response: fhir.r4.QuestionnaireResponse) {
     if (this.questionnaire.extension) {
-      for (let extension of this.questionnaire.extension) {
+      for (const extension of this.questionnaire.extension) {
         if (
           'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-targetStructureMap' ===
           extension.url

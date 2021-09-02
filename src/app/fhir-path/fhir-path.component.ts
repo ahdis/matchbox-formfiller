@@ -18,7 +18,7 @@ export class FhirPathComponent implements OnInit {
     private fhirPathService: FhirPathService,
     private cd: ChangeDetectorRef
   ) {
-    this.resource = QuestionnaireDemo.getQuestionnaireSdcExtract();
+    this.resource = QuestionnaireDemo.getQuestionnaireRadiologyOrder();
     this.fhirPathExpression = new FormControl();
     this.fhirPathExpression.valueChanges
       .pipe(debounceTime(400), distinctUntilChanged())
