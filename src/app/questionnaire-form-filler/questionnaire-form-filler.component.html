@@ -1,7 +1,6 @@
 <ng-container *ngIf="questionnaire$ | async as questionnaire; else notfound">
   <app-questionnaire-form
     [questionnaire]="questionnaire"
-    [questionnaireResponse]="questionnaireResponseInitial$ | async"
     (changeQuestionnaireResponse)="onChangeQuestionnaireResponse($event)"
     (submitQuestionnaire)="onSubmit()"
   ></app-questionnaire-form>

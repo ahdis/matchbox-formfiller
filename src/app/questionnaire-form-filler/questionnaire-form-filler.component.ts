@@ -14,9 +14,6 @@ import { FhirConfigService } from '../fhirConfig.service';
 })
 export class QuestionnaireFormFillerComponent implements OnInit {
   questionnaire$: Observable<fhir.r4.Questionnaire | undefined>;
-  questionnaireResponseInitial$: Observable<
-    fhir.r4.QuestionnaireResponse | undefined
-  >;
   questionnaireResponse: fhir.r4.QuestionnaireResponse;
   questionnaire: fhir.r4.Questionnaire;
   extracted: fhir.r4.Resource;
@@ -25,42 +22,18 @@ export class QuestionnaireFormFillerComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private questionaireFillerServer: QuestionnaireFillerService,
+    private questionnaireFillerServer: QuestionnaireFillerService,
     private data: FhirConfigService
   ) {}
 
   ngOnInit() {
     this.questionnaire$ = this.route.paramMap.pipe(
       map((params: ParamMap) => params.get('id')),
-      map((name) =>
-        name === 'sdc-extract'
-          ? QuestionnaireDemo.getQuestionnaireSdcExtract()
-          : name === 'referral-min'
-          ? QuestionnaireDemo.getQuestionnaireReferralMin()
-          : name === 'sdc-cap'
-          ? QuestionnaireDemo.getQuestionnaireSdcCap()
-          : name === 'sdc-loinc'
-          ? QuestionnaireDemo.getQuestionnaireSdcLoinc()
-          : name === 'sdc-render'
-          ? QuestionnaireDemo.getQuestionnaireSdcRender()
-          : name === 'height-weight'
-          ? QuestionnaireDemo.getQuestionnaireLhncbHeightWeight()
-          : name === 'string'
-          ? QuestionnaireDemo.getQuestionnaireString()
-          : name === 'support-link'
-          ? QuestionnaireDemo.getQuestionnaireSupportLink()
-          : name === 'radiology-order'
+      map((id) =>
+        id === 'radiology-order'
           ? QuestionnaireDemo.getQuestionnaireRadiologyOrder()
-          : name === '-1'
-          ? this.questionaireFillerServer.getQuestionniare()
-          : undefined
-      )
-    );
-    this.questionnaireResponseInitial$ = this.route.paramMap.pipe(
-      map((params: ParamMap) => params.get('id')),
-      map((name) =>
-        name === 'ebida'
-          ? QuestionnaireDemo.getQuestionnaireEbidaQr()
+          : id === '-1'
+          ? this.questionnaireFillerServer.getQuestionniare()
           : undefined
       )
     );
@@ -71,7 +44,7 @@ export class QuestionnaireFormFillerComponent implements OnInit {
 
   onChangeQuestionnaireResponse(response: fhir.r4.QuestionnaireResponse) {
     if (this.questionnaire.extension) {
-      for (let extension of this.questionnaire.extension) {
+      for (const extension of this.questionnaire.extension) {
         if (
           'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-targetStructureMap' ===
           extension.url
