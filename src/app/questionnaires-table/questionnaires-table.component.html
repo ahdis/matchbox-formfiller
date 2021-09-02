@@ -46,7 +46,6 @@
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row
     *matRowDef="let row; columns: displayedColumns"
-    [routerLink]="row.id ? ['questionnaire', row.id] : null"
-    (click)="!row.id ? openQuestionnaire(row) : null"
+    (click)="rowClick.next(row)"
   ></mat-row>
 </mat-table>

@@ -10,11 +10,12 @@
       <mat-tab label="Create new order">
         <app-questionnaires-table
           [dataSource]="newOrderDataSource"
+          (rowClick)="openQuestionnaire($event)"
         ></app-questionnaires-table>
       </mat-tab>
       <mat-tab label="Open orders">
         <app-questionnaires-table
-          [dataSource]="newOrderDataSource"
+          [dataSource]="openOrderDataSource"
         ></app-questionnaires-table>
       </mat-tab>
       <mat-tab label="Finished orders">
