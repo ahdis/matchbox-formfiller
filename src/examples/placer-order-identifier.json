@@ -1,0 +1,18 @@
+{
+    "resourceType": "Basic",
+    "identifier": [
+        {
+            "system": "http://ahdis.ch/fhir/Questionnaire",
+            "value": "PLACER"
+        }
+    ],
+    "code": {
+        "coding": [
+            {
+                "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                "code": "PLAC",
+                "display": "Placer Identifier"
+            }
+        ]
+    }
+}
