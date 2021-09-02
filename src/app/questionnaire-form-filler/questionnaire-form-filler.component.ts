@@ -14,9 +14,6 @@ import { FhirConfigService } from '../fhirConfig.service';
 })
 export class QuestionnaireFormFillerComponent implements OnInit {
   questionnaire$: Observable<fhir.r4.Questionnaire | undefined>;
-  questionnaireResponseInitial$: Observable<
-    fhir.r4.QuestionnaireResponse | undefined
-  >;
   questionnaireResponse: fhir.r4.QuestionnaireResponse;
   questionnaire: fhir.r4.Questionnaire;
   extracted: fhir.r4.Resource;
@@ -39,10 +36,6 @@ export class QuestionnaireFormFillerComponent implements OnInit {
           ? this.questionnaireFillerServer.getQuestionniare()
           : undefined
       )
-    );
-    this.questionnaireResponseInitial$ = this.route.paramMap.pipe(
-      map((params: ParamMap) => params.get('id')),
-      map((id) => undefined)
     );
     this.questionnaire$.subscribe((term) => {
       this.questionnaire = term;
