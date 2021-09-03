@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { FHIR_HTTP_CONFIG, NgFhirjsModule } from 'ng-fhirjs';
+import { NgFhirjsModule } from 'ng-fhirjs';
 import { AppComponent } from './app.component';
 import { CapabilityStatementComponent } from './capability-statement/capability-statement.component';
 import { FhirPathComponent } from './fhir-path/fhir-path.component';
@@ -11,10 +11,8 @@ import { HomeComponent } from './home/home.component';
 import { MappingLanguageComponent } from './mapping-language/mapping-language.component';
 import { PatientDetailComponent } from './patient-detail/patient-detail.component';
 import { PatientsComponent } from './patients/patients.component';
-import { QuestionnaireDetailComponent } from './questionnaire-detail/questionnaire-detail.component';
 import { QuestionnaireFormFillerComponent } from './questionnaire-form-filler/questionnaire-form-filler.component';
 import { QuestionnaireItemModule } from './questionnaire-item/questionnaire-item.module';
-import { QuestionnairesComponent } from './questionnaires/questionnaires.component';
 import { SettingsComponent } from './settings/settings.component';
 import { SharedModule } from './shared/shared.module';
 import { IgsComponent } from './igs/igs.component';
@@ -23,6 +21,7 @@ import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { Cda2FhirComponent } from './cda2-fhir/cda2-fhir.component';
 import { Fhir2CdaComponent } from './fhir2-cda/fhir2-cda.component';
 import { ValidateComponent } from './validate/validate.component';
+import { QuestionnairesTableComponent } from './questionnaires-table/questionnaires-table.component';
 
 const routes: Routes = [
   {
@@ -40,10 +39,6 @@ const routes: Routes = [
   {
     path: 'patients',
     component: PatientsComponent,
-  },
-  {
-    path: 'questionnaires',
-    component: QuestionnairesComponent,
   },
   {
     path: 'questionnaire/:id',
@@ -91,8 +86,7 @@ export function createTranslateLoader(http: HttpClient) {
     SettingsComponent,
     HomeComponent,
     PatientDetailComponent,
-    QuestionnairesComponent,
-    QuestionnaireDetailComponent,
+    QuestionnairesTableComponent,
     QuestionnaireFormFillerComponent,
     FhirPathComponent,
     MappingLanguageComponent,

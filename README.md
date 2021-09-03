@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/ahdis/matchbox-formfiller.svg?branch=master)](https://travis-ci.com/ahdis/matchbox-formfiller)
 
-see deployed [version on github pages](https://ahdis.github.io/matchbox-formfiller/#/questionnaires)
+see deployed [version on github pages](https://ahdis.github.io/matchbox-formfiller/#/)
 
 angular web applications which uses fhir for:
 
@@ -54,7 +54,8 @@ ng deploy --base-href=/matchbox-formfiller/
 
 note: communicatin via fhir servers is currently over http, therefore the https access has to be switched off in the github project
 
-## PoC 
+## PoC
+
 [development project board](https://github.com/ahdis/matchbox-formfiller/projects/1)
 
 ## Contributing
