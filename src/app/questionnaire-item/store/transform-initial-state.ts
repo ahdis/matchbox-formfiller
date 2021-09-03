@@ -20,10 +20,9 @@ import {
   toString,
 } from './util';
 
-const getExtensionOfElement = (extensionUrl: string) =>
+export const getExtensionOfElement = (extensionUrl: string) =>
   R.pipe(
-    (item: unknown) => (isObject(item) ? item : {}),
-    R.prop('extension'),
+    R.propOr([], 'extension'),
     toArray,
     R.find(R.pipe(R.propOr(undefined, 'url'), R.equals(extensionUrl)))
   );

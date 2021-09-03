@@ -7,7 +7,7 @@
     <mat-header-cell *matHeaderCellDef class="title"> Title </mat-header-cell>
     <mat-cell *matCellDef="let entry" class="title">
       <div class="cell-content">
-        {{ (entry?.resource || entry).title }}
+        {{ entry.title }}
       </div>
     </mat-cell>
   </ng-container>
@@ -15,7 +15,7 @@
     <mat-header-cell *matHeaderCellDef>Publisher</mat-header-cell>
     <mat-cell *matCellDef="let entry">
       <div class="cell-content">
-        {{ (entry?.resource || entry).publisher }}
+        {{ entry.publisher }}
       </div>
     </mat-cell>
   </ng-container>
@@ -23,7 +23,7 @@
     <mat-header-cell *matHeaderCellDef>Version</mat-header-cell>
     <mat-cell *matCellDef="let entry">
       <div class="cell-content">
-        {{ (entry?.resource || entry).version }}
+        {{ entry.version }}
       </div>
     </mat-cell>
   </ng-container>
@@ -31,7 +31,7 @@
     <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
     <mat-cell *matCellDef="let entry">
       <div class="cell-content">
-        {{ (entry?.resource || entry).status }}
+        {{ entry.status }}
       </div>
     </mat-cell>
   </ng-container>
@@ -39,14 +39,13 @@
     <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
     <mat-cell *matCellDef="let entry">
       <div class="cell-content">
-        {{ (entry?.resource || entry).date }}
+        {{ entry.date }}
       </div>
     </mat-cell>
   </ng-container>
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row
     *matRowDef="let row; columns: displayedColumns"
-    [routerLink]="row.id ? ['questionnaire', row.id] : null"
-    (click)="!row.id ? openQuestionnaire(row) : null"
+    (click)="rowClick.next(row.entry)"
   ></mat-row>
 </mat-table>
