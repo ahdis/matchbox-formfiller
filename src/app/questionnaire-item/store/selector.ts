@@ -4,20 +4,13 @@ import { pipe } from 'rxjs';
 import {
   AnswerOptionType,
   FormItem,
-  IsEnabledBehavior,
-  IsEnabledCondition,
+  LinkIdPathSegment,
   QuestionnaireItem,
-  QuestionnaireItemsIndexedByLinkId,
   QuestionnaireState,
 } from '../types';
 import { getQuestionnaireResponse } from './transform-response';
-import {
-  filterNotNil,
-  getStatePathFromItemLinkIdPath,
-  isNotNil,
-  isString,
-  toArray,
-} from './util';
+import { getStatePathFromItemLinkIdPath, isString, toArray } from './util';
+import { getIsEnabled } from './enable-behavior';
 
 const getAnswersByFhirPathExpression = (
   state: QuestionnaireState,
@@ -29,57 +22,8 @@ const getAnswersByFhirPathExpression = (
     (result) => (R.isEmpty(result) ? [undefined] : result)
   )();
 
-const getItemByLinkId = (
-  linkId: string,
-  items: QuestionnaireItemsIndexedByLinkId
-) =>
-  items[linkId]
-    ? items[linkId]
-    : R.pipe(
-        R.values,
-        R.map((item: QuestionnaireItem) => getItemByLinkId(linkId, item.items)),
-        filterNotNil,
-        R.head
-      )(items);
-
-const isExistsOperatorSatisfied = (
-  expectedAnswer: any,
-  actualAnswers: any[]
-): boolean =>
-  (expectedAnswer ? (R.identity as (result: boolean) => boolean) : R.not)(
-    R.any(isNotNil, actualAnswers)
-  );
-
-const isEqualsOperatorSatisfied = (expectedAnswer: any, actualAnswers: any[]) =>
-  R.any(R.equals(expectedAnswer), actualAnswers);
-
-const getIsEnabledPredicate = ({
-  linkId,
-  operator,
-  answer,
-}: IsEnabledCondition): ((state: QuestionnaireState) => boolean) =>
-  R.pipe(
-    (state: QuestionnaireState) => getItemByLinkId(linkId, state.items),
-    R.propOr([], 'answers'),
-    toArray,
-    (answers) =>
-      operator === 'exists'
-        ? isExistsOperatorSatisfied(answer, answers)
-        : operator === '='
-        ? isEqualsOperatorSatisfied(answer, answers)
-        : true
-  );
-
-export const getIsEnabled = (state: QuestionnaireState) => (
-  item: QuestionnaireItem
-): boolean =>
-  item.isEnabledWhen.length === 0 ||
-  (item.isEnabledBehavior === IsEnabledBehavior.All ? R.allPass : R.anyPass)(
-    R.map(getIsEnabledPredicate, item.isEnabledWhen)
-  )(state);
-
 export const getFormItemByLinkIdPath = (
-  linkIdPath: string[]
+  linkIdPath: LinkIdPathSegment[]
 ): ((state: QuestionnaireState) => FormItem | undefined) =>
   pipe(
     (state) => ({
@@ -90,7 +34,7 @@ export const getFormItemByLinkIdPath = (
       state,
     }),
     ({ item, state }): FormItem =>
-      R.isNil(item)
+      R.isNil(item?.linkId)
         ? undefined
         : {
             linkId: item.linkId,
@@ -115,8 +59,8 @@ export const getFormItemByLinkIdPath = (
                   state,
                   item.extensions.fhirPathExpression
                 )
-              : item.answers,
+              : R.map(({ answer }) => answer, item.itemAnswerList),
             extensions: item.extensions,
-            itemLinkIds: R.keys(item.items) as string[],
+            itemLinkIds: R.keys(item.defaultItems) as string[],
           }
   );

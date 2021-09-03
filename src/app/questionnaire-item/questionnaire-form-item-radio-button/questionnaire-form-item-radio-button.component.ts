@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { setAnswers } from '../store/action';
-import { Action, FormItem } from '../types';
+import { Action, FormItem, LinkIdPathSegment } from '../types';
 
 @Component({
   selector: 'app-questionnaire-form-item-radio-button',
@@ -15,7 +15,7 @@ import { Action, FormItem } from '../types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuestionnaireFormItemRadioButtonComponent implements OnInit {
-  @Input() linkIdPath: string[];
+  @Input() linkIdPath: LinkIdPathSegment[];
   @Input() dispatch: (action: Action) => void;
   @Input() set formItem(item: FormItem) {
     this.item = item;
@@ -33,7 +33,7 @@ export class QuestionnaireFormItemRadioButtonComponent implements OnInit {
     this.formControl.setValidators(
       this.item.isRequired ? [Validators.required] : []
     );
-    this.formControl.valueChanges.subscribe(value => {
+    this.formControl.valueChanges.subscribe((value) => {
       this.dispatch(setAnswers(this.linkIdPath, [value]));
     });
   }

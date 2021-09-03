@@ -12,7 +12,7 @@ import {
   processValuesIfChanged,
 } from '../impure-helpers';
 import { setAnswers } from '../store/action';
-import { Action, FormItem, ItemControl } from '../types';
+import { Action, FormItem, ItemControl, LinkIdPathSegment } from '../types';
 
 @Component({
   selector: 'app-questionnaire-form-item-integer',
@@ -21,7 +21,7 @@ import { Action, FormItem, ItemControl } from '../types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuestionnaireFormItemIntegerComponent implements OnInit {
-  @Input() linkIdPath: string[];
+  @Input() linkIdPath: LinkIdPathSegment[];
   @Input() dispatch: (action: Action) => void;
   @Input() set formItem(item: FormItem) {
     this.item = item;
@@ -30,7 +30,7 @@ export class QuestionnaireFormItemIntegerComponent implements OnInit {
       item,
       item.isRequired ? [Validators.required] : []
     );
-    processValuesIfChanged(this.formArray, item, values =>
+    processValuesIfChanged(this.formArray, item, (values) =>
       this.formArray.patchValue(values, { emitEvent: false })
     );
   }
@@ -43,7 +43,7 @@ export class QuestionnaireFormItemIntegerComponent implements OnInit {
   ngOnInit() {
     this.formArray.valueChanges
       .pipe(filter(R.none(R.isNil)))
-      .subscribe(values => {
+      .subscribe((values) => {
         this.dispatch(setAnswers(this.linkIdPath, values));
       });
   }

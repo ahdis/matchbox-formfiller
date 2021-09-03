@@ -3,6 +3,7 @@ import {
   ChoiceOrientation,
   IsEnabledBehavior,
   IsEnabledCondition,
+  ItemAnswer,
   ItemControl,
   QuestionnaireItem,
   QuestionnaireItemsIndexedByLinkId,
@@ -20,17 +21,31 @@ describe('setAnswers()', () => {
         items: {
           rootItem1: createQuestionnaireItem({
             linkId: 'rootItem1',
-            answers: ['x', 'y'],
+            itemAnswerList: [
+              {
+                answer: 'x',
+                items: {},
+              },
+              {
+                answer: 'y',
+                items: {},
+              },
+            ],
           }),
         },
       }),
-      setAnswers(['rootItem1'], ['a'])
+      setAnswers([{ linkId: 'rootItem1' }], ['a'])
     );
     const expected = createQuestionnaireState({
       items: {
         rootItem1: createQuestionnaireItem({
           linkId: 'rootItem1',
-          answers: ['a'],
+          itemAnswerList: [
+            {
+              answer: 'a',
+              items: {},
+            },
+          ],
         }),
       },
     });
@@ -43,27 +58,53 @@ describe('setAnswers()', () => {
         items: {
           rootItem1: createQuestionnaireItem({
             linkId: 'rootItem1',
-            items: {
-              nestedItem1: createQuestionnaireItem({
-                linkId: 'nestedItem1',
-                answers: [1],
-              }),
-            },
+            itemAnswerList: [
+              {
+                answer: undefined,
+                items: {
+                  nestedItem1: createQuestionnaireItem({
+                    linkId: 'nestedItem1',
+                    answers: [1],
+                  }),
+                },
+              },
+            ],
           }),
         },
       }),
-      setAnswers(['rootItem1', 'nestedItem1'], ['a', 'b', 'c'])
+      setAnswers(
+        [{ linkId: 'rootItem1' }, { linkId: 'nestedItem1', index: 0 }],
+        ['a', 'b', 'c']
+      )
     );
     const expected = createQuestionnaireState({
       items: {
         rootItem1: createQuestionnaireItem({
           linkId: 'rootItem1',
-          items: {
-            nestedItem1: createQuestionnaireItem({
-              linkId: 'nestedItem1',
-              answers: ['a', 'b', 'c'],
-            }),
-          },
+          itemAnswerList: [
+            {
+              answer: undefined,
+              items: {
+                nestedItem1: createQuestionnaireItem({
+                  linkId: 'nestedItem1',
+                  itemAnswerList: [
+                    {
+                      answer: 'a',
+                      items: {},
+                    },
+                    {
+                      answer: 'b',
+                      items: {},
+                    },
+                    {
+                      answer: 'c',
+                      items: {},
+                    },
+                  ],
+                }),
+              },
+            },
+          ],
         }),
       },
     });
@@ -105,7 +146,8 @@ const createQuestionnaireItem = ({
     unit = undefined as string | undefined,
     fhirPathExpression = undefined as string | undefined,
   } = {},
-  items = {} as QuestionnaireItemsIndexedByLinkId,
+  defaultItems = {} as QuestionnaireItemsIndexedByLinkId,
+  itemAnswerList = [] as ItemAnswer[],
 } = {}): QuestionnaireItem => ({
   linkId,
   type,
@@ -118,7 +160,6 @@ const createQuestionnaireItem = ({
   answerOptions,
   isEnabledWhen,
   isEnabledBehavior,
-  answers,
   extensions: {
     isHidden,
     itemControl,
@@ -132,7 +173,8 @@ const createQuestionnaireItem = ({
     unit,
     fhirPathExpression,
   },
-  items,
+  defaultItems,
+  itemAnswerList,
 });
 
 const createQuestionnaireState = ({
