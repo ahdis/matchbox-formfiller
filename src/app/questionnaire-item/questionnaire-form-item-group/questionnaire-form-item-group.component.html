@@ -41,6 +41,7 @@
       "
       aria-label="Remove group"
       (click)="removeGroup(answerIndex)"
+      type="button"
     >
       <mat-icon>remove</mat-icon>
     </button>
@@ -63,6 +64,7 @@
   *ngIf="formItem.repeats"
   mat-raised-button
   color="primary"
+  type="button"
   (click)="addGroup()"
 >
   Add another "{{ formItem.text }}"

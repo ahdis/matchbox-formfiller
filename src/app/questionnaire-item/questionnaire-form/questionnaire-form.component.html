@@ -1,4 +1,4 @@
-<form (ngSubmit)="submitQuestionnaire.next()">
+<form (ngSubmit)="saveAsDraft.next()">
   <mat-card class="primary">
     <mat-card-header class="primary-card-header">
       <ng-container *ngIf="titleWithExtension$ | async as titleWithExtension">
@@ -25,7 +25,16 @@
       ></app-questionnaire-form-item>
     </mat-card-content>
     <mat-card-actions>
-      <button mat-raised-button color="primary" type="submit">Save</button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="submitQuestionnaire.next()"
+        type="button"
+      >
+        Save and Send
+      </button>
+      <button mat-raised-button type="submit">Save as Draft</button>
+      <button mat-button (click)="cancel.next()" type="button">Cancel</button>
     </mat-card-actions>
   </mat-card>
 </form>
