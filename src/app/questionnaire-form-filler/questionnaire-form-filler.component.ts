@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import debug from 'debug';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { QuestionnaireDemo } from '../home/questionnaire-demo';
 import { QuestionnaireFillerService } from '../questionnaire-filler.service';
 import { FhirConfigService } from '../fhirConfig.service';
+import Client from 'fhir-kit-client';
 
 @Component({
   selector: 'app-questionnaire-form-filler',
@@ -13,6 +14,8 @@ import { FhirConfigService } from '../fhirConfig.service';
   styleUrls: ['./questionnaire-form-filler.component.scss'],
 })
 export class QuestionnaireFormFillerComponent implements OnInit {
+  private readonly fhirKitClient: Client;
+
   questionnaire$: Observable<fhir.r4.Questionnaire | undefined>;
   questionnaireResponse: fhir.r4.QuestionnaireResponse;
   questionnaire: fhir.r4.Questionnaire;
@@ -23,8 +26,11 @@ export class QuestionnaireFormFillerComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private questionnaireFillerServer: QuestionnaireFillerService,
-    private data: FhirConfigService
-  ) {}
+    private fhirConfigService: FhirConfigService,
+    private router: Router
+  ) {
+    this.fhirKitClient = fhirConfigService.getFhirClient();
+  }
 
   ngOnInit() {
     this.questionnaire$ = this.route.paramMap.pipe(
@@ -43,6 +49,11 @@ export class QuestionnaireFormFillerComponent implements OnInit {
   }
 
   onChangeQuestionnaireResponse(response: fhir.r4.QuestionnaireResponse) {
+    this.questionnaireResponse = response;
+  }
+
+  onSubmit() {
+    this.log('submit questionnaire response', this.questionnaireResponse);
     if (this.questionnaire.extension) {
       for (const extension of this.questionnaire.extension) {
         if (
@@ -50,21 +61,29 @@ export class QuestionnaireFormFillerComponent implements OnInit {
           extension.url
         ) {
           this.log('extraction');
-          const client = this.data.getFhirClient();
-          client
+          this.fhirKitClient
             .operation({
               name: 'extract',
               resourceType: 'QuestionnaireResponse',
-              input: response,
+              input: this.questionnaireResponse,
             })
             .then((data) => (this.extracted = data));
         }
       }
     }
-    this.questionnaireResponse = response;
+    return this.router.navigateByUrl('/');
   }
 
-  onSubmit() {
-    this.log('submit questionnaire response', this.questionnaireResponse);
+  onSaveAsDraft() {
+    return this.fhirKitClient
+      .create({
+        resourceType: 'QuestionnaireResponse',
+        body: this.questionnaireResponse,
+      })
+      .then(() => this.router.navigateByUrl('/'));
+  }
+
+  onCancel() {
+    return this.router.navigateByUrl('/');
   }
 }

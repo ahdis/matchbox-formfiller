@@ -14,7 +14,12 @@ import {
 } from '../impure-helpers';
 import { addAnswerOption, setAnswers } from '../store/action';
 import { filterNotNil, isString } from '../store/util';
-import { Action, FormItem, FormItemAnswerOption } from '../types';
+import {
+  Action,
+  FormItem,
+  FormItemAnswerOption,
+  LinkIdPathSegment,
+} from '../types';
 
 @Component({
   selector: 'app-questionnaire-form-item-open-choice',
@@ -23,7 +28,7 @@ import { Action, FormItem, FormItemAnswerOption } from '../types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuestionnaireFormItemOpenChoiceComponent implements OnInit {
-  @Input() linkIdPath: string[];
+  @Input() linkIdPath: LinkIdPathSegment[];
   @Input() dispatch: (action: Action) => void;
   @Input() set formItem(item: FormItem) {
     this.item = item;
@@ -32,10 +37,10 @@ export class QuestionnaireFormItemOpenChoiceComponent implements OnInit {
       item,
       item.isRequired ? [Validators.required] : []
     );
-    processValuesIfChanged(this.formArray, item, values =>
+    processValuesIfChanged(this.formArray, item, (values) =>
       this.formArray.patchValue(
         R.map(
-          value => R.find(({ key }) => key === value, item.answerOptions),
+          (value) => R.find(({ key }) => key === value, item.answerOptions),
           values
         ),
         { emitEvent: false }
@@ -51,7 +56,7 @@ export class QuestionnaireFormItemOpenChoiceComponent implements OnInit {
   ngOnInit() {
     this.formArray.valueChanges
       .pipe(filter(R.none(R.isNil)))
-      .subscribe(values => {
+      .subscribe((values) => {
         (R.pipe(
           R.addIndex(R.map)((value: any, index) =>
             isString(value)
@@ -73,7 +78,7 @@ export class QuestionnaireFormItemOpenChoiceComponent implements OnInit {
       startWith(R.map(() => '', R.range(0, this.formArray.length))),
       map(R.map((value: any) => (isString(value) ? value : value.display))),
       map(
-        R.map(value =>
+        R.map((value) =>
           R.filter(
             ({ display }) => R.includes(R.toLower(value), R.toLower(display)),
             this.item.answerOptions

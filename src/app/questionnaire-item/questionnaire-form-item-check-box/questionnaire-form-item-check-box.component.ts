@@ -8,7 +8,7 @@ import { FormArray } from '@angular/forms';
 import * as R from 'ramda';
 import { modifyFormArrayToMatchCount } from '../impure-helpers';
 import { setAnswers } from '../store/action';
-import { Action, FormItem } from '../types';
+import { Action, FormItem, LinkIdPathSegment } from '../types';
 
 @Component({
   selector: 'app-questionnaire-form-item-check-box',
@@ -17,7 +17,7 @@ import { Action, FormItem } from '../types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuestionnaireFormItemCheckBoxComponent implements OnInit {
-  @Input() linkIdPath: string[];
+  @Input() linkIdPath: LinkIdPathSegment[];
   @Input() dispatch: (action: Action) => void;
   @Input() set formItem(item: FormItem) {
     this.item = item;
@@ -42,14 +42,14 @@ export class QuestionnaireFormItemCheckBoxComponent implements OnInit {
         ? [
             (control: FormArray) =>
               (Array.isArray(control.value) ? control.value : []).some(
-                value => !!value
+                (value) => !!value
               )
                 ? null
                 : { required: 'This field is required.' },
           ]
         : []
     );
-    this.formArray.valueChanges.subscribe(values => {
+    this.formArray.valueChanges.subscribe((values) => {
       this.dispatch(
         setAnswers(
           this.linkIdPath,

@@ -3,6 +3,7 @@ import {
   Action,
   AnswerOption,
   AnswerOptionType,
+  ItemAnswer,
   QuestionnaireState,
 } from '../types';
 import {
@@ -13,7 +14,8 @@ import {
 } from './action';
 import {
   getAnswerOptionsLensFromItemLinkIdPath,
-  getAnswersLensFromItemLinkIdPath,
+  getDefaultItemsLensFromItemLinkIdPath,
+  getItemAnswerListLensFromItemLinkIdPath,
 } from './util';
 
 export const rootReducer = (
@@ -23,20 +25,53 @@ export const rootReducer = (
   switch (action.type) {
     case ADD_ANSWER:
       return R.over(
-        getAnswersLensFromItemLinkIdPath(action.payload.linkIdPath),
-        R.append(action.payload.initialValue),
+        getItemAnswerListLensFromItemLinkIdPath(action.payload.linkIdPath),
+        R.append({
+          answer: action.payload.initialValue,
+          items: R.view(
+            getDefaultItemsLensFromItemLinkIdPath(action.payload.linkIdPath),
+            state
+          ),
+        }),
         state
       );
     case REMOVE_ANSWER:
       return R.over(
-        getAnswersLensFromItemLinkIdPath(action.payload.linkIdPath),
+        getItemAnswerListLensFromItemLinkIdPath(action.payload.linkIdPath),
         R.remove(action.payload.index, 1),
         state
       );
     case SET_ANSWERS:
-      return R.set(
-        getAnswersLensFromItemLinkIdPath(action.payload.linkIdPath),
-        action.payload.answers,
+      return R.over(
+        getItemAnswerListLensFromItemLinkIdPath(action.payload.linkIdPath),
+        (oldAnswers: ItemAnswer[]) => {
+          if (!Array.isArray(oldAnswers)) {
+            console.warn('Could not set answers for action', action.payload);
+            return oldAnswers;
+          }
+          const answers = R.concat(
+            oldAnswers,
+            R.repeat(
+              {
+                answer: undefined,
+                items: R.view(
+                  getDefaultItemsLensFromItemLinkIdPath(
+                    action.payload.linkIdPath
+                  ),
+                  state
+                ),
+              },
+              R.max(0, action.payload.answers.length - oldAnswers.length)
+            )
+          );
+          return R.map(
+            ([answer, { items }]): ItemAnswer => ({
+              answer,
+              items,
+            }),
+            R.zip(action.payload.answers, answers)
+          );
+        },
         state
       );
     case ADD_ANSWER_OPTION:

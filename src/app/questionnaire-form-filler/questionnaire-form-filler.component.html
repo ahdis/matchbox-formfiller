@@ -3,6 +3,8 @@
     [questionnaire]="questionnaire"
     (changeQuestionnaireResponse)="onChangeQuestionnaireResponse($event)"
     (submitQuestionnaire)="onSubmit()"
+    (saveAsDraft)="onSaveAsDraft()"
+    (cancel)="onCancel()"
   ></app-questionnaire-form>
   <pre>{{ extracted | json }}</pre>
   <pre>{{ questionnaireResponse | json }}</pre>

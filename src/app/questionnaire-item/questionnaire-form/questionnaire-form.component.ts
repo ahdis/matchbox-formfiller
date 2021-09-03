@@ -20,18 +20,21 @@ import {
   takeUntil,
 } from 'rxjs/operators';
 import { rootReducer } from '../store/reducer';
-import {
-  getInitActions,
-  transformQuestionnaire,
-} from '../store/transform-initial-state';
+import { transformQuestionnaire } from '../store/transform-initial-state';
 import { getQuestionnaireResponse } from '../store/transform-response';
-import { Action, QuestionnaireState, RenderingExtension } from '../types';
+import {
+  Action,
+  LinkIdPathSegment,
+  QuestionnaireState,
+  RenderingExtension,
+} from '../types';
 import {
   extractContainedValueSets,
   extractExternalAnswerValueSetUrls,
 } from '../store/value-sets';
 import { FhirConfigService } from '../../fhirConfig.service';
 import Client from 'fhir-kit-client';
+import { getInitActions } from '../store/init-actions';
 
 @Component({
   selector: 'app-questionnaire-form',
@@ -45,13 +48,15 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
   @Output()
   changeQuestionnaireResponse = new EventEmitter<fhir.r4.QuestionnaireResponse>();
   @Output() submitQuestionnaire = new EventEmitter<void>();
+  @Output() saveAsDraft = new EventEmitter<void>();
+  @Output() cancel = new EventEmitter<void>();
 
   store$: Observable<QuestionnaireState>;
   titleWithExtension$: Observable<{
     title: string;
     renderingExtension: RenderingExtension;
   }>;
-  itemLinkIdPaths$: Observable<string[][]>;
+  itemLinkIdPaths$: Observable<LinkIdPathSegment[][]>;
 
   private readonly fhirKitClient: Client;
   private unsubscribe$ = new Subject<void>();
@@ -103,8 +108,8 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
     );
 
     this.itemLinkIdPaths$ = this.store$.pipe(
-      map(({ items }) => R.keys(items)),
-      distinctUntilChanged<string[]>(R.equals),
+      map(({ items }) => R.map((linkId) => ({ linkId }), R.keys(items))),
+      distinctUntilChanged<LinkIdPathSegment[]>(R.equals),
       map(R.map((linkId) => [linkId]))
     );
 

@@ -43,6 +43,11 @@ export interface IsEnabledCondition {
   readonly answer: any;
 }
 
+export interface ItemAnswer {
+  answer: any;
+  items: QuestionnaireItemsIndexedByLinkId;
+}
+
 export interface QuestionnaireItem {
   readonly linkId: string;
   readonly type: string;
@@ -55,9 +60,9 @@ export interface QuestionnaireItem {
   readonly answerOptions: AnswerOption[];
   readonly isEnabledWhen: IsEnabledCondition[];
   readonly isEnabledBehavior: IsEnabledBehavior;
-  readonly answers: any[];
   readonly extensions: SupportedExtensions;
-  readonly items: QuestionnaireItemsIndexedByLinkId;
+  readonly defaultItems: QuestionnaireItemsIndexedByLinkId;
+  readonly itemAnswerList: readonly ItemAnswer[];
 }
 
 interface SupportedExtensions {
@@ -108,4 +113,9 @@ export interface Styles {
 export interface Action {
   readonly type: string;
   readonly payload?: any;
+}
+
+export interface LinkIdPathSegment {
+  readonly linkId: string;
+  readonly index?: number;
 }
