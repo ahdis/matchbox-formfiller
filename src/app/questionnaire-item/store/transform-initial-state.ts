@@ -1,6 +1,5 @@
 import * as R from 'ramda';
 import {
-  Action,
   AnswerOption,
   AnswerOptionType,
   ChoiceOrientation,
@@ -20,7 +19,6 @@ import {
   toNumber,
   toString,
 } from './util';
-import { setAnswers } from './action';
 
 const getExtensionOfElement = (extensionUrl: string) =>
   R.pipe(
@@ -228,8 +226,8 @@ const getExistingTypeProperty: (
     [R.T, R.always(undefined)],
   ]);
 
-const getExistingValueProperty = getExistingTypeProperty('value');
-const getExistingAnswerProperty = getExistingTypeProperty('answer');
+export const getExistingValueProperty = getExistingTypeProperty('value');
+export const getExistingAnswerProperty = getExistingTypeProperty('answer');
 
 const getEnabledConditions = R.pipe(
   R.propOr([], 'enableWhen'),
@@ -258,43 +256,51 @@ const getInitialAnswers = R.pipe(
   R.when(R.isEmpty, R.always([undefined]))
 );
 
-const transformItem = (valueSets: any[]) => (item: any): QuestionnaireItem => ({
-  linkId: item.linkId,
-  type: item.type,
-  isRequired: toBoolean(item.required),
-  isReadonly: toBoolean(item.readonly),
-  maxLength: toNumber(item.maxLength),
-  repeats: toBoolean(item.repeats),
-  prefix: getHtmlOrText(toString(item.prefix), item._prefix),
-  text: getHtmlOrText(toString(item.text), item._text) || '',
-  answerOptions: getOptions(valueSets)(item),
-  isEnabledWhen: getEnabledConditions(item),
-  isEnabledBehavior:
-    item.enableBehavior === 'all'
-      ? IsEnabledBehavior.All
-      : IsEnabledBehavior.Any,
-  answers: getInitialAnswers(item),
-  extensions: {
-    isHidden: getHiddenExtension(item),
-    itemControl: getItemControlExtension(item),
-    choiceOrientation: getChoiceOrientationExtension(item),
-    prefix: {
-      renderAsHtml: getHasRenderXHtmlExtension(item._prefix),
-      styles: getRenderingStyleExtension(item._prefix),
+const transformItem = (valueSets: any[]) => (item: any): QuestionnaireItem => {
+  const answers = getInitialAnswers(item);
+  const defaultItems = transformItems(valueSets)(item.item);
+  const itemAnswerList = R.map(
+    (answer) => ({ answer, items: defaultItems }),
+    answers
+  );
+  return {
+    linkId: item.linkId,
+    type: item.type,
+    isRequired: toBoolean(item.required),
+    isReadonly: toBoolean(item.readonly),
+    maxLength: toNumber(item.maxLength),
+    repeats: toBoolean(item.repeats),
+    prefix: getHtmlOrText(toString(item.prefix), item._prefix),
+    text: getHtmlOrText(toString(item.text), item._text) || '',
+    answerOptions: getOptions(valueSets)(item),
+    isEnabledWhen: getEnabledConditions(item),
+    isEnabledBehavior:
+      item.enableBehavior === 'all'
+        ? IsEnabledBehavior.All
+        : IsEnabledBehavior.Any,
+    extensions: {
+      isHidden: getHiddenExtension(item),
+      itemControl: getItemControlExtension(item),
+      choiceOrientation: getChoiceOrientationExtension(item),
+      prefix: {
+        renderAsHtml: getHasRenderXHtmlExtension(item._prefix),
+        styles: getRenderingStyleExtension(item._prefix),
+      },
+      text: {
+        renderAsHtml: getHasRenderXHtmlExtension(item._text),
+        styles: getRenderingStyleExtension(item._text),
+      },
+      supportLink: getSupportLinkExtension(item),
+      sliderStepValue: getSliderStepValueExtension(item),
+      minValue: getMinValueExtension(item),
+      maxValue: getMaxValueExtension(item),
+      unit: getUnitExtension(item),
+      fhirPathExpression: getCalculatedExpressionExtension(item),
     },
-    text: {
-      renderAsHtml: getHasRenderXHtmlExtension(item._text),
-      styles: getRenderingStyleExtension(item._text),
-    },
-    supportLink: getSupportLinkExtension(item),
-    sliderStepValue: getSliderStepValueExtension(item),
-    minValue: getMinValueExtension(item),
-    maxValue: getMaxValueExtension(item),
-    unit: getUnitExtension(item),
-    fhirPathExpression: getCalculatedExpressionExtension(item),
-  },
-  items: transformItems(valueSets)(item.item),
-});
+    defaultItems,
+    itemAnswerList,
+  };
+};
 
 const transformItems: (
   valueSets: any[]
@@ -323,20 +329,3 @@ export const transformQuestionnaire = (
     },
   },
 });
-
-export const getInitActions = (path: string[]) => (item: any): Action[] => [
-  ...(Array.isArray(item?.answer)
-    ? [
-        setAnswers(
-          [...path, item.linkId],
-          R.map(getExistingValueProperty, item.answer)
-        ),
-      ]
-    : []),
-  ...(Array.isArray(item?.item)
-    ? R.chain(
-        getInitActions(item.linkId ? [...path, item.linkId] : []),
-        item.item
-      )
-    : []),
-];

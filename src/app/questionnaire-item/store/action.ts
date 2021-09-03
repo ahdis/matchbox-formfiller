@@ -1,6 +1,8 @@
+import { LinkIdPathSegment } from '../types';
+
 export const SET_ANSWERS = 'SET_ANSWERS';
 export const setAnswers = (
-  linkIdPath: string[],
+  linkIdPath: LinkIdPathSegment[],
   answers: ReadonlyArray<any>
 ) => ({
   type: SET_ANSWERS,
@@ -11,20 +13,26 @@ export const setAnswers = (
 });
 
 export const ADD_ANSWER = 'ADD_ANSWER';
-export const addAnswer = (linkIdPath: string[], initialValue: any) => ({
+export const addAnswer = (
+  linkIdPath: LinkIdPathSegment[],
+  initialValue: any
+) => ({
   type: ADD_ANSWER,
   payload: { linkIdPath, initialValue },
 });
 
 export const REMOVE_ANSWER = 'REMOVE_ANSWER';
-export const removeAnswer = (linkIdPath: string[], index: number) => ({
+export const removeAnswer = (
+  linkIdPath: LinkIdPathSegment[],
+  index: number
+) => ({
   type: REMOVE_ANSWER,
   payload: { linkIdPath, index },
 });
 
 export const ADD_ANSWER_OPTION = 'ADD_ANSWER_OPTION';
 export const addAnswerOption = (
-  linkIdPath: string[],
+  linkIdPath: LinkIdPathSegment[],
   key: string,
   display: string,
   value: any = display

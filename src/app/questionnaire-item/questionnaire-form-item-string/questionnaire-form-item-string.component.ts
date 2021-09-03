@@ -11,9 +11,9 @@ import {
   modifyFormArrayToMatchAnswerCount,
   processValuesIfChanged,
 } from '../impure-helpers';
-import { setAnswers } from '../store/action';
+import { addAnswer, removeAnswer, setAnswers } from '../store/action';
 import { isNumber } from '../store/util';
-import { Action, FormItem } from '../types';
+import { Action, FormItem, LinkIdPathSegment } from '../types';
 
 @Component({
   selector: 'app-questionnaire-form-item-string',
@@ -22,7 +22,7 @@ import { Action, FormItem } from '../types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuestionnaireFormItemStringComponent implements OnInit {
-  @Input() linkIdPath: string[];
+  @Input() linkIdPath: LinkIdPathSegment[];
   @Input() dispatch: (action: Action) => void;
   @Input() set formItem(item: FormItem) {
     this.item = item;
@@ -32,7 +32,7 @@ export class QuestionnaireFormItemStringComponent implements OnInit {
         ? [Validators.maxLength(item.maxLength)]
         : []),
     ]);
-    processValuesIfChanged(this.formArray, item, values =>
+    processValuesIfChanged(this.formArray, item, (values) =>
       this.formArray.patchValue(values, { emitEvent: false })
     );
   }
@@ -43,8 +43,16 @@ export class QuestionnaireFormItemStringComponent implements OnInit {
   ngOnInit() {
     this.formArray.valueChanges
       .pipe(filter(R.none(R.isNil)))
-      .subscribe(values => {
+      .subscribe((values) => {
         this.dispatch(setAnswers(this.linkIdPath, values));
       });
+  }
+
+  addAnswer() {
+    this.dispatch(addAnswer(this.linkIdPath, ''));
+  }
+
+  removeAnswer(index) {
+    this.dispatch(removeAnswer(this.linkIdPath, index));
   }
 }

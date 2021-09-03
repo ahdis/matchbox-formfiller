@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { addAnswer, removeAnswer } from '../store/action';
-import { Action, FormItem } from '../types';
+import { Action, FormItem, LinkIdPathSegment } from '../types';
 
 @Component({
   selector: 'app-questionnaire-form-item-attachment',
@@ -9,7 +9,7 @@ import { Action, FormItem } from '../types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuestionnaireFormItemAttachmentComponent {
-  @Input() linkIdPath: string[];
+  @Input() linkIdPath: LinkIdPathSegment[];
   @Input() dispatch: (action: Action) => void;
   @Input() set formItem(item: FormItem) {
     this.item = item;
@@ -65,7 +65,7 @@ export class QuestionnaireFormItemAttachmentComponent {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
+      reader.onerror = (error) => reject(error);
     });
   }
 }

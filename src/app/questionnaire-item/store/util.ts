@@ -1,4 +1,5 @@
 import * as R from 'ramda';
+import { LinkIdPathSegment } from '../types';
 
 export const isNotNil = R.complement(R.isNil);
 export const filterNotNil = R.filter<any, 'array'>(R.complement(R.isNil));
@@ -26,14 +27,21 @@ export const toNumber = (value: unknown): number | undefined =>
   isNumber(value) ? value : undefined;
 
 export const getStatePathFromItemLinkIdPath: (
-  itemLinkIdPath: string[]
-) => string[] = R.reduce((path, linkId) => [...path, 'items', linkId], []);
+  itemLinkIdPath: LinkIdPathSegment[]
+) => (string | number)[] = R.chain(({ linkId, index }) =>
+  R.isNil(index)
+    ? ['items', linkId]
+    : ['itemAnswerList', index, 'items', linkId]
+);
 
 const getPropertyLensFromItemLinkIdPath = (propertyName: string) =>
   R.pipe(getStatePathFromItemLinkIdPath, R.append(propertyName), R.lensPath);
 
-export const getAnswersLensFromItemLinkIdPath = getPropertyLensFromItemLinkIdPath(
-  'answers'
+export const getItemAnswerListLensFromItemLinkIdPath = getPropertyLensFromItemLinkIdPath(
+  'itemAnswerList'
+);
+export const getDefaultItemsLensFromItemLinkIdPath = getPropertyLensFromItemLinkIdPath(
+  'defaultItems'
 );
 export const getAnswerOptionsLensFromItemLinkIdPath = getPropertyLensFromItemLinkIdPath(
   'answerOptions'

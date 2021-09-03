@@ -1,5 +1,12 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { FormItem } from '../types';
+import {
+  Action,
+  FormItem,
+  LinkIdPathSegment,
+  QuestionnaireState,
+} from '../types';
+import { addAnswer, removeAnswer } from '../store/action';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-questionnaire-form-item-group',
@@ -10,4 +17,16 @@ import { FormItem } from '../types';
 export class QuestionnaireFormItemGroupComponent {
   @Input() formItem: FormItem;
   @Input() level: number;
+  @Input() linkIdPath: LinkIdPathSegment[];
+  @Input() childrenItemLinkIdPaths: LinkIdPathSegment[][][];
+  @Input() store: Observable<QuestionnaireState>;
+  @Input() dispatch: (action: Action) => void;
+
+  addGroup() {
+    this.dispatch(addAnswer(this.linkIdPath, ''));
+  }
+
+  removeGroup(index) {
+    this.dispatch(removeAnswer(this.linkIdPath, index));
+  }
 }

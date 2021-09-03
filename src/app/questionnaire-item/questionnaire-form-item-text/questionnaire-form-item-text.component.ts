@@ -13,7 +13,7 @@ import {
 } from '../impure-helpers';
 import { setAnswers } from '../store/action';
 import { isNumber } from '../store/util';
-import { Action, FormItem } from '../types';
+import { Action, FormItem, LinkIdPathSegment } from '../types';
 
 @Component({
   selector: 'app-questionnaire-form-item-text',
@@ -22,7 +22,7 @@ import { Action, FormItem } from '../types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuestionnaireFormItemTextComponent implements OnInit {
-  @Input() linkIdPath: string[];
+  @Input() linkIdPath: LinkIdPathSegment[];
   @Input() dispatch: (action: Action) => void;
   @Input() set formItem(item: FormItem) {
     this.item = item;
@@ -32,7 +32,7 @@ export class QuestionnaireFormItemTextComponent implements OnInit {
         ? [Validators.maxLength(item.maxLength)]
         : []),
     ]);
-    processValuesIfChanged(this.formArray, item, values =>
+    processValuesIfChanged(this.formArray, item, (values) =>
       this.formArray.patchValue(values, { emitEvent: false })
     );
   }
@@ -43,7 +43,7 @@ export class QuestionnaireFormItemTextComponent implements OnInit {
   ngOnInit() {
     this.formArray.valueChanges
       .pipe(filter(R.none(R.isNil)))
-      .subscribe(values => {
+      .subscribe((values) => {
         this.dispatch(setAnswers(this.linkIdPath, values));
       });
   }
