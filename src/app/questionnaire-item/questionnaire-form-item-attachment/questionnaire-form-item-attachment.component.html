@@ -7,7 +7,7 @@
       <div class="image-size">
         {{ attachment.size | filesize }}
       </div>
-      <button mat-icon-button (click)="removeAttachment(i)">
+      <button mat-icon-button (click)="removeAttachment(i)" type="button">
         <mat-icon>close</mat-icon>
       </button>
     </div>
@@ -34,7 +34,12 @@
       Drop file here
     </div>
     <div class="spacer">or</div>
-    <button mat-raised-button color="primary" (click)="fileInput.click()">
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="fileInput.click()"
+      type="button"
+    >
       Add file
     </button>
   </div>

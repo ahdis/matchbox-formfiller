@@ -29,6 +29,7 @@
     *ngIf="item.repeats && (formArray.length > 1 || !item.isRequired)"
     aria-label="Remove answer"
     (click)="removeAnswer(answerIndex)"
+    type="button"
   >
     <mat-icon>remove</mat-icon>
   </button>
@@ -38,6 +39,7 @@
   mat-raised-button
   color="primary"
   (click)="addAnswer()"
+  type="button"
 >
   Add another "{{ item.text }}"
 </button>
