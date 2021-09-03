@@ -1,10 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Router } from '@angular/router';
-import { QuestionnaireFillerService } from '../questionnaire-filler.service';
-import FhirClient from 'fhir-kit-client';
-import { FhirConfigService } from '../fhirConfig.service';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { LocalQuestionnaire } from '../home/home.component';
+
+export interface QuestionnaireTableEntry<T> {
+  readonly title: string;
+  readonly publisher: string;
+  readonly version: string;
+  readonly status: string;
+  readonly date: string;
+  readonly entry: T;
+}
 
 @Component({
   selector: 'app-questionnaires-table',
@@ -12,7 +16,7 @@ import { LocalQuestionnaire } from '../home/home.component';
   styleUrls: ['./questionnaires-table.component.scss'],
 })
 export class QuestionnairesTableComponent<T> {
-  @Input() dataSource: MatTableDataSource<T>;
+  @Input() dataSource: MatTableDataSource<QuestionnaireTableEntry<T>>;
   @Output() rowClick = new EventEmitter<T>();
 
   displayedColumns = ['title', 'publisher', 'version', 'status', 'date'];

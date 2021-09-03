@@ -1,4 +1,5 @@
 import * as R from 'ramda';
+import { isNil } from 'ramda';
 import {
   AnswerOption,
   AnswerOptionType,
@@ -7,7 +8,6 @@ import {
 } from '../types';
 import {
   isDate,
-  isNumber,
   isObject,
   isString,
   toLocaleDate,
@@ -24,25 +24,25 @@ const getAnswerValueWithQuestionnaireItem = ({
 ): fhir.r4.QuestionnaireResponseItemAnswer => {
   switch (type) {
     case 'boolean':
-      return {
-        valueBoolean: typeof answer === 'boolean' ? answer : answer === 'true',
-      };
+      return isNil(answer) || answer === ''
+        ? undefined
+        : {
+            valueBoolean: answer === true || answer === 'true',
+          };
     case 'decimal':
-      return {
-        valueDecimal: isNumber(answer)
-          ? answer
-          : isString(answer)
-          ? parseFloat(answer)
-          : undefined,
-      };
+      const valueDecimal = parseFloat(answer);
+      return isFinite(valueDecimal)
+        ? {
+            valueDecimal,
+          }
+        : undefined;
     case 'integer':
-      return {
-        valueInteger: isNumber(answer)
-          ? answer
-          : isString(answer)
-          ? parseInt(answer, 10)
-          : undefined,
-      };
+      const valueInteger = parseInt(answer, 10);
+      return isFinite(valueInteger)
+        ? {
+            valueInteger,
+          }
+        : undefined;
     case 'date':
       return {
         valueDate: isDate(answer)

@@ -7,6 +7,7 @@ import { QuestionnaireDemo } from '../home/questionnaire-demo';
 import { QuestionnaireFillerService } from '../questionnaire-filler.service';
 import { FhirConfigService } from '../fhirConfig.service';
 import Client from 'fhir-kit-client';
+import { getExtensionOfElement } from '../questionnaire-item/store/transform-initial-state';
 
 @Component({
   selector: 'app-questionnaire-form-filler',
@@ -17,9 +18,9 @@ export class QuestionnaireFormFillerComponent implements OnInit {
   private readonly fhirKitClient: Client;
 
   questionnaire$: Observable<fhir.r4.Questionnaire | undefined>;
+  initialQuestionnaireResponse: fhir.r4.QuestionnaireResponse;
   questionnaireResponse: fhir.r4.QuestionnaireResponse;
   questionnaire: fhir.r4.Questionnaire;
-  extracted: fhir.r4.Resource;
 
   log = debug('app:');
 
@@ -39,51 +40,71 @@ export class QuestionnaireFormFillerComponent implements OnInit {
         id === 'radiology-order'
           ? QuestionnaireDemo.getQuestionnaireRadiologyOrder()
           : id === '-1'
-          ? this.questionnaireFillerServer.getQuestionniare()
+          ? this.questionnaireFillerServer.getQuestionnaire()
           : undefined
       )
     );
     this.questionnaire$.subscribe((term) => {
       this.questionnaire = term;
     });
+    this.initialQuestionnaireResponse = this.questionnaireFillerServer.getQuestionnaireResponse();
   }
 
   onChangeQuestionnaireResponse(response: fhir.r4.QuestionnaireResponse) {
     this.questionnaireResponse = response;
   }
 
-  onSubmit() {
+  async onSubmit() {
     this.log('submit questionnaire response', this.questionnaireResponse);
-    if (this.questionnaire.extension) {
-      for (const extension of this.questionnaire.extension) {
-        if (
-          'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-targetStructureMap' ===
-          extension.url
-        ) {
-          this.log('extraction');
-          this.fhirKitClient
-            .operation({
-              name: 'extract',
-              resourceType: 'QuestionnaireResponse',
-              input: this.questionnaireResponse,
-            })
-            .then((data) => (this.extracted = data));
-        }
-      }
+    if (
+      getExtensionOfElement(
+        'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-targetStructureMap'
+      )(this.questionnaire)
+    ) {
+      const bundle = await this.fhirKitClient.operation({
+        name: 'extract',
+        resourceType: 'QuestionnaireResponse',
+        input: this.questionnaireResponse,
+      });
+      await this.fhirKitClient.create({
+        resourceType: 'Bundle',
+        body: bundle,
+      });
     }
-    return this.router.navigateByUrl('/');
+    await this.saveQuestionnaireResponse('completed');
+    await this.router.navigateByUrl('/');
   }
 
   onSaveAsDraft() {
-    return this.fhirKitClient
-      .create({
-        resourceType: 'QuestionnaireResponse',
-        body: this.questionnaireResponse,
-      })
-      .then(() => this.router.navigateByUrl('/'));
+    return this.saveQuestionnaireResponse().then(() =>
+      this.router.navigateByUrl('/')
+    );
   }
 
   onCancel() {
     return this.router.navigateByUrl('/');
+  }
+
+  private async saveQuestionnaireResponse(
+    status: 'in-progress' | 'completed' = 'in-progress'
+  ) {
+    const questionnaireResponseId = this.initialQuestionnaireResponse?.id;
+    if (questionnaireResponseId) {
+      return this.fhirKitClient.update({
+        id: questionnaireResponseId,
+        resourceType: 'QuestionnaireResponse',
+        body: {
+          ...this.initialQuestionnaireResponse,
+          ...this.questionnaireResponse,
+          status,
+        },
+      });
+    } else {
+      return this.fhirKitClient.create({
+        resourceType: 'QuestionnaireResponse',
+        body: this.questionnaireResponse,
+        status,
+      });
+    }
   }
 }
