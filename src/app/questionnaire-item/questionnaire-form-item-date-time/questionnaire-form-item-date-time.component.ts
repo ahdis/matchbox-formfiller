@@ -12,8 +12,8 @@ import {
   processValuesIfChanged,
 } from '../impure-helpers';
 import { setAnswers } from '../store/action';
-import { Action, FormItem } from '../types';
-import { toLocaleHHMM } from '../store/util';
+import { Action, FormItem, LinkIdPathSegment } from '../types';
+import { isString, toLocaleHHMM } from '../store/util';
 
 @Component({
   selector: 'app-questionnaire-form-item-date-time',
@@ -22,7 +22,7 @@ import { toLocaleHHMM } from '../store/util';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuestionnaireFormItemDateTimeComponent implements OnInit {
-  @Input() linkIdPath: string[];
+  @Input() linkIdPath: LinkIdPathSegment[];
   @Input() dispatch: (action: Action) => void;
   @Input() set formItem(item: FormItem) {
     this.item = item;
@@ -31,15 +31,23 @@ export class QuestionnaireFormItemDateTimeComponent implements OnInit {
       item,
       item.isRequired ? [Validators.required] : []
     );
-    processValuesIfChanged(this.formArray, item, (values) =>
-      this.formArray.patchValue(values, { emitEvent: false })
+    processValuesIfChanged(
+      this.formArray,
+      {
+        ...item,
+        answers: item.answers.map((date) =>
+          isString(date) ? new Date(date) : date
+        ),
+      },
+      (values) => this.formArray.patchValue(values, { emitEvent: false })
     );
     modifyFormArrayToMatchAnswerCount(
       this.formTimeArray,
       item,
       item.isRequired ? [Validators.required] : []
     );
-    const dateToTime = (date?: Date) => date && toLocaleHHMM(date);
+    const dateToTime = (date?: Date | string) =>
+      date && toLocaleHHMM(isString(date) ? new Date(date) : date);
     processValuesIfChanged(
       this.formTimeArray,
       { ...item, answers: item.answers.map(dateToTime) },

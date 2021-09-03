@@ -12,7 +12,7 @@ import {
   processValuesIfChanged,
 } from '../impure-helpers';
 import { setAnswers } from '../store/action';
-import { Action, FormItem } from '../types';
+import { Action, FormItem, LinkIdPathSegment } from '../types';
 
 @Component({
   selector: 'app-questionnaire-form-item-quantity',
@@ -21,7 +21,7 @@ import { Action, FormItem } from '../types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuestionnaireFormItemQuantityComponent implements OnInit {
-  @Input() linkIdPath: string[];
+  @Input() linkIdPath: LinkIdPathSegment[];
   @Input() dispatch: (action: Action) => void;
   @Input() set formItem(item: FormItem) {
     this.item = item;
