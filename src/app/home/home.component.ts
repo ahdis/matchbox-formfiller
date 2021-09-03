@@ -134,34 +134,74 @@ export class HomeComponent implements OnInit {
   }
 
   async loadOutgoingBundles() {
+    const placerCoding: fhir.r4.Coding = {
+      system: 'http://terminology.hl7.org/CodeSystem/v2-0203',
+      code: 'PLAC',
+    };
+    const outgoingPlacerOrderIdentifier: fhir.r4.Identifier = await this.client
+      .search({
+        resourceType: 'Basic',
+        searchParams: {
+          code: `${placerCoding.system}|${placerCoding.code}`,
+        },
+      })
+      .then((bundle) => bundle?.entry?.[0]?.resource?.identifier?.[0]);
+    if (!outgoingPlacerOrderIdentifier) {
+      console.error(
+        'Cannot partition between incoming and outgoing bundles as no Basic resource defining the placerOrderIdentifier could be found.'
+      );
+    }
     const bundles: fhir.r4.Bundle[] = await this.client
       .search({
         resourceType: 'Bundle',
       })
       .then(extractResourcesFromSearchBundle);
 
-    // TODO partition by incoming/outgoing bundles
-    const entries = bundles.map((bundle) => {
-      const questionnaire: fhir.r4.Questionnaire = (bundle?.entry?.find(
-        (entry) => entry?.resource?.resourceType === 'Questionnaire'
-      ) ?? {}) as any;
-      const questionnaireResponse: fhir.r4.QuestionnaireResponse = (bundle?.entry?.find(
-        (entry) => entry?.resource?.resourceType === 'QuestionnaireResponse'
-      ) ?? {}) as any;
-      return {
-        title: questionnaire.title,
-        status: questionnaireResponse.status,
-        date: questionnaireResponse.meta?.lastUpdated,
-        publisher: questionnaire.publisher,
-        version: questionnaireResponse.meta?.versionId,
-        entry: {
-          questionnaire,
-          questionnaireResponse,
-        },
-      };
-    });
-    this.outgoingOrderDataSource.data = entries;
-    this.incomingOrderDataSource.data = entries;
+    const [outgoingEntries, incomingEntries] = R.map(
+      R.map((bundle: fhir.r4.Bundle) => {
+        const questionnaire: fhir.r4.Questionnaire = findResourceByType(
+          bundle,
+          'Questionnaire'
+        ) as any;
+        const questionnaireResponse: fhir.r4.QuestionnaireResponse = findResourceByType(
+          bundle,
+          'QuestionnaireResponse'
+        ) as any;
+        return {
+          title: questionnaire?.title,
+          status: questionnaireResponse?.status,
+          date: bundle.meta?.lastUpdated,
+          publisher: questionnaire?.publisher,
+          version: bundle.meta?.versionId,
+          entry: {
+            questionnaire,
+            questionnaireResponse,
+          },
+        };
+      }),
+      R.partition((bundle) => {
+        const serviceRequest: fhir.r4.ServiceRequest = findResourceByType(
+          bundle,
+          'ServiceRequest'
+        ) as any;
+        const placerIdentifier = R.find(
+          (identifier) =>
+            R.any(
+              (coding) =>
+                coding?.system === placerCoding.system &&
+                coding?.code === placerCoding.code,
+              identifier?.type?.coding ?? []
+            ),
+          serviceRequest?.identifier ?? []
+        );
+        return (
+          outgoingPlacerOrderIdentifier.system === placerIdentifier.system &&
+          outgoingPlacerOrderIdentifier.value === placerIdentifier.value
+        );
+      }, bundles)
+    );
+    this.outgoingOrderDataSource.data = outgoingEntries;
+    this.incomingOrderDataSource.data = incomingEntries;
   }
 
   openQuestionnaire(entry: LocalQuestionnaire | fhir.r4.Questionnaire) {
@@ -202,3 +242,10 @@ const extractResourcesFromSearchBundle = (
   bundle.resourceType !== 'Bundle'
     ? Promise.reject('Search failed')
     : Promise.resolve(bundle?.entry?.map(({ resource }) => resource) ?? []);
+
+const findResourceByType = (
+  bundle: fhir.r4.Bundle,
+  resourceType: string
+): fhir.r4.Resource | undefined =>
+  bundle?.entry?.find((entry) => entry?.resource?.resourceType === resourceType)
+    ?.resource;

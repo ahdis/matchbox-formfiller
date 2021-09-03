@@ -3,6 +3,9 @@ import { FhirConfigService } from '../fhirConfig.service';
 import { Subscription } from 'rxjs';
 import debug from 'debug';
 import * as questionnaireRadiologyOrderDefaultResponse from '../../examples/radorder-qr-default.json';
+import * as placerOrderIdentifierJson from '../../examples/placer-order-identifier.json';
+import * as incomingBundleJson from '../../examples/bundle-incoming.json';
+import * as outgoingBundleJson from '../../examples/bundle-outgoing.json';
 
 // currently R4 only 'http://localhost:8080/baseDstu3',
 // 'http://vonk.furore.com',
@@ -49,31 +52,80 @@ export class SettingsComponent implements OnInit {
   }
 
   async setDefaultQuestionnaireResponseForRadOrder() {
-    const existingQuestionnaireResponseBundle = await this.data
-      .getFhirClient()
-      .resourceSearch({
-        resourceType: 'QuestionnaireResponse',
-        searchParams: {
-          questionnaire:
-            'http://fhir.ch/ig/ch-rad-order/Questionnaire/QuestionnaireRadiologyOrder',
-          identifier: 'http://ahdis.ch/fhir/Questionnaire|DEFAULT',
-        },
-      });
+    const response = questionnaireRadiologyOrderDefaultResponse as any;
+    await this.createOrUpdateResource(
+      'QuestionnaireResponse',
+      {
+        questionnaire: response.questionnaire,
+        identifier: `${response.identifier[0].system}|${response.identifier[0].value}`,
+      },
+      response
+    );
+  }
 
-    const id = existingQuestionnaireResponseBundle?.entry?.[0]?.resource?.id;
+  async setPlacerOrderIdentifier() {
+    const placerOrderIdentifier = placerOrderIdentifierJson as any;
+    await this.createOrUpdateResource(
+      'Basic',
+      {
+        code: `${placerOrderIdentifier.code.coding[0].system}|${placerOrderIdentifier.code.coding[0].code}`,
+      },
+      placerOrderIdentifier
+    );
+  }
+
+  async setIncomingBundleExample() {
+    const incomingBundle = incomingBundleJson as any;
+    await this.createOrUpdateResource(
+      'Bundle',
+      {
+        _id: incomingBundle.id,
+      },
+      incomingBundle
+    );
+  }
+
+  async setOutgoingBundleExample() {
+    const outgoingBundle = outgoingBundleJson as any;
+    await this.createOrUpdateResource(
+      'Bundle',
+      {
+        _id: outgoingBundle.id,
+      },
+      outgoingBundle
+    );
+  }
+
+  private async createOrUpdateResource(
+    resourceType: string,
+    searchParams: {
+      [key: string]:
+        | string
+        | number
+        | boolean
+        | Array<string | number | boolean>;
+    },
+    body: any
+  ) {
+    const bundle = await this.data.getFhirClient().resourceSearch({
+      resourceType,
+      searchParams,
+    });
+
+    const id = bundle?.entry?.[0]?.resource?.id;
     if (id) {
       await this.data.getFhirClient().update({
         id,
-        resourceType: 'QuestionnaireResponse',
+        resourceType,
         body: {
-          ...questionnaireRadiologyOrderDefaultResponse,
+          ...body,
           id,
         },
       });
     } else {
       await this.data.getFhirClient().create({
-        resourceType: 'QuestionnaireResponse',
-        body: questionnaireRadiologyOrderDefaultResponse,
+        resourceType,
+        body,
       });
     }
   }
