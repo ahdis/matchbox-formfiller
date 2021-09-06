@@ -9,6 +9,7 @@ import {
 import * as R from 'ramda';
 import { BehaviorSubject, Observable, Subject, zip } from 'rxjs';
 import {
+  defaultIfEmpty,
   distinctUntilChanged,
   first,
   map,
@@ -164,7 +165,8 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
           (valueSet) => valueSet?.resourceType === 'ValueSet',
           valueSetsFromRequests
         ),
-      ])
+      ]),
+      defaultIfEmpty([])
     );
   }
 

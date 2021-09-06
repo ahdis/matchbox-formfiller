@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FhirConfigService } from '../fhirConfig.service';
 import { Subscription } from 'rxjs';
 import debug from 'debug';
+import * as questionnaireRadiologyOrderJson from '../../examples/radorder.json';
 import * as questionnaireRadiologyOrderDefaultResponse from '../../examples/radorder-qr-default.json';
 import * as placerOrderIdentifierJson from '../../examples/placer-order-identifier.json';
 import * as incomingBundleJson from '../../examples/bundle-incoming.json';
@@ -49,6 +50,17 @@ export class SettingsComponent implements OnInit {
   setSelectedValue(value: string) {
     debug('setting new server to ' + value);
     this.data.changeFhirMicroService(value);
+  }
+
+  async setRadOrderQuestionnaire() {
+    const questionnaireRadiologyOrder = questionnaireRadiologyOrderJson as any;
+    await this.createOrUpdateResource(
+      'Questionnaire',
+      {
+        _id: questionnaireRadiologyOrder.id,
+      },
+      questionnaireRadiologyOrder
+    );
   }
 
   async setDefaultQuestionnaireResponseForRadOrder() {
