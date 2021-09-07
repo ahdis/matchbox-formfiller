@@ -12,13 +12,18 @@
     border-bottom: 1px solid #dedede;
     display: flex;
     align-items: center;
+    height: 40px;
 
-    .image-name {
+    .attachment-name {
       flex: 1;
       padding: 0 1rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .attachment-size:last-child {
+      margin-right: 1rem;
     }
 
     .mat-icon-button {

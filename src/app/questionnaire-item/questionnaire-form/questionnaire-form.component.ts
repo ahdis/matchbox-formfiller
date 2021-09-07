@@ -45,6 +45,7 @@ import { getInitActions } from '../store/init-actions';
 export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
   @Input() questionnaire: fhir.r4.Questionnaire;
   @Input() questionnaireResponse: fhir.r4.QuestionnaireResponse;
+  @Input() readOnly = false;
   @Input() hideSubmitButton = false;
   @Input() hideSaveButton = false;
   @Input() hideCancelButton = false;
@@ -82,7 +83,7 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
         this.dispatch$.pipe(
           scan(
             rootReducer,
-            transformQuestionnaire(this.questionnaire, valueSets)
+            transformQuestionnaire(this.questionnaire, valueSets, this.readOnly)
           )
         )
       ),

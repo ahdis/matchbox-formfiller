@@ -6,7 +6,10 @@ import {
 } from '@angular/core';
 import { FormArray } from '@angular/forms';
 import * as R from 'ramda';
-import { modifyFormArrayToMatchCount } from '../impure-helpers';
+import {
+  modifyFormArrayToMatchCount,
+  setDisabledBasedOnIsReadOnly,
+} from '../impure-helpers';
 import { setAnswers } from '../store/action';
 import { Action, FormItem, LinkIdPathSegment } from '../types';
 
@@ -30,6 +33,7 @@ export class QuestionnaireFormItemCheckBoxComponent implements OnInit {
     if (!R.equals(this.formArray.value, values)) {
       this.formArray.patchValue(values, { emitEvent: false });
     }
+    setDisabledBasedOnIsReadOnly(this.formArray, item);
   }
   @Input() allowUserProvidedAnswers: boolean;
 

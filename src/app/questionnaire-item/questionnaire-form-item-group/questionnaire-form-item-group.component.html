@@ -37,6 +37,7 @@
       mat-icon-button
       *ngIf="
         formItem.repeats &&
+        !formItem.isReadonly &&
         (formItem.answers.length > 1 || !formItem.isRequired)
       "
       aria-label="Remove group"
@@ -61,7 +62,7 @@
   ></app-questionnaire-form-item>
 </div>
 <button
-  *ngIf="formItem.repeats"
+  *ngIf="formItem.repeats && !formItem.isReadonly"
   mat-raised-button
   color="primary"
   type="button"

@@ -1,18 +1,24 @@
 <div class="attachment-field">
   <ng-container *ngFor="let attachment of item.answers; let i = index">
     <div *ngIf="attachment" class="attachment-entry">
-      <div class="image-name">
+      <div class="attachment-name">
         {{ attachment.title }}
       </div>
-      <div class="image-size">
+      <div class="attachment-size">
         {{ attachment.size | filesize }}
       </div>
-      <button mat-icon-button (click)="removeAttachment(i)" type="button">
+      <button
+        *ngIf="!item.isReadonly"
+        mat-icon-button
+        (click)="removeAttachment(i)"
+        type="button"
+      >
         <mat-icon>close</mat-icon>
       </button>
     </div>
   </ng-container>
   <div
+    *ngIf="!item.isReadonly"
     class="drop-zone"
     (dragover)="onDragOver($event)"
     [class.file-over]="dragCounter > 0"

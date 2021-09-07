@@ -10,6 +10,7 @@ import { filter } from 'rxjs/operators';
 import {
   modifyFormArrayToMatchAnswerCount,
   processValuesIfChanged,
+  setDisabledBasedOnIsReadOnly,
 } from '../impure-helpers';
 import { setAnswers } from '../store/action';
 import { Action, FormItem, LinkIdPathSegment } from '../types';
@@ -33,6 +34,7 @@ export class QuestionnaireFormItemChoiceComponent implements OnInit {
     processValuesIfChanged(this.formArray, item, (values) =>
       this.formArray.patchValue(values, { emitEvent: false })
     );
+    setDisabledBasedOnIsReadOnly(this.formArray, item);
   }
 
   formArray = new FormArray([]);
