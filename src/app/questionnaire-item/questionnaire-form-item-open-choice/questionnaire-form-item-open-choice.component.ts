@@ -11,6 +11,7 @@ import { filter, map, startWith } from 'rxjs/operators';
 import {
   modifyFormArrayToMatchAnswerCount,
   processValuesIfChanged,
+  setDisabledBasedOnIsReadOnly,
 } from '../impure-helpers';
 import { addAnswerOption, setAnswers } from '../store/action';
 import { filterNotNil, isString } from '../store/util';
@@ -46,6 +47,7 @@ export class QuestionnaireFormItemOpenChoiceComponent implements OnInit {
         { emitEvent: false }
       )
     );
+    setDisabledBasedOnIsReadOnly(this.formArray, item);
   }
 
   formArray = new FormArray([]);

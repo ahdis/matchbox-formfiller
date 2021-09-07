@@ -260,9 +260,14 @@ const getInitialAnswers = R.pipe(
   R.when(R.isEmpty, R.always([undefined]))
 );
 
-const transformItem = (valueSets: any[]) => (item: any): QuestionnaireItem => {
+const transformItem = (valueSets: any[], isQuestionnaireReadOnly: boolean) => (
+  item: any
+): QuestionnaireItem => {
   const answers = getInitialAnswers(item);
-  const defaultItems = transformItems(valueSets)(item.item);
+  const defaultItems = transformItems(
+    valueSets,
+    isQuestionnaireReadOnly
+  )(item.item);
   const itemAnswerList = R.map(
     (answer) => ({ answer, items: defaultItems }),
     answers
@@ -271,7 +276,7 @@ const transformItem = (valueSets: any[]) => (item: any): QuestionnaireItem => {
     linkId: item.linkId,
     type: item.type,
     isRequired: toBoolean(item.required),
-    isReadonly: toBoolean(item.readonly),
+    isReadonly: isQuestionnaireReadOnly || toBoolean(item.readOnly),
     maxLength: toNumber(item.maxLength),
     repeats: toBoolean(item.repeats),
     prefix: getHtmlOrText(toString(item.prefix), item._prefix),
@@ -306,25 +311,27 @@ const transformItem = (valueSets: any[]) => (item: any): QuestionnaireItem => {
   };
 };
 
-const transformItems: (
-  valueSets: any[]
-) => (items: unknown) => QuestionnaireItemsIndexedByLinkId = (valueSets) =>
+const transformItems = (
+  valueSets: any[],
+  isQuestionnaireReadOnly: boolean
+): ((items: unknown) => QuestionnaireItemsIndexedByLinkId) =>
   R.pipe(
     toArray,
     R.filter(
       (item: any) =>
         isObject(item) && isString(item.linkId) && isString(item.type)
     ),
-    R.map(transformItem(valueSets)),
+    R.map(transformItem(valueSets, isQuestionnaireReadOnly)),
     R.indexBy(R.prop('linkId'))
   );
 
 export const transformQuestionnaire = (
   questionnaire: fhir.r4.Questionnaire,
-  valueSets: any[]
+  valueSets: any[],
+  isQuestionnaireReadOnly: boolean
 ): QuestionnaireState => ({
   title: getHtmlOrText(toString(questionnaire.title), questionnaire._title),
-  items: transformItems(valueSets)(questionnaire.item),
+  items: transformItems(valueSets, isQuestionnaireReadOnly)(questionnaire.item),
   url: questionnaire.url,
   extensions: {
     title: {

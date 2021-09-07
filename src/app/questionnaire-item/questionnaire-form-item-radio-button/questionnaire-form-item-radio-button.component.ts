@@ -7,6 +7,7 @@ import {
 import { FormControl, Validators } from '@angular/forms';
 import { setAnswers } from '../store/action';
 import { Action, FormItem, LinkIdPathSegment } from '../types';
+import { setDisabledBasedOnIsReadOnly } from '../impure-helpers';
 
 @Component({
   selector: 'app-questionnaire-form-item-radio-button',
@@ -23,6 +24,7 @@ export class QuestionnaireFormItemRadioButtonComponent implements OnInit {
       item.answers.length > 0 ? item.answers[0] : undefined,
       { emitEvent: false }
     );
+    setDisabledBasedOnIsReadOnly(this.formControl, item);
   }
   @Input() allowUserProvidedAnswers: boolean;
 

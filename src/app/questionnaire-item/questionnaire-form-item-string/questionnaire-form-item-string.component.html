@@ -26,7 +26,11 @@
   </mat-form-field>
   <button
     mat-icon-button
-    *ngIf="item.repeats && (formArray.length > 1 || !item.isRequired)"
+    *ngIf="
+      item.repeats &&
+      !item.isReadonly &&
+      (formArray.length > 1 || !item.isRequired)
+    "
     aria-label="Remove answer"
     (click)="removeAnswer(answerIndex)"
     type="button"
@@ -35,7 +39,7 @@
   </button>
 </div>
 <button
-  *ngIf="item.repeats"
+  *ngIf="item.repeats && !item.isReadonly"
   mat-raised-button
   color="primary"
   (click)="addAnswer()"
