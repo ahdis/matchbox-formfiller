@@ -1,10 +1,17 @@
-<ng-container *ngIf="questionnaire$ | async as questionnaire; else notfound">
+<ng-container
+  *ngIf="
+    questionnaireWithResponse$ | async as questionnaireWithResponse;
+    else notfound
+  "
+>
   <app-questionnaire-form
-    [questionnaire]="questionnaire"
-    [questionnaireResponse]="initialQuestionnaireResponse"
+    [questionnaire]="questionnaireWithResponse.questionnaire"
+    [questionnaireResponse]="questionnaireWithResponse.questionnaireResponse"
     (changeQuestionnaireResponse)="onChangeQuestionnaireResponse($event)"
-    (submitQuestionnaire)="onSubmit()"
-    (saveAsDraft)="onSaveAsDraft()"
+    (submitQuestionnaire)="onSubmit(questionnaireWithResponse)"
+    (saveAsDraft)="
+      onSaveAsDraft(questionnaireWithResponse.questionnaireResponse)
+    "
     (cancel)="onCancel()"
   ></app-questionnaire-form>
 </ng-container>

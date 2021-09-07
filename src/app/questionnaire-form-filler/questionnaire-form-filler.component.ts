@@ -1,13 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import debug from 'debug';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { QuestionnaireDemo } from '../home/questionnaire-demo';
-import { QuestionnaireFillerService } from '../questionnaire-filler.service';
+import { Observable, of, zip } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { FhirConfigService } from '../fhirConfig.service';
 import Client from 'fhir-kit-client';
 import { getExtensionOfElement } from '../questionnaire-item/store/transform-initial-state';
+import { fromPromise } from 'rxjs/internal/observable/fromPromise';
+
+interface QuestionnaireWithResponse {
+  readonly questionnaire: fhir.r4.Questionnaire;
+  readonly questionnaireResponse?: fhir.r4.QuestionnaireResponse;
+}
 
 @Component({
   selector: 'app-questionnaire-form-filler',
@@ -17,16 +21,13 @@ import { getExtensionOfElement } from '../questionnaire-item/store/transform-ini
 export class QuestionnaireFormFillerComponent implements OnInit {
   private readonly fhirKitClient: Client;
 
-  questionnaire$: Observable<fhir.r4.Questionnaire | undefined>;
-  initialQuestionnaireResponse: fhir.r4.QuestionnaireResponse;
+  questionnaireWithResponse$: Observable<QuestionnaireWithResponse | undefined>;
   questionnaireResponse: fhir.r4.QuestionnaireResponse;
-  questionnaire: fhir.r4.Questionnaire;
 
   log = debug('app:');
 
   constructor(
     private route: ActivatedRoute,
-    private questionnaireFillerServer: QuestionnaireFillerService,
     private fhirConfigService: FhirConfigService,
     private router: Router
   ) {
@@ -34,32 +35,59 @@ export class QuestionnaireFormFillerComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.questionnaire$ = this.route.paramMap.pipe(
-      map((params: ParamMap) => params.get('id')),
-      map((id) =>
-        id === 'radiology-order'
-          ? QuestionnaireDemo.getQuestionnaireRadiologyOrder()
-          : id === '-1'
-          ? this.questionnaireFillerServer.getQuestionnaire()
+    this.questionnaireWithResponse$ = zip(
+      this.route.paramMap.pipe(
+        map((params) => params.get('questionnaireId')),
+        switchMap((id) =>
+          fromPromise<fhir.r4.Questionnaire>(
+            this.fhirKitClient.read({
+              resourceType: 'Questionnaire',
+              id,
+            })
+          )
+        )
+      ),
+      this.route.queryParamMap.pipe(
+        map((params) => params.get('questionnaireResponseId')),
+        switchMap((id) =>
+          id
+            ? fromPromise<fhir.r4.QuestionnaireResponse>(
+                this.fhirKitClient.read({
+                  resourceType: 'QuestionnaireResponse',
+                  id,
+                })
+              )
+            : of(undefined)
+        )
+      )
+    ).pipe(
+      map(([questionnaire, questionnaireResponse]) =>
+        questionnaire?.resourceType === 'Questionnaire'
+          ? {
+              questionnaire,
+              questionnaireResponse:
+                questionnaireResponse?.resourceType === 'QuestionnaireResponse'
+                  ? questionnaireResponse
+                  : undefined,
+            }
           : undefined
       )
     );
-    this.questionnaire$.subscribe((term) => {
-      this.questionnaire = term;
-    });
-    this.initialQuestionnaireResponse = this.questionnaireFillerServer.getQuestionnaireResponse();
   }
 
   onChangeQuestionnaireResponse(response: fhir.r4.QuestionnaireResponse) {
     this.questionnaireResponse = response;
   }
 
-  async onSubmit() {
+  async onSubmit({
+    questionnaire,
+    questionnaireResponse,
+  }: QuestionnaireWithResponse) {
     this.log('submit questionnaire response', this.questionnaireResponse);
     if (
       getExtensionOfElement(
         'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-targetStructureMap'
-      )(this.questionnaire)
+      )(questionnaire)
     ) {
       const bundle = await this.fhirKitClient.operation({
         name: 'extract',
@@ -71,14 +99,14 @@ export class QuestionnaireFormFillerComponent implements OnInit {
         body: bundle,
       });
     }
-    await this.saveQuestionnaireResponse('completed');
+    await this.saveQuestionnaireResponse(questionnaireResponse, 'completed');
     await this.router.navigateByUrl('/');
   }
 
-  onSaveAsDraft() {
-    return this.saveQuestionnaireResponse().then(() =>
-      this.router.navigateByUrl('/')
-    );
+  onSaveAsDraft(initialQuestionnaireResponse?: fhir.r4.QuestionnaireResponse) {
+    return this.saveQuestionnaireResponse(
+      initialQuestionnaireResponse
+    ).then(() => this.router.navigateByUrl('/'));
   }
 
   onCancel() {
@@ -86,15 +114,16 @@ export class QuestionnaireFormFillerComponent implements OnInit {
   }
 
   private async saveQuestionnaireResponse(
+    initialQuestionnaireResponse?: fhir.r4.QuestionnaireResponse,
     status: 'in-progress' | 'completed' = 'in-progress'
   ) {
-    const questionnaireResponseId = this.initialQuestionnaireResponse?.id;
+    const questionnaireResponseId = initialQuestionnaireResponse?.id;
     if (questionnaireResponseId) {
       return this.fhirKitClient.update({
         id: questionnaireResponseId,
         resourceType: 'QuestionnaireResponse',
         body: {
-          ...this.initialQuestionnaireResponse,
+          ...initialQuestionnaireResponse,
           ...this.questionnaireResponse,
           status,
         },

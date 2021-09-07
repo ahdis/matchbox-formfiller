@@ -17,7 +17,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { SharedModule } from './shared/shared.module';
 import { IgsComponent } from './igs/igs.component';
 import { ClientComponent } from './client/client.component';
-import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
+import { HIGHLIGHT_OPTIONS, HighlightModule } from 'ngx-highlightjs';
 import { Cda2FhirComponent } from './cda2-fhir/cda2-fhir.component';
 import { Fhir2CdaComponent } from './fhir2-cda/fhir2-cda.component';
 import { ValidateComponent } from './validate/validate.component';
@@ -41,7 +41,7 @@ const routes: Routes = [
     component: PatientsComponent,
   },
   {
-    path: 'questionnaire/:id',
+    path: 'questionnaire/:questionnaireId',
     component: QuestionnaireFormFillerComponent,
   },
   {

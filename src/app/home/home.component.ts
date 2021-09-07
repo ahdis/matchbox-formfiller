@@ -3,7 +3,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { FhirConfigService } from '../fhirConfig.service';
 import Client from 'fhir-kit-client';
 import { Router } from '@angular/router';
-import { QuestionnaireFillerService } from '../questionnaire-filler.service';
 import * as R from 'ramda';
 import { QuestionnaireTableEntry } from '../questionnaires-table/questionnaires-table.component';
 
@@ -12,19 +11,6 @@ interface QuestionnaireWithResponse {
   readonly questionnaireResponse: fhir.r4.QuestionnaireResponse;
 }
 
-type LocalQuestionnaire = string;
-
-const localDataSource: QuestionnaireTableEntry<LocalQuestionnaire>[] = [
-  {
-    title: 'Questionnaire Radiology Order (local version)',
-    status: 'active',
-    date: '2021-02-24',
-    publisher: 'HL7 Switzerland',
-    version: '0.1.0',
-    entry: 'radiology-order',
-  },
-];
-
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -32,8 +18,8 @@ const localDataSource: QuestionnaireTableEntry<LocalQuestionnaire>[] = [
 })
 export class HomeComponent implements OnInit {
   newOrderDataSource = new MatTableDataSource<
-    QuestionnaireTableEntry<LocalQuestionnaire | fhir.r4.Questionnaire>
-  >(localDataSource);
+    QuestionnaireTableEntry<fhir.r4.Questionnaire>
+  >();
   openOrderDataSource = new MatTableDataSource<
     QuestionnaireTableEntry<QuestionnaireWithResponse>
   >();
@@ -45,11 +31,7 @@ export class HomeComponent implements OnInit {
   >();
   client: Client;
 
-  constructor(
-    fhirConfigService: FhirConfigService,
-    private router: Router,
-    private questionnaireFillerServer: QuestionnaireFillerService
-  ) {
+  constructor(fhirConfigService: FhirConfigService, private router: Router) {
     this.client = fhirConfigService.getFhirClient();
   }
 
@@ -71,17 +53,14 @@ export class HomeComponent implements OnInit {
         },
       })
       .then(extractResourcesFromSearchBundle);
-    this.newOrderDataSource.data = [
-      ...localDataSource,
-      ...questionnaires.map((questionnaire) => ({
-        title: questionnaire.title,
-        status: questionnaire.status,
-        date: questionnaire.date,
-        publisher: questionnaire.publisher,
-        version: questionnaire.version,
-        entry: questionnaire,
-      })),
-    ];
+    this.newOrderDataSource.data = questionnaires.map((questionnaire) => ({
+      title: questionnaire.title,
+      status: questionnaire.status,
+      date: questionnaire.date,
+      publisher: questionnaire.publisher,
+      version: questionnaire.version,
+      entry: questionnaire,
+    }));
   }
 
   async loadQuestionnaireResponses() {
@@ -109,6 +88,7 @@ export class HomeComponent implements OnInit {
       .search({
         resourceType: 'Questionnaire',
         searchParams: {
+          _summary: 'true',
           url: questionnaireUrls,
         },
       })
@@ -204,35 +184,17 @@ export class HomeComponent implements OnInit {
     this.incomingOrderDataSource.data = incomingEntries;
   }
 
-  openQuestionnaire(entry: LocalQuestionnaire | fhir.r4.Questionnaire) {
-    if (typeof entry === 'string') {
-      this.router.navigate(['questionnaire', entry]);
-      return;
-    }
-    this.client
-      .read({ resourceType: 'Questionnaire', id: entry.id })
-      .then((response: fhir.r4.Questionnaire) => {
-        this.questionnaireFillerServer.setQuestionnaire(response);
-        this.router.navigate(['questionnaire', '-1']);
-      });
+  openQuestionnaire(entry: fhir.r4.Questionnaire) {
+    this.router.navigate(['questionnaire', entry.id]);
   }
 
   openQuestionnaireResponse({
     questionnaire,
     questionnaireResponse,
   }: QuestionnaireWithResponse) {
-    this.client
-      .read({
-        resourceType: 'QuestionnaireResponse',
-        id: questionnaireResponse.id,
-      })
-      .then((response: fhir.r4.QuestionnaireResponse) => {
-        this.questionnaireFillerServer.setQuestionnaire(
-          questionnaire,
-          response
-        );
-        this.router.navigate(['questionnaire', '-1']);
-      });
+    this.router.navigate(['questionnaire', questionnaire.id], {
+      queryParams: { questionnaireResponseId: questionnaireResponse.id },
+    });
   }
 }
 
