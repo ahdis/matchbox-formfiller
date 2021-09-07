@@ -1,7 +1,8 @@
 <div
   *ngFor="
     let childrenLinkIdPathsPerAnswer of childrenItemLinkIdPaths;
-    let answerIndex = index
+    let answerIndex = index;
+    trackBy: track
   "
 >
   <div class="header-container">
@@ -55,7 +56,7 @@
   </div>
 
   <app-questionnaire-form-item
-    *ngFor="let childLinkIdPath of childrenLinkIdPathsPerAnswer"
+    *ngFor="let childLinkIdPath of childrenLinkIdPathsPerAnswer; trackBy: track"
     [store]="store"
     [dispatch]="dispatch"
     [linkIdPath]="childLinkIdPath"

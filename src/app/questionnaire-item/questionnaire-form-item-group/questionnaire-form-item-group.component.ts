@@ -7,6 +7,7 @@ import {
 } from '../types';
 import { addAnswer, removeAnswer } from '../store/action';
 import { Observable } from 'rxjs';
+import { isNumber } from '../store/util';
 
 @Component({
   selector: 'app-questionnaire-form-item-group',
@@ -29,4 +30,19 @@ export class QuestionnaireFormItemGroupComponent {
   removeGroup(index) {
     this.dispatch(removeAnswer(this.linkIdPath, index));
   }
+
+  track(index: number, paths: (LinkIdPathSegment[] | LinkIdPathSegment)[]) {
+    return pathsToString(paths);
+  }
 }
+
+const pathsToString = (paths: (LinkIdPathSegment[] | LinkIdPathSegment)[]) =>
+  paths
+    .map((path) =>
+      Array.isArray(path)
+        ? pathsToString(path)
+        : isNumber(path.index)
+        ? path.linkId + ':' + path.index
+        : path.linkId
+    )
+    .join(':');
