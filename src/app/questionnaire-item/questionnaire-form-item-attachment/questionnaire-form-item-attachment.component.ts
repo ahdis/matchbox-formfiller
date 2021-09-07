@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { addAnswer, removeAnswer } from '../store/action';
 import { Action, FormItem, LinkIdPathSegment } from '../types';
+import { isString } from '../store/util';
 
 @Component({
   selector: 'app-questionnaire-form-item-attachment',
@@ -64,7 +65,10 @@ export class QuestionnaireFormItemAttachmentComponent {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
+      reader.onload = () =>
+        isString(reader.result)
+          ? resolve(reader.result.substring(reader.result.indexOf(',') + 1))
+          : reject('result is not a string');
       reader.onerror = (error) => reject(error);
     });
   }
