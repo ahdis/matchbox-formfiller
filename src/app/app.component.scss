@@ -1,5 +1,5 @@
 .example-fill-remaining-space {
-  /* This fills the remaining space, by using flexbox. 
+  /* This fills the remaining space, by using flexbox.
        Every toolbar row uses a flexbox row layout. */
   flex: 1 1 auto;
 }
@@ -32,8 +32,8 @@ main {
   width: 100%;
   margin: 0 auto;
 
-  @media screen and (min-width: 620px) {
+  @media screen and (min-width: 1020px) {
     padding: 3rem 0;
-    width: 100%;
+    width: 1000px;
   }
 }

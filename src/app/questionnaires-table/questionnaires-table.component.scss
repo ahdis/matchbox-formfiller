@@ -42,6 +42,10 @@ $primary: map-get($theme, primary);
       flex: 3;
     }
 
+    &.date {
+      flex: 2;
+    }
+
     &:first-child {
       padding-left: 1rem;
     }
