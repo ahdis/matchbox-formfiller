@@ -5,11 +5,8 @@ import Client from 'fhir-kit-client';
 import { Router } from '@angular/router';
 import * as R from 'ramda';
 import { QuestionnaireTableEntry } from '../questionnaires-table/questionnaires-table.component';
-
-interface QuestionnaireWithResponse {
-  readonly questionnaire: fhir.r4.Questionnaire;
-  readonly questionnaireResponse: fhir.r4.QuestionnaireResponse;
-}
+import { QuestionnaireWithResponse } from '../questionnaire-item/types';
+import { extractQuestionnaireWithResponseFromBundle } from '../util/bundle-transform';
 
 @Component({
   selector: 'app-home',
@@ -24,10 +21,10 @@ export class HomeComponent implements OnInit {
     QuestionnaireTableEntry<QuestionnaireWithResponse>
   >();
   outgoingOrderDataSource = new MatTableDataSource<
-    QuestionnaireTableEntry<QuestionnaireWithResponse>
+    QuestionnaireTableEntry<string>
   >();
   incomingOrderDataSource = new MatTableDataSource<
-    QuestionnaireTableEntry<QuestionnaireWithResponse>
+    QuestionnaireTableEntry<string>
   >();
   client: Client;
 
@@ -99,7 +96,7 @@ export class HomeComponent implements OnInit {
           ({ url }) => questionnaireResponse.questionnaire === url
         );
         return {
-          title: questionnaire.title,
+          title: questionnaire.title + ' ' + questionnaireResponse.id,
           status: questionnaireResponse.status,
           date: questionnaireResponse.meta?.lastUpdated,
           publisher: questionnaire.publisher,
@@ -131,55 +128,11 @@ export class HomeComponent implements OnInit {
         'Cannot partition between incoming and outgoing bundles as no Basic resource defining the placerOrderIdentifier could be found.'
       );
     }
-    const bundles: fhir.r4.Bundle[] = await this.client
-      .search({
-        resourceType: 'Bundle',
-      })
-      .then(extractResourcesFromSearchBundle);
 
-    const [outgoingEntries, incomingEntries] = R.map(
-      R.map((bundle: fhir.r4.Bundle) => {
-        const questionnaire: fhir.r4.Questionnaire = findResourceByType(
-          bundle,
-          'Questionnaire'
-        ) as any;
-        const questionnaireResponse: fhir.r4.QuestionnaireResponse = findResourceByType(
-          bundle,
-          'QuestionnaireResponse'
-        ) as any;
-        return {
-          title: questionnaire?.title,
-          status: questionnaireResponse?.status,
-          date: bundle.meta?.lastUpdated,
-          publisher: questionnaire?.publisher,
-          version: bundle.meta?.versionId,
-          entry: {
-            questionnaire,
-            questionnaireResponse,
-          },
-        };
-      }),
-      R.partition((bundle) => {
-        const serviceRequest: fhir.r4.ServiceRequest = findResourceByType(
-          bundle,
-          'ServiceRequest'
-        ) as any;
-        const placerIdentifier = R.find(
-          (identifier) =>
-            R.any(
-              (coding) =>
-                coding?.system === placerCoding.system &&
-                coding?.code === placerCoding.code,
-              identifier?.type?.coding ?? []
-            ),
-          serviceRequest?.identifier ?? []
-        );
-        return (
-          outgoingPlacerOrderIdentifier.system === placerIdentifier.system &&
-          outgoingPlacerOrderIdentifier.value === placerIdentifier.value
-        );
-      }, bundles)
-    );
+    const [outgoingEntries, incomingEntries] = await Promise.all([
+      this.loadBundles(outgoingPlacerOrderIdentifier, false),
+      this.loadBundles(outgoingPlacerOrderIdentifier, true),
+    ]);
     this.outgoingOrderDataSource.data = outgoingEntries;
     this.incomingOrderDataSource.data = incomingEntries;
   }
@@ -196,6 +149,42 @@ export class HomeComponent implements OnInit {
       queryParams: { questionnaireResponseId: questionnaireResponse.id },
     });
   }
+
+  openBundle(bundleId: string) {
+    this.router.navigate(['bundle', bundleId]);
+  }
+
+  private loadBundles(
+    outgoingPlacerOrderIdentifier: fhir.r4.Identifier,
+    incoming: boolean
+  ) {
+    return this.client
+      .search({
+        resourceType: 'Bundle',
+        searchParams: {
+          [`placer${
+            incoming ? ':not' : ''
+          }`]: `${outgoingPlacerOrderIdentifier.system}|${outgoingPlacerOrderIdentifier.value}`,
+        },
+      })
+      .then(extractResourcesFromSearchBundle)
+      .then(
+        R.map((bundle: fhir.r4.Bundle) => {
+          const {
+            questionnaire,
+            questionnaireResponse,
+          } = extractQuestionnaireWithResponseFromBundle(bundle);
+          return {
+            title: questionnaire?.title + ' ' + bundle.id,
+            status: questionnaireResponse?.status,
+            date: bundle.meta?.lastUpdated,
+            publisher: questionnaire?.publisher,
+            version: bundle.meta?.versionId,
+            entry: bundle.id,
+          };
+        })
+      );
+  }
 }
 
 const extractResourcesFromSearchBundle = (
@@ -204,10 +193,3 @@ const extractResourcesFromSearchBundle = (
   bundle.resourceType !== 'Bundle'
     ? Promise.reject('Search failed')
     : Promise.resolve(bundle?.entry?.map(({ resource }) => resource) ?? []);
-
-const findResourceByType = (
-  bundle: fhir.r4.Bundle,
-  resourceType: string
-): fhir.r4.Resource | undefined =>
-  bundle?.entry?.find((entry) => entry?.resource?.resourceType === resourceType)
-    ?.resource;

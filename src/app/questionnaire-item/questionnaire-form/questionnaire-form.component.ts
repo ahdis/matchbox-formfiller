@@ -45,6 +45,9 @@ import { getInitActions } from '../store/init-actions';
 export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
   @Input() questionnaire: fhir.r4.Questionnaire;
   @Input() questionnaireResponse: fhir.r4.QuestionnaireResponse;
+  @Input() hideSubmitButton = false;
+  @Input() hideSaveButton = false;
+  @Input() hideCancelButton = false;
 
   @Output()
   changeQuestionnaireResponse = new EventEmitter<fhir.r4.QuestionnaireResponse>();
