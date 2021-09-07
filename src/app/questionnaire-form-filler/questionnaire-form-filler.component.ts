@@ -7,11 +7,7 @@ import { FhirConfigService } from '../fhirConfig.service';
 import Client from 'fhir-kit-client';
 import { getExtensionOfElement } from '../questionnaire-item/store/transform-initial-state';
 import { fromPromise } from 'rxjs/internal/observable/fromPromise';
-
-interface QuestionnaireWithResponse {
-  readonly questionnaire: fhir.r4.Questionnaire;
-  readonly questionnaireResponse?: fhir.r4.QuestionnaireResponse;
-}
+import { QuestionnaireWithResponse } from '../questionnaire-item/types';
 
 @Component({
   selector: 'app-questionnaire-form-filler',

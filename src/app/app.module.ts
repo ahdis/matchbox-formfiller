@@ -22,6 +22,7 @@ import { Cda2FhirComponent } from './cda2-fhir/cda2-fhir.component';
 import { Fhir2CdaComponent } from './fhir2-cda/fhir2-cda.component';
 import { ValidateComponent } from './validate/validate.component';
 import { QuestionnairesTableComponent } from './questionnaires-table/questionnaires-table.component';
+import { BundleViewerComponent } from './bundle-viewer/bundle-viewer.component';
 
 const routes: Routes = [
   {
@@ -43,6 +44,10 @@ const routes: Routes = [
   {
     path: 'questionnaire/:questionnaireId',
     component: QuestionnaireFormFillerComponent,
+  },
+  {
+    path: 'bundle/:bundleId',
+    component: BundleViewerComponent,
   },
   {
     path: 'CapabilityStatement',
@@ -95,6 +100,7 @@ export function createTranslateLoader(http: HttpClient) {
     Cda2FhirComponent,
     Fhir2CdaComponent,
     ValidateComponent,
+    BundleViewerComponent,
   ],
   imports: [
     SharedModule,

@@ -1,0 +1,17 @@
+<ng-container
+  *ngIf="
+    questionnaireWithResponse$ | async as questionnaireWithResponse;
+    else notfound
+  "
+>
+  <app-questionnaire-form
+    [questionnaire]="questionnaireWithResponse.questionnaire"
+    [questionnaireResponse]="questionnaireWithResponse.questionnaireResponse"
+    [hideSubmitButton]="true"
+    [hideSaveButton]="true"
+    [hideCancelButton]="true"
+  ></app-questionnaire-form>
+</ng-container>
+<ng-template #notfound>
+  <p>Bundle not found</p>
+</ng-template>

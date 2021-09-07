@@ -119,3 +119,8 @@ export interface LinkIdPathSegment {
   readonly linkId: string;
   readonly index?: number;
 }
+
+export interface QuestionnaireWithResponse {
+  readonly questionnaire: fhir.r4.Questionnaire;
+  readonly questionnaireResponse?: fhir.r4.QuestionnaireResponse;
+}
