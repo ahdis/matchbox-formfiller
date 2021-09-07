@@ -38,7 +38,7 @@ $outer-space: 1.5rem;
       display: none;
     }
 
-    @media screen and (min-width: 620px) {
+    @media screen and (min-width: 1020px) {
       background-color: mat-color($primary);
       color: white;
       border-radius: 4px 4px 0 0;
