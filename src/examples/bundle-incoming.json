@@ -1592,7 +1592,7 @@
                 "text": "Auftragsnummer des Auftraggebers",
                 "answer": [
                   {
-                    "valueString": "urn:oid:1.66.98.5.6.7"
+                    "valueString": "887766"
                   }
                 ]
               },
@@ -2524,7 +2524,7 @@
               ]
             },
             "system": "http://example.ch/rad-order/placer",
-            "value": "urn:oid:1.66.98.5.6.7"
+            "value": "887766"
           }
         ],
         "status": "active",
