@@ -1592,7 +1592,7 @@
                 "text": "Auftragsnummer des Auftraggebers",
                 "answer": [
                   {
-                    "valueString": "urn:oid:2.16.756.5.30.1.145.1.2.3"
+                    "valueString": "123456"
                   }
                 ]
               },
@@ -1601,7 +1601,7 @@
                 "text": "Identifier Domain der Auftragsnummer des Auftraggebers",
                 "answer": [
                   {
-                    "valueString": "http://ahdis.ch/fhir/Questionnaire"
+                    "valueString": "urn:oid:2.16.756.5.30.1.145.1.2.3"
                   }
                 ]
               },
@@ -2523,8 +2523,8 @@
                 }
               ]
             },
-            "system": "http://ahdis.ch/fhir/Questionnaire",
-            "value": "urn:oid:2.16.756.5.30.1.145.1.2.3"
+            "system": "urn:oid:2.16.756.5.30.1.145.1.2.3",
+            "value": "123456"
           }
         ],
         "status": "active",
