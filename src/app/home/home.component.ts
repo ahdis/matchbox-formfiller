@@ -165,6 +165,7 @@ export class HomeComponent implements OnInit {
           [`placer${
             incoming ? ':not' : ''
           }`]: `${outgoingPlacerOrderIdentifier.system}|${outgoingPlacerOrderIdentifier.value}`,
+          _sort: '-_lastUpdated',
         },
       })
       .then(extractResourcesFromSearchBundle)
