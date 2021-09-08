@@ -85,14 +85,18 @@ const getAnswerValueWithQuestionnaireItem = ({
       return R.pipe(
         R.find<AnswerOption>(({ key }) => key === answer),
         (answerOption) =>
-          answerOption
-            ? answerOption.type === AnswerOptionType.Coding
-              ? {
-                  valueCoding: answerOption.value,
-                }
-              : {
-                  valueString: answerOption.value,
-                }
+          answerOption?.type === AnswerOptionType.Coding &&
+          isObject(answerOption?.value)
+            ? {
+                valueCoding: R.pick(
+                  ['system', 'version', 'code', 'display', 'userSelected'],
+                  answerOption.value
+                ),
+              }
+            : isString(answerOption?.value)
+            ? {
+                valueString: answerOption.value,
+              }
             : undefined
       )(answerOptions);
     case 'attachment':
