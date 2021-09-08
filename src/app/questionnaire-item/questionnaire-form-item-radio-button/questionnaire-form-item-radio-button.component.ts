@@ -20,10 +20,7 @@ export class QuestionnaireFormItemRadioButtonComponent implements OnInit {
   @Input() dispatch: (action: Action) => void;
   @Input() set formItem(item: FormItem) {
     this.item = item;
-    this.formControl.patchValue(
-      item.answers.length > 0 ? item.answers[0] : undefined,
-      { emitEvent: false }
-    );
+    this.formControl.patchValue(item.answers[0], { emitEvent: false });
     setDisabledBasedOnIsReadOnly(this.formControl, item);
   }
   @Input() allowUserProvidedAnswers: boolean;

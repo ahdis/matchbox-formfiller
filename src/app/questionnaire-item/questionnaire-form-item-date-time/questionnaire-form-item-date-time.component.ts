@@ -34,13 +34,7 @@ export class QuestionnaireFormItemDateTimeComponent implements OnInit {
     );
     processValuesIfChanged(
       this.formArray,
-      {
-        ...item,
-        answers: item.answers.map((date) =>
-          isString(date) ? new Date(date) : date
-        ),
-      },
-      (values) => this.formArray.patchValue(values, { emitEvent: false })
+      item.answers.map((date) => (isString(date) ? new Date(date) : date))
     );
     modifyFormArrayToMatchAnswerCount(
       this.formTimeArray,
@@ -49,11 +43,7 @@ export class QuestionnaireFormItemDateTimeComponent implements OnInit {
     );
     const dateToTime = (date?: Date | string) =>
       date && toLocaleHHMM(isString(date) ? new Date(date) : date);
-    processValuesIfChanged(
-      this.formTimeArray,
-      { ...item, answers: item.answers.map(dateToTime) },
-      (values) => this.formTimeArray.patchValue(values, { emitEvent: false })
-    );
+    processValuesIfChanged(this.formTimeArray, item.answers.map(dateToTime));
     this.updateControls();
     setDisabledBasedOnIsReadOnly(this.formArray, item);
     setDisabledBasedOnIsReadOnly(this.formTimeArray, item);

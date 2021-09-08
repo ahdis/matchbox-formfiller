@@ -4,11 +4,10 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
-import { FormArray, Validators } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import * as R from 'ramda';
-import { filter } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import {
-  modifyFormArrayToMatchAnswerCount,
   processValuesIfChanged,
   setDisabledBasedOnIsReadOnly,
 } from '../impure-helpers';
@@ -26,23 +25,25 @@ export class QuestionnaireFormItemChoiceComponent implements OnInit {
   @Input() dispatch: (action: Action) => void;
   @Input() set formItem(item: FormItem) {
     this.item = item;
-    modifyFormArrayToMatchAnswerCount(
-      this.formArray,
-      item,
+    this.formControl.setValidators(
       item.isRequired ? [Validators.required] : []
     );
-    processValuesIfChanged(this.formArray, item, (values) =>
-      this.formArray.patchValue(values, { emitEvent: false })
+    processValuesIfChanged(
+      this.formControl,
+      item.repeats ? item : item.answers[0]
     );
-    setDisabledBasedOnIsReadOnly(this.formArray, item);
+    setDisabledBasedOnIsReadOnly(this.formControl, item);
   }
 
-  formArray = new FormArray([]);
+  formControl = new FormControl();
   item: FormItem;
 
   ngOnInit() {
-    this.formArray.valueChanges
-      .pipe(filter(R.none(R.isNil)))
+    this.formControl.valueChanges
+      .pipe(
+        map((values) => (Array.isArray(values) ? values : [values])),
+        filter(R.none(R.isNil))
+      )
       .subscribe((values) => {
         this.dispatch(setAnswers(this.linkIdPath, values));
       });
