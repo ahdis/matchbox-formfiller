@@ -11,7 +11,7 @@ value  = DEFAULT
 The displayed Questionnaire will be prefilled with the default values.   
 For the PoC, the following values are applied for the hidden fields:
 * order.placerOrderIdentifierDomainn = urn:oid:2.16.756.5.30.1.145.1.2.3
-* patient.localPidDomain = http://example.org/poc-patient
+* patient.localPidDomain = urn:oid:2.16.756.5.30.1.145.1.9.9
 
 
 Differentiation outgoing/incoming orders
