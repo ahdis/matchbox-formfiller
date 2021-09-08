@@ -53,7 +53,7 @@
             "text": "Identifier Domain der Auftragsnummer des Auftraggebers",
             "answer": [
               {
-                "valueString": "http://example.org/poc-orderer"
+                "valueString": "urn:oid:2.16.756.5.30.1.145.1.2.3"
               }
             ]
           }
@@ -68,7 +68,7 @@
             "text": "Lokale Patienten-ID Domain",
             "answer": [
               {
-                "valueString": "http://example.org/poc-patient"
+                "valueString": "urn:oid:2.16.756.5.30.1.145.1.9.9"
               }
             ]
           }

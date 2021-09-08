@@ -10,8 +10,21 @@ value  = DEFAULT
 
 The displayed Questionnaire will be prefilled with the default values.   
 For the PoC, the following values are applied for the hidden fields:
-* order.placerOrderIdentifierDomainn = http://example.org/poc-orderer
-* patient.localPidDomain = http://example.org/poc-patient
+* order.placerOrderIdentifierDomainn = urn:oid:2.16.756.5.30.1.145.1.2.3
+* patient.localPidDomain = urn:oid:2.16.756.5.30.1.145.1.9.9
+
+
+Differentiation outgoing/incoming orders
+========================================
+
+**Outgoing orders**  
+* All Bundles with the identical value for ServiceRequest.identifier:placerOrderIdentifier.system as the defined system value in the [Basic resource](https://github.com/ahdis/matchbox-formfiller/blob/master/src/examples/placer-order-identifier.json) on the server.
+* See [example](https://github.com/ahdis/matchbox-formfiller/blob/master/src/examples/bundle-outgoing.json)
+
+**Incoming orders**   
+* All other Bundles.
+* See [example](https://github.com/ahdis/matchbox-formfiller/blob/master/src/examples/bundle-incoming.json)
+
 
 Questionnaire with adaptions from ballot version
 ================================================
