@@ -31,9 +31,7 @@ export class QuestionnaireFormItemDateComponent implements OnInit {
       item,
       item.isRequired ? [Validators.required] : []
     );
-    processValuesIfChanged(this.formArray, item, (values) =>
-      this.formArray.patchValue(values, { emitEvent: false })
-    );
+    processValuesIfChanged(this.formArray, item);
     setDisabledBasedOnIsReadOnly(this.formArray, item);
   }
 

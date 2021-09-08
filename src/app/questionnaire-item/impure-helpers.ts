@@ -6,6 +6,7 @@ import {
 } from '@angular/forms';
 import * as R from 'ramda';
 import { FormItem } from './types';
+import { isObject } from './store/util';
 
 export const modifyFormArrayToMatchAnswerCount = (
   formArray: FormArray,
@@ -33,12 +34,14 @@ export const modifyFormArrayToMatchCount = (
 };
 
 export const processValuesIfChanged = (
-  formArray: FormArray,
-  item: FormItem,
-  callback: (values: string[]) => void
+  control: AbstractControl,
+  item: FormItem | any,
+  callback: (values: string[]) => void = (values) =>
+    control.patchValue(values, { emitEvent: false })
 ): void => {
-  if (!R.equals(formArray.value, item.answers)) {
-    callback(item.answers as string[]);
+  const answers = isObject(item) && 'answers' in item ? item.answers : item;
+  if (!R.equals(control.value, answers)) {
+    callback(answers as string[]);
   }
 };
 
