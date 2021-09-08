@@ -164,7 +164,7 @@ export class HomeComponent implements OnInit {
         searchParams: {
           [`placer${
             incoming ? ':not' : ''
-          }`]: `${outgoingPlacerOrderIdentifier.system}|${outgoingPlacerOrderIdentifier.value}`,
+          }`]: `${outgoingPlacerOrderIdentifier.system}|`,
           _sort: '-_lastUpdated',
         },
       })
