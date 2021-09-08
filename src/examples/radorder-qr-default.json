@@ -1,78 +1,87 @@
 {
-    "resourceType": "QuestionnaireResponse",
-    "identifier": [
-      {
-        "system": "http://ahdis.ch/fhir/Questionnaire",
-        "value": "DEFAULT"
-      }
-    ],
-    "questionnaire": "http://fhir.ch/ig/ch-rad-order/Questionnaire/QuestionnaireRadiologyOrder",
-    "status": "completed",
-    "item": [
-      {
-        "linkId": "order",
-        "text": "Auftrag",
-        "item": [
-          {
-            "linkId": "order.title",
-            "text": "Titel",
-            "answer": [
-              {
-                "valueString": "Anmeldung Radiologie"
+  "resourceType": "QuestionnaireResponse",
+  "identifier": [
+    {
+      "system": "http://ahdis.ch/fhir/Questionnaire",
+      "value": "DEFAULT"
+    }
+  ],
+  "questionnaire": "http://fhir.ch/ig/ch-rad-order/Questionnaire/QuestionnaireRadiologyOrder",
+  "status": "completed",
+  "item": [
+    {
+      "linkId": "order",
+      "text": "Auftrag",
+      "item": [
+        {
+          "linkId": "order.title",
+          "text": "Titel",
+          "answer": [
+            {
+              "valueString": "Anmeldung Radiologie"
+            }
+          ]
+        },
+        {
+          "linkId": "order.type",
+          "text": "Typ",
+          "answer": [
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.756.5.30.1.127.3.4",
+                "code": "2161000195103",
+                "display": "Imaging order (record artifact)"
               }
-            ]
-          },
-          {
-            "linkId": "order.type",
-            "text": "Typ",
-            "answer": [
-              {
-                "valueCoding": {
-                  "system": "urn:oid:2.16.756.5.30.1.127.3.4",
-                  "code": "2161000195103",
-                  "display": "Imaging order (record artifact)"
-                }
+            }
+          ]
+        },
+        {
+          "linkId": "order.category",
+          "text": "Kategorie",
+          "answer": [
+            {
+              "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "721963009",
+                "display": "Order (record artifact)"
               }
-            ]
-          },
-          {
-            "linkId": "order.category",
-            "text": "Kategorie",
-            "answer": [
-              {
-                "valueCoding": {
-                  "system": "http://snomed.info/sct",
-                  "code": "721963009",
-                  "display": "Order (record artifact)"
-                }
-              }
-            ]
-          },
-          {
-            "linkId": "order.placerOrderIdentifierDomain",
-            "text": "Identifier Domain der Auftragsnummer des Auftraggebers",
-            "answer": [
-              {
-                "valueString": "http://example.org/poc-orderer"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "linkId": "patient",
-        "text": "Patient",
-        "item": [
-          {
-            "linkId": "patient.localPidDomain",
-            "text": "Lokale Patienten-ID Domain",
-            "answer": [
-              {
-                "valueString": "http://example.org/poc-patient"
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+            }
+          ]
+        },
+        {
+          "linkId": "order.placerOrderIdentifier",
+          "text": "Auftragsnummer des Auftraggebers",
+          "answer": [
+            {
+              "valueString": "urn:oid:2.16.756.5.30.1.145.1.2.3"
+            }
+          ]
+        },
+        {
+          "linkId": "order.placerOrderIdentifierDomain",
+          "text": "Identifier Domain der Auftragsnummer des Auftraggebers",
+          "answer": [
+            {
+              "valueString": "http://ahdis.ch/fhir/Questionnaire"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "patient",
+      "text": "Patient",
+      "item": [
+        {
+          "linkId": "patient.localPidDomain",
+          "text": "Lokale Patienten-ID Domain",
+          "answer": [
+            {
+              "valueString": "http://example.org/poc-patient"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
