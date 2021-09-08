@@ -162,7 +162,17 @@ const getOptionsFromValueSet: (
     (valueSet) =>
       R.concat(
         R.chain(
-          R.pipe(R.propOr([], 'concept'), toArray),
+          (entry: fhir.r4.ValueSetComposeInclude) =>
+            R.map(
+              (concept: any) =>
+                isObject(concept) && isString(entry?.system)
+                  ? {
+                      system: entry.system,
+                      ...concept,
+                    }
+                  : concept,
+              toArray(entry?.concept ?? [])
+            ),
           toArray(R.pathOr([], ['compose', 'include'], valueSet))
         ),
         toArray(R.pathOr([], ['expansion', 'contains'], valueSet))
