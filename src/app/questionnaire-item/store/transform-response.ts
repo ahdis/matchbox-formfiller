@@ -154,47 +154,48 @@ const getResponseItems: (
 ) => (items: QuestionnaireItem[]) => fhir.r4.QuestionnaireResponseItem[] = (
   getIsItemEnabled
 ) =>
-  R.chain((item) => {
-    const isEnabled = getIsItemEnabled(item);
-    const getIsEnabledForSubItems = isEnabled
-      ? getIsItemEnabled
-      : R.always(false);
-    const responseItem: fhir.r4.QuestionnaireResponseItem = {
-      linkId: item.linkId,
-      text: item.text,
-    };
-    const getItems = R.pipe(
-      R.values,
-      getResponseItems(getIsEnabledForSubItems)
-    );
-    if (item.type === 'group') {
-      return R.map(
-        ({ items }) => ({
+  R.pipe<
+    QuestionnaireItem[],
+    QuestionnaireItem[],
+    fhir.r4.QuestionnaireResponseItem[],
+    fhir.r4.QuestionnaireResponseItem[]
+  >(
+    R.filter(getIsItemEnabled),
+    R.chain((item) => {
+      const responseItem: fhir.r4.QuestionnaireResponseItem = {
+        linkId: item.linkId,
+        text: item.text,
+      };
+      const getItems = R.pipe(R.values, getResponseItems(getIsItemEnabled));
+      if (item.type === 'group') {
+        // TODO find out what the behaviour should be w/r/t groups
+        return R.map(
+          ({ items }) => ({
+            ...responseItem,
+            item: getItems(items),
+          }),
+          item.itemAnswerList
+        );
+      }
+      const responseAnswer = getResponseAnswers(item, getIsItemEnabled);
+      if (R.isEmpty(responseAnswer)) {
+        return;
+      }
+      return [
+        {
           ...responseItem,
-          item: getItems(items),
-        }),
-        item.itemAnswerList
-      );
-    } else {
-      const responseAnswer = getResponseAnswers(item, getIsEnabledForSubItems);
-      return R.isEmpty(responseAnswer) || !isEnabled
-        ? [responseItem]
-        : [
-            {
-              ...responseItem,
-              ...(R.isEmpty(responseAnswer) || !isEnabled
-                ? {}
-                : { answer: responseAnswer }),
-            },
-          ];
-    }
-  });
+          answer: responseAnswer,
+        } as fhir.r4.QuestionnaireResponseItem,
+      ];
+    }),
+    R.filter<fhir.r4.QuestionnaireResponseItem>(Boolean)
+  );
 
 export const getQuestionnaireResponse = (
   state: QuestionnaireState
 ): fhir.r4.QuestionnaireResponse => ({
-  resourceType: 'QuestionnaireResponse',
-  questionnaire: state.url,
-  status: 'in-progress',
+    resourceType: 'QuestionnaireResponse',
+    questionnaire: state.url,
+    status: 'in-progress',
   item: getResponseItems(getIsEnabled(state))(R.values(state.items)),
 });
