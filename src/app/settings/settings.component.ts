@@ -19,17 +19,13 @@ import * as outgoingBundleJson from '../../examples/bundle-outgoing.json';
 })
 export class SettingsComponent implements OnInit {
   fhirServers = [
-    'https://test.ahdis.ch/matchbox-order/fhir',
-    'https://test.ahdis.ch/r4',
-    'http://test.ahdis.ch/r4',
-    'http://localhost:8080/r4',
-    'http://localhost:8080/r4',
-    'http://localhost:8081/r4',
-    'http://test.fhir.org/r4',
-    'http://localhost:8080/matchbox-validator/fhir',
-    'https://test.ahdis.ch/matchbox-validator/fhir',
+    'https://test.ahdis.ch/matchbox/fhir',
+    'http://localhost:8080/matchbox/fhir',
+    'https://ehealthsuisse.ihe-europe.net/matchbox-validator/fhir/',
     'https://hapi.fhir.org/baseR4',
     'http://hapi.fhir.org/baseR4',
+    'http://tx.fhir.org/r4/',
+    'http://test.fhir.org/r4',
   ];
 
   subscription: Subscription;

@@ -99,6 +99,7 @@ export class IgsComponent implements OnInit {
         {
           resource: {
             resourceType: 'ImplementationGuide',
+            name: this.addPackageId.value,
             version: this.addVersion.value,
             packageId: this.addPackageId.value,
           },
