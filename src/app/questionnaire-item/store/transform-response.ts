@@ -1,13 +1,14 @@
 import * as R from 'ramda';
-import { isNil } from 'ramda';
 import {
   AnswerOption,
   AnswerOptionType,
+  ItemAnswer,
   QuestionnaireItem,
   QuestionnaireState,
 } from '../types';
 import {
   isDate,
+  isNotNil,
   isObject,
   isString,
   toLocaleDate,
@@ -24,7 +25,7 @@ const getAnswerValueWithQuestionnaireItem = ({
 ): fhir.r4.QuestionnaireResponseItemAnswer => {
   switch (type) {
     case 'boolean':
-      return isNil(answer) || answer === ''
+      return R.isNil(answer) || answer === ''
         ? undefined
         : {
             valueBoolean: answer === true || answer === 'true',
@@ -44,29 +45,38 @@ const getAnswerValueWithQuestionnaireItem = ({
           }
         : undefined;
     case 'date':
-      return {
-        valueDate: isDate(answer)
-          ? toLocaleDate(answer)
-          : isString(answer)
-          ? answer
-          : undefined,
-      };
+      const valueDate = isDate(answer)
+        ? toLocaleDate(answer)
+        : isString(answer)
+        ? answer
+        : undefined;
+      return (
+        valueDate && {
+          valueDate,
+        }
+      );
     case 'dateTime':
-      return {
-        valueDateTime: isDate(answer)
-          ? toLocaleDateTime(answer)
-          : isString(answer)
-          ? answer
-          : undefined,
-      };
+      const valueDateTime = isDate(answer)
+        ? toLocaleDateTime(answer)
+        : isString(answer)
+        ? answer
+        : undefined;
+      return (
+        valueDateTime && {
+          valueDateTime,
+        }
+      );
     case 'time':
-      return {
-        valueTime: isDate(answer)
-          ? toLocaleTime(answer)
-          : isString(answer)
-          ? answer
-          : undefined,
-      };
+      const valueTime = isDate(answer)
+        ? toLocaleTime(answer)
+        : isString(answer)
+        ? answer
+        : undefined;
+      return (
+        valueTime && {
+          valueTime,
+        }
+      );
     case 'string':
     case 'text':
       return isString(answer) && answer !== ''
@@ -135,17 +145,17 @@ const getResponseAnswers = (
   const getAnswerValue = getAnswerValueWithQuestionnaireItem(item);
   return R.filter(
     (answerItem) => !R.isNil(answerItem) && !R.isEmpty(answerItem),
-    R.map(
-      ({ answer, items }) => ({
+    R.map(({ answer, items }) => {
+      const responseItems = getResponseItems(getIsItemEnabled)(R.values(items));
+      return {
         ...getAnswerValue(answer),
-        ...(R.isEmpty(items)
+        ...(R.isEmpty(responseItems)
           ? {}
           : {
-              item: getResponseItems(getIsItemEnabled)(R.values(items)),
+              item: responseItems,
             }),
-      }),
-      item.itemAnswerList
-    )
+      };
+    }, item.itemAnswerList)
   );
 };
 
@@ -168,14 +178,20 @@ const getResponseItems: (
       };
       const getItems = R.pipe(R.values, getResponseItems(getIsItemEnabled));
       if (item.type === 'group') {
-        // TODO find out what the behaviour should be w/r/t groups
-        return R.map(
-          ({ items }) => ({
+        return R.pipe<
+          readonly ItemAnswer[],
+          fhir.r4.QuestionnaireResponseItem[],
+          fhir.r4.QuestionnaireResponseItem[]
+        >(
+          R.map(({ items }) => ({
             ...responseItem,
             item: getItems(items),
-          }),
-          item.itemAnswerList
-        );
+          })),
+          R.filter<fhir.r4.QuestionnaireResponseItem>(
+            ({ item: answerItem }) =>
+              !R.isNil(answerItem) && !R.isEmpty(answerItem)
+          )
+        )(item.itemAnswerList);
       }
       const responseAnswer = getResponseAnswers(item, getIsItemEnabled);
       if (R.isEmpty(responseAnswer)) {
@@ -188,14 +204,14 @@ const getResponseItems: (
         } as fhir.r4.QuestionnaireResponseItem,
       ];
     }),
-    R.filter<fhir.r4.QuestionnaireResponseItem>(Boolean)
+    R.filter<fhir.r4.QuestionnaireResponseItem>(isNotNil)
   );
 
 export const getQuestionnaireResponse = (
   state: QuestionnaireState
 ): fhir.r4.QuestionnaireResponse => ({
-    resourceType: 'QuestionnaireResponse',
-    questionnaire: state.url,
-    status: 'in-progress',
+  resourceType: 'QuestionnaireResponse',
+  questionnaire: state.url,
+  status: 'in-progress',
   item: getResponseItems(getIsEnabled(state))(R.values(state.items)),
 });
