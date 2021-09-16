@@ -5,12 +5,10 @@ import { getExistingValueProperty } from './transform-initial-state';
 
 interface SimplifiedResponseItem<T> {
   linkId: string;
-  answer?: [
-    {
-      item?: T[];
-      [value: string]: any;
-    }
-  ];
+  answer?: {
+    item?: T[];
+    [value: string]: any;
+  }[];
   item?: T[];
 }
 
