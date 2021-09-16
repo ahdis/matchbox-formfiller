@@ -2,17 +2,15 @@ import * as R from 'ramda';
 import {
   AnswerOption,
   AnswerOptionType,
-  ItemAnswer,
   QuestionnaireItem,
   QuestionnaireState,
 } from '../types';
 import {
   isDate,
-  isNotNil,
   isObject,
   isString,
-  toLocaleDate,
   toLocaleDateTime,
+  toLocaleDate,
   toLocaleTime,
 } from './util';
 import { getIsEnabled } from './enable-behavior';
@@ -50,33 +48,33 @@ const getAnswerValueWithQuestionnaireItem = ({
         : isString(answer)
         ? answer
         : undefined;
-      return (
-        valueDate && {
-          valueDate,
-        }
-      );
+      return valueDate
+        ? {
+            valueDate,
+          }
+        : undefined;
     case 'dateTime':
       const valueDateTime = isDate(answer)
         ? toLocaleDateTime(answer)
         : isString(answer)
         ? answer
         : undefined;
-      return (
-        valueDateTime && {
-          valueDateTime,
-        }
-      );
+      return valueDateTime
+        ? {
+            valueDateTime,
+          }
+        : undefined;
     case 'time':
       const valueTime = isDate(answer)
         ? toLocaleTime(answer)
         : isString(answer)
         ? answer
         : undefined;
-      return (
-        valueTime && {
-          valueTime,
-        }
-      );
+      return valueTime
+        ? {
+            valueTime,
+          }
+        : undefined;
     case 'string':
     case 'text':
       return isString(answer) && answer !== ''
@@ -164,13 +162,8 @@ const getResponseItems: (
 ) => (items: QuestionnaireItem[]) => fhir.r4.QuestionnaireResponseItem[] = (
   getIsItemEnabled
 ) =>
-  R.pipe<
-    QuestionnaireItem[],
-    QuestionnaireItem[],
-    fhir.r4.QuestionnaireResponseItem[],
-    fhir.r4.QuestionnaireResponseItem[]
-  >(
-    R.filter(getIsItemEnabled),
+  R.pipe(
+    R.filter<QuestionnaireItem, 'array'>(getIsItemEnabled),
     R.chain((item) => {
       const responseItem: fhir.r4.QuestionnaireResponseItem = {
         linkId: item.linkId,
@@ -178,16 +171,12 @@ const getResponseItems: (
       };
       const getItems = R.pipe(R.values, getResponseItems(getIsItemEnabled));
       if (item.type === 'group') {
-        return R.pipe<
-          readonly ItemAnswer[],
-          fhir.r4.QuestionnaireResponseItem[],
-          fhir.r4.QuestionnaireResponseItem[]
-        >(
+        return R.pipe(
           R.map(({ items }) => ({
             ...responseItem,
             item: getItems(items),
           })),
-          R.filter<fhir.r4.QuestionnaireResponseItem>(
+          R.filter<fhir.r4.QuestionnaireResponseItem, 'array'>(
             ({ item: answerItem }) =>
               !R.isNil(answerItem) && !R.isEmpty(answerItem)
           )
@@ -195,16 +184,10 @@ const getResponseItems: (
       }
       const responseAnswer = getResponseAnswers(item, getIsItemEnabled);
       if (R.isEmpty(responseAnswer)) {
-        return;
+        return [];
       }
-      return [
-        {
-          ...responseItem,
-          answer: responseAnswer,
-        } as fhir.r4.QuestionnaireResponseItem,
-      ];
-    }),
-    R.filter<fhir.r4.QuestionnaireResponseItem>(isNotNil)
+      return [{ ...responseItem, answer: responseAnswer }];
+    })
   );
 
 export const getQuestionnaireResponse = (
