@@ -8,10 +8,6 @@
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-extract"
     ]
   },
-  "text": {
-    "status": "generated",
-    "div": ""
-  },
   "extension": [
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-targetStructureMap",
