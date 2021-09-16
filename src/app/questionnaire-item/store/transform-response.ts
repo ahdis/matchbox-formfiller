@@ -1,5 +1,4 @@
 import * as R from 'ramda';
-import { isNil } from 'ramda';
 import {
   AnswerOption,
   AnswerOptionType,
@@ -10,8 +9,8 @@ import {
   isDate,
   isObject,
   isString,
-  toLocaleDate,
   toLocaleDateTime,
+  toLocaleDate,
   toLocaleTime,
 } from './util';
 import { getIsEnabled } from './enable-behavior';
@@ -24,7 +23,7 @@ const getAnswerValueWithQuestionnaireItem = ({
 ): fhir.r4.QuestionnaireResponseItemAnswer => {
   switch (type) {
     case 'boolean':
-      return isNil(answer) || answer === ''
+      return R.isNil(answer) || answer === ''
         ? undefined
         : {
             valueBoolean: answer === true || answer === 'true',
@@ -44,29 +43,38 @@ const getAnswerValueWithQuestionnaireItem = ({
           }
         : undefined;
     case 'date':
-      return {
-        valueDate: isDate(answer)
-          ? toLocaleDate(answer)
-          : isString(answer)
-          ? answer
-          : undefined,
-      };
+      const valueDate = isDate(answer)
+        ? toLocaleDate(answer)
+        : isString(answer)
+        ? answer
+        : undefined;
+      return valueDate
+        ? {
+            valueDate,
+          }
+        : undefined;
     case 'dateTime':
-      return {
-        valueDateTime: isDate(answer)
-          ? toLocaleDateTime(answer)
-          : isString(answer)
-          ? answer
-          : undefined,
-      };
+      const valueDateTime = isDate(answer)
+        ? toLocaleDateTime(answer)
+        : isString(answer)
+        ? answer
+        : undefined;
+      return valueDateTime
+        ? {
+            valueDateTime,
+          }
+        : undefined;
     case 'time':
-      return {
-        valueTime: isDate(answer)
-          ? toLocaleTime(answer)
-          : isString(answer)
-          ? answer
-          : undefined,
-      };
+      const valueTime = isDate(answer)
+        ? toLocaleTime(answer)
+        : isString(answer)
+        ? answer
+        : undefined;
+      return valueTime
+        ? {
+            valueTime,
+          }
+        : undefined;
     case 'string':
     case 'text':
       return isString(answer) && answer !== ''
@@ -135,17 +143,17 @@ const getResponseAnswers = (
   const getAnswerValue = getAnswerValueWithQuestionnaireItem(item);
   return R.filter(
     (answerItem) => !R.isNil(answerItem) && !R.isEmpty(answerItem),
-    R.map(
-      ({ answer, items }) => ({
+    R.map(({ answer, items }) => {
+      const responseItems = getResponseItems(getIsItemEnabled)(R.values(items));
+      return {
         ...getAnswerValue(answer),
-        ...(R.isEmpty(items)
+        ...(R.isEmpty(responseItems)
           ? {}
           : {
-              item: getResponseItems(getIsItemEnabled)(R.values(items)),
+              item: responseItems,
             }),
-      }),
-      item.itemAnswerList
-    )
+      };
+    }, item.itemAnswerList)
   );
 };
 
@@ -154,41 +162,33 @@ const getResponseItems: (
 ) => (items: QuestionnaireItem[]) => fhir.r4.QuestionnaireResponseItem[] = (
   getIsItemEnabled
 ) =>
-  R.chain((item) => {
-    const isEnabled = getIsItemEnabled(item);
-    const getIsEnabledForSubItems = isEnabled
-      ? getIsItemEnabled
-      : R.always(false);
-    const responseItem: fhir.r4.QuestionnaireResponseItem = {
-      linkId: item.linkId,
-      text: item.text,
-    };
-    const getItems = R.pipe(
-      R.values,
-      getResponseItems(getIsEnabledForSubItems)
-    );
-    if (item.type === 'group') {
-      return R.map(
-        ({ items }) => ({
-          ...responseItem,
-          item: getItems(items),
-        }),
-        item.itemAnswerList
-      );
-    } else {
-      const responseAnswer = getResponseAnswers(item, getIsEnabledForSubItems);
-      return R.isEmpty(responseAnswer) || !isEnabled
-        ? [responseItem]
-        : [
-            {
-              ...responseItem,
-              ...(R.isEmpty(responseAnswer) || !isEnabled
-                ? {}
-                : { answer: responseAnswer }),
-            },
-          ];
-    }
-  });
+  R.pipe(
+    R.filter<QuestionnaireItem, 'array'>(getIsItemEnabled),
+    R.chain((item) => {
+      const responseItem: fhir.r4.QuestionnaireResponseItem = {
+        linkId: item.linkId,
+        text: item.text,
+      };
+      const getItems = R.pipe(R.values, getResponseItems(getIsItemEnabled));
+      if (item.type === 'group') {
+        return R.pipe(
+          R.map(({ items }) => ({
+            ...responseItem,
+            item: getItems(items),
+          })),
+          R.filter<fhir.r4.QuestionnaireResponseItem, 'array'>(
+            ({ item: answerItem }) =>
+              !R.isNil(answerItem) && !R.isEmpty(answerItem)
+          )
+        )(item.itemAnswerList);
+      }
+      const responseAnswer = getResponseAnswers(item, getIsItemEnabled);
+      if (R.isEmpty(responseAnswer)) {
+        return [];
+      }
+      return [{ ...responseItem, answer: responseAnswer }];
+    })
+  );
 
 export const getQuestionnaireResponse = (
   state: QuestionnaireState
