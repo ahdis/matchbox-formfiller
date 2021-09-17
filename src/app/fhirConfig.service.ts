@@ -7,7 +7,7 @@ import FhirClient from 'fhir-kit-client';
 })
 export class FhirConfigService {
   private fhirMicroServer = new BehaviorSubject(
-    'https://test.ahdis.ch/matchbox-order/fhir'
+    'https://test.ahdis.ch/matchbox/fhir'
   );
   fhirMicroService = this.fhirMicroServer.asObservable();
 
