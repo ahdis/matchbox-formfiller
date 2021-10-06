@@ -21,31 +21,54 @@ export class SettingsComponent implements OnInit {
   fhirServers = [
     'https://test.ahdis.ch/matchbox/fhir',
     'http://localhost:8080/matchbox/fhir',
-    'https://ehealthsuisse.ihe-europe.net/matchbox-validator/fhir/',
+    'https://ehealthsuisse.ihe-europe.net/matchbox-validator/fhir',
     'https://hapi.fhir.org/baseR4',
     'http://hapi.fhir.org/baseR4',
     'http://tx.fhir.org/r4/',
     'http://test.fhir.org/r4',
+    'https://test.ahdis.ch/mag-pmp/fhir',
   ];
 
-  subscription: Subscription;
-  baseUrl: string;
+  mobileAccessGateways = [
+    'https://test.ahdis.ch/mag-pmp/fhir',
+    'http://localhost:9090/mag-pmp/fhir',
+    'https://test.ahdis.ch/mag-bfh/fhir',
+    'https://test.ahdis.ch/mag-test/fhir',
+    'https://test.ahdis.ch/mag-testemedo/fhir',
+  ];
+
+  subscriptionFhir: Subscription;
+  baseUrlFhir: string;
+  subscriptionMag: Subscription;
+  baseUrlMag: string;
 
   constructor(private data: FhirConfigService) {}
 
   ngOnInit() {
-    this.subscription = this.data.fhirMicroService.subscribe(
-      (url) => (this.baseUrl = url)
+    this.subscriptionFhir = this.data.fhirMicroService.subscribe(
+      (url) => (this.baseUrlFhir = url)
+    );
+    this.subscriptionMag = this.data.magMicroService.subscribe(
+      (url) => (this.baseUrlMag = url)
     );
   }
 
-  getSelectedValue(): string {
-    return this.baseUrl;
+  getFhirSelectedValue(): string {
+    return this.baseUrlFhir;
   }
 
-  setSelectedValue(value: string) {
+  setFhirSelectedValue(value: string) {
     debug('setting new server to ' + value);
     this.data.changeFhirMicroService(value);
+  }
+
+  getMagSelectedValue(): string {
+    return this.baseUrlMag;
+  }
+
+  setMagSelectedValue(value: string) {
+    debug('setting new server to ' + value);
+    this.data.changeMagMicroService(value);
   }
 
   async setRadOrderQuestionnaire() {

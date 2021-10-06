@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import FhirClient from 'fhir-kit-client';
+import { SelectorMatcher } from '@angular/compiler';
 
 @Component({
   selector: 'app-patients',
@@ -26,12 +27,15 @@ export class PatientsComponent implements OnInit {
     _count: this.pageSize,
     _summary: 'true',
     _sort: 'family',
-    name: '',
   };
 
   pageSizeOptions = [this.pageSize];
   public searchName: FormControl;
   public searchNameValue = '';
+  public searchGiven: FormControl;
+  public searchGivenValue = '';
+  public searchFamily: FormControl;
+  public searchFamilyValue = '';
 
   selectedPatient: fhir.r4.Patient;
 
@@ -41,24 +45,33 @@ export class PatientsComponent implements OnInit {
     this.searchName = new FormControl();
     this.searchName.valueChanges
       .pipe(debounceTime(400), distinctUntilChanged())
-      .subscribe((term) => {
-        console.log('called with ' + term);
+      .subscribe((term) => this.search());
+    this.searchGiven = new FormControl();
+    this.searchGiven.valueChanges
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe((term) => this.search());
+    this.searchFamily = new FormControl();
+    this.searchFamily.valueChanges
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe((term) => this.search());
+    this.search();
+  }
 
-        console.log('called with ' + term);
-        if (term) {
-          this.query = { ...this.query, name: term };
-        }
+  search() {
+    let searchQuery: any = { ...this.query };
 
-        this.client
-          .search({ resourceType: 'Patient', searchParams: this.query })
-          .then((response) => {
-            this.pageIndex = 0;
-            this.setBundle(<fhir.r4.Bundle>response);
-            return response;
-          });
-      });
+    if (this.searchName.value) {
+      searchQuery = { ...this.query, name: this.searchName.value };
+    }
+    if (this.searchFamily.value) {
+      searchQuery = { ...this.query, family: this.searchFamily.value };
+    }
+    if (this.searchGiven.value) {
+      searchQuery = { ...this.query, given: this.searchGiven.value };
+    }
+
     this.client
-      .search({ resourceType: 'Patient', searchParams: this.query })
+      .search({ resourceType: 'Patient', searchParams: searchQuery })
       .then((response) => {
         this.pageIndex = 0;
         this.setBundle(<fhir.r4.Bundle>response);

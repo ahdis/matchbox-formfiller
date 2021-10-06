@@ -5,14 +5,28 @@
         <mat-select
           placeholder="FHIR Server"
           name="selectserver"
-          [ngModel]="getSelectedValue()"
-          (ngModelChange)="setSelectedValue($event)"
+          [ngModel]="getFhirSelectedValue()"
+          (ngModelChange)="setFhirSelectedValue($event)"
         >
           <mat-option *ngFor="let fhir of fhirServers" [value]="fhir">
             {{ fhir }}
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <br />
+      <mat-form-field>
+        <mat-select
+          placeholder="Mobile Access Gateway"
+          name="selectmag"
+          [ngModel]="getMagSelectedValue()"
+          (ngModelChange)="setMagSelectedValue($event)"
+        >
+          <mat-option *ngFor="let mag of mobileAccessGateways" [value]="mag">
+            {{ mag }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <br />
       <div>
         <button mat-raised-button (click)="setRadOrderQuestionnaire()">
           Create/update radorder questionnaire

@@ -23,6 +23,7 @@ import { Fhir2CdaComponent } from './fhir2-cda/fhir2-cda.component';
 import { ValidateComponent } from './validate/validate.component';
 import { QuestionnairesTableComponent } from './questionnaires-table/questionnaires-table.component';
 import { BundleViewerComponent } from './bundle-viewer/bundle-viewer.component';
+import { MagComponent } from './mag/mag.component';
 
 const routes: Routes = [
   {
@@ -77,6 +78,10 @@ const routes: Routes = [
     path: 'validate',
     component: ValidateComponent,
   },
+  {
+    path: 'mag',
+    component: MagComponent,
+  },
 ];
 
 export function createTranslateLoader(http: HttpClient) {
@@ -101,6 +106,7 @@ export function createTranslateLoader(http: HttpClient) {
     Fhir2CdaComponent,
     ValidateComponent,
     BundleViewerComponent,
+    MagComponent,
   ],
   imports: [
     SharedModule,
