@@ -1,8 +1,79 @@
 <mat-card class="display">
   <mat-card-content>
     <mat-card-header>
-      <mat-card-title>{{ client.baseUrl }}</mat-card-title>
+      <mat-card-title>Mobile Access Gateway</mat-card-title>
     </mat-card-header>
+
+    <div>
+      <mat-form-field>
+        <mat-label>sourceIdentifier system</mat-label>
+        <input matInput [formControl]="sourceIdentifierSystem" />
+      </mat-form-field>
+      &nbsp;
+      <mat-form-field>
+        <mat-label>sourceIdentifier value</mat-label>
+        <input matInput [formControl]="sourceIdentifierValue" />
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
+        <mat-label>targetIdentifier system (MPI-ID)</mat-label>
+        <input matInput [formControl]="targetIdentifierSystem" />
+      </mat-form-field>
+      &nbsp;
+      {{ targetIdentifierValue }}
+    </div>
+    <div>
+      <mat-form-field>
+        <mat-label>targetIdentifier system (EPR-SPID)</mat-label>
+        <input matInput [formControl]="targetIdentifier2System" />
+      </mat-form-field>
+      &nbsp;
+      {{ targetIdentifier2Value }}
+    </div>
+
+    <div>
+      <div>Format Code: {{ documentReferenceFormatCode }}</div>
+      <div>Attachment Url: {{ documentReferenceAttachmentUrl }}</div>
+    </div>
+
+    <mat-card-actions>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        (click)="onPIXmQuery()"
+      >
+        PIXm Query
+      </button>
+      <button mat-raised-button type="submit" (click)="onFindMedicationList()">
+        Medication List
+      </button>
+      <button mat-raised-button type="submit" (click)="onFindMedicationCard()">
+        Medication Card
+      </button>
+      <button
+        mat-raised-button
+        type="submit"
+        (click)="onDownloadDocumentReferenceAttachment()"
+      >
+        Download
+      </button>
+      <button mat-raised-button type="submit" (click)="onTransform()">
+        Transform
+      </button>
+      <button mat-raised-button type="submit" (click)="onPdf()">Pdf</button>
+    </mat-card-actions>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="display">
+  <mat-card-content>
+    <mat-card-header>
+      <mat-card-title>Response</mat-card-title>
+    </mat-card-header>
+    <div *ngIf="errMsg">{{ errMsg }}</div>
+
     <pre><code [highlight]="getJson()" [lineNumbers]="true"></code></pre>
   </mat-card-content>
 </mat-card>

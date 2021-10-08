@@ -17,7 +17,7 @@ export class Cda2FhirComponent implements OnInit {
   client: FhirClient;
   maps: Map<String, String>;
 
-  xml: String;
+  xml: string;
   selectedMap: FormControl;
 
   query = {

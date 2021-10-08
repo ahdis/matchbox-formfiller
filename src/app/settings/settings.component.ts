@@ -27,6 +27,7 @@ export class SettingsComponent implements OnInit {
     'http://tx.fhir.org/r4/',
     'http://test.fhir.org/r4',
     'https://test.ahdis.ch/mag-pmp/fhir',
+    'http://localhost:9090/mag-pmp/fhir',
   ];
 
   mobileAccessGateways = [
