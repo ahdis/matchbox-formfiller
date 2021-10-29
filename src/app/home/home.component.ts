@@ -7,6 +7,7 @@ import * as R from 'ramda';
 import { QuestionnaireTableEntry } from '../questionnaires-table/questionnaires-table.component';
 import { QuestionnaireWithResponse } from '../questionnaire-item/types';
 import { extractQuestionnaireWithResponseFromBundle } from '../util/bundle-transform';
+import { MatTabChangeEvent } from '@angular/material/tabs/tab-group';
 
 @Component({
   selector: 'app-home',
@@ -32,12 +33,28 @@ export class HomeComponent implements OnInit {
     this.client = fhirConfigService.getFhirClient();
   }
 
+  update(index): void {
+    switch (index) {
+      case 0:
+        this.loadQuestionnaires();
+        break;
+      case 1:
+        this.loadQuestionnaireResponses();
+        break;
+      case 2:
+        this.loadOutgoingBundles();
+        break;
+    }
+  }
+
+  tabChanged(tabChangeEvent: MatTabChangeEvent): void {
+    console.log('tabChangeEvent => ', tabChangeEvent);
+    console.log('index => ', tabChangeEvent.index);
+    this.update(tabChangeEvent.index);
+  }
+
   async ngOnInit() {
-    await Promise.all([
-      this.loadQuestionnaires(),
-      this.loadQuestionnaireResponses(),
-      this.loadOutgoingBundles(),
-    ]);
+    this.update(0);
   }
 
   async loadQuestionnaires() {
