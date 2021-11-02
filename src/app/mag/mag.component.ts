@@ -33,6 +33,8 @@ export class MagComponent implements OnInit {
   public targetIdentifierSystem: FormControl;
   public targetIdentifier2System: FormControl;
 
+  errMsg: string;
+
   constructor(
     private data: FhirConfigService,
     private fhirPathService: FhirPathService,
