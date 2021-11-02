@@ -8,8 +8,6 @@ import Client from 'fhir-kit-client';
 import { getExtensionOfElement } from '../questionnaire-item/store/transform-initial-state';
 import { fromPromise } from 'rxjs/internal/observable/fromPromise';
 import { QuestionnaireWithResponse } from '../questionnaire-item/types';
-import { Jsonp } from '@angular/http';
-import { QuestionnaireItemModule } from '../questionnaire-item/questionnaire-item.module';
 
 @Component({
   selector: 'app-questionnaire-form-filler',
@@ -91,17 +89,33 @@ export class QuestionnaireFormFillerComponent implements OnInit {
         reference: 'Organization/PlacerOrganization',
         display: 'Placer Organization',
       },
-      input: [
-        {
+    };
+    // extract all ImagingStudy
+    const imagingStudiesFromBundle = bundle.entry
+      ?.filter((input) => 'ImagingStudy' === input.resource.resourceType)
+      .map((input) => input.resource) as fhir.r4.ImagingStudy[];
+    const imagingStudies = await Promise.all(
+      imagingStudiesFromBundle.map(async (study) => {
+        const imagingStudy = await this.fhirKitClient.create({
+          resourceType: 'ImagingStudy',
+          body: study,
+        });
+        return imagingStudy;
+      })
+    );
+    if (imagingStudies && imagingStudies.length > 0) {
+      task = { ...task, input: [] };
+      for (let entry of imagingStudies) {
+        task.input.push({
           type: {
             text: 'ImagingStudy',
           },
           valueReference: {
-            reference: 'ImagingStudy/imagingstudy-order1',
+            reference: 'ImagingStudy/' + entry.id,
           },
-        },
-      ],
-    };
+        });
+      }
+    }
     return this.fhirKitClient.create({
       resourceType: task.resourceType,
       body: task,
