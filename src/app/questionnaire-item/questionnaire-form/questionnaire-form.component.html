@@ -40,6 +40,14 @@
       <button
         *ngIf="!hideCancelButton"
         mat-button
+        (click)="deleteQuestionnaireResponse.next()"
+        type="button"
+      >
+        Delete
+      </button>
+      <button
+        *ngIf="!hideCancelButton"
+        mat-button
         (click)="cancel.next()"
         type="button"
       >

@@ -54,6 +54,7 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
   changeQuestionnaireResponse = new EventEmitter<fhir.r4.QuestionnaireResponse>();
   @Output() submitQuestionnaire = new EventEmitter<void>();
   @Output() saveAsDraft = new EventEmitter<void>();
+  @Output() deleteQuestionnaireResponse = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();
 
   store$: Observable<QuestionnaireState>;

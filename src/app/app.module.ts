@@ -24,6 +24,9 @@ import { ValidateComponent } from './validate/validate.component';
 import { QuestionnairesTableComponent } from './questionnaires-table/questionnaires-table.component';
 import { BundleViewerComponent } from './bundle-viewer/bundle-viewer.component';
 import { MagComponent } from './mag/mag.component';
+import { TasksTableComponent } from './tasks-table/tasks-table.component';
+import { TaskViewerComponent } from './task-viewer/task-viewer.component';
+import { ImagingStudyTableComponent } from './imaging-study-table/imaging-study-table.component';
 
 const routes: Routes = [
   {
@@ -49,6 +52,10 @@ const routes: Routes = [
   {
     path: 'bundle/:bundleId',
     component: BundleViewerComponent,
+  },
+  {
+    path: 'task/:taskId',
+    component: TaskViewerComponent,
   },
   {
     path: 'CapabilityStatement',
@@ -107,6 +114,9 @@ export function createTranslateLoader(http: HttpClient) {
     ValidateComponent,
     BundleViewerComponent,
     MagComponent,
+    TasksTableComponent,
+    TaskViewerComponent,
+    ImagingStudyTableComponent,
   ],
   imports: [
     SharedModule,

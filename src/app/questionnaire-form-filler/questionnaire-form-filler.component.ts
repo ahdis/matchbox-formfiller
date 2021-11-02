@@ -8,6 +8,8 @@ import Client from 'fhir-kit-client';
 import { getExtensionOfElement } from '../questionnaire-item/store/transform-initial-state';
 import { fromPromise } from 'rxjs/internal/observable/fromPromise';
 import { QuestionnaireWithResponse } from '../questionnaire-item/types';
+import { Jsonp } from '@angular/http';
+import { QuestionnaireItemModule } from '../questionnaire-item/questionnaire-item.module';
 
 @Component({
   selector: 'app-questionnaire-form-filler',
@@ -75,6 +77,37 @@ export class QuestionnaireFormFillerComponent implements OnInit {
     this.questionnaireResponse = response;
   }
 
+  async createTask(bundle: fhir.r4.Bundle): Promise<fhir.r4.Task> {
+    let task: fhir.r4.Task = {
+      resourceType: 'Task',
+      status: 'in-progress',
+      intent: 'order',
+      focus: {
+        reference: 'Bundle/' + bundle.id,
+      },
+      authoredOn: bundle.timestamp,
+      lastModified: bundle.timestamp,
+      requester: {
+        reference: 'Organization/PlacerOrganization',
+        display: 'Placer Organization',
+      },
+      input: [
+        {
+          type: {
+            text: 'ImagingStudy',
+          },
+          valueReference: {
+            reference: 'ImagingStudy/imagingstudy-order1',
+          },
+        },
+      ],
+    };
+    return this.fhirKitClient.create({
+      resourceType: task.resourceType,
+      body: task,
+    }) as Promise<fhir.r4.Task>;
+  }
+
   async onSubmit({
     questionnaire,
     questionnaireResponse,
@@ -85,15 +118,34 @@ export class QuestionnaireFormFillerComponent implements OnInit {
         'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-targetStructureMap'
       )(questionnaire)
     ) {
-      const bundle = await this.fhirKitClient.operation({
+      const resource = (await this.fhirKitClient.operation({
         name: 'extract',
         resourceType: 'QuestionnaireResponse',
         input: this.questionnaireResponse,
-      });
-      await this.fhirKitClient.create({
-        resourceType: 'Bundle',
-        body: bundle,
-      });
+      })) as fhir.r4.Resource;
+      if (!('OperationOutcome' === resource.resourceType)) {
+        let createdResource = await this.fhirKitClient.create({
+          resourceType: resource.resourceType,
+          body: resource,
+        });
+        if (
+          questionnaire.derivedFrom &&
+          questionnaire.derivedFrom.includes(
+            'http://fhir.ch/ig/ch-orf/StructureDefinition/ch-orf-questionnaire'
+          )
+        ) {
+          let task = await this.createTask(createdResource as fhir.r4.Bundle);
+          await this.router.navigate(['task', task.id]);
+          return;
+        }
+      } else {
+        console.log(
+          'Error performing extract operation ' +
+            JSON.stringify(resource, null, 2)
+        );
+        // TODO create an error message
+        return;
+      }
     }
     await this.saveQuestionnaireResponse(questionnaireResponse, 'completed');
     await this.router.navigateByUrl('/');
@@ -105,8 +157,28 @@ export class QuestionnaireFormFillerComponent implements OnInit {
     ).then(() => this.router.navigateByUrl('/'));
   }
 
+  onDeleteQuestionnaireResponse(
+    initialQuestionnaireResponse?: fhir.r4.QuestionnaireResponse
+  ) {
+    return this.deleteQuestionnaireResponse(
+      initialQuestionnaireResponse
+    ).then(() => this.router.navigateByUrl('/'));
+  }
+
   onCancel() {
     return this.router.navigateByUrl('/');
+  }
+
+  private async deleteQuestionnaireResponse(
+    initialQuestionnaireResponse?: fhir.r4.QuestionnaireResponse
+  ) {
+    const questionnaireResponseId = initialQuestionnaireResponse?.id;
+    if (questionnaireResponseId) {
+      return this.fhirKitClient.delete({
+        id: questionnaireResponseId,
+        resourceType: 'QuestionnaireResponse',
+      });
+    }
   }
 
   private async saveQuestionnaireResponse(

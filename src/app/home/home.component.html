@@ -13,23 +13,17 @@
           (rowClick)="openQuestionnaire($event)"
         ></app-questionnaires-table>
       </mat-tab>
-      <mat-tab label="Open orders">
+      <mat-tab label="Draft orders">
         <app-questionnaires-table
           [dataSource]="openOrderDataSource"
           (rowClick)="openQuestionnaireResponse($event)"
         ></app-questionnaires-table>
       </mat-tab>
-      <mat-tab label="Outgoing orders">
-        <app-questionnaires-table
-          [dataSource]="outgoingOrderDataSource"
-          (rowClick)="openBundle($event)"
-        ></app-questionnaires-table>
-      </mat-tab>
-      <mat-tab label="Incoming orders">
-        <app-questionnaires-table
-          [dataSource]="incomingOrderDataSource"
-          (rowClick)="openBundle($event)"
-        ></app-questionnaires-table>
+      <mat-tab label="Orders">
+        <app-tasks-table
+          [dataSource]="taskDataSource"
+          (rowClick)="openTask($event)"
+        ></app-tasks-table>
       </mat-tab>
     </mat-tab-group>
   </mat-card-content>

@@ -12,6 +12,11 @@
     (saveAsDraft)="
       onSaveAsDraft(questionnaireWithResponse.questionnaireResponse)
     "
+    (deleteQuestionnaireResponse)="
+      onDeleteQuestionnaireResponse(
+        questionnaireWithResponse.questionnaireResponse
+      )
+    "
     (cancel)="onCancel()"
   ></app-questionnaire-form>
 </ng-container>
