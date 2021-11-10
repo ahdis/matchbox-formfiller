@@ -65,7 +65,7 @@ export class HomeComponent implements OnInit {
       })
       .then(extractResourcesFromSearchBundle)) as fhir.r4.Questionnaire[];
     this.newOrderDataSource.data = questionnaires.map((questionnaire) => ({
-      title: questionnaire.title,
+      title: questionnaire.title ? questionnaire.title : questionnaire.id,
       status: questionnaire.status,
       date: questionnaire.date,
       publisher: questionnaire.publisher,
@@ -81,6 +81,7 @@ export class HomeComponent implements OnInit {
         searchParams: {
           _summary: 'true',
           _sort: '-_lastUpdated',
+          status: 'in-progress',
         },
       })
       .then(
@@ -113,10 +114,10 @@ export class HomeComponent implements OnInit {
           ({ url }) => questionnaireResponse.questionnaire === url
         );
         return {
-          title: questionnaire.title + ' ' + questionnaireResponse.id,
-          status: questionnaireResponse.status,
+          title: questionnaire?.title + ' ' + questionnaireResponse.id,
+          status: questionnaireResponse?.status,
           date: questionnaireResponse.meta?.lastUpdated,
-          publisher: questionnaire.publisher,
+          publisher: questionnaire?.publisher,
           version: questionnaireResponse.meta?.versionId,
           entry: {
             questionnaire,
