@@ -8,6 +8,7 @@ import Client from 'fhir-kit-client';
 import { getExtensionOfElement } from '../questionnaire-item/store/transform-initial-state';
 import { fromPromise } from 'rxjs/internal/observable/fromPromise';
 import { QuestionnaireWithResponse } from '../questionnaire-item/types';
+import { FhirPathService } from 'ng-fhirjs';
 
 @Component({
   selector: 'app-questionnaire-form-filler',
@@ -25,7 +26,8 @@ export class QuestionnaireFormFillerComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private fhirConfigService: FhirConfigService,
-    private router: Router
+    private router: Router,
+    private fhirPathService: FhirPathService
   ) {
     this.fhirKitClient = fhirConfigService.getFhirClient();
   }
@@ -75,19 +77,152 @@ export class QuestionnaireFormFillerComponent implements OnInit {
     this.questionnaireResponse = response;
   }
 
+  getResourceFromBundleByType(
+    bundle: fhir.r4.Bundle,
+    resourceType: string
+  ): fhir.r4.Resource {
+    if (resourceType?.length > 0) {
+      let resources = this.fhirPathService.evaluate(
+        bundle,
+        "entry.resource.where(resourceType='" + resourceType + "')"
+      ) as fhir.r4.Resource[];
+      if (resources?.length > 0) {
+        return resources[0];
+      } else {
+        console.log(
+          'entry with resourceType not found in bundle with ' +
+            resourceType +
+            ' in Bundle ' +
+            bundle.id
+        );
+        return null;
+      }
+    }
+    console.log('resourceType not specified for search in Bundle ' + bundle.id);
+    return null;
+  }
+
+  getResourceFromBundle(
+    bundle: fhir.r4.Bundle,
+    fullUrl: string
+  ): fhir.r4.Resource {
+    if (fullUrl?.length > 0) {
+      let resources = this.fhirPathService.evaluate(
+        bundle,
+        "entry.where(fullUrl='" + fullUrl + "').resource"
+      ) as fhir.r4.Resource[];
+      if (resources?.length > 0) {
+        return resources[0];
+      } else {
+        console.log(
+          'entry with fullUrl not found in bundle with' +
+            fullUrl +
+            ' in Bundle ' +
+            bundle.id
+        );
+        return null;
+      }
+    }
+    console.log('fullUrl not specified for search in Bundle ' + bundle.id);
+    return null;
+  }
+
+  getOrganizationFromBundle(
+    bundle: fhir.r4.Bundle,
+    fullUrl: string
+  ): fhir.r4.Organization {
+    return this.getResourceFromBundle(bundle, fullUrl) as fhir.r4.Organization;
+  }
+
+  getOrganizationFromPractitionerRoleInBundle(
+    bundle: fhir.r4.Bundle,
+    fullUrlPractitionerRole: string
+  ): fhir.r4.Organization {
+    let refOrganizationFullUrl = this.fhirPathService.evaluateToString(
+      bundle,
+      "entry.where(fullUrl='" +
+        fullUrlPractitionerRole +
+        "').resource.organization.reference"
+    );
+    if (refOrganizationFullUrl) {
+      return this.getOrganizationFromBundle(
+        bundle,
+        refOrganizationFullUrl
+      ) as fhir.r4.Organization;
+    } else {
+      console.log(
+        'organization not found in bundle with practitionerRoleId ' +
+          fullUrlPractitionerRole +
+          ' in Bundle ' +
+          bundle.id
+      );
+    }
+    return null;
+  }
+
   async createTask(bundle: fhir.r4.Bundle): Promise<fhir.r4.Task> {
+    let composition = bundle.entry[0].resource as fhir.r4.Composition;
+
+    let refPractitionerRoleReceiver = this.fhirPathService.evaluateToString(
+      composition,
+      "extension.where(url='http://fhir.ch/ig/ch-orf/StructureDefinition/ch-orf-receiver').valueReference.reference"
+    );
+    let refPractitionerRoleSender = this.fhirPathService.evaluateToString(
+      composition,
+      'author.reference'
+    );
+
+    let organizationReceiver = this.getOrganizationFromPractitionerRoleInBundle(
+      bundle,
+      refPractitionerRoleReceiver
+    );
+    let organizationSender = this.getOrganizationFromPractitionerRoleInBundle(
+      bundle,
+      refPractitionerRoleSender
+    );
+
+    let serviceRequest = this.getResourceFromBundleByType(
+      bundle,
+      'ServiceRequest'
+    ) as fhir.r4.ServiceRequest;
+
+    organizationSender.id = '1';
+    organizationReceiver.id = '2';
+
     let task: fhir.r4.Task = {
       resourceType: 'Task',
+      contained: [
+        {
+          ...organizationSender,
+        },
+        {
+          ...organizationReceiver,
+        },
+      ],
+      identifier: [
+        {
+          ...serviceRequest.identifier[0],
+        },
+      ],
       status: 'in-progress',
       intent: 'order',
+      description: 'Order ' + serviceRequest.identifier[0].value,
       focus: {
         reference: 'Bundle/' + bundle.id,
       },
       authoredOn: bundle.timestamp,
       lastModified: bundle.timestamp,
       requester: {
-        reference: 'Organization/PlacerOrganization',
-        display: 'Placer Organization',
+        reference: '#1',
+        display: organizationSender?.name,
+      },
+      restriction: {
+        recipient: [
+          {
+            reference: '#2',
+            display: organizationReceiver?.name,
+          },
+        ],
       },
     };
     // extract all ImagingStudy
