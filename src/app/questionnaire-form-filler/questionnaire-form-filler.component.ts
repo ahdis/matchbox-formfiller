@@ -204,7 +204,7 @@ export class QuestionnaireFormFillerComponent implements OnInit {
           ...serviceRequest.identifier[0],
         },
       ],
-      status: 'in-progress',
+      status: 'ready',
       intent: 'order',
       description: 'Order ' + serviceRequest.identifier[0].value,
       focus: {
@@ -251,6 +251,27 @@ export class QuestionnaireFormFillerComponent implements OnInit {
         });
       }
     }
+
+    // another option wold be to inline the imaging studies, but then we have it different on the way back, better same handling for in- and ouput
+    // task = { ...task, input: [] };
+    // const imagingStudiesFromBundle = bundle.entry
+    //   ?.filter((input) => 'ImagingStudy' === input.resource.resourceType)
+    //   .map((input) => input.resource) as fhir.r4.ImagingStudy[];
+    // let id = 1;
+    // for (let entry of imagingStudiesFromBundle) {
+    //   entry.id = "i"+id;
+    //   task.contained.push(entry);
+    //   task.input.push({
+    //     type: {
+    //       text: 'ImagingStudy',
+    //     },
+    //     valueReference: {
+    //       reference: '#' + entry.id,
+    //     },
+    //   });
+    //   ++id;
+    // }
+
     return this.fhirKitClient.create({
       resourceType: task.resourceType,
       body: task,
