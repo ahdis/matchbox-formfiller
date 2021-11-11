@@ -1,0 +1,33 @@
+version: '3'
+services:
+  matchbox-formfiller:
+    image: eu.gcr.io/fhir-ch/matchbox-formfiller:v2
+    restart: on-failure
+    ports:
+      - '4300:80'
+    links:
+      - matchbox-order
+    environment:
+      DOMAIN: 'localhost'
+      MAG: 'https://test.ahdis.ch/mag-pmp'
+      MATCHBOX: 'http://matchbox-order:8080/matchbox'
+  matchbox-order:
+    image: eu.gcr.io/fhir-ch/matchbox:v141
+    container_name: matchbox-order
+    restart: on-failure
+    ports:
+      - '8080:8080'
+    links:
+      - matchbox-order-db
+    volumes:
+      - .:/config
+  matchbox-order-db:
+    image: postgres:latest
+    container_name: matchbox-order-db
+    restart: always
+    environment:
+      POSTGRES_DB: 'matchbox'
+      POSTGRES_USER: 'matchbox'
+      POSTGRES_PASSWORD: 'matchbox'
+    volumes:
+      - ./data:/var/lib/postgresql/data

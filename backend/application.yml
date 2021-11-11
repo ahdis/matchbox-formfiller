@@ -1,0 +1,41 @@
+server:
+  servlet:
+    context-path: /matchbox
+spring:
+  datasource:
+    url: 'jdbc:postgresql://matchbox-order-db:5432/matchbox'
+    username: matchbox
+    password: matchbox
+    driverClassName: org.postgresql.Driver
+
+    # database connection pool size
+    hikari:
+      maximum-pool-size: 10
+  jpa:
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQL95Dialect
+
+hapi:
+  fhir:
+    implementationguides:
+      eprterm:
+        name: ch.fhir.ig.ch-epr-term
+        version: 2.0.5
+      core:
+        name: ch.fhir.ig.ch-core
+        version: 2.0.0
+      sdc:
+        name: hl7.fhir.uv.sdc
+        version: 2.7.0
+      chorf:
+        url: http://build.fhir.org/ig/hl7ch/ch-orf/package.tgz
+        name: ch.fhir.ig.ch-orf
+        version: 0.11.0
+      chradorder:
+        url: http://build.fhir.org/ig/hl7ch/ch-rad-order/package.tgz
+        name: ch.fhir.ig.ch-rad-order
+        version: 0.1.0
+      chradpoc:
+        url: http://build.fhir.org/ig/ahdis/ch-rad-poc/package.tgz
+        name: ch.ahdis.ig.ch-rad-poc
+        version: 0.1.0
