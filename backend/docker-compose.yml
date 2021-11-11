@@ -1,7 +1,7 @@
 version: '3'
 services:
   matchbox-formfiller:
-    image: matchbox-formfiller:latest
+    image: eu.gcr.io/fhir-ch/matchbox-formfiller:v1
     restart: on-failure
     ports:
       - '4200:80'
@@ -12,7 +12,7 @@ services:
       MAG: 'https://test.ahdis.ch/mag-pmp'
       MATCHBOX: 'http://matchbox-order:8080/matchbox'
   matchbox-order:
-    image: matchbox-order:latest
+    image: eu.gcr.io/fhir-ch/matchbox-swissepr:v140
     container_name: matchbox-order
     restart: on-failure
     ports:
