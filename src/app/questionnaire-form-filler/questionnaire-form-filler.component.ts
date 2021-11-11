@@ -186,19 +186,8 @@ export class QuestionnaireFormFillerComponent implements OnInit {
       'ServiceRequest'
     ) as fhir.r4.ServiceRequest;
 
-    organizationSender.id = '1';
-    organizationReceiver.id = '2';
-
     let task: fhir.r4.Task = {
       resourceType: 'Task',
-      contained: [
-        {
-          ...organizationSender,
-        },
-        {
-          ...organizationReceiver,
-        },
-      ],
       identifier: [
         {
           ...serviceRequest.identifier[0],
@@ -213,13 +202,13 @@ export class QuestionnaireFormFillerComponent implements OnInit {
       authoredOn: bundle.timestamp,
       lastModified: bundle.timestamp,
       requester: {
-        reference: '#1',
+        identifier: organizationSender.identifier[0],
         display: organizationSender?.name,
       },
       restriction: {
         recipient: [
           {
-            reference: '#2',
+            identifier: organizationReceiver.identifier[0],
             display: organizationReceiver?.name,
           },
         ],
