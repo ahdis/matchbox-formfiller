@@ -18,7 +18,7 @@ export class AppComponent {
     let base = location.origin;
     if (
       base === 'http://localhost:4200' ||
-      base === 'https://ahdis.github.io/matchbox-formfiller'
+      base === 'https://ahdis.github.io'
     ) {
       console.log(
         'note: using ahdis test systems for matchbox and mag' + location.origin
