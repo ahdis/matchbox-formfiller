@@ -6,24 +6,20 @@ import FhirClient from 'fhir-kit-client';
   providedIn: 'root',
 })
 export class FhirConfigService {
-  private fhirMicroServer = new BehaviorSubject(
-    'https://test.ahdis.ch/matchbox/fhir'
-  );
+  private fhirMicroServer = new BehaviorSubject('/matchbox/fhir');
 
-  private mobileAccessGatewayServer = new BehaviorSubject(
-    'https://test.ahdis.ch/mag-pmp/fhir'
-  );
+  private mobileAccessGatewayServer = new BehaviorSubject('/mag/fhir');
 
   fhirMicroService = this.fhirMicroServer.asObservable();
   magMicroService = this.mobileAccessGatewayServer.asObservable();
 
   constructor() {}
 
-  changeFhirMicroService(server: string) {
+  public changeFhirMicroService(server: string) {
     this.fhirMicroServer.next(server);
   }
 
-  changeMagMicroService(server: string) {
+  public changeMagMicroService(server: string) {
     this.mobileAccessGatewayServer.next(server);
   }
 
