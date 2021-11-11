@@ -54,6 +54,21 @@ ng deploy --base-href=/matchbox-formfiller/
 
 note: communicatin via fhir servers is currently over http, therefore the https access has to be switched off in the github project
 
+## docker container
+
+The formfiller is also available as docker container "matchbox-formfiller". You can expose the internal port 80 as any port you like.
+
+## building and deploying the docker container
+
+ng build --prod
+docker build -t matchbox-formfiller .
+docker tag matchbox-formfiller eu.gcr.io/fhir-ch/matchbox-formfiller:v1
+docker push eu.gcr.io/fhir-ch/matchbox-formfiller:v1
+
+## running with backends
+
+Run "docker-compose up" in the "backend" folder to run a local version including the matchbox-order backend and database.
+
 ## PoC
 
 [development project board](https://github.com/ahdis/matchbox-formfiller/projects/1)
