@@ -49,11 +49,13 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
   @Input() hideSubmitButton = false;
   @Input() hideSaveButton = false;
   @Input() hideCancelButton = false;
+  @Input() hideSaveDefaultButton = false;
 
   @Output()
   changeQuestionnaireResponse = new EventEmitter<fhir.r4.QuestionnaireResponse>();
   @Output() submitQuestionnaire = new EventEmitter<void>();
   @Output() saveAsDraft = new EventEmitter<void>();
+  @Output() saveAsDefault = new EventEmitter<void>();
   @Output() deleteQuestionnaireResponse = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();
 
@@ -137,6 +139,7 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
             if (
               questionnaireResponse?.resourceType === 'QuestionnaireResponse'
             ) {
+              this.hideSaveDefaultButton = true;
               initWithQuestionnaireResponse(questionnaireResponse);
             }
           }

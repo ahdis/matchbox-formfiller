@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FhirPathService } from 'ng-fhirjs';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { QuestionnaireDemo } from '../home/questionnaire-demo';
 
 @Component({
   selector: 'app-fhir-path',
@@ -18,7 +17,6 @@ export class FhirPathComponent implements OnInit {
     private fhirPathService: FhirPathService,
     private cd: ChangeDetectorRef
   ) {
-    this.resource = QuestionnaireDemo.getQuestionnaireRadiologyOrder();
     this.fhirPathExpression = new FormControl();
     this.fhirPathExpression.valueChanges
       .pipe(debounceTime(400), distinctUntilChanged())
