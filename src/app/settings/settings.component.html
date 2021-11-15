@@ -27,26 +27,10 @@
         </mat-select>
       </mat-form-field>
       <br />
-      <div>
-        <button mat-raised-button (click)="setRadOrderQuestionnaire()">
-          Create/update radorder questionnaire
-        </button>
-        <button
-          mat-raised-button
-          (click)="setDefaultQuestionnaireResponseForRadOrder()"
-        >
-          Create/update radorder default response
-        </button>
-        <button mat-raised-button (click)="setPlacerOrderIdentifier()">
-          Create/update placer order identifier
-        </button>
-        <button mat-raised-button (click)="setOutgoingBundleExample()">
-          Create/update outgoing bundle example
-        </button>
-        <button mat-raised-button (click)="setIncomingBundleExample()">
-          Create/update incoming bundle example
-        </button>
-      </div>
     </form>
+    <app-questionnaires-table
+      [dataSource]="defaultQuestionnaireDataSource"
+      (rowClick)="openDefaultQuestionnaireResponse($event)"
+    ></app-questionnaires-table>
   </mat-card-content>
 </mat-card>

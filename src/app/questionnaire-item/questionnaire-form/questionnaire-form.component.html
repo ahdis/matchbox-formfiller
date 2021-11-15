@@ -38,6 +38,14 @@
         Save as Draft
       </button>
       <button
+        *ngIf="!hideSaveDefaultButton"
+        (click)="saveAsDefault.next()"
+        mat-raised-button
+        type="button"
+      >
+        Save as Default
+      </button>
+      <button
         *ngIf="!hideCancelButton"
         mat-button
         (click)="deleteQuestionnaireResponse.next()"

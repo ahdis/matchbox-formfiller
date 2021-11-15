@@ -306,22 +306,42 @@ export class QuestionnaireFormFillerComponent implements OnInit {
         return;
       }
     }
-    await this.saveQuestionnaireResponse(questionnaireResponse, 'completed');
+    questionnaireResponse.status = 'completed';
+    await this.saveQuestionnaireResponse(questionnaireResponse);
     await this.router.navigateByUrl('/');
   }
 
   onSaveAsDraft(initialQuestionnaireResponse?: fhir.r4.QuestionnaireResponse) {
+    this.questionnaireResponse.status = 'in-progress';
     return this.saveQuestionnaireResponse(
       initialQuestionnaireResponse
     ).then(() => this.router.navigateByUrl('/'));
   }
 
-  onDeleteQuestionnaireResponse(
+  onSaveAsDefaultDraft(
     initialQuestionnaireResponse?: fhir.r4.QuestionnaireResponse
   ) {
-    return this.deleteQuestionnaireResponse(
+    this.questionnaireResponse.status = 'completed';
+    if (this.questionnaireResponse.identifier == null) {
+      this.questionnaireResponse = {
+        ...this.questionnaireResponse,
+        identifier: {
+          system: 'http://ahdis.ch/fhir/Questionnaire',
+          value: 'DEFAULT',
+        },
+      };
+    }
+    return this.saveQuestionnaireResponse(
       initialQuestionnaireResponse
-    ).then(() => this.router.navigateByUrl('/'));
+    ).then(() => this.router.navigateByUrl('/settings'));
+  }
+
+  onDeleteQuestionnaireResponse(
+    questionnaireResponse?: fhir.r4.QuestionnaireResponse
+  ) {
+    return this.deleteQuestionnaireResponse(questionnaireResponse).then(() =>
+      this.router.navigateByUrl('/')
+    );
   }
 
   onCancel() {
@@ -329,9 +349,9 @@ export class QuestionnaireFormFillerComponent implements OnInit {
   }
 
   private async deleteQuestionnaireResponse(
-    initialQuestionnaireResponse?: fhir.r4.QuestionnaireResponse
+    questionnaireResponse?: fhir.r4.QuestionnaireResponse
   ) {
-    const questionnaireResponseId = initialQuestionnaireResponse?.id;
+    const questionnaireResponseId = questionnaireResponse?.id;
     if (questionnaireResponseId) {
       return this.fhirKitClient.delete({
         id: questionnaireResponseId,
@@ -341,25 +361,22 @@ export class QuestionnaireFormFillerComponent implements OnInit {
   }
 
   private async saveQuestionnaireResponse(
-    initialQuestionnaireResponse?: fhir.r4.QuestionnaireResponse,
-    status: 'in-progress' | 'completed' = 'in-progress'
+    questionnaireResponse?: fhir.r4.QuestionnaireResponse
   ) {
-    const questionnaireResponseId = initialQuestionnaireResponse?.id;
+    const questionnaireResponseId = questionnaireResponse?.id;
     if (questionnaireResponseId) {
       return this.fhirKitClient.update({
         id: questionnaireResponseId,
         resourceType: 'QuestionnaireResponse',
         body: {
-          ...initialQuestionnaireResponse,
+          id: questionnaireResponseId,
           ...this.questionnaireResponse,
-          status,
         },
       });
     } else {
       return this.fhirKitClient.create({
         resourceType: 'QuestionnaireResponse',
         body: this.questionnaireResponse,
-        status,
       });
     }
   }
