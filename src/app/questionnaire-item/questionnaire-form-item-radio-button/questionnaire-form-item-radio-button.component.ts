@@ -33,7 +33,9 @@ export class QuestionnaireFormItemRadioButtonComponent implements OnInit {
       this.item.isRequired ? [Validators.required] : []
     );
     this.formControl.valueChanges.subscribe((value) => {
-      this.dispatch(setAnswers(this.linkIdPath, [value]));
+      this.dispatch(
+        setAnswers(this.linkIdPath, [value], this.formControl.valid)
+      );
     });
   }
 }

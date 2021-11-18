@@ -4,7 +4,7 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
-import { FormArray, Validators } from '@angular/forms';
+import { FormArray, FormControl, Validators } from '@angular/forms';
 import * as R from 'ramda';
 import { filter } from 'rxjs/operators';
 import {
@@ -44,7 +44,9 @@ export class QuestionnaireFormItemStringComponent implements OnInit {
     this.formArray.valueChanges
       .pipe(filter(R.none(R.isNil)))
       .subscribe((values) => {
-        this.dispatch(setAnswers(this.linkIdPath, values));
+        this.dispatch(
+          setAnswers(this.linkIdPath, values, this.formArray.valid)
+        );
       });
   }
 

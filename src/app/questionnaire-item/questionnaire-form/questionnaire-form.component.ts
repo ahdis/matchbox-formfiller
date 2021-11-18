@@ -22,7 +22,10 @@ import {
 } from 'rxjs/operators';
 import { rootReducer } from '../store/reducer';
 import { transformQuestionnaire } from '../store/transform-initial-state';
-import { getQuestionnaireResponse } from '../store/transform-response';
+import {
+  getQuestionnaireResponse,
+  getQuestionnaireValid,
+} from '../store/transform-response';
 import {
   Action,
   LinkIdPathSegment,
@@ -36,6 +39,7 @@ import {
 import { FhirConfigService } from '../../fhirConfig.service';
 import Client from 'fhir-kit-client';
 import { getInitActions } from '../store/init-actions';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-questionnaire-form',
@@ -65,6 +69,8 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
     renderingExtension: RenderingExtension;
   }>;
   itemLinkIdPaths$: Observable<LinkIdPathSegment[][]>;
+
+  formValid: boolean = true;
 
   private readonly fhirKitClient: Client;
   private unsubscribe$ = new Subject<void>();
@@ -124,6 +130,10 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
     this.store$
       .pipe(takeUntil(this.unsubscribe$), map(getQuestionnaireResponse))
       .subscribe((val) => this.changeQuestionnaireResponse.next(val));
+
+    this.store$
+      .pipe(takeUntil(this.unsubscribe$), map(getQuestionnaireValid))
+      .subscribe((val) => (this.formValid = val));
 
     this.store$.pipe(first()).subscribe(() => {
       const initWithQuestionnaireResponse = R.pipe(

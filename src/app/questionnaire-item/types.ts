@@ -46,6 +46,7 @@ export interface IsEnabledCondition {
 export interface ItemAnswer {
   answer: any;
   items: QuestionnaireItemsIndexedByLinkId;
+  valid?: boolean;
 }
 
 export interface QuestionnaireItem {

@@ -44,7 +44,9 @@ export class QuestionnaireFormItemIntegerComponent implements OnInit {
     this.formArray.valueChanges
       .pipe(filter(R.none(R.isNil)))
       .subscribe((values) => {
-        this.dispatch(setAnswers(this.linkIdPath, values));
+        this.dispatch(
+          setAnswers(this.linkIdPath, values, this.formArray.valid)
+        );
       });
   }
 }

@@ -3,12 +3,14 @@ import { LinkIdPathSegment } from '../types';
 export const SET_ANSWERS = 'SET_ANSWERS';
 export const setAnswers = (
   linkIdPath: LinkIdPathSegment[],
-  answers: ReadonlyArray<any>
+  answers: ReadonlyArray<any>,
+  valid?: boolean
 ) => ({
   type: SET_ANSWERS,
   payload: {
     linkIdPath,
     answers,
+    valid,
   },
 });
 

@@ -45,7 +45,9 @@ export class QuestionnaireFormItemChoiceComponent implements OnInit {
         filter(R.none(R.isNil))
       )
       .subscribe((values) => {
-        this.dispatch(setAnswers(this.linkIdPath, values));
+        this.dispatch(
+          setAnswers(this.linkIdPath, values, this.formControl.valid)
+        );
       });
   }
 }

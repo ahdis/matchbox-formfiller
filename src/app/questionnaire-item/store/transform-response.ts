@@ -2,6 +2,7 @@ import * as R from 'ramda';
 import {
   AnswerOption,
   AnswerOptionType,
+  ItemAnswer,
   QuestionnaireItem,
   QuestionnaireState,
 } from '../types';
@@ -198,3 +199,36 @@ export const getQuestionnaireResponse = (
   status: 'in-progress',
   item: getResponseItems(getIsEnabled(state))(R.values(state.items)),
 });
+
+const checkAnswerList = (itemAnswerList: readonly ItemAnswer[]): boolean => {
+  if (itemAnswerList) {
+    for (let itemAnswer of itemAnswerList) {
+      if (itemAnswer.valid === false) {
+        return false;
+      }
+      if (itemAnswer.items) {
+        const questionnaireItems = R.values(itemAnswer.items);
+        for (let questionnaireItem of questionnaireItems) {
+          if (questionnaireItem.itemAnswerList) {
+            if (!checkAnswerList(questionnaireItem.itemAnswerList)) {
+              return false;
+            }
+          }
+        }
+      }
+    }
+  }
+  return true;
+};
+
+export const getQuestionnaireValid = (state: QuestionnaireState): boolean => {
+  const questionnaireItems = R.values(state.items);
+  for (let questionnaireItem of questionnaireItems) {
+    if (questionnaireItem.itemAnswerList) {
+      if (!checkAnswerList(questionnaireItem.itemAnswerList)) {
+        return false;
+      }
+    }
+  }
+  return true;
+};

@@ -279,7 +279,7 @@ const transformItem = (valueSets: any[], isQuestionnaireReadOnly: boolean) => (
     isQuestionnaireReadOnly
   )(item.item);
   const itemAnswerList = R.map(
-    (answer) => ({ answer, items: defaultItems }),
+    (answer) => ({ answer, items: defaultItems, valid: true }),
     answers
   );
   return {

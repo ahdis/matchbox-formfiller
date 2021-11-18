@@ -73,7 +73,9 @@ export class QuestionnaireFormItemOpenChoiceComponent implements OnInit {
             isString(value) ? `user-option-${index}` : value.key,
           values
         );
-        this.dispatch(setAnswers(this.linkIdPath, answers));
+        this.dispatch(
+          setAnswers(this.linkIdPath, answers, this.formArray.valid)
+        );
       });
 
     this.answerOptions$ = this.formArray.valueChanges.pipe(

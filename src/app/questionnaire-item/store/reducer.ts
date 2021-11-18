@@ -49,7 +49,7 @@ export const rootReducer = (
             console.warn('Could not set answers for action', action.payload);
             return oldAnswers;
           }
-          const answers = R.concat(
+          const answersConcat = R.concat(
             oldAnswers,
             R.repeat(
               {
@@ -64,13 +64,17 @@ export const rootReducer = (
               R.max(0, action.payload.answers.length - oldAnswers.length)
             )
           );
-          return R.map(
+          const result = R.map(
             ([answer, { items }]): ItemAnswer => ({
               answer,
               items,
             }),
-            R.zip(action.payload.answers, answers)
+            R.zip(action.payload.answers, answersConcat)
           );
+          return R.forEach((item: ItemAnswer) => {
+            item.valid = action.payload?.valid;
+            return item;
+          }, result);
         },
         state
       );
