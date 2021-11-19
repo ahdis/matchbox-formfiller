@@ -4,7 +4,7 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
-import { FormArray } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import * as R from 'ramda';
 import {
   modifyFormArrayToMatchCount,
@@ -22,6 +22,7 @@ import { Action, FormItem, LinkIdPathSegment } from '../types';
 export class QuestionnaireFormItemCheckBoxComponent implements OnInit {
   @Input() linkIdPath: LinkIdPathSegment[];
   @Input() dispatch: (action: Action) => void;
+  @Input() formParent: FormGroup;
   @Input() set formItem(item: FormItem) {
     this.item = item;
     modifyFormArrayToMatchCount(this.formArray, item.answerOptions.length);
@@ -41,6 +42,7 @@ export class QuestionnaireFormItemCheckBoxComponent implements OnInit {
   item: FormItem;
 
   ngOnInit() {
+    this.formParent.addControl(this.item.linkId, this.formArray);
     this.formArray.setValidators(
       this.item.isRequired
         ? [

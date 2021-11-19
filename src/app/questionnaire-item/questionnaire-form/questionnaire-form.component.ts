@@ -39,7 +39,7 @@ import {
 import { FhirConfigService } from '../../fhirConfig.service';
 import Client from 'fhir-kit-client';
 import { getInitActions } from '../store/init-actions';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-questionnaire-form',
@@ -71,6 +71,8 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
   itemLinkIdPaths$: Observable<LinkIdPathSegment[][]>;
 
   formValid: boolean = true;
+  formGroup: FormGroup;
+  refreshed: string = 'fresh';
 
   private readonly fhirKitClient: Client;
   private unsubscribe$ = new Subject<void>();
@@ -80,6 +82,7 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
 
   constructor(fhirConfigService: FhirConfigService) {
     this.fhirKitClient = fhirConfigService.getFhirClient();
+    this.formGroup = new FormGroup({});
   }
 
   ngOnChanges() {
@@ -200,6 +203,14 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
         },
       })
       .then(extractFirstEntryFromSearchBundle);
+  }
+
+  showFormErrors() {
+    this.refreshed = 'should be touched';
+    // TODO this does not yet work, should show all errors, don't know why yet
+    // see https://stackoverflow.com/questions/46745171/angular-material-show-mat-error-on-button-click?rq=1
+    this.formGroup.markAllAsTouched();
+    this.formGroup.markAsDirty();
   }
 }
 

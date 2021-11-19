@@ -4,7 +4,7 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import * as R from 'ramda';
 import { filter, map } from 'rxjs/operators';
 import {
@@ -23,6 +23,7 @@ import { Action, FormItem, LinkIdPathSegment } from '../types';
 export class QuestionnaireFormItemChoiceComponent implements OnInit {
   @Input() linkIdPath: LinkIdPathSegment[];
   @Input() dispatch: (action: Action) => void;
+  @Input() formParent: FormGroup;
   @Input() set formItem(item: FormItem) {
     this.item = item;
     this.formControl.setValidators(
@@ -39,6 +40,7 @@ export class QuestionnaireFormItemChoiceComponent implements OnInit {
   item: FormItem;
 
   ngOnInit() {
+    this.formParent.addControl(this.item.linkId, this.formControl);
     this.formControl.valueChanges
       .pipe(
         map((values) => (Array.isArray(values) ? values : [values])),

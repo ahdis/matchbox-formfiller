@@ -4,7 +4,7 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
-import { FormArray, Validators } from '@angular/forms';
+import { FormArray, FormGroup, Validators } from '@angular/forms';
 import * as R from 'ramda';
 import { Observable } from 'rxjs';
 import { filter, map, startWith } from 'rxjs/operators';
@@ -31,6 +31,7 @@ import {
 export class QuestionnaireFormItemOpenChoiceComponent implements OnInit {
   @Input() linkIdPath: LinkIdPathSegment[];
   @Input() dispatch: (action: Action) => void;
+  @Input() formParent: FormGroup;
   @Input() set formItem(item: FormItem) {
     this.item = item;
     modifyFormArrayToMatchAnswerCount(
@@ -56,6 +57,7 @@ export class QuestionnaireFormItemOpenChoiceComponent implements OnInit {
   answerOptions$: Observable<FormItemAnswerOption[][]>;
 
   ngOnInit() {
+    this.formParent.addControl(this.item.linkId, this.formArray);
     this.formArray.valueChanges
       .pipe(filter(R.none(R.isNil)))
       .subscribe((values) => {

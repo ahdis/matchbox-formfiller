@@ -4,7 +4,7 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { setAnswers } from '../store/action';
 import { Action, FormItem, LinkIdPathSegment } from '../types';
 import { setDisabledBasedOnIsReadOnly } from '../impure-helpers';
@@ -18,6 +18,7 @@ import { setDisabledBasedOnIsReadOnly } from '../impure-helpers';
 export class QuestionnaireFormItemRadioButtonComponent implements OnInit {
   @Input() linkIdPath: LinkIdPathSegment[];
   @Input() dispatch: (action: Action) => void;
+  @Input() formParent: FormGroup;
   @Input() set formItem(item: FormItem) {
     this.item = item;
     this.formControl.patchValue(item.answers[0], { emitEvent: false });
@@ -29,6 +30,7 @@ export class QuestionnaireFormItemRadioButtonComponent implements OnInit {
   item: FormItem;
 
   ngOnInit() {
+    this.formParent.addControl(this.item.linkId, this.formControl);
     this.formControl.setValidators(
       this.item.isRequired ? [Validators.required] : []
     );

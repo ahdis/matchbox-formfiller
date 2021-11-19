@@ -4,7 +4,7 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
-import { FormArray, FormControl, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import * as R from 'ramda';
 import { filter } from 'rxjs/operators';
 import {
@@ -25,6 +25,8 @@ import { Action, FormItem, LinkIdPathSegment } from '../types';
 export class QuestionnaireFormItemStringComponent implements OnInit {
   @Input() linkIdPath: LinkIdPathSegment[];
   @Input() dispatch: (action: Action) => void;
+  @Input() formParent: FormGroup;
+
   @Input() set formItem(item: FormItem) {
     this.item = item;
     modifyFormArrayToMatchAnswerCount(this.formArray, item, [
@@ -41,6 +43,7 @@ export class QuestionnaireFormItemStringComponent implements OnInit {
   item: FormItem;
 
   ngOnInit() {
+    this.formParent.addControl(this.item.linkId, this.formArray);
     this.formArray.valueChanges
       .pipe(filter(R.none(R.isNil)))
       .subscribe((values) => {

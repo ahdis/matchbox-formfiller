@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import * as R from 'ramda';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
@@ -21,6 +21,7 @@ export class QuestionnaireFormItemComponent implements OnInit {
   @Input() linkIdPath: LinkIdPathSegment[];
   @Input() store: Observable<QuestionnaireState>;
   @Input() dispatch: (action: Action) => void;
+  @Input() formParent: FormGroup;
 
   item$: Observable<FormItem | undefined>;
   childrenItemLinkIdPaths$: Observable<LinkIdPathSegment[][][]>;

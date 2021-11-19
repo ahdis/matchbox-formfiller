@@ -8,6 +8,7 @@ import {
 import { addAnswer, removeAnswer } from '../store/action';
 import { Observable } from 'rxjs';
 import { isNumber } from '../store/util';
+import { FormArray, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-questionnaire-form-item-group',
@@ -22,17 +23,34 @@ export class QuestionnaireFormItemGroupComponent {
   @Input() childrenItemLinkIdPaths: LinkIdPathSegment[][][];
   @Input() store: Observable<QuestionnaireState>;
   @Input() dispatch: (action: Action) => void;
+  @Input() formParent: FormGroup;
+
+  formArray: FormArray;
+
+  ngOnInit() {
+    let formGroup = new FormGroup({});
+    this.formArray = new FormArray([]);
+    this.formArray.push(formGroup);
+    this.formParent.addControl(this.formItem.linkId, this.formArray);
+  }
 
   addGroup() {
+    let formGroup = new FormGroup({});
+    this.formArray.push(formGroup);
     this.dispatch(addAnswer(this.linkIdPath, ''));
   }
 
   removeGroup(index) {
+    this.formArray.removeAt(index);
     this.dispatch(removeAnswer(this.linkIdPath, index));
   }
 
   track(index: number, paths: (LinkIdPathSegment[] | LinkIdPathSegment)[]) {
     return pathsToString(paths);
+  }
+
+  getFormGroup(answerIndex) {
+    return this.formArray.at(answerIndex);
   }
 }
 
