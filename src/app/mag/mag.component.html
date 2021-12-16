@@ -1,7 +1,7 @@
 <mat-card class="display">
   <mat-card-content>
     <mat-card-header>
-      <mat-card-title>Mobile Access Gateway</mat-card-title>
+      <mat-card-title>Mobile Access Gateway - Patient</mat-card-title>
     </mat-card-header>
 
     <div>
@@ -33,8 +33,7 @@
     </div>
 
     <div>
-      <div>Format Code: {{ documentReferenceFormatCode }}</div>
-      <div>Attachment Url: {{ documentReferenceAttachmentUrl }}</div>
+      <div>targetId: {{ targetId }}</div>
     </div>
 
     <mat-card-actions>
@@ -46,6 +45,40 @@
       >
         PIXm Query
       </button>
+    </mat-card-actions>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="display">
+  <mat-card-content>
+    <mat-card-header>
+      <mat-card-title>Mobile Access Gateway - Authenticate</mat-card-title>
+    </mat-card-header>
+
+    <div>
+      <mat-form-field>
+        <mat-label>Authenticate/Authorize</mat-label>
+        <select matNativeControl required [formControl]="authenticate">
+          <option value="PATIENT">Patient</option>
+          <option value="HCP">HCP for Patient</option>
+        </select>
+      </mat-form-field>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="display">
+  <mat-card-content>
+    <mat-card-header>
+      <mat-card-title>Mobile Access Gateway - Query</mat-card-title>
+    </mat-card-header>
+
+    <div>
+      <div>Format Code: {{ documentReferenceFormatCode }}</div>
+      <div>Attachment Url: {{ documentReferenceAttachmentUrl }}</div>
+    </div>
+
+    <mat-card-actions>
       <button mat-raised-button type="submit" (click)="onFindMedicationList()">
         Medication List
       </button>
@@ -64,6 +97,44 @@
       </button>
       <button mat-raised-button type="submit" (click)="onPdf()">Pdf</button>
     </mat-card-actions>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="display">
+  <mat-card-content>
+    <mat-card-header>
+      <mat-card-title>Mobile Access Gateway - Upload</mat-card-title>
+    </mat-card-header>
+
+    <div>
+      <input
+        type="file"
+        (change)="fileChange($event)"
+        placeholder="Upload"
+        accept=".xml,*.json"
+      />
+    </div>
+    <div>
+      <div>
+        <mat-form-field>
+          <mat-label>ihe-sourceId</mat-label>
+          <input matInput [formControl]="iheSourceId" /> </mat-form-field
+        >&nbsp;
+        <a
+          href="https://profiles.ihe.net/ITI/MHD/4.0.2/StructureDefinition-ihe-sourceId.html"
+          >ig</a
+        >
+      </div>
+      <div>
+        <button
+          mat-raised-button
+          type="submit"
+          (click)="createMhdTransaction()"
+        >
+          Test MHD
+        </button>
+      </div>
+    </div>
   </mat-card-content>
 </mat-card>
 
