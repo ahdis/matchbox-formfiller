@@ -22,6 +22,9 @@ export class HomeComponent implements OnInit {
   openOrderDataSource = new MatTableDataSource<
     QuestionnaireTableEntry<QuestionnaireWithResponse>
   >();
+  completedOrderDataSource = new MatTableDataSource<
+    QuestionnaireTableEntry<QuestionnaireWithResponse>
+  >();
   taskDataSource = new MatTableDataSource<TaskTableEntry<fhir.r4.Task>>();
 
   client: Client;
@@ -39,6 +42,9 @@ export class HomeComponent implements OnInit {
         this.loadQuestionnaireResponses();
         break;
       case 2:
+        this.loadQuestionnaireResponsesCompleted();
+        break;
+      case 3:
         this.loadTasks();
         break;
     }
@@ -128,6 +134,60 @@ export class HomeComponent implements OnInit {
     );
   }
 
+  async loadQuestionnaireResponsesCompleted() {
+    const questionnaireResponses: fhir.r4.QuestionnaireResponse[] = (await this.client
+      .search({
+        resourceType: 'QuestionnaireResponse',
+        searchParams: {
+          _summary: 'true',
+          _sort: '-_lastUpdated',
+          status: 'completed',
+        },
+      })
+      .then(
+        extractResourcesFromSearchBundle
+      )) as fhir.r4.QuestionnaireResponse[];
+
+    if (!questionnaireResponses.length) {
+      return;
+    }
+
+    // load related Questionnaires
+    const questionnaireUrls = R.uniq(
+      questionnaireResponses.map(
+        (questionnaireResponse) => questionnaireResponse.questionnaire
+      )
+    ).join(',');
+    const linkedQuestionnaires: fhir.r4.Questionnaire[] = (await this.client
+      .search({
+        resourceType: 'Questionnaire',
+        searchParams: {
+          _summary: 'true',
+          url: questionnaireUrls,
+        },
+      })
+      .then(extractResourcesFromSearchBundle)) as fhir.r4.Questionnaire[];
+
+    this.completedOrderDataSource.data = questionnaireResponses.map(
+      (questionnaireResponse) => {
+        const questionnaire = linkedQuestionnaires.find(
+          ({ url }) => questionnaireResponse.questionnaire === url
+        );
+        return {
+          title: questionnaire?.title + ' ' + questionnaireResponse.id,
+          status: questionnaireResponse?.status,
+          date: questionnaireResponse.meta?.lastUpdated,
+          publisher: questionnaire?.publisher,
+          version: questionnaireResponse.meta?.versionId,
+          entry: {
+            questionnaire,
+            questionnaireResponse,
+          },
+        };
+      }
+    );
+  }
+
   async loadTasks() {
     const tasks: fhir.r4.Resource[] = await this.client
       .search({
@@ -151,33 +211,6 @@ export class HomeComponent implements OnInit {
     console.log('task entries' + this.taskDataSource.data.length);
   }
 
-  //   async loadOutgoingBundles() {
-  //   const placerCoding: fhir.r4.Coding = {
-  //     system: 'http://terminology.hl7.org/CodeSystem/v2-0203',
-  //     code: 'PLAC',
-  //   };
-  //   const outgoingPlacerOrderIdentifier: fhir.r4.Identifier = await this.client
-  //     .search({
-  //       resourceType: 'Basic',
-  //       searchParams: {
-  //         code: `${placerCoding.system}|${placerCoding.code}`,
-  //       },
-  //     })
-  //     .then((bundle) => bundle?.entry?.[0]?.resource?.identifier?.[0]);
-  //   if (!outgoingPlacerOrderIdentifier) {
-  //     console.error(
-  //       'Cannot partition between incoming and outgoing bundles as no Basic resource defining the placerOrderIdentifier could be found.'
-  //     );
-  //   }
-
-  //   const [outgoingEntries, incomingEntries] = await Promise.all([
-  //     this.loadBundles(outgoingPlacerOrderIdentifier, false),
-  //     this.loadBundles(outgoingPlacerOrderIdentifier, true),
-  //   ]);
-  //   this.outgoingOrderDataSource.data = outgoingEntries;
-  //   this.incomingOrderDataSource.data = incomingEntries;
-  // }
-
   openQuestionnaire(entry: fhir.r4.Questionnaire) {
     this.router.navigate(['questionnaire', entry.id]);
   }
@@ -198,37 +231,6 @@ export class HomeComponent implements OnInit {
   openTask(taskId: fhir.r4.Task) {
     this.router.navigate(['task', taskId.id]);
   }
-
-  // private loadBundles(
-  //   outgoingPlacerOrderIdentifier: fhir.r4.Identifier,
-  //   incoming: boolean) {
-  //   return this.client
-  //     .search({
-  //       resourceType: 'Bundle',
-  //       searchParams: {
-  //         [`placer${incoming ? ':not' : ''
-  //           }`]: `${outgoingPlacerOrderIdentifier.system}|`,
-  //         _sort: '-_lastUpdated',
-  //       },
-  //     })
-  //     .then(extractResourcesFromSearchBundle)
-  //     .then(
-  //       R.map((bundle: fhir.r4.Bundle) => {
-  //         const {
-  //           questionnaire,
-  //           questionnaireResponse,
-  //         } = extractQuestionnaireWithResponseFromBundle(bundle);
-  //         return {
-  //           title: questionnaire?.title + ' ' + bundle.id,
-  //           status: questionnaireResponse?.status,
-  //           date: bundle.meta?.lastUpdated,
-  //           publisher: questionnaire?.publisher,
-  //           version: bundle.meta?.versionId,
-  //           entry: bundle.id,
-  //         };
-  //       })
-  //     );
-  // }
 }
 
 const extractResourcesFromSearchBundle = (

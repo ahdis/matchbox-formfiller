@@ -7,15 +7,21 @@
   </mat-card-header>
   <mat-card-content>
     <mat-tab-group (selectedTabChange)="tabChanged($event)">
-      <mat-tab label="Create new order">
+      <mat-tab label="Create new">
         <app-questionnaires-table
           [dataSource]="newOrderDataSource"
           (rowClick)="openQuestionnaire($event)"
         ></app-questionnaires-table>
       </mat-tab>
-      <mat-tab label="Draft orders">
+      <mat-tab label="Drafts">
         <app-questionnaires-table
           [dataSource]="openOrderDataSource"
+          (rowClick)="openQuestionnaireResponse($event)"
+        ></app-questionnaires-table>
+      </mat-tab>
+      <mat-tab label="Completed">
+        <app-questionnaires-table
+          [dataSource]="completedOrderDataSource"
           (rowClick)="openQuestionnaireResponse($event)"
         ></app-questionnaires-table>
       </mat-tab>

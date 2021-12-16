@@ -72,7 +72,7 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
 
   formValid: boolean = true;
   formGroup: FormGroup;
-  refreshed: string = 'fresh';
+  refreshed: string = '';
 
   private readonly fhirKitClient: Client;
   private unsubscribe$ = new Subject<void>();
@@ -206,7 +206,8 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
   }
 
   showFormErrors() {
-    this.refreshed = 'should be touched';
+    this.refreshed =
+      'Form is not yet valid, please fill in all required fields !!!';
     // TODO this does not yet work, should show all errors, don't know why yet
     // see https://stackoverflow.com/questions/46745171/angular-material-show-mat-error-on-button-click?rq=1
     this.formGroup.markAllAsTouched();

@@ -306,7 +306,7 @@ export class QuestionnaireFormFillerComponent implements OnInit {
         return;
       }
     }
-    questionnaireResponse.status = 'completed';
+    this.questionnaireResponse.status = 'completed';
     await this.saveQuestionnaireResponse(questionnaireResponse);
     await this.router.navigateByUrl('/');
   }
