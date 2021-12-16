@@ -1,4 +1,5 @@
 import * as R from 'ramda';
+import { evaluate } from 'fhirpath';
 import {
   AnswerOption,
   AnswerOptionType,
@@ -142,6 +143,18 @@ const getCalculatedExpressionExtension = R.pipe(
   toString
 );
 
+const getSdcInitialExpressionExtension = R.pipe(
+  getExtensionOfElement(
+    'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression'
+  ),
+  R.ifElse(
+    R.pathEq(['valueExpression', 'language'], 'text/fhirpath'),
+    R.pathOr(undefined, ['valueExpression', 'expression']),
+    R.always(undefined)
+  ),
+  toString
+);
+
 const isCanonicalUriAFragmentReference = (canonicalUri: string): boolean =>
   R.startsWith('#', toString(canonicalUri) || '');
 
@@ -273,7 +286,14 @@ const getInitialAnswers = R.pipe(
 const transformItem = (valueSets: any[], isQuestionnaireReadOnly: boolean) => (
   item: any
 ): QuestionnaireItem => {
-  const answers = getInitialAnswers(item);
+  let answers = getInitialAnswers(item);
+  const fhirPathExpression = getSdcInitialExpressionExtension(item);
+  if (fhirPathExpression) {
+    // TODO: we have no context yer here, we need to the context with the
+    // http://hl7.org/fhir/StructureDefinition/variable and http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext
+    answers = evaluate(null, fhirPathExpression);
+  }
+
   const defaultItems = transformItems(
     valueSets,
     isQuestionnaireReadOnly
