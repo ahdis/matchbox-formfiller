@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import debug from 'debug';
 import { Observable, of, zip } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { getExtensionOfElement } from '../questionnaire-item/store/transform-ini
 import { fromPromise } from 'rxjs/internal/observable/fromPromise';
 import { QuestionnaireWithResponse } from '../questionnaire-item/types';
 import { FhirPathService } from 'ng-fhirjs';
+import { HighlightSpanKind } from 'typescript';
 
 @Component({
   selector: 'app-questionnaire-form-filler',
@@ -17,11 +18,14 @@ import { FhirPathService } from 'ng-fhirjs';
 })
 export class QuestionnaireFormFillerComponent implements OnInit {
   private readonly fhirKitClient: Client;
+  private showHidden = false;
 
   questionnaireWithResponse$: Observable<QuestionnaireWithResponse | undefined>;
   questionnaireResponse: fhir.r4.QuestionnaireResponse;
 
   log = debug('app:');
+  filter$: Observable<string>;
+  errMsg: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -33,6 +37,11 @@ export class QuestionnaireFormFillerComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.filter$ = this.route.queryParamMap.pipe(
+      map((params: ParamMap) => params.get('showHidden'))
+    );
+    this.filter$.subscribe((param) => (this.showHidden = 'true' === param));
+
     this.questionnaireWithResponse$ = zip(
       this.route.paramMap.pipe(
         map((params) => params.get('questionnaireId')),
@@ -180,6 +189,14 @@ export class QuestionnaireFormFillerComponent implements OnInit {
       bundle,
       refPractitionerRoleSender
     );
+    if (!organizationReceiver.identifier || !organizationSender.identifier) {
+      console.log(
+        'identifier not specified for organizationReceiver or organizationSender'
+      );
+      throw new Error(
+        'identifier not specified for organizationReceiver or organizationSender!'
+      );
+    }
 
     let serviceRequest = this.getResourceFromBundleByType(
       bundle,
@@ -272,43 +289,48 @@ export class QuestionnaireFormFillerComponent implements OnInit {
     questionnaireResponse,
   }: QuestionnaireWithResponse) {
     this.log('submit questionnaire response', this.questionnaireResponse);
-    if (
-      getExtensionOfElement(
-        'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-targetStructureMap'
-      )(questionnaire)
-    ) {
-      const resource = (await this.fhirKitClient.operation({
-        name: 'extract',
-        resourceType: 'QuestionnaireResponse',
-        input: this.questionnaireResponse,
-      })) as fhir.r4.Resource;
-      if (!('OperationOutcome' === resource.resourceType)) {
-        let createdResource = await this.fhirKitClient.create({
-          resourceType: resource.resourceType,
-          body: resource,
-        });
-        if (
-          questionnaire.derivedFrom &&
-          questionnaire.derivedFrom.includes(
-            'http://fhir.ch/ig/ch-orf/StructureDefinition/ch-orf-questionnaire'
-          )
-        ) {
-          let task = await this.createTask(createdResource as fhir.r4.Bundle);
-          await this.router.navigate(['task', task.id]);
+    try {
+      if (
+        getExtensionOfElement(
+          'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-targetStructureMap'
+        )(questionnaire)
+      ) {
+        const resource = (await this.fhirKitClient.operation({
+          name: 'extract',
+          resourceType: 'QuestionnaireResponse',
+          input: this.questionnaireResponse,
+        })) as fhir.r4.Resource;
+        if (!('OperationOutcome' === resource.resourceType)) {
+          let createdResource = await this.fhirKitClient.create({
+            resourceType: resource.resourceType,
+            body: resource,
+          });
+          if (
+            questionnaire.derivedFrom &&
+            questionnaire.derivedFrom.includes(
+              'http://fhir.ch/ig/ch-orf/StructureDefinition/ch-orf-questionnaire'
+            )
+          ) {
+            let task = await this.createTask(createdResource as fhir.r4.Bundle);
+            await this.router.navigate(['task', task.id]);
+            return;
+          }
+        } else {
+          console.log(
+            'Error performing extract operation ' +
+              JSON.stringify(resource, null, 2)
+          );
+          // TODO create an error message
           return;
         }
-      } else {
-        console.log(
-          'Error performing extract operation ' +
-            JSON.stringify(resource, null, 2)
-        );
-        // TODO create an error message
-        return;
       }
+      this.questionnaireResponse.status = 'completed';
+      await this.saveQuestionnaireResponse(questionnaireResponse);
+      await this.router.navigateByUrl('/');
+    } catch (e) {
+      this.errMsg = e;
+      console.error(e);
     }
-    this.questionnaireResponse.status = 'completed';
-    await this.saveQuestionnaireResponse(questionnaireResponse);
-    await this.router.navigateByUrl('/');
   }
 
   onSaveAsDraft(initialQuestionnaireResponse?: fhir.r4.QuestionnaireResponse) {

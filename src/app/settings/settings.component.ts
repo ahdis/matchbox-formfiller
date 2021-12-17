@@ -142,7 +142,10 @@ export class SettingsComponent implements OnInit {
     questionnaireResponse,
   }: QuestionnaireWithResponse) {
     this.router.navigate(['questionnaire', questionnaire.id], {
-      queryParams: { questionnaireResponseId: questionnaireResponse.id },
+      queryParams: {
+        questionnaireResponseId: questionnaireResponse.id,
+        showHidden: true,
+      },
     });
   }
 }

@@ -283,9 +283,11 @@ const getInitialAnswers = R.pipe(
   R.when(R.isEmpty, R.always([undefined]))
 );
 
-const transformItem = (valueSets: any[], isQuestionnaireReadOnly: boolean) => (
-  item: any
-): QuestionnaireItem => {
+const transformItem = (
+  valueSets: any[],
+  isQuestionnaireReadOnly: boolean,
+  showHidden: boolean
+) => (item: any): QuestionnaireItem => {
   let answers = getInitialAnswers(item);
   const fhirPathExpression = getSdcInitialExpressionExtension(item);
   if (fhirPathExpression) {
@@ -296,7 +298,8 @@ const transformItem = (valueSets: any[], isQuestionnaireReadOnly: boolean) => (
 
   const defaultItems = transformItems(
     valueSets,
-    isQuestionnaireReadOnly
+    isQuestionnaireReadOnly,
+    showHidden
   )(item.item);
   const itemAnswerList = R.map(
     (answer) => ({ answer, items: defaultItems, valid: true }),
@@ -318,7 +321,7 @@ const transformItem = (valueSets: any[], isQuestionnaireReadOnly: boolean) => (
         ? IsEnabledBehavior.All
         : IsEnabledBehavior.Any,
     extensions: {
-      isHidden: getHiddenExtension(item),
+      isHidden: showHidden ? false : getHiddenExtension(item),
       itemControl: getItemControlExtension(item),
       choiceOrientation: getChoiceOrientationExtension(item),
       prefix: {
@@ -343,7 +346,8 @@ const transformItem = (valueSets: any[], isQuestionnaireReadOnly: boolean) => (
 
 const transformItems = (
   valueSets: any[],
-  isQuestionnaireReadOnly: boolean
+  isQuestionnaireReadOnly: boolean,
+  showHidden: boolean
 ): ((items: unknown) => QuestionnaireItemsIndexedByLinkId) =>
   R.pipe(
     toArray,
@@ -351,17 +355,22 @@ const transformItems = (
       (item: any) =>
         isObject(item) && isString(item.linkId) && isString(item.type)
     ),
-    R.map(transformItem(valueSets, isQuestionnaireReadOnly)),
+    R.map(transformItem(valueSets, isQuestionnaireReadOnly, showHidden)),
     R.indexBy(R.prop('linkId'))
   );
 
 export const transformQuestionnaire = (
   questionnaire: fhir.r4.Questionnaire,
   valueSets: any[],
-  isQuestionnaireReadOnly: boolean
+  isQuestionnaireReadOnly: boolean,
+  showHidden: boolean
 ): QuestionnaireState => ({
   title: getHtmlOrText(toString(questionnaire.title), questionnaire._title),
-  items: transformItems(valueSets, isQuestionnaireReadOnly)(questionnaire.item),
+  items: transformItems(
+    valueSets,
+    isQuestionnaireReadOnly,
+    showHidden
+  )(questionnaire.item),
   url: questionnaire.url,
   extensions: {
     title: {

@@ -29,7 +29,9 @@
       questionnaireWithResponse.questionnaireResponse?.identifier ? true : false
     "
     [hideCancelButton]="false"
+    [showHidden]="showHidden"
   ></app-questionnaire-form>
+  <div>{{ errMsg }}</div>
 </ng-container>
 <ng-template #notfound>
   <p>Questionnaire not found</p>

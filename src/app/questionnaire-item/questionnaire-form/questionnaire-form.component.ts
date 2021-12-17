@@ -54,6 +54,7 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
   @Input() hideSaveButton = false;
   @Input() hideCancelButton = false;
   @Input() hideSaveDefaultButton = false;
+  @Input() showHidden = false;
 
   @Output()
   changeQuestionnaireResponse = new EventEmitter<fhir.r4.QuestionnaireResponse>();
@@ -95,7 +96,12 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
         this.dispatch$.pipe(
           scan(
             rootReducer,
-            transformQuestionnaire(this.questionnaire, valueSets, this.readOnly)
+            transformQuestionnaire(
+              this.questionnaire,
+              valueSets,
+              this.readOnly,
+              this.showHidden
+            )
           )
         )
       ),

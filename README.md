@@ -62,8 +62,8 @@ The formfiller is also available as docker container "matchbox-formfiller". You 
 
 ng build --prod
 docker build -t matchbox-formfiller .
-docker tag matchbox-formfiller eu.gcr.io/fhir-ch/matchbox-formfiller:v2
-docker push eu.gcr.io/fhir-ch/matchbox-formfiller:v2
+docker tag matchbox-formfiller eu.gcr.io/fhir-ch/matchbox-formfiller:v4
+docker push eu.gcr.io/fhir-ch/matchbox-formfiller:v4
 
 ## running with backends
 
@@ -97,3 +97,12 @@ localStorage.debug = 'fhir-kit-client:_,app:_';
 ## travis ci setup
 
 https://www.travis-ci.com/github/ahdis/matchbox-formfiller
+
+### rad order poc
+
+configuration of form filler.
+
+1. You need to define a 'Default' Questionnaire Response, open the Questionnaire Radiology Order PoC and click on Save as Default
+2. Go to [Settings](http://localhost:4200/#/settings) in the app and click Questionnaire Radiology Order PoC, you should see now also hidden fiels
+   1. Add Identifier Domain der Auftragsnummer des Auftragsgebers e.g: urn:oid:2.16.756.5.30.1.145.1.2.3
+   2.

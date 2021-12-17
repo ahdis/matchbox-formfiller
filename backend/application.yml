@@ -3,7 +3,7 @@ server:
     context-path: /matchbox
 spring:
   datasource:
-    url: 'jdbc:postgresql://matchbox-order-db:5432/matchbox'
+    url: 'jdbc:postgresql://matchbox-db:5432/matchbox'
     username: matchbox
     password: matchbox
     driverClassName: org.postgresql.Driver
