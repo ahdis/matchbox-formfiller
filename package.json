@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --prod --base-href /matchbox-formfiller/",
+    "build": "ng build --configuration production --base-href /matchbox-formfiller/",
     "test": "ng test",
     "test-ci": "ng test --no-watch --no-progress --browsers=ChromeHeadlessNoSandbox --code-coverage",
     "lint": "ng lint",
@@ -19,7 +19,6 @@
     "@angular/compiler": "^13.1.1",
     "@angular/core": "^13.1.1",
     "@angular/forms": "^13.1.1",
-    "@angular/http": "^7.2.1",
     "@angular/material": "^13.1.1",
     "@angular/platform-browser": "^13.1.1",
     "@angular/platform-browser-dynamic": "^13.1.1",

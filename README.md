@@ -54,7 +54,7 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 
 ng add angular-cli-ghpages
 
-ng build --prod --base-href /matchbox-formfiller/
+ng build --configuration production --base-href /matchbox-formfiller/
 ng deploy --base-href=/matchbox-formfiller/
 
 note: communicatin via fhir servers is currently over http, therefore the https access has to be switched off in the github project
