@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 $md-mcgpalette0: (
   50: #e8ebee,
   100: #c5ced5,
@@ -38,8 +38,8 @@ $my-accent: mat.define-palette($md-mcgpalette0, A400);
 @function my-mat-light-theme-foreground($color) {
   @return (
     base: $color,
-    divider: $black-12-opacity,
-    dividers: $black-12-opacity,
+    divider: rgba(black, 0.12),
+    dividers: rgba(black, 0.12),
     disabled: rgba($color, 0.38),
     disabled-button: rgba($color, 0.38),
     disabled-text: rgba($color, 0.38),
