@@ -29,12 +29,17 @@ if you are not using the devcontainer from this project with [VS Code Remote Dev
 
 ```
 npm install -g @angular/cli
-yarn install
+npm install
+ng build --configuration development
 ```
+
+and then
+
+ng serve --configuration development
 
 ## usage
 
-Run `ng serve` to start the app, app will be at [http://localhost:4200](http://localhost:4200/).
+Run `ng serve --configuration development` to start the app, app will be at [http://localhost:4200](http://localhost:4200/).
 If you use the Visual Code functionality with Remote containers: Open Folder in container option, you need to start it with `ng serve --host 0.0.0.0`.
 
 if you use localhost and have cross site blocking issues within chrome start chrome directly from command line (osx)

@@ -59,10 +59,10 @@ export class QuestionnaireFormItemCheckBoxComponent implements OnInit {
       this.dispatch(
         setAnswers(
           this.linkIdPath,
-          R.pipe(
+          (R.pipe(
             R.addIndex(R.filter)((_, index) => values[index]),
             R.map(({ key }) => key)
-          )(this.item.answerOptions)
+          ) as any)(this.item.answerOptions)
         )
       );
     });
