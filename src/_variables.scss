@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 $md-mcgpalette0: (
   50: #e8ebee,
   100: #c5ced5,
@@ -31,8 +32,8 @@ $md-mcgpalette0: (
   ),
 );
 
-$my-primary: mat-palette($md-mcgpalette0, 500, 50, 300);
-$my-accent: mat-palette($md-mcgpalette0, A400);
+$my-primary: mat.define-palette($md-mcgpalette0, 500, 50, 300);
+$my-accent: mat.define-palette($md-mcgpalette0, A400);
 
 @function my-mat-light-theme-foreground($color) {
   @return (
@@ -53,7 +54,7 @@ $my-accent: mat-palette($md-mcgpalette0, A400);
 }
 
 $theme: map-merge(
-  mat-light-theme($my-primary, $my-accent),
+  mat.define-light-theme($my-primary, $my-accent),
   (
     foreground: my-mat-light-theme-foreground(darken(#113549, 5%)),
   )
