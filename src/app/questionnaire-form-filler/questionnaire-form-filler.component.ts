@@ -8,7 +8,7 @@ import Client from 'fhir-kit-client';
 import { getExtensionOfElement } from '../questionnaire-item/store/transform-initial-state';
 import { fromPromise } from 'rxjs/internal/observable/fromPromise';
 import { QuestionnaireWithResponse } from '../questionnaire-item/types';
-import { FhirPathService } from 'ng-fhirjs';
+import { FhirPathService } from '../fhirpath.service';
 import { HighlightSpanKind } from 'typescript';
 
 @Component({

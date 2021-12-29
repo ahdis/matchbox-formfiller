@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FhirConfigService } from '../fhirConfig.service';
 import { FormControl } from '@angular/forms';
 import FhirClient from 'fhir-kit-client';
-import { FhirPathService } from 'ng-fhirjs';
+import { FhirPathService } from '../fhirpath.service';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { v4 as uuidv4 } from 'uuid';
 import { Base64 } from 'js-base64';

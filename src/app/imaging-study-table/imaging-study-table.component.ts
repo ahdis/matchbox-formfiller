@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FhirPathService } from 'ng-fhirjs';
+import { FhirPathService } from '../fhirpath.service';
 
 @Component({
   selector: 'app-imaging-study-table',

@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { NgFhirjsModule } from 'ng-fhirjs';
 import { AppComponent } from './app.component';
 import { CapabilityStatementComponent } from './capability-statement/capability-statement.component';
 import { FhirPathComponent } from './fhir-path/fhir-path.component';
@@ -122,7 +121,6 @@ export function createTranslateLoader(http: HttpClient) {
     SharedModule,
     HttpClientModule,
     HighlightModule,
-    NgFhirjsModule,
     QuestionnaireItemModule,
     RouterModule.forRoot(routes, {
       useHash: true,

@@ -2,7 +2,6 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterModule, Routes } from '@angular/router';
-import { FhirConfig, FhirJsHttpService, FHIR_HTTP_CONFIG } from 'ng-fhirjs';
 import { AppComponent } from './app.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
@@ -27,10 +26,6 @@ describe('AppComponent', () => {
             useHash: true,
             relativeLinkResolution: 'legacy',
           }),
-        ],
-        providers: [
-          FhirJsHttpService,
-          { provide: FHIR_HTTP_CONFIG, useValue: FHIR_JS_CONFIG },
         ],
         schemas: [NO_ERRORS_SCHEMA],
       }).compileComponents();
