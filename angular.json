@@ -87,13 +87,6 @@
             "assets": ["src/assets", "src/favicon.ico", "src/examples"]
           }
         },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["src/tsconfig.app.json", "src/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**"]
-          }
-        },
         "deploy": {
           "builder": "angular-cli-ghpages:deploy",
           "options": {}
@@ -110,13 +103,6 @@
           "options": {
             "protractorConfig": "./protractor.conf.js",
             "devServerTarget": "matchbox-formfiller:serve"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**"]
           }
         }
       }
