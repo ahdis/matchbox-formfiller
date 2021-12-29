@@ -1,14 +1,15 @@
 language: node_js
-node_js: '10'
+node_js: '12'
 
 before_install:
-  - yarn install
+  - npm install
 
 script:
-  - yarn build
-  - yarn test-ci
+  - npm run-script build
+
 cache:
-  yarn: true
+  directories:
+    - ./node_modules
 
 deploy:
   provider: pages
