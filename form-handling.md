@@ -1,36 +1,18 @@
-New questionnaire
-=================
+# New questionnaire
 
 If a new Questionnaire is selected, a [QuestionnaireResponse](https://github.com/ahdis/matchbox-formfiller/blob/master/src/examples/radorder-qr-default.json) for a default prefilling will be searched.
 
 Parameters for the search are the canonical URL of the Questionnaire and this identifier:
 
-system = http://ahdis.ch/fhir/Questionnaire   
-value  = DEFAULT
+system = http://ahdis.ch/fhir/Questionnaire  
+value = DEFAULT
 
-The displayed Questionnaire will be prefilled with the default values.   
+The displayed Questionnaire will be prefilled with the default values.  
 For the PoC, the following values are applied for the hidden fields:
-* order.placerOrderIdentifierDomainn = urn:oid:2.16.756.5.30.1.145.1.2.3
-* patient.localPidDomain = urn:oid:2.16.756.5.30.1.145.1.9.9
 
+- order.placerOrderIdentifierDomainn = urn:oid:2.16.756.5.30.1.145.1.2.3
+- patient.localPidDomain = urn:oid:2.16.756.5.30.1.145.1.9.9
 
-Differentiation outgoing/incoming orders
-========================================
-
-**Outgoing orders**  
-* All Bundles with the identical value for ServiceRequest.identifier:placerOrderIdentifier.system as the defined system value in the [Basic resource](https://github.com/ahdis/matchbox-formfiller/blob/master/src/examples/placer-order-identifier.json) on the server.
-* See [example](https://github.com/ahdis/matchbox-formfiller/blob/master/src/examples/bundle-outgoing.json)
-
-**Incoming orders**   
-* All other Bundles.
-* See [example](https://github.com/ahdis/matchbox-formfiller/blob/master/src/examples/bundle-incoming.json)
-
-
-Questionnaire with adaptions from ballot version
-================================================
+# Questionnaire with adaptions from ballot version
 
 https://github.com/ahdis/matchbox-formfiller/blob/master/src/examples/radorder.json
-
-
-
-

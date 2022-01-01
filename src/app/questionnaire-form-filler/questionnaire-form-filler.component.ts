@@ -10,6 +10,7 @@ import { fromPromise } from 'rxjs/internal/observable/fromPromise';
 import { QuestionnaireWithResponse } from '../questionnaire-item/types';
 import { FhirPathService } from '../fhirpath.service';
 import { HighlightSpanKind } from 'typescript';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-questionnaire-form-filler',
@@ -22,6 +23,7 @@ export class QuestionnaireFormFillerComponent implements OnInit {
 
   questionnaireWithResponse$: Observable<QuestionnaireWithResponse | undefined>;
   questionnaireResponse: fhir.r4.QuestionnaireResponse;
+  formGroup: FormGroup;
 
   log = debug('app:');
   filter$: Observable<string>;
@@ -34,6 +36,7 @@ export class QuestionnaireFormFillerComponent implements OnInit {
     private fhirPathService: FhirPathService
   ) {
     this.fhirKitClient = fhirConfigService.getFhirClient();
+    this.formGroup = new FormGroup({});
   }
 
   ngOnInit() {
@@ -289,6 +292,7 @@ export class QuestionnaireFormFillerComponent implements OnInit {
     questionnaireResponse,
   }: QuestionnaireWithResponse) {
     this.log('submit questionnaire response', this.questionnaireResponse);
+
     try {
       if (
         getExtensionOfElement(

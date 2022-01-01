@@ -5,6 +5,7 @@
   "
 >
   <app-questionnaire-form
+    [formGroup]="formGroup"
     [questionnaire]="questionnaireWithResponse.questionnaire"
     [questionnaireResponse]="questionnaireWithResponse.questionnaireResponse"
     (changeQuestionnaireResponse)="onChangeQuestionnaireResponse($event)"

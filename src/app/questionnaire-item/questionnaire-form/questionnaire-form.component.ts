@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -39,7 +40,12 @@ import {
 import { FhirConfigService } from '../../fhirConfig.service';
 import Client from 'fhir-kit-client';
 import { getInitActions } from '../store/init-actions';
-import { FormControl, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormControl,
+  FormGroup,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-questionnaire-form',
@@ -55,6 +61,7 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
   @Input() hideCancelButton = false;
   @Input() hideSaveDefaultButton = false;
   @Input() showHidden = false;
+  @Input() formGroup;
 
   @Output()
   changeQuestionnaireResponse = new EventEmitter<fhir.r4.QuestionnaireResponse>();
@@ -72,7 +79,6 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
   itemLinkIdPaths$: Observable<LinkIdPathSegment[][]>;
 
   formValid: boolean = true;
-  formGroup: FormGroup;
   refreshed: string = '';
 
   private readonly fhirKitClient: Client;
@@ -81,9 +87,11 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
   dispatch$: BehaviorSubject<Action>;
   dispatch = (action: Action): void => this.dispatch$.next(action);
 
-  constructor(fhirConfigService: FhirConfigService) {
+  constructor(
+    private cd: ChangeDetectorRef,
+    fhirConfigService: FhirConfigService
+  ) {
     this.fhirKitClient = fhirConfigService.getFhirClient();
-    this.formGroup = new FormGroup({});
   }
 
   ngOnChanges() {
@@ -211,13 +219,43 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
       .then(extractFirstEntryFromSearchBundle);
   }
 
+  updateValueAndValidityArray(formArray: FormArray) {
+    formArray.controls?.forEach((control) => {
+      control.updateValueAndValidity();
+      if (control instanceof FormGroup) {
+        this.updateValueAndValidityGroup(control);
+      }
+      if (control instanceof FormArray) {
+        this.updateValueAndValidityArray(control);
+      }
+    });
+  }
+
+  updateValueAndValidityGroup(formGroup: FormGroup) {
+    if (formGroup.controls) {
+      Object.values(formGroup.controls).forEach((control) => {
+        if (control) {
+          control.updateValueAndValidity();
+          if (control instanceof FormGroup) {
+            this.updateValueAndValidityGroup(control);
+          }
+          if (control instanceof FormArray) {
+            this.updateValueAndValidityArray(control);
+          }
+        }
+      });
+    }
+  }
+
   showFormErrors() {
-    this.refreshed =
-      'Form is not yet valid, please fill in all required fields !!!';
-    // TODO this does not yet work, should show all errors, don't know why yet
-    // see https://stackoverflow.com/questions/46745171/angular-material-show-mat-error-on-button-click?rq=1
+    this.refreshed = 'Form is not valid';
+    // from is not valid yet, we want to highlight now all the fields in red
+    // so we touch the from
     this.formGroup.markAllAsTouched();
-    this.formGroup.markAsDirty();
+    // and rerun the validators
+    this.updateValueAndValidityGroup(this.formGroup);
+    // see also https://loiane.com/2017/08/angular-reactive-forms-trigger-validation-on-submit/
+    // see https://stackoverflow.com/questions/46745171/angular-material-show-mat-error-on-button-click?rq=1
   }
 }
 
