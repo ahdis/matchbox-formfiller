@@ -150,7 +150,12 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
 
     this.store$
       .pipe(takeUntil(this.unsubscribe$), map(getQuestionnaireValid))
-      .subscribe((val) => (this.formValid = val));
+      .subscribe((val) => {
+        this.formValid = val;
+        if (this.formValid) {
+          this.refreshed = '';
+        }
+      });
 
     this.store$.pipe(first()).subscribe(() => {
       const initWithQuestionnaireResponse = R.pipe(
@@ -248,7 +253,7 @@ export class QuestionnaireFormComponent implements OnChanges, OnDestroy {
   }
 
   showFormErrors() {
-    this.refreshed = 'Form is not valid';
+    this.refreshed = 'Form is not valid, please check fields';
     // from is not valid yet, we want to highlight now all the fields in red
     // so we touch the from
     this.formGroup.markAllAsTouched();

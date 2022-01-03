@@ -309,7 +309,9 @@ const transformItem = (
     linkId: item.linkId,
     type: item.type,
     isRequired: toBoolean(item.required),
-    isReadonly: isQuestionnaireReadOnly || toBoolean(item.readOnly),
+    isReadonly: showHidden
+      ? false
+      : isQuestionnaireReadOnly || toBoolean(item.readOnly),
     maxLength: toNumber(item.maxLength),
     repeats: toBoolean(item.repeats),
     prefix: getHtmlOrText(toString(item.prefix), item._prefix),

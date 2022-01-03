@@ -26,6 +26,7 @@ import { MagComponent } from './mag/mag.component';
 import { TasksTableComponent } from './tasks-table/tasks-table.component';
 import { TaskViewerComponent } from './task-viewer/task-viewer.component';
 import { ImagingStudyTableComponent } from './imaging-study-table/imaging-study-table.component';
+import { OperationOutcomeComponent } from './operation-outcome/operation-outcome.component';
 
 const routes: Routes = [
   {
@@ -116,6 +117,7 @@ export function createTranslateLoader(http: HttpClient) {
     TasksTableComponent,
     TaskViewerComponent,
     ImagingStudyTableComponent,
+    OperationOutcomeComponent,
   ],
   imports: [
     SharedModule,

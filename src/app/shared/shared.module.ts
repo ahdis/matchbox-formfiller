@@ -24,6 +24,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { TranslateModule } from '@ngx-translate/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 const modulesToExport = [
   CommonModule,
@@ -52,6 +53,7 @@ const modulesToExport = [
   MatNativeDateModule,
   MatRadioModule,
   FileSizeModule,
+  MatProgressSpinnerModule,
 ];
 
 const components = [];

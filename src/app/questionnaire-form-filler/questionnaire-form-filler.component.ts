@@ -11,6 +11,10 @@ import { QuestionnaireWithResponse } from '../questionnaire-item/types';
 import { FhirPathService } from '../fhirpath.service';
 import { HighlightSpanKind } from 'typescript';
 import { FormGroup } from '@angular/forms';
+import { T } from 'ramda';
+import { OperationOutcomeComponent } from '../operation-outcome/operation-outcome.component';
+import internal from 'assert';
+import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-questionnaire-form-filler',
@@ -23,11 +27,16 @@ export class QuestionnaireFormFillerComponent implements OnInit {
 
   questionnaireWithResponse$: Observable<QuestionnaireWithResponse | undefined>;
   questionnaireResponse: fhir.r4.QuestionnaireResponse;
+
+  operationOutcome: fhir.r4.OperationOutcome;
+  errMsg: string;
+  json: string;
+  progress: number = 0;
+
   formGroup: FormGroup;
 
   log = debug('app:');
   filter$: Observable<string>;
-  errMsg: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -287,11 +296,41 @@ export class QuestionnaireFormFillerComponent implements OnInit {
     }) as Promise<fhir.r4.Task>;
   }
 
+  async validate(
+    resource: fhir.r4.Resource
+  ): Promise<fhir.r4.OperationOutcome> {
+    return this.fhirKitClient.operation({
+      name: 'validate',
+      resourceType: undefined,
+      input: resource,
+      options: {
+        headers: {
+          accept: 'application/fhir+json;fhirVersion=4.0',
+          'content-type': 'application/fhir+json;fhirVersion=4.0',
+        },
+      },
+    });
+  }
+
+  filterErrors(operationOutcome: fhir.r4.OperationOutcome): boolean {
+    if (operationOutcome?.issue) {
+      operationOutcome.issue = operationOutcome?.issue?.filter(
+        (issue) => issue.severity === 'error' || issue.severity === 'fatal'
+      );
+      return operationOutcome.issue.length > 0;
+    }
+    return false;
+  }
+
   async onSubmit({
     questionnaire,
     questionnaireResponse,
   }: QuestionnaireWithResponse) {
     this.log('submit questionnaire response', this.questionnaireResponse);
+    this.errMsg = undefined;
+    this.json = undefined;
+    this.operationOutcome = undefined;
+    this.progress = 10;
 
     try {
       if (
@@ -304,30 +343,47 @@ export class QuestionnaireFormFillerComponent implements OnInit {
           resourceType: 'QuestionnaireResponse',
           input: this.questionnaireResponse,
         })) as fhir.r4.Resource;
+        this.progress = 20;
         if (!('OperationOutcome' === resource.resourceType)) {
-          let createdResource = await this.fhirKitClient.create({
-            resourceType: resource.resourceType,
-            body: resource,
-          });
-          if (
-            questionnaire.derivedFrom &&
-            questionnaire.derivedFrom.includes(
-              'http://fhir.ch/ig/ch-orf/StructureDefinition/ch-orf-questionnaire'
-            )
-          ) {
-            let task = await this.createTask(createdResource as fhir.r4.Bundle);
-            await this.router.navigate(['task', task.id]);
+          // insert here validation check if extracted FHIR resources are valid
+          const validationOutcome = await this.validate(resource);
+          this.progress = 30;
+          if (!this.filterErrors(validationOutcome)) {
+            let createdResource = await this.fhirKitClient.create({
+              resourceType: resource.resourceType,
+              body: resource,
+            });
+            this.progress = 40;
+            if (
+              questionnaire.derivedFrom &&
+              questionnaire.derivedFrom.includes(
+                'http://fhir.ch/ig/ch-orf/StructureDefinition/ch-orf-questionnaire'
+              )
+            ) {
+              let task = await this.createTask(
+                createdResource as fhir.r4.Bundle
+              );
+              await this.router.navigate(['task', task.id]);
+              return;
+            }
+          } else {
+            this.errMsg = 'Extracted FHIR Resources not valid';
+            this.operationOutcome = validationOutcome;
+            this.json = JSON.stringify(resource, null, 2);
+            this.progress = 0;
+            console.log(this.errMsg + this.json);
             return;
           }
         } else {
-          console.log(
-            'Error performing extract operation ' +
-              JSON.stringify(resource, null, 2)
-          );
-          // TODO create an error message
+          this.errMsg = 'Error performing extract operation ';
+          this.operationOutcome = resource as fhir.r4.OperationOutcome;
+          this.json = JSON.stringify(questionnaireResponse, null, 2);
+          this.progress = 0;
+          console.log(this.errMsg + this.json);
           return;
         }
       }
+      this.progress = 50;
       this.questionnaireResponse.status = 'completed';
       await this.saveQuestionnaireResponse(questionnaireResponse);
       await this.router.navigateByUrl('/');
@@ -335,6 +391,7 @@ export class QuestionnaireFormFillerComponent implements OnInit {
       this.errMsg = e;
       console.error(e);
     }
+    this.progress = 0;
   }
 
   onSaveAsDraft(initialQuestionnaireResponse?: fhir.r4.QuestionnaireResponse) {
