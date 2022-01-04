@@ -6,8 +6,8 @@
     <div *ngIf="operationOutcome">
       <ul>
         <li *ngFor="let issue of operationOutcome.issue">
-          {{ issue.severity }} (L{{ issue.extension[0].valueInteger }}):
-          {{ issue.diagnostics }} {{ issue.location[0] }}
+          {{ issue.severity }} {{ getLineFromExtension(issue) }}:
+          {{ issue.diagnostics }} {{ getLocation(issue) }}
         </li>
       </ul>
     </div>

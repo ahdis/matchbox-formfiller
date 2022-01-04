@@ -17,4 +17,18 @@ export class OperationOutcomeComponent implements OnInit {
   getJson(): String {
     return this.json;
   }
+
+  getLineFromExtension(issue: fhir.r4.OperationOutcomeIssue): string {
+    if (issue.extension?.length > 0) {
+      return 'L' + issue.extension[0].valueInteger;
+    }
+    return '';
+  }
+
+  getLocation(issue: fhir.r4.OperationOutcomeIssue): string {
+    if (issue.location?.length > 0) {
+      return issue.location[0];
+    }
+    return '';
+  }
 }

@@ -26,8 +26,16 @@
       <mat-row
         *matRowDef="let row; columns: ['packageId', 'name', 'version', 'url']"
         (click)="selectRow(row)"
-      ></mat-row>
+      >
+      </mat-row>
     </mat-table>
+    <mat-paginator
+      [pageIndex]="pageIndex"
+      [length]="length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="goToPage($event)"
+    ></mat-paginator>
   </mat-card-content>
 </mat-card>
 
@@ -42,6 +50,12 @@
       <mat-label>Version</mat-label>
       <input matInput [formControl]="addVersion" />
     </mat-form-field>
+    &nbsp;
+    <mat-form-field>
+      <mat-label>Url</mat-label>
+      <input matInput [formControl]="addUrl" />
+    </mat-form-field>
+
     <mat-card-actions>
       <button
         mat-raised-button
@@ -51,7 +65,19 @@
       >
         Upload
       </button>
+      <ng-container *ngIf="selection"
+        >&nbsp;
+        <button mat-button type="submit" (click)="onUpdate()">Update</button>
+      </ng-container>
+      <ng-container *ngIf="selection"
+        >&nbsp;
+        <button mat-button type="submit" (click)="onDelete()">Delete</button>
+      </ng-container>
     </mat-card-actions>
-    <div *ngIf="errMsg">{{ errMsg }}</div>
   </mat-card-content>
 </mat-card>
+
+<ng-container *ngIf="errMsg">
+  <app-operation-outcome [operationOutcome]="operationOutcome" [title]="errMsg">
+  </app-operation-outcome>
+</ng-container>
