@@ -249,6 +249,8 @@ export class QuestionnaireFormFillerComponent implements OnInit {
       .map((input) => input.resource) as fhir.r4.ImagingStudy[];
     const imagingStudies = await Promise.all(
       imagingStudiesFromBundle.map(async (study) => {
+        delete study.subject.reference;
+        study.subject.display = '---';
         const imagingStudy = await this.fhirKitClient.create({
           resourceType: 'ImagingStudy',
           body: study,

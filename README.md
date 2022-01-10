@@ -11,7 +11,7 @@ angular web applications which uses fhir for:
 
 built with:
 
-- using [ng-fhirjs](https://github.com/ahdis/ng-fhirjs) as a wrapper for accessing a fhir server with [fhir.js](https://github.com/FHIR/fhir.js)
+- using [fhir-kit-client](https://github.com/Vermonster/fhir-kit-client) for accessing a fhir server
 - integerated [fhirpath.js](https://github.com/lhncbc/fhirpath.js/)
 - using [angular material](https://material.angular.io/) for UI components
 
@@ -65,10 +65,10 @@ The formfiller is also available as docker container "matchbox-formfiller". You 
 
 ## building and deploying the docker container
 
-ng build --prod
+ng build --configuration production
 docker build -t matchbox-formfiller .
-docker tag matchbox-formfiller eu.gcr.io/fhir-ch/matchbox-formfiller:v5
-docker push eu.gcr.io/fhir-ch/matchbox-formfiller:v5
+docker tag matchbox-formfiller eu.gcr.io/fhir-ch/matchbox-formfiller:v170
+docker push eu.gcr.io/fhir-ch/matchbox-formfiller:v170
 
 ## running with backends
 
