@@ -77,6 +77,10 @@
   </mat-card-content>
 </mat-card>
 
+<ng-container *ngIf="update">
+  <mat-progress-spinner mode="indeterminate"> </mat-progress-spinner>
+</ng-container>
+
 <ng-container *ngIf="errMsg">
   <app-operation-outcome [operationOutcome]="operationOutcome" [title]="errMsg">
   </app-operation-outcome>

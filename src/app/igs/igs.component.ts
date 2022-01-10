@@ -28,6 +28,8 @@ export class IgsComponent implements OnInit {
   bundle: fhir.r4.Bundle;
   dataSource = new MatTableDataSource<fhir.r4.BundleEntry>();
 
+  update: boolean = false;
+
   client: FhirClient;
   static log = debug('app:');
   errMsg: string;
@@ -63,6 +65,7 @@ export class IgsComponent implements OnInit {
         this.addVersion.setValue('');
         this.addUrl.setValue('');
       });
+    this.update = false;
   }
 
   getPackageId(entry: fhir.r4.BundleEntry): string {
@@ -123,6 +126,8 @@ export class IgsComponent implements OnInit {
       return;
     }
 
+    this.update = true;
+
     this.client
       .create({
         resourceType: 'ImplementationGuide',
@@ -148,6 +153,7 @@ export class IgsComponent implements OnInit {
         this.errMsg =
           'Error creating Implementation Guide ' + this.addPackageId.value;
         this.operationOutcome = error.response.data;
+        this.update = false;
       });
   }
 
@@ -178,6 +184,7 @@ export class IgsComponent implements OnInit {
     this.selection.version = this.addVersion.value;
     this.selection.packageId = this.addPackageId.value;
     this.selection.url = this.addUrl.value;
+    this.update = true;
 
     this.client
       .update({
@@ -200,11 +207,13 @@ export class IgsComponent implements OnInit {
         this.errMsg =
           'Error updating Implementation Guide ' + this.selection.packageId;
         this.operationOutcome = error.response.data;
+        this.update = false;
       });
   }
 
   onDelete() {
     this.errMsg = null;
+    this.update = true;
 
     this.client
       .delete({
@@ -227,6 +236,7 @@ export class IgsComponent implements OnInit {
         this.errMsg =
           'Error deleting Implementation Guide ' + this.selection.packageId;
         this.operationOutcome = error.response.data;
+        this.update = false;
       });
   }
 }
