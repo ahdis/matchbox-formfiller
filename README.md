@@ -1,8 +1,6 @@
 # matchbox-formfiller
 
-[![Build Status](https://travis-ci.com/ahdis/matchbox-formfiller.svg?branch=master)](https://travis-ci.com/ahdis/matchbox-formfiller)
-
-see deployed [version on github pages](https://ahdis.github.io/matchbox-formfiller/#/)
+see latest [test release](https://test.ahdis.ch/matchbox-formfiller/#/)
 
 angular web applications which uses fhir for:
 
@@ -18,7 +16,7 @@ built with:
 see [on github pages](https://ahdis.github.io/matchbox-formfiller)
 
 Note:
-Chrome on OSX has a CORS Problem and cannot exectute te $extract operation, this happens only to a http url, but not to a https url
+Chrome on OSX has a CORS Problem and cannot execute te $extract operation, this happens only to a http url, but not to a https url
 
 - Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
 - Looks like this could happen: For those struggling with this in the future, the problem was that the URL was returning a 302-Redirect, and even though the new location was presenting CORS headers with 200-OK, the initial 302 response was not.
@@ -102,5 +100,7 @@ localStorage.debug = 'fhir-kit-client:_,app:_';
 ## travis ci setup
 
 https://www.travis-ci.com/github/ahdis/matchbox-formfiller
+
+sucessfull builds will be deployed on [github pages](https://ahdis.github.io/matchbox-formfiller/#/)
 
 ### rad order poc
