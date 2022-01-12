@@ -65,13 +65,12 @@ The formfiller is also available as docker container "matchbox-formfiller". You 
 
 ng build --configuration production
 docker build -t matchbox-formfiller .
-docker tag matchbox-formfiller eu.gcr.io/fhir-ch/matchbox-formfiller:v170
-docker push eu.gcr.io/fhir-ch/matchbox-formfiller:v170
+docker tag matchbox-formfiller eu.gcr.io/fhir-ch/matchbox-formfiller:v171
+docker push eu.gcr.io/fhir-ch/matchbox-formfiller:v171
 
-## running with backends
+## running with docker
 
-Run "docker-compose up" in the "backend" folder to run a local version including the matchbox-order backend and database.
-App will be at [http://localhost:4300](http://localhost:4300/).
+docker run -d -t -i -p 4300:80 -e DOMAIN='localhost' -e MAG='https://test.ahdis.ch/mag-pmp' -e MATCHBOX='http://host.docker.internal:8080/matchbox' matchbox-formfiller
 
 ## PoC
 
