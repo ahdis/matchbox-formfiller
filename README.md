@@ -65,8 +65,8 @@ The formfiller is also available as docker container "matchbox-formfiller". You 
 
 ng build --configuration production
 docker build -t matchbox-formfiller .
-docker tag matchbox-formfiller eu.gcr.io/fhir-ch/matchbox-formfiller:v171
-docker push eu.gcr.io/fhir-ch/matchbox-formfiller:v171
+docker tag matchbox-formfiller eu.gcr.io/fhir-ch/matchbox-formfiller:v172
+docker push eu.gcr.io/fhir-ch/matchbox-formfiller:v172
 
 ## running with docker
 
