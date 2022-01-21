@@ -1,7 +1,9 @@
 <mat-card class="display">
   <mat-card-content>
     <mat-card-header>
-      <mat-card-title>Mobile Access Gateway - Patient</mat-card-title>
+      <mat-card-title
+        >Mobile Access Gateway - Patient Identifiers</mat-card-title
+      >
     </mat-card-header>
 
     <div>
@@ -79,6 +81,13 @@
     </div>
 
     <mat-card-actions>
+      <button
+        mat-raised-button
+        type="submit"
+        (click)="onFindDocumentReferences()"
+      >
+        Document References
+      </button>
       <button mat-raised-button type="submit" (click)="onFindMedicationList()">
         Medication List
       </button>
@@ -113,6 +122,33 @@
         placeholder="Upload"
         accept=".xml,*.json"
       />
+    </div>
+    <div>
+      <mat-form-field>
+        <mat-label>Description</mat-label>
+        <input matInput [formControl]="documentDescription" />
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
+        <mat-label>Document Type</mat-label>
+        <select matNativeControl required [formControl]="documentType">
+          <option value="APPC">APPC Document</option>
+          <option value="MTP">Medication Treatment Plan</option>
+        </select>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
+        <mat-label>DocumentEntry.masterIdentifier (uuid)</mat-label>
+        <input matInput [formControl]="masterIdentifier" />
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
+        <mat-label>DocumentEntry.creationTime</mat-label>
+        <input matInput [formControl]="creationTime" />
+      </mat-form-field>
     </div>
     <div>
       <div>

@@ -61,13 +61,13 @@ export class PatientsComponent implements OnInit {
     let searchQuery: any = { ...this.query };
 
     if (this.searchName.value) {
-      searchQuery = { ...this.query, name: this.searchName.value };
+      searchQuery = { ...searchQuery, name: this.searchName.value };
     }
     if (this.searchFamily.value) {
-      searchQuery = { ...this.query, family: this.searchFamily.value };
+      searchQuery = { ...searchQuery, family: this.searchFamily.value };
     }
     if (this.searchGiven.value) {
-      searchQuery = { ...this.query, given: this.searchGiven.value };
+      searchQuery = { ...searchQuery, given: this.searchGiven.value };
     }
 
     this.client

@@ -7,6 +7,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { v4 as uuidv4 } from 'uuid';
 import { Base64 } from 'js-base64';
 import { toLocaleDateTime } from '../questionnaire-item/store/util';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-mag',
@@ -36,7 +37,23 @@ export class MagComponent implements OnInit {
   public targetIdentifierSystem: FormControl;
   public targetIdentifier2System: FormControl;
   public authenticate: FormControl;
+  public documentType: FormControl;
+  public documentDescription: FormControl;
+  public masterIdentifier: FormControl;
+  public creationTime: FormControl;
+
   public iheSourceId: FormControl;
+
+  public searchGiven: FormControl;
+  public searchGivenValue = '';
+  public searchFamily: FormControl;
+  public searchFamilyValue = '';
+
+  bundle: fhir.r4.Bundle;
+  pageIndex = 0;
+  dataSource = new MatTableDataSource<fhir.r4.BundleEntry>();
+  length = 100;
+  pageSize = 10;
 
   // oid mag = ahdis + .20 ->   2.16.756.5.30.1.145.20
 
@@ -65,9 +82,21 @@ export class MagComponent implements OnInit {
     this.targetIdentifier2System = new FormControl();
     this.targetIdentifier2System.setValue('urn:oid:2.16.756.5.30.1.127.3.10.3');
     this.authenticate = new FormControl();
-    this.authenticate.setValue('HCP');
+    this.authenticate.setValue('PATIENT');
+    this.documentType = new FormControl();
+    this.documentType.setValue('APPC');
+
     this.iheSourceId = new FormControl();
     this.iheSourceId.setValue(oid_mag_ahdis + '.1');
+
+    this.searchGiven = new FormControl();
+    this.searchFamily = new FormControl();
+    this.documentDescription = new FormControl();
+    this.documentDescription.setValue('Titel');
+    this.masterIdentifier = new FormControl();
+    this.masterIdentifier.setValue(uuidv4());
+    this.creationTime = new FormControl();
+    this.creationTime.setValue(toLocaleDateTime(new Date()));
   }
 
   setJson(result: string) {
@@ -133,6 +162,17 @@ export class MagComponent implements OnInit {
       });
   }
 
+  getSimulatedSamlPmpAssertion(mpipid: string, mpioid: string): String {
+    let assertion = `<saml2:Assertion xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion" ID="Assertion_3efbfc7917a1d3ec6e33ec70f410393d655980bb" IssueInstant="2020-08-28T09:01:06.421Z" Version="2.0"><saml2:AttributeStatement><saml2:Attribute Name="urn:oasis:names:tc:xacml:2.0:subject:role" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"><saml2:AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xsd:anyType"><hl7v3:Role xmlns:hl7v3="urn:hl7-org:v3" code="PAT" codeSystem="2.16.756.5.30.1.127.3.10.6" displayName="Patient"/></saml2:AttributeValue></saml2:Attribute><saml2:Attribute Name="urn:oasis:names:tc:xacml:2.0:resource:resource-id" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"><saml2:AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xsd:string">${mpipid}^^^&amp;${mpioid}&amp;ISO</saml2:AttributeValue></saml2:Attribute></saml2:AttributeStatement></saml2:Assertion>`;
+    return Base64.encode(assertion);
+  }
+
+  setBundle(bundle: fhir.r4.Bundle) {
+    this.bundle = <fhir.r4.Bundle>bundle;
+    this.length = this.bundle.total;
+    this.dataSource.data = this.bundle.entry;
+  }
+
   setDocumentReferenceResult(response: any) {
     this.setJson(JSON.stringify(response, null, 2));
     this.documentReferenceFormatCode = this.fhirPathService.evaluateToString(
@@ -147,6 +187,33 @@ export class MagComponent implements OnInit {
       response,
       'entry[0].resource.description'
     );
+  }
+
+  onFindDocumentReferences() {
+    this.documentReferenceFormatCode = 'querying ...';
+    this.documentReferenceAttachmentUrl = 'querying ...';
+    let query = {
+      status: 'current',
+      'patient.identifier':
+        this.targetIdentifierSystem.value + '|' + this.targetIdentifierValue,
+    };
+    let saml = this.mag
+      .search({
+        resourceType: 'DocumentReference',
+        searchParams: query,
+        options: {
+          headers: {
+            accept: 'application/fhir+json;fhirVersion=4.0',
+            Authorization: 'IHE-SAML ' + this.getSamlToken(),
+          },
+        },
+      })
+      .then((response) => this.setDocumentReferenceResult(response))
+      .catch((error) => {
+        this.setJson(JSON.stringify(error, null, 2));
+        this.documentReferenceFormatCode = '';
+        this.documentReferenceFormatCode = '';
+      });
   }
 
   findMedicationList(format?: string) {
@@ -201,12 +268,12 @@ export class MagComponent implements OnInit {
       }
     }
     if (this.authenticate.value === 'PATIENT') {
-      switch (this.sourceIdentifierValue.value) {
-        case 'MAGMED002':
-          return 'PHNhbWwyOkFzc2VydGlvbiB4bWxuczpzYW1sMj0idXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOmFzc2VydGlvbiIgSUQ9IkFzc2VydGlvbl8zZWZiZmM3OTE3YTFkM2VjNmUzM2VjNzBmNDEwMzkzZDY1NTk4MGJiIiBJc3N1ZUluc3RhbnQ9IjIwMjAtMDgtMjhUMDk6MDE6MDYuNDIxWiIgVmVyc2lvbj0iMi4wIj4KICAgIDxzYW1sMjpBdHRyaWJ1dGVTdGF0ZW1lbnQ+CiAgICAgICAgPHNhbWwyOkF0dHJpYnV0ZSBOYW1lPSJ1cm46b2FzaXM6bmFtZXM6dGM6eGFjbWw6Mi4wOnN1YmplY3Q6cm9sZSIgTmFtZUZvcm1hdD0idXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOmF0dHJuYW1lLWZvcm1hdDp1cmkiPgogICAgICAgICAgICA8c2FtbDI6QXR0cmlidXRlVmFsdWUgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnR5cGU9InhzZDphbnlUeXBlIj4KICAgICAgICAgICAgICAgIDxobDd2MzpSb2xlIHhtbG5zOmhsN3YzPSJ1cm46aGw3LW9yZzp2MyIgY29kZT0iUEFUIiBjb2RlU3lzdGVtPSIyLjE2Ljc1Ni41LjMwLjEuMTI3LjMuMTAuNiIgZGlzcGxheU5hbWU9IlBhdGllbnQiLz4KICAgICAgICAgICAgPC9zYW1sMjpBdHRyaWJ1dGVWYWx1ZT4KICAgICAgICA8L3NhbWwyOkF0dHJpYnV0ZT4KICAgICAgICA8c2FtbDI6QXR0cmlidXRlIE5hbWU9InVybjpvYXNpczpuYW1lczp0Yzp4YWNtbDoyLjA6cmVzb3VyY2U6cmVzb3VyY2UtaWQiIE5hbWVGb3JtYXQ9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDphdHRybmFtZS1mb3JtYXQ6dXJpIj4KICAgICAgICAgICAgPHNhbWwyOkF0dHJpYnV0ZVZhbHVlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhzaTp0eXBlPSJ4c2Q6c3RyaW5nIj5NQUdNRUQwMDJeXl4mYW1wOzIuMTYuNzU2LjUuMzAuMS4xOTYuMy4yLjEmYW1wO0lTTzwvc2FtbDI6QXR0cmlidXRlVmFsdWU+CiAgICAgICAgPC9zYW1sMjpBdHRyaWJ1dGU+CiAgICA8L3NhbWwyOkF0dHJpYnV0ZVN0YXRlbWVudD4KPC9zYW1sMjpBc3NlcnRpb24+';
-      }
+      return this.getSimulatedSamlPmpAssertion(
+        this.targetIdentifierValue,
+        (this.targetIdentifierSystem.value as string).substring(8)
+      );
     }
-    return 'ERROR_NO_IHESAML_TOKEN_AVAILABLE';
+    return null;
   }
 
   onDownloadDocumentReferenceAttachment() {
@@ -305,6 +372,75 @@ export class MagComponent implements OnInit {
     let guidBytes = `0x${guid.replace(/-/g, '')}`;
     var bigInteger = BigInt(guidBytes);
     return `2.25.${bigInteger.toString()}`;
+  }
+
+  getDocumentReferenceType(): fhir.r4.CodeableConcept {
+    switch (this.documentType.value) {
+      case 'APPC':
+        return {
+          coding: [
+            {
+              system: 'http://snomed.info/sct',
+              code: '721914005',
+              display: 'Patient consent document',
+            },
+          ],
+        };
+      case 'MTP':
+        return {
+          coding: [
+            {
+              system: 'http://snomed.info/sct',
+              code: '419891008',
+              display: 'Record artifact',
+            },
+          ],
+        };
+    }
+    return null;
+  }
+
+  getDocumentReferenceCategory(): fhir.r4.CodeableConcept {
+    switch (this.documentType.value) {
+      case 'APPC':
+        return {
+          coding: [
+            {
+              system: 'http://snomed.info/sct',
+              code: '405624007',
+              display: 'Administrative documentation',
+            },
+          ],
+        };
+      case 'MTP':
+        return {
+          coding: [
+            {
+              system: 'http://snomed.info/sct',
+              code: '440545006',
+              display: 'Prescription',
+            },
+          ],
+        };
+    }
+    return null;
+  }
+
+  getDocumentReferenceContentFormat(): fhir.r4.Coding {
+    switch (this.documentType.value) {
+      case 'APPC':
+        return {
+          system: 'urn:oid:1.3.6.1.4.1.19376.1.2.3',
+          code: 'urn:ihe:iti:appc:2016:consent',
+          display: 'Advanced Patient Privacy Consents',
+        };
+      case 'MTP':
+        return {
+          system: 'urn:oid:1.3.6.1.4.1.19376.1.2.3',
+          code: 'urn:ihe:pharm:mtp:2015',
+        };
+    }
+    return null;
   }
 
   createMhdTransaction() {
@@ -407,31 +543,12 @@ export class MagComponent implements OnInit {
               },
             ],
             status: 'current',
-            type: {
-              coding: [
-                {
-                  system: 'http://snomed.info/sct',
-                  code: '721914005',
-                  display: 'Patient consent document',
-                },
-              ],
-            },
-            category: [
-              {
-                coding: [
-                  {
-                    system: 'http://snomed.info/sct',
-                    code: '405624007',
-                    display: 'Administrative documentation',
-                  },
-                ],
-              },
-            ],
+            category: [],
             subject: {
               reference: '#7',
             },
             date: '$8',
-            description: 'Upload APPC',
+            description: 'Upload',
             securityLabel: [
               {
                 coding: [
@@ -450,11 +567,6 @@ export class MagComponent implements OnInit {
                   language: 'de-CH',
                   url: '$1',
                   creation: '$8',
-                },
-                format: {
-                  system: 'urn:oid:1.3.6.1.4.1.19376.1.2.3',
-                  code: 'urn:ihe:iti:appc:2016:consent',
-                  display: 'Advanced Patient Privacy Consents',
                 },
               },
             ],
@@ -563,7 +675,9 @@ export class MagComponent implements OnInit {
     bundle.entry[2].resource.contained[0].identifier[1].value = this.targetIdentifierSystem.value;
     bundle.entry[2].resource.contained[0].identifier[1].value = this.targetIdentifierValue; // $11
 
-    let docRefUniqueId = 'urn:uuid:' + uuidv4();
+    let docRefUniqueId =
+      'urn:uuid:' + this.masterIdentifier.value.toLocaleLowerCase();
+
     bundle.entry[2].resource.masterIdentifier.value = docRefUniqueId; // $12 urn:uuid:537f1c0f-6adc-48b2-b7f9-141f7e639972 DocumentEntry.uniqueId
 
     let docRefEntryUuid = 'urn:oid:' + this.generateOidFromUuid();
@@ -574,8 +688,15 @@ export class MagComponent implements OnInit {
 
     bundle.entry[2].resource.content[0].attachment.url = fullUrlBinary; // $1
 
-    let created = currentDateTime;
-    bundle.entry[2].resource.content[0].attachment.creation = created; // $8
+    let documentReference: fhir.r4.DocumentReference = bundle.entry[2]
+      .resource as fhir.r4.DocumentReference;
+
+    documentReference.date = this.creationTime.value;
+    documentReference.type = this.getDocumentReferenceType();
+    documentReference.category.push(this.getDocumentReferenceCategory());
+    documentReference.content[0].format = this.getDocumentReferenceContentFormat();
+    documentReference.content[0].attachment.creation = this.creationTime.value;
+    documentReference.description = this.documentDescription.value;
 
     this.mag
       .transaction({

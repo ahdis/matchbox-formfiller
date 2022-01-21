@@ -22,6 +22,7 @@ export class SettingsComponent implements OnInit {
   fhirServers = [
     'https://test.ahdis.ch/matchbox/fhir',
     'http://localhost:8080/matchbox/fhir',
+    'http://localhost:9090/mag-pmp/fhir',
     'https://ehealthsuisse.ihe-europe.net/matchbox-validator/fhir',
     'https://hapi.fhir.org/baseR4',
     'http://hapi.fhir.org/baseR4',

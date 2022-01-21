@@ -16,10 +16,7 @@ export class AppComponent {
     translateService.use(translateService.getBrowserLang());
 
     let base = location.origin;
-    if (
-      base === 'http://localhost:4200' ||
-      base === 'https://ahdis.github.io'
-    ) {
+    if (base === 'https://ahdis.github.io') {
       console.log(
         'note: using ahdis test systems for matchbox and mag' + location.origin
       );
@@ -28,6 +25,14 @@ export class AppComponent {
       );
       fhirConfigService.changeMagMicroService(
         'https://test.ahdis.ch/mag-pmp/fhir'
+      );
+    } else if (base === 'http://localhost:4200') {
+      console.log('note: using local dev mag system for' + location.origin);
+      fhirConfigService.changeFhirMicroService(
+        'http://localhost:9090/mag-pmp/fhir'
+      );
+      fhirConfigService.changeMagMicroService(
+        'http://localhost:9090/mag-pmp/fhir'
       );
     } else {
       console.log('running at ' + location.origin);
