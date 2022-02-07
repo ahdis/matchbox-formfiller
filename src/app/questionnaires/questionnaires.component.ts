@@ -9,14 +9,13 @@ import { QuestionnaireWithResponse } from '../questionnaire-item/types';
 import { extractQuestionnaireWithResponseFromBundle } from '../util/bundle-transform';
 import { MatTabChangeEvent } from '@angular/material/tabs/tab-group';
 import { TaskTableEntry } from '../tasks-table/tasks-table.component';
-import packageJson from '../../../package.json';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
+  selector: 'app-questionnaires',
+  templateUrl: './questionnaires.component.html',
+  styleUrls: ['./questionnaires.component.scss'],
 })
-export class HomeComponent implements OnInit {
+export class QuestionnairesComponent implements OnInit {
   newOrderDataSource = new MatTableDataSource<
     QuestionnaireTableEntry<fhir.r4.Questionnaire>
   >();
@@ -29,8 +28,6 @@ export class HomeComponent implements OnInit {
   taskDataSource = new MatTableDataSource<TaskTableEntry<fhir.r4.Task>>();
 
   client: Client;
-
-  public version: string = packageJson.version;
 
   constructor(fhirConfigService: FhirConfigService, private router: Router) {
     this.client = fhirConfigService.getFhirClient();

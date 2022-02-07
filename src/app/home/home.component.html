@@ -1,43 +1,27 @@
 <mat-card class="primary">
-  <mat-card-header class="primary-card-header">
-    <h1 class="mat-display-3">Questionnaires</h1>
-    <p class="mat-subheading-2">
-      Search for a questionnaire below and select it in order to fill out.
-    </p>
-  </mat-card-header>
   <mat-card-content>
-    <mat-tab-group (selectedTabChange)="tabChanged($event)">
-      <mat-tab label="Create new">
-        <app-questionnaires-table
-          [dataSource]="newOrderDataSource"
-          (rowClick)="openQuestionnaire($event)"
-        ></app-questionnaires-table>
-      </mat-tab>
-      <mat-tab label="Drafts">
-        <app-questionnaires-table
-          [dataSource]="openOrderDataSource"
-          (rowClick)="openQuestionnaireResponse($event)"
-        ></app-questionnaires-table>
-      </mat-tab>
-      <mat-tab label="Completed">
-        <app-questionnaires-table
-          [dataSource]="completedOrderDataSource"
-          (rowClick)="openQuestionnaireResponse($event)"
-        ></app-questionnaires-table>
-      </mat-tab>
-      <mat-tab label="Orders">
-        <app-tasks-table
-          [dataSource]="taskDataSource"
-          (rowClick)="openTask($event)"
-        ></app-tasks-table>
-      </mat-tab>
-    </mat-tab-group>
+    <button mat-menu-item routerLink="/questionnaires">
+      <mat-icon>info</mat-icon>
+      <span>Questionnaires ...</span>
+    </button>
+    <button mat-menu-item routerLink="/validate">
+      <mat-icon>Validate</mat-icon>
+      <span>Validate ...</span>
+    </button>
+    <button mat-menu-item routerLink="/igs">
+      <mat-icon>info</mat-icon>
+      <span>IGs ...</span>
+    </button>
+    <button mat-menu-item routerLink="/mag">
+      <mat-icon>search</mat-icon>
+      <span>Mobile Access Gateway ...</span>
+    </button>
+    <button mat-menu-item routerLink="/settings">
+      <mat-icon>settings</mat-icon>
+      <span>Settings</span>
+    </button>
   </mat-card-content>
   <mat-card-footer>
-    <p>
-      HL7®, HEALTH LEVEL SEVEN®, FHIR® and the FHIR ® are trademarks owned by
-      Health Level Seven International, registered with the United States Patent
-      and Trademark Office.
-    </p>
+    <p>version: {{ version }} <a href="https://www.ahdis.ch">contact</a></p>
   </mat-card-footer>
 </mat-card>

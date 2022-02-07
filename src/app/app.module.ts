@@ -27,6 +27,8 @@ import { TasksTableComponent } from './tasks-table/tasks-table.component';
 import { TaskViewerComponent } from './task-viewer/task-viewer.component';
 import { ImagingStudyTableComponent } from './imaging-study-table/imaging-study-table.component';
 import { OperationOutcomeComponent } from './operation-outcome/operation-outcome.component';
+import { UploadComponent } from './upload/upload.component';
+import { QuestionnairesComponent } from './questionnaires/questionnaires.component';
 
 const routes: Routes = [
   {
@@ -64,6 +66,10 @@ const routes: Routes = [
   {
     path: 'igs',
     component: IgsComponent,
+  },
+  {
+    path: 'questionnaires',
+    component: QuestionnairesComponent,
   },
   {
     path: 'client',
@@ -118,6 +124,8 @@ export function createTranslateLoader(http: HttpClient) {
     TaskViewerComponent,
     ImagingStudyTableComponent,
     OperationOutcomeComponent,
+    UploadComponent,
+    QuestionnairesComponent,
   ],
   imports: [
     SharedModule,

@@ -29,10 +29,10 @@ export class AppComponent {
     } else if (base === 'http://localhost:4200') {
       console.log('note: using local dev mag system for' + location.origin);
       fhirConfigService.changeFhirMicroService(
-        'http://localhost:9090/mag-pmp/fhir'
+        'http://localhost:8080/matchbox/fhir'
       );
       fhirConfigService.changeMagMicroService(
-        'http://localhost:9090/mag-pmp/fhir'
+        'http://localhost:8080/matchbox/fhir'
       );
     } else {
       console.log('running at ' + location.origin);

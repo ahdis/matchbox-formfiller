@@ -1,11 +1,11 @@
-# matchbox-formfiller
+# matchbox-ng angular frontend to matchbox
 
-see latest [test release](https://test.ahdis.ch/matchbox-formfiller/#/)
+see latest [test release](https://test.ahdis.ch/matchbox/#/)
 
 angular web applications which uses fhir for:
 
 - displaying Questionnaires (R4 with first SDC extension support)
-- searching for patients and questionnaires
+- Validation of FHIR resources
 
 built with:
 
@@ -52,10 +52,10 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 
 ng add angular-cli-ghpages
 
-ng build --configuration production --base-href /matchbox-formfiller/
-ng deploy --base-href=/matchbox-formfiller/
+ng build --configuration production --base-href /matchbox/
+ng deploy --base-href=/matchbox/
 
-note: communicatin via fhir servers is currently over http, therefore the https access has to be switched off in the github project
+note: communication via fhir servers is currently over http, therefore the https access has to be switched off in the github project
 
 ## docker container
 
@@ -71,6 +71,14 @@ docker push eu.gcr.io/fhir-ch/matchbox-formfiller:v172
 ## running with docker
 
 docker run -d -t -i -p 4300:80 -e DOMAIN='localhost' -e MAG='https://test.ahdis.ch/mag-pmp' -e MATCHBOX='http://host.docker.internal:8080/matchbox' matchbox-formfiller
+
+## frontend for matchbox
+
+this angular app is directly provided with matchbox
+
+ng build --configuration production --base-href /matchbox/
+rm -rf ../matchbox/src/main/webapp/_
+cp -r dist/_ ../matchbox/src/main/webapp
 
 ## PoC
 
