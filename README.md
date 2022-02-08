@@ -10,7 +10,7 @@ angular web applications which uses fhir for:
 built with:
 
 - using [fhir-kit-client](https://github.com/Vermonster/fhir-kit-client) for accessing a fhir server
-- integerated [fhirpath.js](https://github.com/lhncbc/fhirpath.js/)
+- integrated [fhirpath.js](https://github.com/lhncbc/fhirpath.js/)
 - using [angular material](https://material.angular.io/) for UI components
 
 see [on github pages](https://ahdis.github.io/matchbox-formfiller)

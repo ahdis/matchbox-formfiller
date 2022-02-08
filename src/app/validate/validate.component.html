@@ -8,6 +8,18 @@
     </mat-card-header>
     <app-upload (addFiles)="addFile($event)"> </app-upload>
 
+    <mat-card-actions>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        (click)="onValidateIg()"
+      >
+        Validate all examples in IG on Server
+      </button>
+      <button mat-raised-button type="submit" (click)="onClear()">Clear</button>
+    </mat-card-actions>
+
     <mat-table #table [dataSource]="dataSource">
       <ng-container matColumnDef="name">
         <mat-header-cell *matHeaderCellDef class="name"
@@ -22,8 +34,10 @@
           >Profile</mat-header-cell
         >
         <mat-cell *matCellDef="let entry" class="profile">
-          <div *ngFor="let profile of entry.profiles">
-            {{ profile }}
+          <div>
+            <div *ngFor="let profile of entry.profiles">
+              {{ profile }}
+            </div>
           </div>
         </mat-cell>
       </ng-container>

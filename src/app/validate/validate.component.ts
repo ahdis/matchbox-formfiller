@@ -150,6 +150,35 @@ export class ValidateComponent implements OnInit {
     };
   }
 
+  onValidateIg() {
+    const query = {
+      _sort: 'title',
+      _count: 1000,
+    };
+
+    this.client
+      .search({ resourceType: 'ImplementationGuide', searchParams: query })
+      .then((response) => {
+        let bundle = <fhir.r4.Bundle>response;
+        bundle.entry.forEach((entry) => {
+          this.fetchData(
+            this.client.baseUrl + '/ImplementationGuide/' + entry.resource.id
+          );
+        });
+      });
+  }
+
+  async fetchData(url: string) {
+    const res = await fetch(url, {
+      headers: {
+        Accept: 'application/gzip',
+      },
+    });
+    const contentType = res.headers.get('Content-Type');
+    const blob = await res.blob();
+    this.addPackage(blob);
+  }
+
   addPackage(file) {
     const reader = new FileReader();
     reader.readAsArrayBuffer(file);
@@ -174,9 +203,16 @@ export class ValidateComponent implements OnInit {
               extractedFile.name?.indexOf('example') >= 0 &&
               extractedFile.name?.indexOf('.index.json') == -1
             ) {
+              let name = extractedFile.name;
+              if (name.startsWith('package/example/')) {
+                name = name.substring('package/example/'.length);
+              }
+              if (name.startsWith('example/')) {
+                name = name.substring('example/'.length);
+              }
               let decoder = new TextDecoder('utf-8');
               let entry = new ValidationEntry(
-                extractedFile.name,
+                name,
                 JSON.stringify(
                   JSON.parse(decoder.decode(extractedFile.buffer)),
                   null,
@@ -190,6 +226,13 @@ export class ValidateComponent implements OnInit {
         );
       }
     };
+  }
+
+  onClear() {
+    this.selectRow(undefined);
+    const len = this.dataSource.data.length;
+    this.dataSource.data.splice(0, len);
+    this.dataSource.data = this.dataSource.data; // https://stackoverflow.com/questions/46746598/angular-material-how-to-refresh-a-data-source-mat-table
   }
 
   validate(row: ValidationEntry) {
@@ -237,15 +280,20 @@ export class ValidateComponent implements OnInit {
 
   selectRow(row: ValidationEntry) {
     this.selectedEntry = row;
-    this.operationOutcome = row.operationOutcome;
-    this.json = row.json;
-    const res = <fhir.r4.Resource>JSON.parse(this.json);
-    if (res?.resourceType) {
-      this.resourceName = res.resourceType;
-      this.resourceId = res.id;
+    if (row) {
+      this.operationOutcome = row.operationOutcome;
+      this.json = row.json;
+      const res = <fhir.r4.Resource>JSON.parse(this.json);
+      if (res?.resourceType) {
+        this.resourceName = res.resourceType;
+        this.resourceId = res.id;
+      } else {
+        this.resourceName = '';
+        this.resourceId = '';
+      }
     } else {
-      this.resourceName = '';
-      this.resourceId = '';
+      this.operationOutcome = undefined;
+      this.json = undefined;
     }
   }
 

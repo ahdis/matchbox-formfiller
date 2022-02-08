@@ -8,6 +8,7 @@ import FhirClient from 'fhir-kit-client';
 import debug from 'debug';
 import { add } from 'ramda';
 import { timeStamp } from 'console';
+import { FhirPathService } from '../fhirpath.service';
 
 @Component({
   selector: 'app-igs',
@@ -36,11 +37,13 @@ export class IgsComponent implements OnInit {
   operationOutcome: fhir.r4.OperationOutcome;
 
   query = {
-    _summary: 'true',
-    _sort: 'name',
+    _sort: 'title',
   };
 
-  constructor(private data: FhirConfigService) {
+  constructor(
+    private data: FhirConfigService,
+    private fhirPathService: FhirPathService
+  ) {
     this.client = data.getFhirClient();
     this.addPackageId = new FormControl('', [
       Validators.required,
@@ -76,10 +79,10 @@ export class IgsComponent implements OnInit {
     return '';
   }
 
-  getName(entry: fhir.r4.BundleEntry): string {
+  getTitle(entry: fhir.r4.BundleEntry): string {
     const ig = <fhir.r4.ImplementationGuide>entry.resource;
-    if (ig.name) {
-      return ig.name;
+    if (ig.title) {
+      return ig.title;
     }
     return '';
   }
@@ -92,12 +95,12 @@ export class IgsComponent implements OnInit {
     return '';
   }
 
-  getUrl(entry: fhir.r4.BundleEntry): string {
+  getPackageUrl(entry: fhir.r4.BundleEntry): string {
     const ig = <fhir.r4.ImplementationGuide>entry.resource;
-    if (ig.url) {
-      return ig.url;
-    }
-    return '';
+    return this.fhirPathService.evaluateToString(
+      ig,
+      "extension.where(url='http://ahdis.ch/fhir/extension/packageUrl').valueUri"
+    );
   }
 
   setBundle(bundle: fhir.r4.Bundle) {
@@ -112,7 +115,7 @@ export class IgsComponent implements OnInit {
   selectRow(row: fhir.r4.BundleEntry) {
     this.selection = row.resource as fhir.r4.ImplementationGuide;
     this.addPackageId.setValue(this.selection.packageId);
-    this.addUrl.setValue(this.selection.url);
+    this.addUrl.setValue(this.getPackageUrl(row));
     this.addVersion.setValue(this.selection.version);
   }
 
@@ -222,6 +225,7 @@ export class IgsComponent implements OnInit {
         options: {
           headers: {
             Prefer: 'return=OperationOutcome',
+            'X-Cascade': 'delete',
           },
         },
       })

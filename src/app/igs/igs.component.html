@@ -1,30 +1,46 @@
 <mat-card class="card-igs">
   <mat-card-content>
     <mat-card-header>
-      <mat-card-title>{{ client.baseUrl }}</mat-card-title>
+      <mat-card-title
+        >FHIR ImplementationGuides installed on server</mat-card-title
+      >
     </mat-card-header>
     <mat-table #table [dataSource]="dataSource">
-      <ng-container matColumnDef="packageId">
-        <mat-header-cell *matHeaderCellDef>packageId</mat-header-cell>
-        <mat-cell *matCellDef="let entry">{{ getPackageId(entry) }}</mat-cell>
+      <ng-container matColumnDef="title" class="title">
+        <mat-header-cell *matHeaderCellDef class="packageId"
+          >Title</mat-header-cell
+        >
+        <mat-cell *matCellDef="let entry">{{ getTitle(entry) }}</mat-cell>
       </ng-container>
-      <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef>name</mat-header-cell>
-        <mat-cell *matCellDef="let entry">{{ getName(entry) }}</mat-cell>
+      <ng-container matColumnDef="packageId">
+        <mat-header-cell *matHeaderCellDef class="packageId"
+          >Package Id</mat-header-cell
+        >
+        <mat-cell *matCellDef="let entry" class="packageId">{{
+          getPackageId(entry)
+        }}</mat-cell>
       </ng-container>
       <ng-container matColumnDef="version">
-        <mat-header-cell *matHeaderCellDef>version</mat-header-cell>
-        <mat-cell *matCellDef="let entry">{{ getVersion(entry) }}</mat-cell>
+        <mat-header-cell *matHeaderCellDef class="version"
+          >Version</mat-header-cell
+        >
+        <mat-cell *matCellDef="let entry" class="version">{{
+          getVersion(entry)
+        }}</mat-cell>
       </ng-container>
       <ng-container matColumnDef="url">
-        <mat-header-cell *matHeaderCellDef>url</mat-header-cell>
-        <mat-cell *matCellDef="let entry">{{ getUrl(entry) }}</mat-cell>
+        <mat-header-cell *matHeaderCellDef class="packageUrl"
+          >Package Url</mat-header-cell
+        >
+        <mat-cell *matCellDef="let entry" class="packageUrl">{{
+          getPackageUrl(entry)
+        }}</mat-cell>
       </ng-container>
       <mat-header-row
-        *matHeaderRowDef="['packageId', 'name', 'version', 'url']"
+        *matHeaderRowDef="['title', 'packageId', 'version', 'url']"
       ></mat-header-row>
       <mat-row
-        *matRowDef="let row; columns: ['packageId', 'name', 'version', 'url']"
+        *matRowDef="let row; columns: ['title', 'packageId', 'version', 'url']"
         (click)="selectRow(row)"
       >
       </mat-row>
@@ -51,8 +67,11 @@
       <input matInput [formControl]="addVersion" />
     </mat-form-field>
     &nbsp;
-    <mat-form-field>
-      <mat-label>Url</mat-label>
+    <mat-form-field style="width: 50vw">
+      <mat-label
+        >Package url (optional, use only if not available through
+        <a href="https://packages.fhir.org">packages.fhir.org</a>)</mat-label
+      >
       <input matInput [formControl]="addUrl" />
     </mat-form-field>
 
