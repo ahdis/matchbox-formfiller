@@ -52,7 +52,7 @@ export class UploadComponent {
   }
 
   async fetchData(url: string) {
-    const res = await fetch(url);
+    const res = await fetch(url, { cache: 'no-store' });
     const contentType = res.headers.get('Content-Type');
     const blob = await res.blob();
     this.addFiles.emit({ name: url, contentType, blob });

@@ -170,6 +170,7 @@ export class ValidateComponent implements OnInit {
 
   async fetchData(url: string) {
     const res = await fetch(url, {
+      cache: 'no-store',
       headers: {
         Accept: 'application/gzip',
       },
