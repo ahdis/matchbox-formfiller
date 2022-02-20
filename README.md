@@ -76,9 +76,11 @@ docker run -d -t -i -p 4300:80 -e DOMAIN='localhost' -e MAG='https://test.ahdis.
 
 this angular app is directly provided with matchbox
 
+```
 ng build --configuration production --base-href /matchbox/
-rm -rf ../matchbox/src/main/webapp/_
-cp -r dist/_ ../matchbox/src/main/webapp
+rm -rf ../matchbox/src/main/webapp/*
+cp -r dist/* ../matchbox/src/main/webapp
+```
 
 ## PoC
 

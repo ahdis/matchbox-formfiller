@@ -17,7 +17,7 @@
         <td>Intent:</td>
         <td>
           {{ task.intent }}
-          <div *ngIf="task.focus.reference">
+          <div *ngIf="task.focus?.reference">
             <button
               mat-raised-button
               color="primary"

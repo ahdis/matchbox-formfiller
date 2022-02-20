@@ -105,6 +105,8 @@ export class TaskViewerComponent implements OnInit {
     const runAsyncFunctions = async (taskId) => {
       try {
         const task = await fetchTask(taskId);
+        this.task = task;
+
         const inputImagingStudyReferences = task.input
           ?.filter((input) => 'ImagingStudy' === input.type?.text)
           .map((input) => ({
@@ -133,38 +135,53 @@ export class TaskViewerComponent implements OnInit {
             display: input.valueReference.display,
           }));
 
-        if (inputImagingStudyReferences) {
-          const imagingStudies = await Promise.all(
-            inputImagingStudyReferences.map(async (reference) => {
-              const imagingStudy = await fetchImagingStudy(reference.reference);
-              return imagingStudy;
-            })
-          );
-          this.inputImagingStudies = imagingStudies;
-        }
-        if (outputImagingStudyReferences) {
-          const outputImagingStudies = await Promise.all(
-            outputImagingStudyReferences.map(async (reference) => {
-              const imagingStudy = await fetchImagingStudy(reference.reference);
-              return imagingStudy;
-            })
-          );
-          this.outputImagingStudies = outputImagingStudies;
+        try {
+          if (inputImagingStudyReferences) {
+            const imagingStudies = await Promise.all(
+              inputImagingStudyReferences.map(async (reference) => {
+                const imagingStudy = await fetchImagingStudy(
+                  reference.reference
+                );
+                return imagingStudy;
+              })
+            );
+            this.inputImagingStudies = imagingStudies;
+          }
+        } catch (error) {
+          console.log(error);
         }
 
-        if (outputDocumentRefReferences) {
-          const outputDocumentReferences = await Promise.all(
-            outputDocumentRefReferences.map(async (reference) => {
-              const imagingStudy = await fetchDocumentReference(
-                reference.reference
-              );
-              return imagingStudy;
-            })
-          );
-          this.outputDocumentReferences = outputDocumentReferences;
+        try {
+          if (outputImagingStudyReferences) {
+            const outputImagingStudies = await Promise.all(
+              outputImagingStudyReferences.map(async (reference) => {
+                const imagingStudy = await fetchImagingStudy(
+                  reference.reference
+                );
+                return imagingStudy;
+              })
+            );
+            this.outputImagingStudies = outputImagingStudies;
+          }
+        } catch (error) {
+          console.log(error);
         }
 
-        this.task = task;
+        try {
+          if (outputDocumentRefReferences) {
+            const outputDocumentReferences = await Promise.all(
+              outputDocumentRefReferences.map(async (reference) => {
+                const imagingStudy = await fetchDocumentReference(
+                  reference.reference
+                );
+                return imagingStudy;
+              })
+            );
+            this.outputDocumentReferences = outputDocumentReferences;
+          }
+        } catch (error) {
+          console.log(error);
+        }
       } catch (error) {
         console.log(error);
       }
