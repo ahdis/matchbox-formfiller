@@ -151,6 +151,7 @@ export class ValidateComponent implements OnInit {
   }
 
   onValidateIg() {
+    this.selectedProfile = null;
     const query = {
       _sort: 'title',
       _count: 1000,
