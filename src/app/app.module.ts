@@ -29,6 +29,7 @@ import { ImagingStudyTableComponent } from './imaging-study-table/imaging-study-
 import { OperationOutcomeComponent } from './operation-outcome/operation-outcome.component';
 import { UploadComponent } from './upload/upload.component';
 import { QuestionnairesComponent } from './questionnaires/questionnaires.component';
+import { OAuthModule } from 'angular-oauth2-oidc';
 
 const routes: Routes = [
   {
@@ -143,6 +144,7 @@ export function createTranslateLoader(http: HttpClient) {
         deps: [HttpClient],
       },
     }),
+    OAuthModule.forRoot(),
   ],
   providers: [
     {

@@ -26,15 +26,17 @@ export class AppComponent {
       fhirConfigService.changeMagMicroService(
         'https://test.ahdis.ch/mag-pmp/fhir'
       );
-    } else if (base === 'http://localhost:4200') {
-      console.log('note: using local dev mag system for' + location.origin);
-      fhirConfigService.changeFhirMicroService(
-        'http://localhost:8080/matchbox/fhir'
-      );
-      fhirConfigService.changeMagMicroService(
-        'http://localhost:8080/matchbox/fhir'
-      );
-    } else {
+    }
+    // else if (base === 'http://localhost:4200') {
+    //   console.log('note: using local dev mag system for' + location.origin);
+    //   fhirConfigService.changeFhirMicroService(
+    //     'http://localhost:8080/matchbox/fhir'
+    //   );
+    //   fhirConfigService.changeMagMicroService(
+    //     'http://localhost:8080/matchbox/fhir'
+    //   );
+    // }
+    else {
       console.log('running at ' + location.origin);
     }
   }

@@ -6,29 +6,24 @@ import FhirClient from 'fhir-kit-client';
   providedIn: 'root',
 })
 export class FhirConfigService {
-  private fhirMicroServer = new BehaviorSubject('/matchbox/fhir');
-
-  private mobileAccessGatewayServer = new BehaviorSubject('/mag/fhir');
-
-  fhirMicroService = this.fhirMicroServer.asObservable();
-  magMicroService = this.mobileAccessGatewayServer.asObservable();
-
   constructor() {}
 
   public changeFhirMicroService(server: string) {
-    this.fhirMicroServer.next(server);
+    localStorage.setItem('fhirMicroServer', server);
   }
 
   public changeMagMicroService(server: string) {
-    this.mobileAccessGatewayServer.next(server);
+    localStorage.setItem('magMicroService', server);
   }
 
   getFhirMicroService() {
-    return this.fhirMicroServer.getValue();
+    const service = localStorage.getItem('fhirMicroServer');
+    return service ? service : '/matchbox/fhir';
   }
 
   getMobileAccessGatewayService() {
-    return this.mobileAccessGatewayServer.getValue();
+    const service = localStorage.getItem('magMicroService');
+    return service ? service : '/mag/fhir';
   }
 
   getFhirClient() {

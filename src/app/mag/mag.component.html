@@ -38,6 +38,10 @@
       <div>targetId: {{ targetId }}</div>
     </div>
 
+    <ng-container *ngIf="inPixmProgress">
+      <mat-progress-spinner mode="indeterminate"> </mat-progress-spinner>
+    </ng-container>
+
     <mat-card-actions>
       <button
         mat-raised-button
@@ -61,11 +65,26 @@
       <mat-form-field>
         <mat-label>Authenticate/Authorize</mat-label>
         <select matNativeControl required [formControl]="authenticate">
-          <option value="PATIENT">Patient</option>
-          <option value="HCP">HCP for Patient</option>
+          <option value="Patient">Patient</option>
+          <option value="HCP">HCP</option>
         </select>
       </mat-form-field>
     </div>
+
+    <div>
+      <pre><code [highlight]="getScopes()"></code></pre>
+    </div>
+
+    <mat-card-actions>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        (click)="onAuthenticate()"
+      >
+        Authenticate
+      </button>
+    </mat-card-actions>
   </mat-card-content>
 </mat-card>
 
@@ -75,10 +94,73 @@
       <mat-card-title>Mobile Access Gateway - Query</mat-card-title>
     </mat-card-header>
 
-    <div>
-      <div>Format Code: {{ documentReferenceFormatCode }}</div>
-      <div>Attachment Url: {{ documentReferenceAttachmentUrl }}</div>
-    </div>
+    <mat-table #table [dataSource]="dataSource">
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef class="name"
+          >Description</mat-header-cell
+        >
+        <mat-cell *matCellDef="let entry" class="name">
+          {{ entry.description }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="title">
+        <mat-header-cell *matHeaderCellDef class="title">Title</mat-header-cell>
+        <mat-cell *matCellDef="let entry" class="title">
+          <div>
+            {{ entry.content[0].attachment.title }}
+          </div>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="contentType">
+        <mat-header-cell *matHeaderCellDef class="contentType"
+          >Title</mat-header-cell
+        >
+        <mat-cell *matCellDef="let entry" class="contentType">
+          <div>
+            {{ entry.content[0].attachment.contentType }}
+          </div>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="formatCode">
+        <mat-header-cell *matHeaderCellDef class="formatCode"
+          >formatCode</mat-header-cell
+        >
+        <mat-cell *matCellDef="let entry" class="formatCode">
+          <div>
+            {{ entry.content[0].format.code }}
+          </div>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="action">
+        <mat-header-cell *matHeaderCellDef class="res">Actions</mat-header-cell>
+        <mat-cell *matCellDef="let entry" class="res">
+          <button
+            mat-icon-button
+            aria-label="Remove"
+            (click)="remove(entry)"
+            type="button"
+          >
+            <mat-icon>remove</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row
+        *matHeaderRowDef="['name', 'title', 'contentType', 'formatCode']"
+      ></mat-header-row>
+      <mat-row
+        *matRowDef="
+          let row;
+          columns: ['name', 'title', 'contentType', 'formatCode']
+        "
+        (click)="onDownloadDocumentReferenceAttachment(row)"
+      >
+      </mat-row>
+    </mat-table>
+
+    <ng-container *ngIf="inMhdProgress">
+      <mat-progress-spinner mode="indeterminate"> </mat-progress-spinner>
+    </ng-container>
 
     <mat-card-actions>
       <button
@@ -94,18 +176,16 @@
       <button mat-raised-button type="submit" (click)="onFindMedicationCard()">
         Medication Card
       </button>
-      <button
-        mat-raised-button
-        type="submit"
-        (click)="onDownloadDocumentReferenceAttachment()"
-      >
-        Download
-      </button>
-      <button mat-raised-button type="submit" (click)="onTransform()">
-        Transform
-      </button>
-      <button mat-raised-button type="submit" (click)="onPdf()">Pdf</button>
     </mat-card-actions>
+
+    <ng-container *ngIf="canTransform()">
+      <mat-card-actions>
+        <button mat-raised-button type="submit" (click)="onTransform()">
+          Transform
+        </button>
+        <button mat-raised-button type="submit" (click)="onPdf()">Pdf</button>
+      </mat-card-actions>
+    </ng-container>
   </mat-card-content>
 </mat-card>
 
@@ -115,14 +195,8 @@
       <mat-card-title>Mobile Access Gateway - Upload</mat-card-title>
     </mat-card-header>
 
-    <div>
-      <input
-        type="file"
-        (change)="fileChange($event)"
-        placeholder="Upload"
-        accept=".xml,*.json"
-      />
-    </div>
+    <app-upload (addFiles)="addFile($event)"> </app-upload>
+
     <div>
       <mat-form-field>
         <mat-label>Description</mat-label>
@@ -135,6 +209,7 @@
         <select matNativeControl required [formControl]="documentType">
           <option value="APPC">APPC Document</option>
           <option value="MTP">Medication Treatment Plan</option>
+          <option value="PDF">PDF</option>
         </select>
       </mat-form-field>
     </div>
