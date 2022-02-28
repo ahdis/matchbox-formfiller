@@ -13,36 +13,6 @@ import { Router } from '@angular/router';
 import { getTokenSourceMapRange } from 'typescript';
 import { IDroppedBlob } from '../upload/upload.component';
 
-let authCodeFlowConfig: AuthConfig = {
-  // Url of the Identity Provider
-
-  loginUrl: 'https://test.ahdis.ch/mag-test-emedo/camel/authorize',
-  // URL of the SPA to redirect the user to after login
-  // redirectUri: window.location.origin + '/index.html',
-  redirectUri: 'http://localhost:4200/#/mag',
-
-  tokenEndpoint: 'https://test.ahdis.ch/mag-test-emedo/camel/token',
-
-  // The SPA's id. The SPA is registerd with this id at the auth-server
-  // clientId: 'server.code',
-  clientId: 'matchboxdev',
-  responseType: 'code',
-
-  // set the scope for the permissions the client should request
-  // The first four are defined by OIDC.
-  // Important: Request offline_access to get a refresh token
-  // The api scope is a usecase specific one
-  scope:
-    'person_id=761337610410555925^^^&2.16.756.5.30.1.127.3.10.3&ISO purpose_of_use=urn:oid:2.16.756.5.30.1.127.3.10.5|NORM subject_role=urn:oid:2.16.756.5.30.1.127.3.10.6|HCP',
-
-  dummyClientSecret: 'cd8455fc-e294-465a-8c86-35ae468c6b2f',
-
-  showDebugInformation: true,
-
-  // Refresh token after 75% of its live time
-  timeoutFactor: 0.75,
-};
-
 @Component({
   selector: 'app-mag',
   templateUrl: './mag.component.html',
@@ -79,6 +49,7 @@ export class MagComponent implements OnInit {
   public searchGivenValue = '';
   public searchFamily: FormControl;
   public searchFamilyValue = '';
+  public fhirConfigService: FhirConfigService;
 
   bundle: fhir.r4.Bundle;
   pageIndex = 0;
@@ -173,7 +144,9 @@ export class MagComponent implements OnInit {
     this.creationTime = new FormControl();
     this.creationTime.setValue(toLocaleDateTime(new Date()));
 
-    oauthService.configure(authCodeFlowConfig);
+    this.fhirConfigService = data;
+
+    oauthService.configure(this.fhirConfigService.getAuthCodeFlowConfig());
     oauthService.tryLoginCodeFlow().then((_) => {
       this.scopes = this.oauthService.getGrantedScopes();
     });
@@ -309,6 +282,7 @@ export class MagComponent implements OnInit {
   onAuthenticate() {
     this.scopes = null;
     if (this.authenticate.value === 'HCP') {
+      let authCodeFlowConfig = this.fhirConfigService.getAuthCodeFlowConfig();
       authCodeFlowConfig.scope = `person_id=${this.targetIdentifier2Value}^^^&2.16.756.5.30.1.127.3.10.3&ISO purpose_of_use=urn:oid:2.16.756.5.30.1.127.3.10.5|NORM subject_role=urn:oid:2.16.756.5.30.1.127.3.10.6|HCP`;
       this.oauthService.configure(authCodeFlowConfig);
       this.oauthService.initCodeFlow();

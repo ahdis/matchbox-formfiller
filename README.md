@@ -78,8 +78,8 @@ this angular app is directly provided with matchbox
 
 ```
 ng build --configuration production --base-href /matchbox/
-rm -rf ../matchbox/src/main/webapp/*
-cp -r dist/* ../matchbox/src/main/webapp
+rm -rf ../matchbox/src/main/resources/static/*
+cp -r dist/* ../matchbox/src/main/resources/static
 ```
 
 ## PoC
