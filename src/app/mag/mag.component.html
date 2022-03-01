@@ -213,6 +213,33 @@
       >
         Document References
       </button>
+    </mat-card-actions>
+
+    <div>
+      <mat-form-field class="column50">
+        <mat-label>serviceStart From</mat-label>
+        <input matInput [formControl]="serviceStartFrom" />
+      </mat-form-field>
+      &nbsp;
+      <mat-form-field class="column50">
+        <mat-label>serviceStart To</mat-label>
+        <input matInput [formControl]="serviceStartTo" />
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field class="column50">
+        <mat-label>serviceEnd From</mat-label>
+        <input matInput [formControl]="serviceEndFrom" />
+      </mat-form-field>
+      &nbsp;
+      <mat-form-field class="column50">
+        <mat-label>serviceEnd To</mat-label>
+        <input matInput [formControl]="serviceEndTo" />
+      </mat-form-field>
+    </div>
+
+    <mat-card-actions>
       <button mat-raised-button type="submit" (click)="onFindMedicationList()">
         Medication List
       </button>
