@@ -1786,7 +1786,7 @@ declare module fhir.r4 {
     /**
      * The type of the resource.
      */
-    resourceType?: code;
+    resourceType: code;
     /**
      * Contains extended information for property 'resourceType'.
      */

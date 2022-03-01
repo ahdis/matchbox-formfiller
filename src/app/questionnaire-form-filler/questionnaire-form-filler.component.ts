@@ -15,6 +15,7 @@ import { T } from 'ramda';
 import { OperationOutcomeComponent } from '../operation-outcome/operation-outcome.component';
 import internal from 'assert';
 import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
+import { FhirResource } from 'fhir-kit-client';
 
 @Component({
   selector: 'app-questionnaire-form-filler',
@@ -58,7 +59,7 @@ export class QuestionnaireFormFillerComponent implements OnInit {
       this.route.paramMap.pipe(
         map((params) => params.get('questionnaireId')),
         switchMap((id) =>
-          fromPromise<fhir.r4.Questionnaire>(
+          fromPromise<FhirResource>(
             this.fhirKitClient.read({
               resourceType: 'Questionnaire',
               id,
@@ -70,7 +71,7 @@ export class QuestionnaireFormFillerComponent implements OnInit {
         map((params) => params.get('questionnaireResponseId')),
         switchMap((id) =>
           id
-            ? fromPromise<fhir.r4.QuestionnaireResponse>(
+            ? fromPromise<FhirResource>(
                 this.fhirKitClient.read({
                   resourceType: 'QuestionnaireResponse',
                   id,
@@ -91,7 +92,7 @@ export class QuestionnaireFormFillerComponent implements OnInit {
             }
           : undefined
       )
-    );
+    ) as Observable<QuestionnaireWithResponse>;
   }
 
   onChangeQuestionnaireResponse(response: fhir.r4.QuestionnaireResponse) {

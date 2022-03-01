@@ -1,6 +1,6 @@
 {
   "name": "matchbox",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -33,7 +33,7 @@
     "browserify-zlib": "^0.2.0",
     "core-js": "^2.6.2",
     "debug": "^4.3.1",
-    "fhir-kit-client": "^1.6.5",
+    "fhir-kit-client": "file:../fhir-kit-client",
     "fhirpath": "^2.10.2",
     "jasmine": "^3.7.0",
     "js-base64": "^3.7.2",

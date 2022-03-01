@@ -7,6 +7,7 @@ import Client from 'fhir-kit-client';
 import { fromPromise } from 'rxjs/internal/observable/fromPromise';
 import { QuestionnaireWithResponse } from '../questionnaire-item/types';
 import { extractQuestionnaireWithResponseFromBundle } from '../util/bundle-transform';
+import { FhirResource } from 'fhir-kit-client';
 
 @Component({
   selector: 'app-bundle-viewer',
@@ -29,7 +30,7 @@ export class BundleViewerComponent implements OnInit {
     this.questionnaireWithResponse$ = this.route.paramMap.pipe(
       map((params) => params.get('bundleId')),
       switchMap((id) =>
-        fromPromise<fhir.r4.Bundle>(
+        fromPromise<FhirResource>(
           this.fhirKitClient.read({
             resourceType: 'Bundle',
             id,
