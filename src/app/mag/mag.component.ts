@@ -14,6 +14,12 @@ import { getTokenSourceMapRange } from 'typescript';
 import { IDroppedBlob } from '../upload/upload.component';
 import { FhirResource } from 'fhir-kit-client';
 
+class UUIReplace {
+  descr: string;
+  existingUuid: string;
+  newUuid: string;
+}
+
 @Component({
   selector: 'app-mag',
   templateUrl: './mag.component.html',
@@ -62,6 +68,8 @@ export class MagComponent implements OnInit {
   public searchFamilyValue = '';
   public fhirConfigService: FhirConfigService;
 
+  public replaceUuids = new Array<UUIReplace>();
+
   bundle: fhir.r4.Bundle;
   patient: fhir.r4.Patient;
 
@@ -77,7 +85,8 @@ export class MagComponent implements OnInit {
 
   scopes: object;
 
-  inMhdProgress = false;
+  inMhdQueryProgress = false;
+  inMhdUploadProgress = false;
   inPixmProgress = false;
   selectedDocumentReference: fhir.r4.DocumentReference;
 
@@ -376,30 +385,34 @@ export class MagComponent implements OnInit {
       });
   }
 
-  onFetchPatient() {
+  getPatient(): Promise<fhir.r4.Patient> {
     const patientId: string = this.targetId.substring(
       this.targetId.indexOf('Patient/') + 8
     );
+    return this.mag.read({
+      resourceType: 'Patient',
+      id: patientId,
+      options: {
+        headers: {
+          accept: 'application/fhir+json;fhirVersion=4.0',
+          'content-type': 'application/fhir+json;fhirVersion=4.0',
+        },
+      },
+    });
+  }
+
+  async onFetchPatient() {
     this.patient = undefined;
     this.inPixmProgress = true;
     this.cache();
-    this.mag
-      .read({
-        resourceType: 'Patient',
-        id: patientId,
-        options: {
-          headers: {
-            accept: 'application/fhir+json;fhirVersion=4.0',
-            'content-type': 'application/fhir+json;fhirVersion=4.0',
-          },
-        },
-      })
-      .then((response) => this.setPatientFetchResult(response))
-      .catch((error) => {
-        this.setJson(JSON.stringify(error, null, 2));
-        this.cache();
-        this.inPixmProgress = false;
-      });
+    try {
+      this.patient = await this.getPatient();
+      this.setPatientFetchResult(this.patient);
+    } catch (error) {
+      this.setJson(JSON.stringify(error, null, 2));
+      this.cache();
+      this.inPixmProgress = false;
+    }
   }
 
   onPIXmFeedAdd() {
@@ -471,42 +484,42 @@ export class MagComponent implements OnInit {
   }
 
   setDocumentReferenceResult(response: fhir.r4.Bundle) {
-    this.inMhdProgress = false;
     this.setJson(JSON.stringify(response, null, 2));
     this.setBundle(response);
   }
 
-  onFindDocumentReferences() {
-    this.inMhdProgress = true;
+  findDocumentReferences(): Promise<fhir.r4.Bundle> {
     let query = {
       status: 'current',
       'patient.identifier':
         this.targetIdentifierSystem.value + '|' + this.targetIdentifierValue,
     };
-    let saml = this.mag
-      .search({
-        resourceType: 'DocumentReference',
-        searchParams: query,
-        options: {
-          headers: {
-            accept: 'application/fhir+json;fhirVersion=4.0',
-            Authorization: 'IHE-SAML ' + this.getSamlToken(),
-          },
+    return this.mag.search({
+      resourceType: 'DocumentReference',
+      searchParams: query,
+      options: {
+        headers: {
+          accept: 'application/fhir+json;fhirVersion=4.0',
+          Authorization: 'IHE-SAML ' + this.getSamlToken(),
         },
-      })
-      .then((response) =>
-        this.setDocumentReferenceResult(response as fhir.r4.Bundle)
-      )
-      .catch((error) => {
-        this.setJson(JSON.stringify(error, null, 2));
-        this.inMhdProgress = false;
-        this.setBundle(null);
-      });
+      },
+    }) as Promise<fhir.r4.Bundle>;
   }
 
-  findMedicationList(format?: string) {
-    this.cache();
-    this.inMhdProgress = true;
+  async onFindDocumentReferences() {
+    this.inMhdQueryProgress = true;
+    try {
+      const bundle = await this.findDocumentReferences();
+      this.setDocumentReferenceResult(bundle as fhir.r4.Bundle);
+      this.inMhdQueryProgress = false;
+    } catch (error) {
+      this.setJson(JSON.stringify(error, null, 2));
+      this.setBundle(null);
+      this.inMhdQueryProgress = false;
+    }
+  }
+
+  findMedicationList(format?: string): Promise<fhir.r4.Bundle> {
     let queryParams =
       'patient.identifier=' +
       this.targetIdentifierSystem.value +
@@ -526,34 +539,57 @@ export class MagComponent implements OnInit {
       queryParams += `&serviceEndTo=${this.serviceEndTo.value}`;
     }
 
-    let saml = this.mag
-      .operation({
-        name: '$find-medication-list?status=current&' + queryParams,
-        resourceType: 'DocumentReference',
-        method: 'GET',
-        options: {
-          headers: {
-            accept: 'application/fhir+json;fhirVersion=4.0',
-            Authorization: 'IHE-SAML ' + this.getSamlToken(),
-          },
+    return this.mag.operation({
+      name: '$find-medication-list?status=current&' + queryParams,
+      resourceType: 'DocumentReference',
+      method: 'GET',
+      options: {
+        headers: {
+          accept: 'application/fhir+json;fhirVersion=4.0',
+          Authorization: 'IHE-SAML ' + this.getSamlToken(),
         },
-      })
-      .then((response) => this.setDocumentReferenceResult(response))
-      .catch((error) => {
-        this.setJson(JSON.stringify(error, null, 2));
-        this.inMhdProgress = false;
-        this.setBundle(null);
-      });
+      },
+    });
   }
 
-  onFindMedicationList() {
-    this.findMedicationList();
+  async onFindMedicationList() {
+    this.inMhdQueryProgress = true;
+    this.cache();
+    try {
+      const bundle = await this.findMedicationList();
+      this.setDocumentReferenceResult(bundle);
+      if (bundle.entry && bundle.entry.length == 1) {
+        await this.downloadDocumentReferenceAttachment(
+          bundle.entry[0].resource as fhir.r4.DocumentReference
+        );
+      }
+      this.inMhdQueryProgress = false;
+    } catch (error) {
+      this.setJson(JSON.stringify(error, null, 2));
+      this.setBundle(null);
+      this.inMhdQueryProgress = false;
+    }
   }
 
-  onFindMedicationCard() {
-    this.findMedicationList(
-      'urn:oid:2.16.756.5.30.1.127.3.10.10|urn:ch:cda-ch-emed:medication-card:2018'
-    );
+  async onFindMedicationCard() {
+    this.inMhdQueryProgress = true;
+    this.cache();
+    try {
+      const bundle = await this.findMedicationList(
+        'urn:oid:2.16.756.5.30.1.127.3.10.10|urn:ch:cda-ch-emed:medication-card:2018'
+      );
+      this.setDocumentReferenceResult(bundle);
+      if (bundle.entry && bundle.entry.length == 1) {
+        await this.downloadDocumentReferenceAttachment(
+          bundle.entry[0].resource as fhir.r4.DocumentReference
+        );
+      }
+      this.inMhdQueryProgress = false;
+    } catch (error) {
+      this.setJson(JSON.stringify(error, null, 2));
+      this.setBundle(null);
+      this.inMhdQueryProgress = false;
+    }
   }
 
   // temporary fix because we cannot generate the assertion ourselves yet
@@ -581,9 +617,9 @@ export class MagComponent implements OnInit {
     return null;
   }
 
-  async onDownloadDocumentReferenceAttachment(
+  async downloadDocumentReferenceAttachment(
     entry: fhir.r4.DocumentReference
-  ) {
+  ): Promise<string | ArrayBuffer> {
     const url =
       entry.content && entry.content.length > 0
         ? entry.content[0].attachment.url
@@ -611,11 +647,15 @@ export class MagComponent implements OnInit {
         },
       });
       const blob = await res.blob();
-      var reader = new FileReader();
-      reader.readAsDataURL(blob);
-      reader.onloadend = function () {
-        that.downloadPdf(reader.result.toString(), title);
-      };
+      return new Promise((resolve, reject) => {
+        let reader = new FileReader();
+        reader.onload = () => {
+          that.downloadPdf(reader.result.toString(), title);
+          resolve(reader.result);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
     } else {
       const headers = new HttpHeaders().set(
         'Authorization',
@@ -625,13 +665,26 @@ export class MagComponent implements OnInit {
         responseType: 'text' as const,
         headers: headers,
       };
-      this.http.get(completeUrl, options).subscribe({
-        next: (body: string) => {
-          (this.xml = body), this.setJson(body);
-        },
-        error: (err: Error) => this.setJson(err.message),
+      return new Promise((resolve, reject) => {
+        this.http.get(completeUrl, options).subscribe({
+          next: (body: string) => {
+            (this.xml = body), this.setJson(body);
+            resolve(this.xml);
+          },
+          error: (err: Error) => {
+            reject(err);
+          },
+        });
       });
     }
+  }
+
+  async onDownloadDocumentReferenceAttachment(
+    entry: fhir.r4.DocumentReference
+  ) {
+    this.inMhdQueryProgress = true;
+    await this.downloadDocumentReferenceAttachment(entry);
+    this.inMhdQueryProgress = false;
   }
 
   getStructureMap(formatCode: string, cdaToFhir: boolean): string {
@@ -701,6 +754,7 @@ export class MagComponent implements OnInit {
   }
 
   onTransformToFhir() {
+    this.inMhdQueryProgress = true;
     const formatCode =
       this.selectedDocumentReference.content &&
       this.selectedDocumentReference.content.length > 0
@@ -722,14 +776,17 @@ export class MagComponent implements OnInit {
         })
         .then((response) => {
           this.setTransformResult(response);
+          this.inMhdQueryProgress = false;
         })
         .catch((error) => {
           this.setJson(error);
+          this.inMhdQueryProgress = true;
         });
     }
   }
 
   onTransformToCda() {
+    this.inMhdUploadProgress = true;
     const formatCode = this.getDocumentReferenceContentFormat()
       ? this.getDocumentReferenceContentFormat().code
       : null;
@@ -754,6 +811,7 @@ export class MagComponent implements OnInit {
         })
         .then((response) => {
           // FIXME fhir client cannot handle xml directly :-)
+          this.inMhdUploadProgress = true;
         })
         .catch((error) => {
           if (error.response.status === 200) {
@@ -763,6 +821,7 @@ export class MagComponent implements OnInit {
           } else {
             this.xml = error.response.data;
           }
+          this.inMhdUploadProgress = false;
         });
     }
   }
@@ -804,6 +863,9 @@ export class MagComponent implements OnInit {
           ],
         };
       case 'MTP':
+      case 'PADV':
+      case 'DIS':
+      case 'PDF':
         return {
           coding: [
             {
@@ -813,13 +875,13 @@ export class MagComponent implements OnInit {
             },
           ],
         };
-      case 'PDF':
+      case 'PRE':
         return {
           coding: [
             {
               system: 'http://snomed.info/sct',
-              code: '419891008',
-              display: 'Record artifact',
+              code: '761938008',
+              display: 'Medicinal Prescription record (record artifact)',
             },
           ],
         };
@@ -840,12 +902,15 @@ export class MagComponent implements OnInit {
           ],
         };
       case 'MTP':
+      case 'DIS':
+      case 'PRE':
+      case 'PADV':
         return {
           coding: [
             {
               system: 'http://snomed.info/sct',
               code: '440545006',
-              display: 'Prescription',
+              display: 'Prescription record',
             },
           ],
         };
@@ -875,6 +940,21 @@ export class MagComponent implements OnInit {
         return {
           system: 'urn:oid:1.3.6.1.4.1.19376.1.2.3',
           code: 'urn:ihe:pharm:mtp:2015',
+        };
+      case 'DIS':
+        return {
+          system: 'urn:oid:1.3.6.1.4.1.19376.1.2.3',
+          code: 'urn:ihe:pharm:dis:2010',
+        };
+      case 'PRE':
+        return {
+          system: 'urn:oid:1.3.6.1.4.1.19376.1.2.3',
+          code: 'urn:ihe:pharm:pre:2010',
+        };
+      case 'PADV':
+        return {
+          system: 'urn:oid:1.3.6.1.4.1.19376.1.2.3',
+          code: 'urn:ihe:pharm:padv:2010',
         };
       case 'PDF':
         return {
@@ -973,12 +1053,48 @@ export class MagComponent implements OnInit {
       ) {
         this.uploadBundle = bundle;
         this.documentType.setValue('MTP');
+        return;
+      }
+      if (
+        loinc &&
+        '57833-6' === loinc.code &&
+        snomedct &&
+        '761938008' === snomedct.code
+      ) {
+        this.uploadBundle = bundle;
+        this.documentType.setValue('PRE');
+        return;
+      }
+      if (
+        loinc &&
+        '60593-1' === loinc.code &&
+        snomedct &&
+        '419891008' === snomedct.code
+      ) {
+        this.uploadBundle = bundle;
+        this.documentType.setValue('DIS');
+        return;
+      }
+      if (
+        loinc &&
+        '61356-2' === loinc.code &&
+        snomedct &&
+        '419891008' === snomedct.code
+      ) {
+        this.uploadBundle = bundle;
+        this.documentType.setValue('PADV');
+        return;
       }
     }
   }
 
   async assignMobileAccessPatient() {
+    this.inMhdUploadProgress = true;
     this.errMsgAssignPatient = '';
+
+    if (this.patient == null) {
+      this.patient = await this.getPatient();
+    }
 
     if (this.patient == null) {
       this.errMsgAssignPatient =
@@ -1022,10 +1138,20 @@ export class MagComponent implements OnInit {
 
     let jsonString = JSON.stringify(this.uploadBundle, null, 2);
 
-    // create a new uuid and replace all occurences of it in the document
+    // create a new uuid and replace all occurences of it in the document, store if for later referring uuid's
     const existingUuid = this.uploadBundle.identifier.value;
     const newUuid = 'urn:uuid:' + uuidv4();
-    jsonString = jsonString.split(existingUuid).join(newUuid);
+
+    this.replaceUuids.push({
+      descr: this.documentType.value,
+      existingUuid,
+      newUuid,
+    });
+    this.replaceUuids.forEach(
+      (entry) =>
+        (jsonString = jsonString.split(entry.existingUuid).join(entry.newUuid))
+    );
+
     this.masterIdentifier.setValue(newUuid);
 
     // PMP is currently not able to handle MORN, NOON, EVE, NIGHT
@@ -1035,9 +1161,11 @@ export class MagComponent implements OnInit {
     jsonString = jsonString.split('"NIGHT"').join('"HS"');
 
     this.setJson(jsonString);
+    this.inMhdUploadProgress = false;
   }
 
   createMhdTransaction() {
+    this.inMhdUploadProgress = true;
     let bundle: fhir.r4.Bundle = {
       resourceType: 'Bundle',
       meta: {
@@ -1319,9 +1447,13 @@ export class MagComponent implements OnInit {
           },
         },
       })
-      .then((response) => this.setJson(JSON.stringify(response, null, 2)))
+      .then((response) => {
+        this.setJson(JSON.stringify(response, null, 2));
+        this.inMhdUploadProgress = false;
+      })
       .catch((error) => {
         this.setJson(JSON.stringify(error, null, 2));
+        this.inMhdUploadProgress = false;
       });
   }
 }

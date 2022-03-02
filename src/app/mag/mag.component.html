@@ -206,7 +206,7 @@
       </mat-row>
     </mat-table>
 
-    <ng-container *ngIf="inMhdProgress">
+    <ng-container *ngIf="inMhdQueryProgress">
       <mat-progress-spinner mode="indeterminate"> </mat-progress-spinner>
     </ng-container>
 
@@ -283,7 +283,10 @@
         <mat-label>Document Type</mat-label>
         <select matNativeControl required [formControl]="documentType">
           <option value="APPC">APPC Document</option>
-          <option value="MTP">Medication Treatment Plan</option>
+          <option value="MTP">Medication Treatment Plan document</option>
+          <option value="DIS">Medication Dispense document</option>
+          <option value="PRE">Medication Prescription document/option></option>
+          <option value="PADV">Pharmaceutical Advice document</option>
           <option value="PDF">PDF</option>
         </select>
       </mat-form-field>
@@ -311,7 +314,13 @@
           >ig</a
         >
       </div>
+      <div *ngFor="let entry of replaceUuids">
+        {{ entry.descr }}: {{ entry.existingUuid }} -> {{ entry.newUuid }}
+      </div>
       <div *ngIf="errMsgAssignPatient">{{ errMsgAssignPatient }}</div>
+      <ng-container *ngIf="inMhdUploadProgress">
+        <mat-progress-spinner mode="indeterminate"> </mat-progress-spinner>
+      </ng-container>
       <div>
         <button
           mat-raised-button
