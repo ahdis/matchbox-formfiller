@@ -60,6 +60,11 @@
     </mat-card-actions>
 
     <ng-container *ngIf="patient">
+      <div *ngIf="patient.name">
+        {{ patient.name[0]?.given }} {{ patient.name[0]?.family }},
+        {{ patient.birthDate }} <br />&nbsp;<br />
+      </div>
+
       <div>
         <mat-form-field class="column50">
           <mat-label>sourceIdentifier system</mat-label>
@@ -248,10 +253,10 @@
       </button>
     </mat-card-actions>
 
-    <ng-container *ngIf="canTransform()">
+    <ng-container *ngIf="canTransformToFhir()">
       <mat-card-actions>
-        <button mat-raised-button type="submit" (click)="onTransform()">
-          Transform
+        <button mat-raised-button type="submit" (click)="onTransformToFhir()">
+          Transform To FHIR
         </button>
         <button mat-raised-button type="submit" (click)="onPdf()">Pdf</button>
       </mat-card-actions>
@@ -306,13 +311,28 @@
           >ig</a
         >
       </div>
+      <div *ngIf="errMsgAssignPatient">{{ errMsgAssignPatient }}</div>
       <div>
+        <button
+          mat-raised-button
+          type="submit"
+          (click)="assignMobileAccessPatient()"
+        >
+          Assign Mobile Access Patient</button
+        >&nbsp;
+
+        <ng-container *ngIf="canTransformToCda()">
+          <button mat-raised-button type="submit" (click)="onTransformToCda()">
+            Transform To CDA</button
+          >&nbsp;
+        </ng-container>
+
         <button
           mat-raised-button
           type="submit"
           (click)="createMhdTransaction()"
         >
-          Test MHD
+          Provide and Register
         </button>
       </div>
     </div>

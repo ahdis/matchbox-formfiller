@@ -32,6 +32,8 @@ export class MagComponent implements OnInit {
   pdf: string;
   uploadBase64: string;
   uploadContentType: string;
+  uploadBundle: fhir.r4.Bundle;
+
   targetId: string;
 
   public sourceIdentifierSystem: FormControl;
@@ -71,6 +73,7 @@ export class MagComponent implements OnInit {
   // oid mag = ahdis + .20 ->   2.16.756.5.30.1.145.20
 
   errMsg: string;
+  errMsgAssignPatient: string;
 
   scopes: object;
 
@@ -631,24 +634,59 @@ export class MagComponent implements OnInit {
     }
   }
 
-  getStructureMap(formatCode: string): string {
-    switch (formatCode) {
-      case 'urn:ihe:pharm:pml:2013':
-        return 'http://fhir.ch/ig/cda-fhir-maps/StructureMap/CdaChEmedMedicationListDocumentToBundle';
-      case 'urn:ch:cda-ch-emed:medication-card:2018':
-        return 'http://fhir.ch/ig/cda-fhir-maps/StructureMap/CdaChEmedMedicationCardDocumentToBundle';
+  getStructureMap(formatCode: string, cdaToFhir: boolean): string {
+    if (cdaToFhir) {
+      switch (formatCode) {
+        case 'urn:ihe:pharm:pml:2013':
+          return 'http://fhir.ch/ig/cda-fhir-maps/StructureMap/CdaChEmedMedicationListDocumentToBundle';
+        case 'urn:ch:cda-ch-emed:medication-card:2018':
+          return 'http://fhir.ch/ig/cda-fhir-maps/StructureMap/CdaChEmedMedicationCardDocumentToBundle';
+        case 'urn:ihe:pharm:mtp:2015':
+          return 'http://fhir.ch/ig/cda-fhir-maps/StructureMap/CdaChEmedMedicationTreatmentPlanDocumentToBundle';
+        case 'urn:ihe:pharm:pre:2010':
+          return 'http://fhir.ch/ig/cda-fhir-maps/StructureMap/CdaChEmedMedicationPrescriptionDocumentToBundle';
+        case 'urn:ihe:pharm:padv:2010':
+          return 'http://fhir.ch/ig/cda-fhir-maps/StructureMap/CdaChEmedPharmaceuticalAdviceDocumentToBundle';
+        case 'urn:ihe:pharm:dis:2010':
+          return 'http://fhir.ch/ig/cda-fhir-maps/StructureMap/CdaChEmedMedicationDispenseDocumentToBundle';
+      }
+    } else {
+      switch (formatCode) {
+        case 'urn:ch:cda-ch-emed:medication-card:2018':
+          return 'http://fhir.ch/ig/cda-fhir-maps/StructureMap/BundleToCdaChEmedMedicationCardDocument';
+        case 'urn:ihe:pharm:mtp:2015':
+          return 'http://fhir.ch/ig/cda-fhir-maps/StructureMap/BundleToCdaChEmedMedicationTreatmentPlanDocument';
+        case 'urn:ihe:pharm:pre:2010':
+          return 'http://fhir.ch/ig/cda-fhir-maps/StructureMap/BundleToCdaChEmedMedicationPrescriptionDocument';
+        case 'urn:ihe:pharm:padv:2010':
+          return 'http://fhir.ch/ig/cda-fhir-maps/StructureMap/BundleToCdaChEmedPharmaceuticalAdviceDocument';
+        case 'urn:ihe:pharm:dis:2010':
+          return 'http://fhir.ch/ig/cda-fhir-maps/StructureMap/BundleToCdaChEmedMedicationDispenseDocument';
+      }
     }
     return null;
   }
 
-  canTransform(): boolean {
+  canTransformToFhir(): boolean {
     if (this.selectedDocumentReference) {
       const formatCode =
         this.selectedDocumentReference.content &&
         this.selectedDocumentReference.content.length > 0
           ? this.selectedDocumentReference.content[0].format?.code
           : '';
-      return this.getStructureMap(formatCode) != null;
+      return this.getStructureMap(formatCode, true) != null;
+    }
+    return false;
+  }
+
+  canTransformToCda(): boolean {
+    if (this.getDocumentReferenceContentFormat() != null) {
+      return (
+        this.getStructureMap(
+          this.getDocumentReferenceContentFormat().code,
+          true
+        ) != null
+      );
     }
     return false;
   }
@@ -662,7 +700,7 @@ export class MagComponent implements OnInit {
     );
   }
 
-  onTransform() {
+  onTransformToFhir() {
     const formatCode =
       this.selectedDocumentReference.content &&
       this.selectedDocumentReference.content.length > 0
@@ -673,7 +711,7 @@ export class MagComponent implements OnInit {
         .operation({
           name:
             'transform?source=' +
-            encodeURIComponent(this.getStructureMap(formatCode)),
+            encodeURIComponent(this.getStructureMap(formatCode, true)),
           resourceType: 'StructureMap',
           input: this.xml,
           options: {
@@ -687,6 +725,44 @@ export class MagComponent implements OnInit {
         })
         .catch((error) => {
           this.setJson(error);
+        });
+    }
+  }
+
+  onTransformToCda() {
+    const formatCode = this.getDocumentReferenceContentFormat()
+      ? this.getDocumentReferenceContentFormat().code
+      : null;
+    if (
+      formatCode &&
+      this.getStructureMap(formatCode, false) != null &&
+      this.json != null
+    ) {
+      this.fhir
+        .operation({
+          name:
+            'transform?source=' +
+            encodeURIComponent(this.getStructureMap(formatCode, false)),
+          resourceType: 'StructureMap',
+          input: this.json,
+          options: {
+            headers: {
+              accept: 'text/xml',
+              'content-type': 'application/fhir+json;fhirVersion=4.0',
+            },
+          },
+        })
+        .then((response) => {
+          // FIXME fhir client cannot handle xml directly :-)
+        })
+        .catch((error) => {
+          if (error.response.status === 200) {
+            this.uploadContentType = 'text/xml';
+            this.xml = error.response.data;
+            this.setJson(this.xml);
+          } else {
+            this.xml = error.response.data;
+          }
         });
     }
   }
@@ -810,32 +886,155 @@ export class MagComponent implements OnInit {
   }
 
   addFile(droppedBlob: IDroppedBlob) {
-    var reader = new FileReader();
+    this.uploadBase64 = '';
+    this.uploadContentType = '';
+    this.uploadBundle = null;
+    this.json = '';
+    this.xml = '';
+    this.pdf = '';
+
+    if (
+      droppedBlob.contentType === 'application/json' ||
+      droppedBlob.name.endsWith('.json') ||
+      droppedBlob.contentType === 'text/xml' ||
+      droppedBlob.name.endsWith('.xml')
+    ) {
+      this.addText(droppedBlob);
+    } else {
+      var reader = new FileReader();
+      const that = this;
+      reader.readAsDataURL(droppedBlob.blob);
+      reader.onloadend = function () {
+        let result = reader.result.toString();
+        if (result.startsWith('data:application/pdf;base64,')) {
+          that.uploadBase64 = result.substring(
+            'data:application/pdf;base64,'.length
+          );
+          that.uploadContentType = 'application/pdf';
+          that.documentType.setValue('PDF');
+        }
+      };
+    }
+  }
+
+  addText(blob: IDroppedBlob) {
+    const reader = new FileReader();
+    reader.readAsText(blob.blob);
     const that = this;
-    reader.readAsDataURL(droppedBlob.blob);
-    reader.onloadend = function () {
-      let result = reader.result.toString();
-      if (result.startsWith('data:application/pdf;base64,')) {
-        that.uploadBase64 = result.substring(
-          'data:application/pdf;base64,'.length
-        );
-        that.uploadContentType = 'application/pdf';
-        that.documentType.setValue('PDF');
+    this.documentDescription.setValue(blob.name);
+    this.creationTime.setValue(toLocaleDateTime(new Date()));
+    reader.onload = () => {
+      if (
+        blob.contentType === 'application/json' ||
+        blob.name.endsWith('.json')
+      ) {
+        this.uploadContentType = 'application/json';
+        this.autoDetectFormat(<string>reader.result);
       }
-      if (result.startsWith('data:text/xml;base64,')) {
-        that.uploadBase64 = result.substring('data:text/xml;base64,'.length);
-        that.uploadContentType = 'text/xml';
+      if (blob.contentType === 'text/xml' || blob.name.endsWith('.xml')) {
+        this.uploadContentType = 'text/xml';
         that.documentType.setValue('XML');
-        // FIXME TODO
-      }
-      if (result.startsWith('data:application/json;base64,')) {
-        that.uploadBase64 = result.substring(
-          'data:application/json;base64,'.length
-        );
-        that.documentType.setValue('JSON');
-        // FIXME TODO
+        that.xml = <string>reader.result;
+        that.setJson(that.xml);
       }
     };
+  }
+
+  autoDetectFormat(jsonString: string) {
+    this.documentType.setValue('JSON');
+    const json = JSON.parse(jsonString);
+    this.setJson(jsonString);
+
+    if (json.hasOwnProperty('resourceType')) {
+      const res = json as fhir.r4.Resource;
+      if ('Bundle' === res.resourceType) {
+        const bundle = json as fhir.r4.Bundle;
+        this.autoDetectBundle(bundle);
+      }
+    }
+  }
+
+  autoDetectBundle(bundle: fhir.r4.Bundle) {
+    this.creationTime.setValue(bundle.timestamp);
+    this.masterIdentifier.setValue(bundle.identifier.value);
+    if ('document' === bundle.type && bundle.entry?.length > 0) {
+      const composition = bundle.entry[0].resource as fhir.r4.Composition;
+      const snomedct = composition.type.coding.find(
+        (coding) => 'http://snomed.info/sct' === coding.system
+      );
+      const loinc = composition.type.coding.find(
+        (coding) => 'http://loinc.org' === coding.system
+      );
+      if (
+        loinc &&
+        '77603-9' === loinc.code &&
+        snomedct &&
+        '419891008' === snomedct.code
+      ) {
+        this.uploadBundle = bundle;
+        this.documentType.setValue('MTP');
+      }
+    }
+  }
+
+  async assignMobileAccessPatient() {
+    this.errMsgAssignPatient = '';
+
+    if (this.patient == null) {
+      this.errMsgAssignPatient =
+        "Error: select first 'get Patient' from Mobile Access Gateway";
+      return;
+    }
+    if (this.uploadBundle == null) {
+      this.errMsgAssignPatient =
+        'Error: need a FHIR Bundle in json format to assign the Patient';
+      return;
+    }
+    const patientEntries = this.uploadBundle.entry.filter(
+      (entry) => 'Patient' === entry.resource.resourceType
+    );
+
+    // we keep only the local patient identifier
+    const patientCopy: fhir.r4.Patient = { ...this.patient };
+    patientCopy.identifier = this.patient.identifier.filter(
+      (identifier) => identifier.system === this.sourceIdentifierSystem.value
+    );
+    patientCopy.identifier.find(
+      (identifier) => identifier.system === this.sourceIdentifierSystem.value
+    ).type = {
+      coding: [
+        {
+          system: 'http://terminology.hl7.org/CodeSystem/v2-0203',
+          code: 'MR',
+        },
+      ],
+    };
+
+    // we have sometime multiple names in cara test system, we reduce it to the first one
+    patientCopy.name = Array<fhir.r4.HumanName>();
+    patientCopy.name[0] = this.patient.name[0];
+
+    patientEntries.forEach((patientEntry) => {
+      const id = patientEntry.resource.id;
+      patientEntry.resource = { ...patientCopy };
+      patientEntry.resource.id = id;
+    });
+
+    let jsonString = JSON.stringify(this.uploadBundle, null, 2);
+
+    // create a new uuid and replace all occurences of it in the document
+    const existingUuid = this.uploadBundle.identifier.value;
+    const newUuid = 'urn:uuid:' + uuidv4();
+    jsonString = jsonString.split(existingUuid).join(newUuid);
+    this.masterIdentifier.setValue(newUuid);
+
+    // PMP is currently not able to handle MORN, NOON, EVE, NIGHT
+    jsonString = jsonString.split('"MORN"').join('"ACM"');
+    jsonString = jsonString.split('"NOON"').join('"ACD"');
+    jsonString = jsonString.split('"EVE"').join('"ACV"');
+    jsonString = jsonString.split('"NIGHT"').join('"HS"');
+
+    this.setJson(jsonString);
   }
 
   createMhdTransaction() {
@@ -1005,7 +1204,13 @@ export class MagComponent implements OnInit {
 
     const binary: fhir.r4.Binary = bundle.entry[0].resource as fhir.r4.Binary;
     binary.contentType = this.uploadContentType; // $1.2
-    binary.data = this.uploadBase64; // $2
+
+    if (this.json?.length > 0) {
+      binary.data = Base64.encode(this.json);
+    } else {
+      binary.data = this.uploadBase64; // $2
+    }
+
     // List
     let uuid3 = uuidv4();
     bundle.entry[1].fullUrl = 'urn:uid:' + uuid3; // $3
