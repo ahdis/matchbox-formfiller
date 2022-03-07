@@ -679,6 +679,75 @@ export class MagComponent implements OnInit {
     }
   }
 
+  async onRemove(entryOrig: fhir.r4.DocumentReference) {
+    let entry = { ...entryOrig };
+    this.inMhdQueryProgress = true;
+
+    if (entry.extension == null) {
+      entry.extension = new Array<fhir.r4.Extension>();
+    }
+
+    entry.extension.push({
+      url: 'http://profiles.ihe.net/ITI/MHD/StructureDefinition/ihe-sourceId',
+      valueIdentifier: {
+        value: this.iheSourceId.value,
+      },
+    });
+
+    entry.extension.push({
+      url:
+        'http://profiles.ihe.net/ITI/MHD/StructureDefinition/ihe-designationType',
+      valueCodeableConcept: {
+        coding: [
+          {
+            system: 'http://snomed.info/sct',
+            code: '71388002',
+            display: 'Procedure (procedure)',
+          },
+        ],
+        text: 'Procedure (procedure)',
+      },
+    });
+
+    entry.extension.push({
+      url:
+        'http://fhir.ch/ig/ch-epr-mhealth/StructureDefinition/ch-ext-deletionstatus',
+      valueCoding: {
+        system:
+          'http://fhir.ch/ig/ch-epr-mhealth/CodeSysteme/ch-ehealth-codesystem-deletionstatus',
+        code: 'deletionRequested',
+      },
+    });
+
+    entry.extension.push({
+      url:
+        'http://fhir.ch/ig/ch-epr-mhealth/StructureDefinition/ch-ext-author-authorrole',
+      valueCoding: {
+        system: 'urn:oid:2.16.756.5.30.1.127.3.10.6',
+        code: 'HCP',
+        display: 'Healthcare professional',
+      },
+    });
+
+    let response = await this.mag.update({
+      resourceType: 'DocumentReference',
+      id: entry.id,
+      body: entry,
+      options: {
+        headers: {
+          accept: 'application/fhir+json;fhirVersion=4.0',
+          'content-type': 'application/fhir+json;fhirVersion=4.0',
+          Authorization: 'IHE-SAML ' + this.getSamlToken(),
+        },
+      },
+    });
+    this.setJson(JSON.stringify(response, null, 2));
+
+    this.inMhdQueryProgress = false;
+
+    this.onFindDocumentReferences();
+  }
+
   async onDownloadDocumentReferenceAttachment(
     entry: fhir.r4.DocumentReference
   ) {

@@ -185,7 +185,7 @@
           <button
             mat-icon-button
             aria-label="Remove"
-            (click)="remove(entry)"
+            (click)="onRemove(entry)"
             type="button"
           >
             <mat-icon>remove</mat-icon>
@@ -194,12 +194,18 @@
       </ng-container>
 
       <mat-header-row
-        *matHeaderRowDef="['name', 'title', 'contentType', 'formatCode']"
+        *matHeaderRowDef="[
+          'name',
+          'title',
+          'contentType',
+          'formatCode',
+          'action'
+        ]"
       ></mat-header-row>
       <mat-row
         *matRowDef="
           let row;
-          columns: ['name', 'title', 'contentType', 'formatCode']
+          columns: ['name', 'title', 'contentType', 'formatCode', 'action']
         "
         (click)="onDownloadDocumentReferenceAttachment(row)"
       >
