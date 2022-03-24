@@ -27,6 +27,7 @@
     "@ngx-translate/http-loader": "^4.0.0",
     "@types/jasmine": "^3.6.9",
     "@types/pako": "^1.0.3",
+    "ace-builds": "^1.4.14",
     "angular-cli-ghpages": "^1.0.0-rc.1",
     "angular-oauth2-oidc": "^13.0.1",
     "antlr4": "^4.7.2",

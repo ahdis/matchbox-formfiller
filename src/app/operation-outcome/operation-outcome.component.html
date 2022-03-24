@@ -4,13 +4,17 @@
       <mat-card-title>{{ title }}</mat-card-title>
     </mat-card-header>
     <div *ngIf="operationOutcome">
-      <ul>
-        <li *ngFor="let issue of operationOutcome.issue">
-          {{ issue.severity }} {{ getLineFromExtension(issue) }}:
-          {{ issue.diagnostics }} {{ getLocation(issue) }}
-        </li>
-      </ul>
+      <div *ngFor="let issue of operationOutcome.issue" class="issue">
+        <a class="{{ issue.severity }}" (click)="scroll(getLineNo(issue))"
+          >{{ getLineFromExtension(issue) }}: {{ getLocation(issue) }}</a
+        >:<br />
+        {{ issue.diagnostics }}
+      </div>
     </div>
-    <pre><code [highlight]="getJson()" [lineNumbers]="true"></code></pre>
+    <div
+      class="app-ace-editor"
+      #editor
+      style="width: 100%; height: 500px"
+    ></div>
   </mat-card-content>
 </mat-card>
