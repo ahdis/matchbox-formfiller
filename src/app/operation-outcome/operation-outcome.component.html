@@ -3,12 +3,21 @@
     <mat-card-header>
       <mat-card-title>{{ title }}</mat-card-title>
     </mat-card-header>
-    <div *ngIf="operationOutcome">
-      <div *ngFor="let issue of operationOutcome.issue" class="issue">
+    <div *ngIf="outcome">
+      <div *ngFor="let issue of outcome.issue" class="issue">
         <a class="{{ issue.severity }}" (click)="scroll(getLineNo(issue))"
           >{{ getLineFromExtension(issue) }}: {{ getLocation(issue) }}</a
         >:<br />
-        {{ issue.diagnostics }}
+        <ng-container *ngIf="hasSliceInfo(issue) == false">
+          {{ issue.diagnostics }}
+        </ng-container>
+        <ng-container *ngIf="hasSliceInfo(issue)">
+          <ol>
+            <li *ngFor="let sliceInfo of getSliceInfo(issue)" class="issue">
+              {{ sliceInfo }}
+            </li>
+          </ol>
+        </ng-container>
       </div>
     </div>
     <div

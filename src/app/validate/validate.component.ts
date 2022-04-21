@@ -37,12 +37,14 @@ interface ITarEntry {
 class ValidationEntry {
   name: string; // "package/package.json",
   json: string;
+  mimetype: string;
   operationOutcome: fhir.r4.OperationOutcome;
   profiles: string[];
 
-  constructor(name: string, json: string) {
+  constructor(name: string, json: string, mimetype: string) {
     this.name = name;
     this.json = json;
+    this.mimetype = mimetype;
   }
 
   getErrors(): number {
@@ -120,7 +122,10 @@ export class ValidateComponent implements OnInit {
         (<fhir.r4.CapabilityStatementRestResource>entry).type ===
         this.resourceName
     );
-    return [resCap.profile, ...resCap.supportedProfile];
+    if (resCap != null) {
+      return [resCap.profile, ...resCap.supportedProfile];
+    }
+    return null;
   }
 
   addFile(droppedBlob: IDroppedBlob) {
@@ -131,10 +136,33 @@ export class ValidateComponent implements OnInit {
     ) {
       this.addJson(droppedBlob.blob);
     }
+    if (
+      droppedBlob.contentType === 'application/xml' ||
+      droppedBlob.name.endsWith('.xml')
+    ) {
+      this.addXml(droppedBlob.blob);
+    }
     if (droppedBlob.name.endsWith('.tgz')) {
       this.addPackage(droppedBlob.blob);
     }
     this.validationInProgress -= 1;
+  }
+
+  addXml(file) {
+    const reader = new FileReader();
+    reader.readAsText(file);
+    const dataSource = this.dataSource;
+    reader.onload = () => {
+      // need to run CD since file load runs outside of zone
+      this.cd.markForCheck();
+      let entry = new ValidationEntry(
+        file.name,
+        <string>reader.result,
+        'application/fhir+xml'
+      );
+      dataSource.data.push(entry);
+      this.validate(entry);
+    };
   }
 
   addJson(file) {
@@ -144,7 +172,11 @@ export class ValidateComponent implements OnInit {
     reader.onload = () => {
       // need to run CD since file load runs outside of zone
       this.cd.markForCheck();
-      let entry = new ValidationEntry(file.name, <string>reader.result);
+      let entry = new ValidationEntry(
+        file.name,
+        <string>reader.result,
+        'application/fhir+json'
+      );
       dataSource.data.push(entry);
       this.validate(entry);
     };
@@ -219,7 +251,8 @@ export class ValidateComponent implements OnInit {
                   JSON.parse(decoder.decode(extractedFile.buffer)),
                   null,
                   2
-                )
+                ),
+                'application/fhir+json'
               );
               dataSource.data.push(entry);
               pointer.validate(entry);
@@ -261,7 +294,7 @@ export class ValidateComponent implements OnInit {
         options: {
           headers: {
             accept: 'application/fhir+json;fhirVersion=4.0',
-            'content-type': 'application/fhir+json;fhirVersion=4.0',
+            'content-type': row.mimetype,
           },
         },
       })
@@ -285,13 +318,31 @@ export class ValidateComponent implements OnInit {
     if (row) {
       this.operationOutcome = row.operationOutcome;
       this.json = row.json;
-      const res = <fhir.r4.Resource>JSON.parse(this.json);
-      if (res?.resourceType) {
-        this.resourceName = res.resourceType;
-        this.resourceId = res.id;
-      } else {
-        this.resourceName = '';
-        this.resourceId = '';
+      this.resourceName = '';
+      this.resourceId = '';
+      if (row.mimetype === 'application/fhir+json') {
+        const res = <fhir.r4.Resource>JSON.parse(this.json);
+        if (res?.resourceType) {
+          this.resourceName = res.resourceType;
+          this.resourceId = res.id;
+        }
+      }
+      if (row.mimetype === 'application/fhir+xml') {
+        let pos = this.json.indexOf('<?') + 1;
+        let posLeft = this.json.indexOf('<', pos);
+        let posRight = this.json.indexOf('>', posLeft);
+        if (posLeft < posRight) {
+          let tag = this.json.substring(posLeft + 1, posRight - 1);
+          let posTag = tag.indexOf(' xmlns');
+          if (posTag > 0) {
+            tag = tag.substring(0, posTag);
+          }
+          posTag = tag.indexOf(':');
+          if (posTag > 0) {
+            tag = tag.substring(posTag + 1);
+          }
+          this.resourceName = tag;
+        }
       }
     } else {
       this.operationOutcome = undefined;
@@ -312,7 +363,8 @@ export class ValidateComponent implements OnInit {
   onValidate() {
     let entry = new ValidationEntry(
       this.selectedEntry.name,
-      this.selectedEntry.json
+      this.selectedEntry.json,
+      this.selectedEntry.mimetype
     );
     this.dataSource.data.push(entry);
     this.validate(entry);
@@ -321,6 +373,5 @@ export class ValidateComponent implements OnInit {
   getJson(): String {
     return this.json;
   }
-
   ngOnInit(): void {}
 }

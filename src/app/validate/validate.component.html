@@ -142,6 +142,7 @@
 
 <ng-container *ngIf="operationOutcome">
   <app-operation-outcome
+    [mode]="selectedEntry.mimetype"
     [operationOutcome]="operationOutcome"
     [json]="json"
     [title]="validationOutcomeTitle()"
