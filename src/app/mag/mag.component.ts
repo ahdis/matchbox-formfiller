@@ -207,7 +207,7 @@ export class MagComponent implements OnInit {
       this.getLocalStorageItemOrDefault('mag.documentType', 'Titel')
     );
     this.masterIdentifier = new FormControl();
-    this.masterIdentifier.setValue(uuidv4());
+    this.masterIdentifier.setValue('urn:uuid:' + uuidv4());
     this.creationTime = new FormControl();
     this.creationTime.setValue(toLocaleDateTime(new Date()));
 
@@ -465,8 +465,8 @@ export class MagComponent implements OnInit {
     }
   }
 
-  getSimulatedSamlPmpAssertion(mpipid: string, mpioid: string): String {
-    let assertion = `<saml2:Assertion xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion" ID="Assertion_3efbfc7917a1d3ec6e33ec70f410393d655980bb" IssueInstant="2020-08-28T09:01:06.421Z" Version="2.0"><saml2:AttributeStatement><saml2:Attribute Name="urn:oasis:names:tc:xacml:2.0:subject:role" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"><saml2:AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xsd:anyType"><hl7v3:Role xmlns:hl7v3="urn:hl7-org:v3" code="PAT" codeSystem="2.16.756.5.30.1.127.3.10.6" displayName="Patient"/></saml2:AttributeValue></saml2:Attribute><saml2:Attribute Name="urn:oasis:names:tc:xacml:2.0:resource:resource-id" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"><saml2:AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xsd:string">${mpipid}^^^&amp;${mpioid}&amp;ISO</saml2:AttributeValue></saml2:Attribute></saml2:AttributeStatement></saml2:Assertion>`;
+  getSimulatedSamlPmpAssertion(date: string, eprspid: string): String {
+    let assertion = `<saml2:Assertion xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="_2cfcc382-7e60-44e0-99b5-18e3f718cbc6" IssueInstant="${date}" Version="2.0" xsi:type="saml2:AssertionType"><saml2:Issuer>xua.hin.ch</saml2:Issuer><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference URI="#_2cfcc382-7e60-44e0-99b5-18e3f718cbc6"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"><ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="del xsd"/></ds:Transform></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>UyqzdpLkYUMscBO0bEP6FwnKnlUscVCD70GL3uP6aSY=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>GFShEG4In1usnXJfapND3dvlNP9Nvw4MfuXHzauiKlqzfyGveiaoRvZMO3reKUw08ogOzEssNbOF            uDwITr5LsH1sHJg3q85fWPNHjXJvC3eup1fIKvTs7YzxXkdWruF2ZeDJ970PuPJPc59ljSOA+UFx Z8ZaRINNp6FJcU3Xkqs=</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIDjTCCAvagAwIBAgICAI0wDQYJKoZIhvcNAQENBQAwRTELMAkGA1UEBhMCQ0gxDDAKBgNVBAoM                    A0lIRTEoMCYGA1UEAwwfZWhlYWx0aHN1aXNzZS5paGUtZXVyb3BlLm5ldCBDQTAeFw0xOTA0MDEx                    MjQxMThaFw0yOTA0MDExMjQxMThaMCkxCzAJBgNVBAYTAkNIMQwwCgYDVQQKDANJSEUxDDAKBgNV                    BAMMA0lEUDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAhmmz4AEhbH+80Nf5QLjvP9/Cukcv                    rk5ONVZ9hQjz2OeBGBiW6TdKrwX6GIY0ue6zN6mRFuRycKi4A0aVWsO+s4ByQPsnnXx4JKXYGkoS                    ny7hgyxHxsEHiBZlMQLoqJ3jKYAR1SgLfdBEghAaDFEKF8hp8hwBMAp/WJY7eaZpXS0CAwEAAaOC                    AaYwggGiMB0GA1UdEQQWMBSCEmlkcC5paGUtZXVyb3BlLm5ldDBKBgNVHR8EQzBBMD+gPaA7hjlo                    dHRwczovL2VoZWFsdGhzdWlzc2UuaWhlLWV1cm9wZS5uZXQvZ3NzL2NybC8yMi9jYWNybC5jcmww                    SAYJYIZIAYb4QgEEBDsWOWh0dHBzOi8vZWhlYWx0aHN1aXNzZS5paGUtZXVyb3BlLm5ldC9nc3Mv                    Y3JsLzIyL2NhY3JsLmNybDBIBglghkgBhvhCAQMEOxY5aHR0cHM6Ly9laGVhbHRoc3Vpc3NlLmlo                    ZS1ldXJvcGUubmV0L2dzcy9jcmwvMjIvY2FjcmwuY3JsMAkGA1UdEwQCMAAwDgYDVR0PAQH/BAQD                    AgTwMBEGCWCGSAGG+EIBAQQEAwIF4DAdBgNVHQ4EFgQU4Kj/ojx2cO5W9/hOlSFUVh8jT1gwHwYD                    VR0jBBgwFoAUKJfv3d4xWGxW8oZG4hHkPjhxXy8wMwYDVR0lBCwwKgYIKwYBBQUHAwIGCCsGAQUF                    BwMEBgorBgEEAYI3FAICBggrBgEFBQcDATANBgkqhkiG9w0BAQ0FAAOBgQAvAQf3kRfC5hMAWFuK                    ZKV7fOLklivFoELOl96i9O29i5wCEeiClubfH9X7nnfvKukhWdi0MFkRZqgLRXN1iDY6iKC6MnZH                    TUN6qgskn6m3S0rsRXN8/My/EM+lmcFR1/IWhHtW+aERI0XoXR8GrY/QSmn3TWgHfO6qLdrUEfvV ew==</ds:X509Certificate></ds:X509Data></ds:KeyInfo></ds:Signature><saml2:Subject><saml2:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" NameQualifier="urn:e-health-suisse:2015:epr-spid">${eprspid}</saml2:NameID></saml2:Subject><saml2:Conditions NotBefore="2021-10-14T22:10:49.831Z" NotOnOrAfter="2025-10-14T22:15:49.831582Z"><saml2:AudienceRestriction><saml2:Audience>http://ihe.connectathon.XUA/X-ServiceProvider-IHE-Connectathon</saml2:Audience></saml2:AudienceRestriction></saml2:Conditions><saml2:AuthnStatement AuthnInstant="2018-03-28T09:02:43.155Z" SessionNotOnOrAfter="2018-03-28T09:12:43.154Z"><saml2:AuthnContext><saml2:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified</saml2:AuthnContextClassRef></saml2:AuthnContext></saml2:AuthnStatement><saml2:AttributeStatement><saml2:Attribute Name="urn:oasis:names:tc:xspa:1.0:subject:subject-id" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"><saml2:AttributeValue xsi:type="xsd:string">Iris Musterpatient</saml2:AttributeValue></saml2:Attribute><saml2:Attribute Name="urn:oasis:names:tc:xspa:1.0:subject:organization" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"/><saml2:Attribute Name="urn:oasis:names:tc:xspa:1.0:subject:organization-id" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"/><saml2:Attribute Name="urn:oasis:names:tc:xacml:2.0:subject:role" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"><saml2:AttributeValue><Role xmlns="urn:hl7-org:v3" code="PAT" codeSystem="2.16.756.5.30.1.127.3.10.6" codeSystemName="ch-ehealth-codesystem-role" displayName="Patient" xsi:type="CE"/></saml2:AttributeValue></saml2:Attribute><saml2:Attribute Name="urn:oasis:names:tc:xspa:1.0:subject:purposeofuse" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"><saml2:AttributeValue><PurposeOfUse xmlns="urn:hl7-org:v3" code="NORM" codeSystem="2.16.756.5.30.1.127.3.10.5" codeSystemName="ch-ehealth-codesystem-purposeOfUse" displayName="Normal Access" xsi:type="CE"/></saml2:AttributeValue></saml2:Attribute><saml2:Attribute Name="urn:oasis:names:tc:xacml:2.0:resource:resource-id" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"><saml2:AttributeValue xsi:type="xsd:string">${eprspid}^^^&amp;2.16.756.5.30.1.127.3.10.3&amp;ISO</saml2:AttributeValue></saml2:Attribute><saml2:Attribute Name="urn:ihe:iti:xca:2010:homeCommunityId" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"><saml2:AttributeValue xsi:type="xsd:anyURI">urn:oid:3.3.3.1</saml2:AttributeValue></saml2:Attribute></saml2:AttributeStatement></saml2:Assertion>`;
     return Base64.encode(assertion);
   }
 
@@ -599,8 +599,8 @@ export class MagComponent implements OnInit {
     }
     if (this.authenticate.value === 'Patient') {
       return this.getSimulatedSamlPmpAssertion(
-        this.targetIdentifierValue,
-        (this.targetIdentifierSystem.value as string).substring(8)
+        toLocaleDateTime(new Date()),
+        this.targetIdentifier2Value
       );
     }
     return null;
@@ -1211,12 +1211,6 @@ export class MagComponent implements OnInit {
     );
 
     this.masterIdentifier.setValue(newUuid);
-
-    // PMP is currently not able to handle MORN, NOON, EVE, NIGHT
-    jsonString = jsonString.split('"MORN"').join('"ACM"');
-    jsonString = jsonString.split('"NOON"').join('"ACD"');
-    jsonString = jsonString.split('"EVE"').join('"ACV"');
-    jsonString = jsonString.split('"NIGHT"').join('"HS"');
 
     this.setJson(jsonString);
     this.inMhdUploadProgress = false;
