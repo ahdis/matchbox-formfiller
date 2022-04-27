@@ -454,6 +454,7 @@ export class MagComponent implements OnInit {
   }
 
   onAuthenticate() {
+    this.cache();
     this.scopes = null;
     if (this.authenticate.value === 'HCP') {
       let authCodeFlowConfig = this.fhirConfigService.getAuthCodeFlowConfig();

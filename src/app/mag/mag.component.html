@@ -119,7 +119,7 @@
       </mat-form-field>
     </div>
 
-    <div>
+    <div *ngIf="getScopes()">
       <pre><code [highlight]="getScopes()"></code></pre>
     </div>
 
