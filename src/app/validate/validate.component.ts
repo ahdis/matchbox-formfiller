@@ -122,8 +122,11 @@ export class ValidateComponent implements OnInit {
         (<fhir.r4.CapabilityStatementRestResource>entry).type ===
         this.resourceName
     );
-    if (resCap != null) {
-      return [resCap.profile, ...resCap.supportedProfile];
+    if (resCap != null && resCap.profile != null) {
+      if (resCap.supportedProfile != null) {
+        return [resCap.profile, ...resCap.supportedProfile];
+      }
+      return [resCap.profile];
     }
     return null;
   }
@@ -149,6 +152,7 @@ export class ValidateComponent implements OnInit {
   }
 
   addXml(file) {
+    this.selectedProfile = null;
     const reader = new FileReader();
     reader.readAsText(file);
     const dataSource = this.dataSource;
@@ -166,6 +170,7 @@ export class ValidateComponent implements OnInit {
   }
 
   addJson(file) {
+    this.selectedProfile = null;
     const reader = new FileReader();
     reader.readAsText(file);
     const dataSource = this.dataSource;
@@ -214,6 +219,7 @@ export class ValidateComponent implements OnInit {
   }
 
   addPackage(file) {
+    this.selectedProfile = null;
     const reader = new FileReader();
     reader.readAsArrayBuffer(file);
     reader.onload = () => {
@@ -264,6 +270,7 @@ export class ValidateComponent implements OnInit {
   }
 
   onClear() {
+    this.selectedProfile = null;
     this.selectRow(undefined);
     const len = this.dataSource.data.length;
     this.dataSource.data.splice(0, len);

@@ -55,6 +55,7 @@ export class MagComponent implements OnInit {
   public documentDescription: FormControl;
   public masterIdentifier: FormControl;
   public creationTime: FormControl;
+  public languageCode: FormControl;
   public serviceStartFrom: FormControl;
   public serviceStartTo: FormControl;
   public serviceEndFrom: FormControl;
@@ -211,6 +212,11 @@ export class MagComponent implements OnInit {
     this.creationTime = new FormControl();
     this.creationTime.setValue(toLocaleDateTime(new Date()));
 
+    this.languageCode = new FormControl();
+    this.languageCode.setValue(
+      this.getLocalStorageItemOrDefault('mag.languageCode', 'de-CH')
+    );
+
     this.fhirConfigService = data;
 
     oauthService.configure(this.fhirConfigService.getAuthCodeFlowConfig());
@@ -278,6 +284,7 @@ export class MagComponent implements OnInit {
     this.setLocaleStorageItem('mag.serviceStartTo', this.serviceStartTo.value);
     this.setLocaleStorageItem('mag.serviceEndFrom', this.serviceEndFrom.value);
     this.setLocaleStorageItem('mag.serviceEndTo', this.serviceEndTo.value);
+    this.setLocaleStorageItem('mag.languageCode', this.languageCode.value);
   }
 
   getLocalStorageItemOrDefault(key: string, def: string): string {
@@ -1126,6 +1133,9 @@ export class MagComponent implements OnInit {
       const loinc = composition.type.coding.find(
         (coding) => 'http://loinc.org' === coding.system
       );
+      if (composition.language) {
+        this.languageCode.setValue(composition.language);
+      }
       if (
         loinc &&
         '77603-9' === loinc.code &&
@@ -1223,11 +1233,22 @@ export class MagComponent implements OnInit {
     const existingUuid = this.uploadBundle.identifier.value;
     const newUuid = 'urn:uuid:' + uuidv4();
 
-    this.replaceUuids.push({
-      descr: this.documentType.value,
-      existingUuid,
-      newUuid,
-    });
+    const index = this.replaceUuids.findIndex(
+      (entry) => entry.existingUuid == existingUuid
+    );
+    if (index == -1) {
+      this.replaceUuids.push({
+        descr: this.documentType.value,
+        existingUuid,
+        newUuid,
+      });
+    } else {
+      this.replaceUuids[index] = {
+        descr: this.documentType.value,
+        existingUuid,
+        newUuid,
+      };
+    }
     this.replaceUuids.forEach(
       (entry) =>
         (jsonString = jsonString.split(entry.existingUuid).join(entry.newUuid))
@@ -1361,7 +1382,7 @@ export class MagComponent implements OnInit {
               {
                 attachment: {
                   contentType: '$1.2',
-                  language: 'de-CH',
+                  language: '$1.3',
                   url: '$1',
                   creation: '$8',
                 },
@@ -1501,6 +1522,7 @@ export class MagComponent implements OnInit {
 
     docref.content[0].attachment.url = fullUrlBinary; // $1
     docref.content[0].attachment.contentType = this.uploadContentType; // $1.2
+    docref.content[0].attachment.language = this.languageCode.value; // $1.3
 
     let documentReference: fhir.r4.DocumentReference = bundle.entry[2]
       .resource as fhir.r4.DocumentReference;
