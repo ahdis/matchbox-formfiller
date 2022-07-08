@@ -67,6 +67,10 @@ export class IgsComponent implements OnInit {
         this.addPackageId.setValue('');
         this.addVersion.setValue('');
         this.addUrl.setValue('');
+      })
+      .catch((error) => {
+        this.errMsg = 'Error accessing FHIR server';
+        this.operationOutcome = error.response.data;
       });
     this.update = false;
   }

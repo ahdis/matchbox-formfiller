@@ -22,23 +22,27 @@ import { ThrowStmt } from '@angular/compiler';
 export class SettingsComponent implements OnInit {
   fhirServers = [
     'https://test.ahdis.ch/matchbox/fhir',
-    'http://localhost:9090/mag-pmp/fhir',
-    'https://ehealthsuisse.ihe-europe.net/matchbox-validator/fhir',
+    'https://gazelle.ihe.net/matchbox/fhir',
     'https://ehealthsuisse.ihe-europe.net/matchbox/fhir',
     'https://hapi.fhir.org/baseR4',
     'http://hapi.fhir.org/baseR4',
     'http://tx.fhir.org/r4/',
     'http://test.fhir.org/r4',
+    'https://test.ahdis.ch/mag-cara/fhir',
     'https://test.ahdis.ch/mag-pmp/fhir',
+    'https://test.ahdis.ch/mag-bfh/fhir',
     'https://test.ahdis.ch/mag-test-emedo/fhir',
     'http://localhost:8080/matchbox/fhir',
+    'http://localhost:9090/mag-pmp/fhir',
   ];
 
   mobileAccessGateways = [
+    'https://test.ahdis.ch/mag-cara/fhir',
     'https://test.ahdis.ch/mag-pmp/fhir',
     'https://test.ahdis.ch/mag-bfh/fhir',
     'https://test.ahdis.ch/mag-test/fhir',
     'https://test.ahdis.ch/mag-test-emedo/fhir',
+    'http://localhost:8080/matchbox/fhir',
     'http://localhost:9090/mag-pmp/fhir',
   ];
 

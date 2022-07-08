@@ -104,6 +104,10 @@ export class ValidateComponent implements OnInit {
       .capabilityStatement()
       .then((data: fhir.r4.CapabilityStatement) => {
         this.capabilitystatement = data;
+      })
+      .catch((error) => {
+        this.errMsg = 'Error accessing FHIR server';
+        this.operationOutcome = error.response.data;
       });
     this.validationInProgress = 0;
   }

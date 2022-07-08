@@ -11,6 +11,7 @@ import debug from 'debug';
 })
 export class CapabilityStatementComponent implements OnInit {
   capabilitystatement: fhir.r4.CapabilityStatement;
+  operationOutcome: fhir.r4.OperationOutcome;
   client: FhirClient;
 
   constructor(private data: FhirConfigService) {
@@ -18,7 +19,12 @@ export class CapabilityStatementComponent implements OnInit {
     this.client
       .capabilityStatement()
       .then((data: fhir.r4.CapabilityStatement) => {
+        this.operationOutcome = undefined;
         this.capabilitystatement = data;
+      })
+      .catch((error) => {
+        this.capabilitystatement = undefined;
+        this.operationOutcome = error.response.data;
       });
   }
 
