@@ -293,7 +293,11 @@ const transformItem = (
   if (fhirPathExpression) {
     // TODO: we have no context yer here, we need to the context with the
     // http://hl7.org/fhir/StructureDefinition/variable and http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext
-    answers = evaluate(null, fhirPathExpression);
+    try {
+      answers = evaluate(null, fhirPathExpression);
+    } catch (error) {
+      console.log(error.message);
+    }
   }
 
   const defaultItems = transformItems(
