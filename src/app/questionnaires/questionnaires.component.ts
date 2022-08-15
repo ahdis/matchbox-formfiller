@@ -67,6 +67,7 @@ export class QuestionnairesComponent implements OnInit {
         searchParams: {
           _summary: 'true',
           _sort: 'title',
+          _count: 200,
         },
       })
       .then(extractResourcesFromSearchBundle)) as fhir.r4.Questionnaire[];
