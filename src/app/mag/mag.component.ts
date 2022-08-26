@@ -425,6 +425,10 @@ export class MagComponent implements OnInit {
 
   onPIXmFeedAdd() {
     this.inPixmProgress = true;
+    // FIXME if fixed https://github.com/i4mi/MobileAccessGateway/issues/83
+    if (this.patient.telecom) {
+      delete this.patient.telecom;
+    }
     this.cache();
     let query = {
       identifier:
@@ -432,15 +436,31 @@ export class MagComponent implements OnInit {
         '|' +
         this.sourceAddIdentifierValue.value,
     };
-    if (this.patient.managingOrganization === undefined) {
-      this.patient.managingOrganization = {
-        identifier: {
+    //    if (this.patient.managingOrganization === undefined) {
+    //      this.patient.managingOrganization = {
+    //        identifier: {
+    //          system: this.sourceManagingOrganizationOid.value,
+    //          value: this.sourceManagingOrganizationName.value,
+    //        },
+    //      };
+    //    }
+    let org = {
+      resourceType: 'Organization',
+      id: 'org',
+      identifier: [
+        {
           system: this.sourceManagingOrganizationOid.value,
-          value: this.sourceManagingOrganizationName.value,
         },
-      };
+      ],
+      name: this.sourceManagingOrganizationName.value,
+    };
+    if (this.patient.contained == null) {
+      this.patient.contained = new Array<fhir.r4.Resource>();
     }
-
+    this.patient.contained.push(org);
+    this.patient.managingOrganization = {
+      reference: '#org',
+    };
     this.mag
       .update({
         resourceType: 'Patient',
@@ -473,6 +493,24 @@ export class MagComponent implements OnInit {
     } else {
       this.oauthService.logOut();
     }
+  }
+
+  getAppcDocument(eprspid: string): string {
+    // ${eprspid}
+    let assertion = `<?xml version="1.0" encoding="UTF-8"?><PolicySet PolicySetId="urn:uuid:fc0364a4-9de9-4ef9-971d-fb4d4e535135" PolicyCombiningAlgId="urn:oasis:names:tc:xacml:1.0:policy-combining-algorithm:deny-overrides" xmlns="urn:oasis:names:tc:xacml:2.0:policy:schema:os" xmlns:ns2="urn:hl7-org:v3"><Description>Test policy set</Description><Target><Resources><Resource><ResourceMatch MatchId="urn:hl7-org:v3:function:II-equal"><AttributeValue DataType="urn:hl7-org:v3#II"><ns2:InstanceIdentifier root="2.16.756.5.30.1.127.3.10.3" extension="${eprspid}"/></AttributeValue><ResourceAttributeDesignator AttributeId="urn:e-health-suisse:2015:epr-spid" DataType="urn:hl7-org:v3#II"/></ResourceMatch></Resource></Resources></Target><PolicySet PolicySetId="urn:uuid:e06ccf2e-b9ce-4ab9-8fdc-2fb907711c1e" PolicyCombiningAlgId="urn:oasis:names:tc:xacml:1.0:policy-combining-algorithm:deny-overrides"><Description>description emergency</Description><Target><Subjects><Subject><SubjectMatch MatchId="urn:hl7-org:v3:function:CV-equal"><AttributeValue DataType="urn:hl7-org:v3#CV"><ns2:CodedValue code="HCP" codeSystem="2.16.756.5.30.1.127.3.10.6" displayName="Healthcare professional"/></AttributeValue><SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:2.0:subject:role" DataType="urn:hl7-org:v3#CV"/></SubjectMatch><SubjectMatch MatchId="urn:hl7-org:v3:function:CV-equal"><AttributeValue DataType="urn:hl7-org:v3#CV"><ns2:CodedValue code="EMER" codeSystem="2.16.756.5.30.1.127.3.10.5" displayName="Emergency Access"/></AttributeValue><SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xspa:1.0:subject:purposeofuse" DataType="urn:hl7-org:v3#CV"/></SubjectMatch></Subject></Subjects></Target><PolicySetIdReference>urn:e-health-suisse:2022:policies:pmp:emedication-access</PolicySetIdReference></PolicySet><PolicySet PolicySetId="urn:uuid:523df8bb-9847-4359-a075-0464998e6891" PolicyCombiningAlgId="urn:oasis:names:tc:xacml:1.0:policy-combining-algorithm:deny-overrides"><Description>description hcp</Description><Target><Subjects><Subject><SubjectMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal"><AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">7601002860123</AttributeValue><SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" DataType="http://www.w3.org/2001/XMLSchema#string"/></SubjectMatch><SubjectMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal"><AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">urn:gs1:gln</AttributeValue><SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id-qualifier" DataType="http://www.w3.org/2001/XMLSchema#string"/></SubjectMatch><SubjectMatch MatchId="urn:hl7-org:v3:function:CV-equal"><AttributeValue DataType="urn:hl7-org:v3#CV"><ns2:CodedValue code="HCP" codeSystem="2.16.756.5.30.1.127.3.10.6" displayName="Healthcare professional"/></AttributeValue><SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:2.0:subject:role" DataType="urn:hl7-org:v3#CV"/></SubjectMatch><SubjectMatch MatchId="urn:hl7-org:v3:function:CV-equal"><AttributeValue DataType="urn:hl7-org:v3#CV"><ns2:CodedValue code="NORM" codeSystem="2.16.756.5.30.1.127.3.10.5" displayName="Normal Access"/></AttributeValue><SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xspa:1.0:subject:purposeofuse" DataType="urn:hl7-org:v3#CV"/></SubjectMatch></Subject></Subjects><Environments><Environment><EnvironmentMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:date-greater-than-or-equal"><AttributeValue DataType="http://www.w3.org/2001/XMLSchema#date">2027-02-03</AttributeValue><EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-date" DataType="http://www.w3.org/2001/XMLSchema#date"/></EnvironmentMatch></Environment></Environments></Target><PolicySetIdReference>urn:e-health-suisse:2015:policies:exclusion-list</PolicySetIdReference></PolicySet><PolicySet PolicySetId="urn:uuid:8b612672-0172-47fc-a177-ac7e2760d158" PolicyCombiningAlgId="urn:oasis:names:tc:xacml:1.0:policy-combining-algorithm:deny-overrides"><Description>description group</Description><Target><Subjects><Subject><SubjectMatch MatchId="urn:hl7-org:v3:function:CV-equal"><AttributeValue DataType="urn:hl7-org:v3#CV"><ns2:CodedValue code="HCP" codeSystem="2.16.756.5.30.1.127.3.10.6" displayName="Healthcare professional"/></AttributeValue><SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:2.0:subject:role" DataType="urn:hl7-org:v3#CV"/></SubjectMatch><SubjectMatch MatchId="urn:hl7-org:v3:function:CV-equal"><AttributeValue DataType="urn:hl7-org:v3#CV"><ns2:CodedValue code="NORM" codeSystem="2.16.756.5.30.1.127.3.10.5" displayName="Normal Access"/></AttributeValue><SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xspa:1.0:subject:purposeofuse" DataType="urn:hl7-org:v3#CV"/></SubjectMatch><SubjectMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:anyURI-equal"><AttributeValue DataType="http://www.w3.org/2001/XMLSchema#anyURI">urn:oid:1.2.3</AttributeValue><SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xspa:1.0:subject:organization-id" DataType="http://www.w3.org/2001/XMLSchema#anyURI"/></SubjectMatch></Subject></Subjects><Environments><Environment><EnvironmentMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:date-less-than-or-equal"><AttributeValue DataType="http://www.w3.org/2001/XMLSchema#date">2032-01-01</AttributeValue><EnvironmentAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:environment:current-date" DataType="http://www.w3.org/2001/XMLSchema#date"/></EnvironmentMatch></Environment></Environments></Target><PolicySetIdReference>urn:e-health-suisse:2022:policies:pmp:emedication-access</PolicySetIdReference></PolicySet></PolicySet>`;
+    return assertion;
+  }
+
+  createAppc() {
+    this.errMsgAssignPatient = '';
+    if (this.targetIdentifier2Value == null) {
+      this.errMsgAssignPatient = 'Error: select first  Patient with PIXm Query';
+      return;
+    }
+    this.uploadContentType = 'text/xml';
+    this.documentType.setValue('XML');
+    this.xml = this.getAppcDocument(this.targetIdentifier2Value);
+    this.setJson(this.xml);
   }
 
   getSimulatedSamlPmpAssertion(date: string, eprspid: string): String {
