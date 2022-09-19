@@ -23,6 +23,7 @@ export class Cda2FhirComponent implements OnInit {
   query = {
     _summary: 'true',
     _sort: 'name',
+    name: 'Cda',
   };
 
   panelOpenState = false;
