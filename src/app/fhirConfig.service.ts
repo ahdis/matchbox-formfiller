@@ -37,6 +37,11 @@ export class FhirConfigService {
     return service.replace('/fhir', '/camel/token');
   }
 
+  getMobileAccessGatewayAssertionEndpoint(): string {
+    const service = localStorage.getItem('magMicroService');
+    return service.replace('/fhir', '/camel/assertion');
+  }
+
   getRedirectUri(): string {
     return location.origin + location.pathname + '#/mag';
   }
