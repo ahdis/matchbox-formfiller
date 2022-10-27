@@ -35,6 +35,7 @@ export class SettingsComponent implements OnInit {
     'http://localhost:8080/matchbox/fhir',
     'http://localhost:9090/mag-pmp/fhir',
     'http://localhost:9090/mag-cara/fhir',
+    'https://fhir-mapping-lab.azurewebsites.net/',
   ];
 
   mobileAccessGateways = [
