@@ -300,6 +300,20 @@
     </div>
     <div>
       <mat-form-field class="column50">
+        <mat-label>Confidentiality</mat-label>
+        <select
+          matNativeControl
+          required
+          [formControl]="documentConfidentiality"
+        >
+          <option value="NORM">Normally accessible</option>
+          <option value="RESTRICTED">Restricted accessible</option>
+          <option value="SECRET">Secret</option>
+        </select>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field class="column50">
         <mat-label>DocumentEntry.masterIdentifier (uuid)</mat-label>
         <input matInput [formControl]="masterIdentifier" />
       </mat-form-field>

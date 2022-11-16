@@ -52,6 +52,7 @@ export class MagComponent implements OnInit {
   public targetIdentifier2System: FormControl;
   public authenticate: FormControl;
   public documentType: FormControl;
+  public documentConfidentiality: FormControl;
   public documentDescription: FormControl;
   public masterIdentifier: FormControl;
   public creationTime: FormControl;
@@ -187,7 +188,10 @@ export class MagComponent implements OnInit {
     this.documentType.setValue(
       this.getLocalStorageItemOrDefault('mag.documentType', 'APPC')
     );
-
+    this.documentConfidentiality = new FormControl();
+    this.documentConfidentiality.setValue(
+      this.getLocalStorageItemOrDefault('mag.documentConfidentiality', 'NORM')
+    );
     this.targetIdentifierValue = this.getLocalStorageItemOrDefault(
       'mag.targetIdentifierValue',
       ''
@@ -262,6 +266,10 @@ export class MagComponent implements OnInit {
     this.setLocaleStorageItem('mag.authenticate', this.authenticate.value);
     this.setLocaleStorageItem('mag.documentType', this.documentType.value);
     this.setLocaleStorageItem(
+      'mag.documentConfidentiality',
+      this.documentConfidentiality.value
+    );
+    this.setLocaleStorageItem(
       'mag.sourceAddIdentifierSystem',
       this.sourceAddIdentifierSystem.value
     );
@@ -333,6 +341,14 @@ export class MagComponent implements OnInit {
         this.targetIdentifier2System.value +
         "').value"
     );
+    if (
+      this.targetIdentifierValue != null &&
+      this.targetIdentifier2Value == null &&
+      'urn:oid:2.16.756.5.30.1.127.3.10.3' === this.sourceIdentifierSystem.value
+    ) {
+      // epr-spid special case, we know it already and copy it
+      this.targetIdentifier2Value = this.sourceIdentifierValue.value;
+    }
     this.targetId = this.fhirPathService.evaluateToString(
       response,
       'parameter.valueReference.reference'
@@ -506,6 +522,7 @@ export class MagComponent implements OnInit {
   }
 
   createAppc() {
+    this.uploadBase64 = '';
     this.errMsgAssignPatient = '';
     if (this.targetIdentifier2Value == null) {
       this.errMsgAssignPatient = 'Error: select first  Patient with PIXm Query';
@@ -513,6 +530,7 @@ export class MagComponent implements OnInit {
     }
     this.uploadContentType = 'text/xml';
     this.documentType.setValue('XML');
+    this.documentConfidentiality.setValue('NORM');
     this.xml = this.getAppcDocument(this.targetIdentifier2Value);
     this.setJson(this.xml);
   }
@@ -906,6 +924,7 @@ export class MagComponent implements OnInit {
   }
 
   setTransformResult(response: any) {
+    this.uploadBase64 = '';
     this.setJson(JSON.stringify(response, null, 2));
     // wrong fhirpath, should be ofType(Binary) and would be nicer to resolve from the section link
     this.pdf = this.fhirPathService.evaluateToString(
@@ -1045,6 +1064,42 @@ export class MagComponent implements OnInit {
               system: 'http://snomed.info/sct',
               code: '761938008',
               display: 'Medicinal Prescription record (record artifact)',
+            },
+          ],
+        };
+    }
+    return null;
+  }
+
+  getDocumentConfidentiality(): fhir.r4.CodeableConcept {
+    switch (this.documentConfidentiality.value) {
+      case 'NORM':
+        return {
+          coding: [
+            {
+              system: 'http://snomed.info/sct',
+              code: '17621005',
+              display: 'Normally accessible',
+            },
+          ],
+        };
+      case 'RESTRICTED':
+        return {
+          coding: [
+            {
+              system: 'http://snomed.info/sct',
+              code: '263856008',
+              display: 'Restricted accessible',
+            },
+          ],
+        };
+      case 'SECRET':
+        return {
+          coding: [
+            {
+              system: 'urn:oid:2.16.756.5.30.1.127.3.4',
+              code: '1141000195107',
+              display: 'Secret',
             },
           ],
         };
@@ -1442,17 +1497,7 @@ export class MagComponent implements OnInit {
             },
             date: '$8',
             description: 'Upload',
-            securityLabel: [
-              {
-                coding: [
-                  {
-                    system: 'http://snomed.info/sct',
-                    code: '17621005',
-                    display: 'Normal (qualifier value)',
-                  },
-                ],
-              },
-            ],
+            securityLabel: [],
             content: [
               {
                 attachment: {
@@ -1504,10 +1549,10 @@ export class MagComponent implements OnInit {
     const binary: fhir.r4.Binary = bundle.entry[0].resource as fhir.r4.Binary;
     binary.contentType = this.uploadContentType; // $1.2
 
-    if (this.json?.length > 0) {
-      binary.data = Base64.encode(this.json);
-    } else {
+    if (this.uploadBase64?.length > 0) {
       binary.data = this.uploadBase64; // $2
+    } else {
+      binary.data = Base64.encode(this.json);
     }
 
     // List
@@ -1616,6 +1661,7 @@ export class MagComponent implements OnInit {
     documentReference.content[0].format = this.getDocumentReferenceContentFormat();
     documentReference.content[0].attachment.creation = this.creationTime.value;
     documentReference.description = this.documentDescription.value;
+    documentReference.securityLabel[0] = this.getDocumentConfidentiality();
 
     const saml = await this.getSamlToken();
 
