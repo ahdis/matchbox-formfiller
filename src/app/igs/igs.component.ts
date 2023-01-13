@@ -120,7 +120,13 @@ export class IgsComponent implements OnInit {
     this.selection = row.resource as fhir.r4.ImplementationGuide;
     this.addPackageId.setValue(this.selection.packageId);
     this.addUrl.setValue(this.getPackageUrl(row));
-    this.addVersion.setValue(this.selection.version);
+    let version: String = this.selection.version;
+    if (version) {
+      if (version.endsWith(' (current)')) {
+        version = version.substring(0, version.length - 10);
+      }
+    }
+    this.addVersion.setValue(version);
   }
 
   onSubmit() {
@@ -133,6 +139,15 @@ export class IgsComponent implements OnInit {
       return;
     }
 
+    let igId: String = this.addPackageId.value.trim();
+    if (igId.indexOf('#') > 0) {
+      igId.substring(0, igId.indexOf('#') - 1);
+      this.addVersion.setValue(igId.substring(0, igId.indexOf('#') + 1));
+    }
+    this.addPackageId.setValue(igId);
+    const igVersion = this.addVersion.value.trim();
+    this.addVersion.setValue(igVersion);
+
     this.update = true;
 
     this.client
@@ -140,9 +155,9 @@ export class IgsComponent implements OnInit {
         resourceType: 'ImplementationGuide',
         body: {
           resourceType: 'ImplementationGuide',
-          name: this.addPackageId.value,
-          version: this.addVersion.value,
-          packageId: this.addPackageId.value,
+          name: igId,
+          version: igVersion,
+          packageId: igId,
           url: this.addUrl.value,
         },
         options: {
@@ -235,8 +250,7 @@ export class IgsComponent implements OnInit {
       })
       .then((response) => {
         this.errMsg =
-          'Deleted Implementation Guide Resource (not package)' +
-          this.selection.packageId;
+          'Deleted Implementation Guide Resource ' + this.selection.packageId;
         this.operationOutcome = response as fhir.r4.OperationOutcome;
         this.search();
       })

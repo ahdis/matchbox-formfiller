@@ -21,7 +21,7 @@ export class AppComponent {
         'note: using ahdis test systems for matchbox and mag' + location.origin
       );
       fhirConfigService.changeFhirMicroService(
-        'https://test.ahdis.ch/matchbox/fhir'
+        'https://test.ahdis.ch/matchboxv3/fhir'
       );
       fhirConfigService.changeMagMicroService(
         'https://test.ahdis.ch/mag-pmp/fhir'

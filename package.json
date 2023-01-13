@@ -1,11 +1,11 @@
 {
-  "name": "matchbox",
-  "version": "2.4.0",
+  "name": "matchboxv3",
+  "version": "3.0.0",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --configuration production --base-href /matchbox/",
+    "build": "ng build --configuration production --base-href /matchboxv3/",
     "test": "ng test",
     "test-ci": "ng test --no-watch --no-progress --browsers=ChromeHeadlessNoSandbox --code-coverage",
     "lint": "ng lint",

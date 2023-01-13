@@ -3,13 +3,14 @@ import { FhirConfigService } from '../fhirConfig.service';
 import FhirClient from 'fhir-kit-client';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { IDroppedBlob } from '../upload/upload.component';
 
 @Component({
-  selector: 'app-fhir2-cda',
-  templateUrl: './fhir2-cda.component.html',
-  styleUrls: ['./fhir2-cda.component.scss'],
+  selector: 'app-transform',
+  templateUrl: './transform.component.html',
+  styleUrls: ['./transform.component.scss'],
 })
-export class Fhir2CdaComponent implements OnInit {
+export class TransformComponent implements OnInit {
   structureMaps: fhir.r4.StructureMap[];
 
   selectedUrl: string;
@@ -17,13 +18,14 @@ export class Fhir2CdaComponent implements OnInit {
   client: FhirClient;
   maps: Map<String, String>;
 
-  json: String;
+  source: string;
+  mimeType: string;
+
   selectedMap: FormControl;
 
   query = {
     _summary: 'true',
     _sort: 'name',
-    name: 'Bundle',
   };
 
   panelOpenState = false;
@@ -51,61 +53,63 @@ export class Fhir2CdaComponent implements OnInit {
       });
   }
 
-  fileChange(event) {
-    const reader = new FileReader();
-
-    if (event.target.files && event.target.files.length) {
-      const [file] = event.target.files;
-      reader.readAsText(file);
-      reader.onload = () => {
-        this.json = <string>reader.result;
-        // need to run CD since file load runs outside of zone
-        this.cd.markForCheck();
-        this.transform();
-      };
-    }
-  }
-
   transform() {
-    if (this.json != null && this.selectedUrl != null) {
+    if (this.source != null && this.selectedUrl != null) {
       this.client
         .operation({
           name: 'transform?source=' + encodeURIComponent(this.selectedUrl),
           resourceType: 'StructureMap',
-          input: this.json,
+          input: this.source,
           options: {
             headers: {
-              accept: 'application/fhir+xml;fhirVersion=4.0',
-              'content-type': 'application/fhir+json;fhirVersion=4.0',
+              'content-type': this.mimeType,
             },
           },
         })
         .then((response) => {
-          // see below
           this.operationOutcomeTransformed = null;
-          this.transformed = null;
+          this.transformed = response;
         })
         .catch((error) => {
-          // fhir-kit-client throws an error when  return in not json
-          this.transformed = error.response.data;
+          this.transformed = null;
+          this.operationOutcomeTransformed = error.response.data;
         });
     }
   }
 
-  getJson(): String {
-    return this.json;
+  getSource(): String {
+    return this.source;
   }
 
   getMapped(): String {
-    return this.transformed;
+    return JSON.stringify(this.transformed, null, 2);
   }
 
   setMaps(response: fhir.r4.Bundle) {
-    this.structureMaps = response.entry
-      .filter((entry) =>
-        (<fhir.r4.StructureMap>entry.resource).name.startsWith('Bundle')
-      )
-      .map((entry) => <fhir.r4.StructureMap>entry.resource);
+    this.structureMaps = response.entry.map(
+      (entry) => <fhir.r4.StructureMap>entry.resource
+    );
   }
   ngOnInit(): void {}
+
+  addFile(droppedBlob: IDroppedBlob) {
+    this.transformed = null;
+    if (
+      droppedBlob.contentType === 'application/json' ||
+      droppedBlob.name.endsWith('.json')
+    ) {
+      this.mimeType = 'application/fhir+json';
+    }
+    if (
+      droppedBlob.contentType === 'application/xml' ||
+      droppedBlob.name.endsWith('.xml')
+    ) {
+      this.mimeType = 'application/fhir+xml';
+    }
+    const reader = new FileReader();
+    reader.readAsText(droppedBlob.blob);
+    reader.onload = () => {
+      this.source = <string>reader.result;
+    };
+  }
 }

@@ -6,12 +6,6 @@
       >
     </mat-card-header>
     <mat-table #table [dataSource]="dataSource">
-      <ng-container matColumnDef="title" class="title">
-        <mat-header-cell *matHeaderCellDef class="packageId"
-          >Title</mat-header-cell
-        >
-        <mat-cell *matCellDef="let entry">{{ getTitle(entry) }}</mat-cell>
-      </ng-container>
       <ng-container matColumnDef="packageId">
         <mat-header-cell *matHeaderCellDef class="packageId"
           >Package Id</mat-header-cell
@@ -28,19 +22,17 @@
           getVersion(entry)
         }}</mat-cell>
       </ng-container>
-      <ng-container matColumnDef="url">
-        <mat-header-cell *matHeaderCellDef class="packageUrl"
-          >Package Url</mat-header-cell
+      <ng-container matColumnDef="title" class="title">
+        <mat-header-cell *matHeaderCellDef class="packageId"
+          >Title</mat-header-cell
         >
-        <mat-cell *matCellDef="let entry" class="packageUrl">{{
-          getPackageUrl(entry)
-        }}</mat-cell>
+        <mat-cell *matCellDef="let entry">{{ getTitle(entry) }}</mat-cell>
       </ng-container>
       <mat-header-row
-        *matHeaderRowDef="['title', 'packageId', 'version', 'url']"
+        *matHeaderRowDef="['packageId', 'version', 'title']"
       ></mat-header-row>
       <mat-row
-        *matRowDef="let row; columns: ['title', 'packageId', 'version', 'url']"
+        *matRowDef="let row; columns: ['packageId', 'version', 'title']"
         (click)="selectRow(row)"
       >
       </mat-row>

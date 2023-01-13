@@ -5,20 +5,16 @@
     </mat-card-header>
 
     <div>Resource</div>
-    <input
-      type="file"
-      (change)="fileChange($event)"
-      placeholder="Upload CDA"
-      accept=".xml"
-    />
 
-    <pre><code [highlight]="getXml()" [lineNumbers]="true"></code></pre>
+    <app-upload (addFiles)="addFile($event)"> </app-upload>
+
+    <pre><code [highlight]="getSource()" [lineNumbers]="true"></code></pre>
   </mat-card-content>
 </mat-card>
 
 <mat-card class="card-maps">
   <mat-form-field appearance="fill">
-    <mat-label>Map for converting CDA</mat-label>
+    <mat-label>Map for transforming</mat-label>
     <mat-select [formControl]="selectedMap">
       <mat-option
         *ngFor="let structureMap of structureMaps"

@@ -4,7 +4,6 @@ see latest [test release](https://test.ahdis.ch/matchbox/#/)
 
 angular web applications which uses fhir for:
 
-- displaying Questionnaires (R4 with first SDC extension support)
 - Validation of FHIR resources
 
 built with:
@@ -51,9 +50,9 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 this angular app is directly provided with matchbox
 
 ```
-ng build --configuration production --base-href /matchbox/
-rm -rf ../matchbox/src/main/resources/static/*
-cp -r dist/* ../matchbox/src/main/resources/static
+ng build --configuration production --base-href /matchboxv3/
+rm -rf ../matchbox-health/matchbox-server/src/main/resources/static/*
+cp -r dist/* ../matchbox-health/matchbox-server/src/main/resources/static
 ```
 
 ## Contributing

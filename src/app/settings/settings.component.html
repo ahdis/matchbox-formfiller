@@ -14,23 +14,6 @@
         </mat-select>
       </mat-form-field>
       <br />
-      <mat-form-field>
-        <mat-select
-          placeholder="Mobile Access Gateway"
-          name="selectmag"
-          [ngModel]="getMagSelectedValue()"
-          (ngModelChange)="setMagSelectedValue($event)"
-        >
-          <mat-option *ngFor="let mag of mobileAccessGateways" [value]="mag">
-            {{ mag }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <br />
     </form>
-    <app-questionnaires-table
-      [dataSource]="defaultQuestionnaireDataSource"
-      (rowClick)="openDefaultQuestionnaireResponse($event)"
-    ></app-questionnaires-table>
   </mat-card-content>
 </mat-card>

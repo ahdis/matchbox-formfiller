@@ -5,7 +5,6 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import { filterNotNil } from '../questionnaire-item/store/util';
 
 export interface IDroppedBlob {
   blob: Blob;

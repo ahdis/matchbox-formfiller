@@ -19,7 +19,7 @@ export class FhirConfigService {
 
   getFhirMicroService(): string {
     const service = localStorage.getItem('fhirMicroServer');
-    return service ? service : '/matchbox/fhir';
+    return service ? service : '/matchboxv3/fhir';
   }
 
   getMobileAccessGatewayService(): string {
